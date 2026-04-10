@@ -82,11 +82,29 @@
     </nav>
 
     <!-- Mobile nav toggle -->
-    <button class="mobile-nav-toggle" id="mobileNavToggle" aria-label="Toggle navigation">
+    <button class="mobile-nav-toggle" id="mobileNavToggle" aria-label="Toggle navigation" onclick="toggleMobileMenu()">
         <span></span>
         <span></span>
         <span></span>
     </button>
+    <script>
+        function toggleMobileMenu() {
+            var sidebar = document.getElementById('sidebar');
+            var btn = document.getElementById('mobileNavToggle');
+            if (sidebar && btn) {
+                var isOpen = sidebar.className.indexOf('mobile-open') > -1;
+                if (isOpen) {
+                    sidebar.className = sidebar.className.replace(' mobile-open', '');
+                    btn.className = btn.className.replace(' active', '');
+                    document.body.style.overflow = '';
+                } else {
+                    sidebar.className += ' mobile-open';
+                    btn.className += ' active';
+                    document.body.style.overflow = 'hidden';
+                }
+            }
+        }
+    </script>
 
     <!-- Theme toggle -->
     <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" aria-label="Toggle theme">

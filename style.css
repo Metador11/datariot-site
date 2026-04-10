@@ -2503,6 +2503,7 @@ a {
 
     .sidebar.mobile-open {
         display: flex;
+        position: fixed !important;
         width: 100%;
         height: 100vh;
         top: 0;
@@ -2717,6 +2718,7 @@ a {
 
 [data-theme="light"] .grid-overlay {
     background-image: none;
+    box-shadow: none !important;
 }
 
 [data-theme="light"] .sidebar {
