@@ -31,7 +31,10 @@ window.toggleTheme = function () {
 /* =======================================
    UI INTERACTIONS & NAVIGATION
    ======================================= */
-document.addEventListener('DOMContentLoaded', () => {
+// Robust Initialization Function
+function initializeScripts() {
+    if (window.scriptsInitialized) return;
+    window.scriptsInitialized = true;
     console.log('Datariot Script: DOMContentLoaded triggered.');
 
     // Initialize Supabase
@@ -40,6 +43,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV5Y3J0b2JkZXduc2N3YXpzaGN1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk2NzU1NjYsImV4cCI6MjA3NTI1MTU2Nn0.EsZQOIE879QwU_FKk0Agh-yJBdRJcLTmYi-DCMjYaxU';
         if (typeof window.supabase !== 'undefined') {
             supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+            console.log('Datariot Script: Supabase client created.');
+        } else {
+            console.warn('Datariot Script: Supabase not found on window.');
         }
     } catch (e) {
         console.error('Supabase initialization failed:', e);
@@ -52,56 +58,61 @@ document.addEventListener('DOMContentLoaded', () => {
     if (mobileNavToggle && sidebar) {
         console.log('Datariot Script: Mobile toggle and sidebar found.');
 
-        let lastToggleTime = 0;
         const toggleMenu = (e) => {
-            const now = Date.now();
-            if (now - lastToggleTime < 300) return; // Debounce
-            lastToggleTime = now;
-
-            console.log('Datariot Script: toggleMenu triggered via', e ? e.type : 'manual');
-
-            if (e && e.cancelable) {
+            if (e) {
                 e.preventDefault();
                 e.stopPropagation();
             }
 
             sidebar.classList.toggle('mobile-open');
             mobileNavToggle.classList.toggle('active');
-            console.log('Datariot Script: Menu state is now:', sidebar.classList.contains('mobile-open'));
+
+            // Prevent body scroll when menu is open
+            if (sidebar.classList.contains('mobile-open')) {
+                document.body.style.overflow = 'hidden';
+            } else {
+                document.body.style.overflow = '';
+            }
+
+            console.log('Datariot Script: Mobile menu toggled. State:', sidebar.classList.contains('mobile-open'));
         };
 
         mobileNavToggle.addEventListener('click', toggleMenu);
-        mobileNavToggle.addEventListener('touchstart', toggleMenu, { passive: false });
     } else {
-        console.warn('Datariot Script: Mobile toggle elements NOT found!');
+        console.error('Datariot Script: Mobile toggle elements NOT found!', { mobileNavToggle, sidebar });
     }
 
     // === Sidebar Active Section Tracking ===
     const sections = document.querySelectorAll('.section');
     const sidebarLinks = document.querySelectorAll('.sidebar__link');
-    const sectionObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const id = entry.target.id;
-                sidebarLinks.forEach(link => {
-                    link.classList.toggle('active', link.dataset.section === id);
-                });
-            }
-        });
-    }, { threshold: 0.25 });
-    sections.forEach(s => sectionObserver.observe(s));
+    if (sections.length > 0 && sidebarLinks.length > 0) {
+        const sectionObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const id = entry.target.id;
+                    sidebarLinks.forEach(link => {
+                        link.classList.toggle('active', link.dataset.section === id);
+                    });
+                }
+            });
+        }, { threshold: 0.25 });
+        sections.forEach(s => sectionObserver.observe(s));
+    }
 
     // === Sidebar Link Clicks ===
     sidebarLinks.forEach(link => {
         link.addEventListener('click', (e) => {
             e.preventDefault();
-            const target = document.getElementById(link.dataset.section);
+            const targetId = link.dataset.section;
+            const target = document.getElementById(targetId);
+            console.log('Sidebar Click: Navigating to', targetId);
             if (target) {
                 target.scrollIntoView({ behavior: 'smooth' });
                 // Close mobile menu if open
                 if (sidebar && sidebar.classList.contains('mobile-open')) {
                     sidebar.classList.remove('mobile-open');
                     mobileNavToggle && mobileNavToggle.classList.remove('active');
+                    document.body.style.overflow = '';
                 }
             }
         });
@@ -116,21 +127,24 @@ document.addEventListener('DOMContentLoaded', () => {
             if (sidebar && sidebar.classList.contains('mobile-open')) {
                 sidebar.classList.remove('mobile-open');
                 mobileNavToggle && mobileNavToggle.classList.remove('active');
+                document.body.style.overflow = '';
             }
         });
     }
 
     // === Reveal Animations ===
     const revealElements = document.querySelectorAll('.reveal, .section__header, .value-card, .feature-card, .live-card');
-    const revealObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('visible');
-                revealObserver.unobserve(entry.target);
-            }
-        });
-    }, { threshold: 0.1 });
-    revealElements.forEach(el => revealObserver.observe(el));
+    if (revealElements.length > 0) {
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    revealObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
+        revealElements.forEach(el => revealObserver.observe(el));
+    }
 
     // === Feature Card 3D Tilt ===
     document.querySelectorAll('.feature-card').forEach(card => {
@@ -138,7 +152,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const rect = card.getBoundingClientRect();
             const x = ((e.clientX - rect.left) / rect.width) * 100;
             const y = ((e.clientY - rect.top) / rect.height) * 100;
-            // 3D tilt math
             const tiltX = (y / 100 - 0.5) * 8;
             const tiltY = (x / 100 - 0.5) * -8;
             card.style.transform = `perspective(1000px) rotateX(${tiltX}deg) rotateY(${tiltY}deg) translateY(-5px) scale(1.02)`;
@@ -197,7 +210,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 submitBtn.disabled = true;
                 submitBtn.style.opacity = '0.5';
                 console.log('Beta registration for:', emailInput.value);
-                // Simulate success
                 setTimeout(() => {
                     document.getElementById('betaCard').style.display = 'none';
                     document.getElementById('betaSuccess').style.display = 'flex';
@@ -205,7 +217,14 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
-});
+}
+
+// Start Initialization
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeScripts);
+} else {
+    initializeScripts();
+}
 
 /* =======================================
    HEAVY EFFECTS (DEFERRED)
