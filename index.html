@@ -36,12 +36,19 @@
     <div class="ambient-glow ambient-glow--3"></div>
     <div class="grid-overlay"></div>
     <div class="mouse-spotlight" id="mouseSpotlight"></div>
+    <canvas id="particleCanvas" class="particle-canvas"></canvas>
+    <div class="floating-orbs">
+        <div class="floating-orb floating-orb--1"></div>
+        <div class="floating-orb floating-orb--2"></div>
+        <div class="floating-orb floating-orb--3"></div>
+        <div class="floating-orb floating-orb--4"></div>
+    </div>
 
     <!-- Left Sidebar Navigation -->
     <nav class="sidebar" id="sidebar">
-        <div class="sidebar__logo">
+        <a href="#hero" class="sidebar__logo" data-section="hero" title="Back to top">
             <span style="font-family: var(--font-display); font-weight: 900; color: #fff; font-size: 14px;">D</span>
-        </div>
+        </a>
         <ul class="sidebar__nav">
             <li><a href="#hero" class="sidebar__link active" data-section="hero">
                     <span class="sidebar__link-dot"></span>
@@ -460,22 +467,22 @@
                 <div class="live__grid">
                     <div class="live-card">
                         <div class="live-card__pulse"></div>
-                        <span class="live-card__number" id="liveUsers">1,247</span>
+                        <span class="live-card__number" id="liveUsers">0</span>
                         <span class="live-card__label">Users online right now</span>
                     </div>
                     <div class="live-card">
                         <div class="live-card__pulse"></div>
-                        <span class="live-card__number" id="liveVideos">384</span>
+                        <span class="live-card__number" id="liveVideos">0</span>
                         <span class="live-card__label">Videos being watched</span>
                     </div>
                     <div class="live-card">
                         <div class="live-card__pulse"></div>
-                        <span class="live-card__number" id="liveDebates">56</span>
+                        <span class="live-card__number" id="liveDebates">0</span>
                         <span class="live-card__label">Active debates</span>
                     </div>
                     <div class="live-card">
                         <div class="live-card__pulse"></div>
-                        <span class="live-card__number" id="liveMinutes">12,891</span>
+                        <span class="live-card__number" id="liveMinutes">0</span>
                         <span class="live-card__label">Minutes of learning today</span>
                     </div>
                 </div>

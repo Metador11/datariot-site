@@ -1,6 +1,7 @@
 /* ===========================================
    DATARIOT Landing Page — Interactions & FX
    =========================================== */
+console.log('Datariot Script: Initiating...');
 
 // Initialize Supabase (Global)
 let supabase = null;
@@ -27,7 +28,12 @@ window.toggleTheme = function () {
     console.log('Theme manual toggle to:', next);
 };
 
+/* =======================================
+   UI INTERACTIONS & NAVIGATION
+   ======================================= */
 document.addEventListener('DOMContentLoaded', () => {
+    console.log('Datariot Script: DOMContentLoaded triggered.');
+
     // Initialize Supabase
     try {
         const supabaseUrl = 'https://uycrtobdewnscwazshcu.supabase.co';
@@ -39,54 +45,40 @@ document.addEventListener('DOMContentLoaded', () => {
         console.error('Supabase initialization failed:', e);
     }
 
-    // === Theme toggle (handled via onclick in HTML) ===
+    // === Mobile Navigation Toggle ===
+    const mobileNavToggle = document.getElementById('mobileNavToggle');
+    const sidebar = document.getElementById('sidebar');
 
-    // === Mouse Spotlight Effect ===
-    const spotlight = document.getElementById('mouseSpotlight');
-    if (spotlight) {
-        window.addEventListener('mousemove', (e) => {
-            spotlight.style.left = e.clientX + 'px';
-            spotlight.style.top = e.clientY + 'px';
-            if (!spotlight.classList.contains('active')) {
-                spotlight.classList.add('active');
+    if (mobileNavToggle && sidebar) {
+        console.log('Datariot Script: Mobile toggle and sidebar found.');
+
+        let lastToggleTime = 0;
+        const toggleMenu = (e) => {
+            const now = Date.now();
+            if (now - lastToggleTime < 300) return; // Debounce
+            lastToggleTime = now;
+
+            console.log('Datariot Script: toggleMenu triggered via', e ? e.type : 'manual');
+
+            if (e && e.cancelable) {
+                e.preventDefault();
+                e.stopPropagation();
             }
-        });
+
+            sidebar.classList.toggle('mobile-open');
+            mobileNavToggle.classList.toggle('active');
+            console.log('Datariot Script: Menu state is now:', sidebar.classList.contains('mobile-open'));
+        };
+
+        mobileNavToggle.addEventListener('click', toggleMenu);
+        mobileNavToggle.addEventListener('touchstart', toggleMenu, { passive: false });
+    } else {
+        console.warn('Datariot Script: Mobile toggle elements NOT found!');
     }
 
-    // === Intersection Observer for reveal animations ===
-    const revealElements = document.querySelectorAll(
-        '.section__header, .manifesto__letter, .manifesto__values, .value-card, ' +
-        '.feature-card, .screen-card, .debates__info, .debates__preview, .debate-step, ' +
-        '.live-card, .live__feed, .beta__info, .beta__card'
-    );
-
-    const observerOptions = {
-        threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px'
-    };
-
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('visible');
-                observer.unobserve(entry.target);
-            }
-        });
-    }, observerOptions);
-
-    revealElements.forEach((el, i) => {
-        el.classList.add('reveal');
-        // Add staggered delay for grid items
-        if (el.classList.contains('value-card') || el.classList.contains('feature-card') || el.classList.contains('screen-card') || el.classList.contains('live-card')) {
-            el.style.transitionDelay = `${(i % 3) * 0.15}s`;
-        }
-        observer.observe(el);
-    });
-
-    // === Sidebar active link tracking ===
+    // === Sidebar Active Section Tracking ===
     const sections = document.querySelectorAll('.section');
     const sidebarLinks = document.querySelectorAll('.sidebar__link');
-
     const sectionObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
@@ -97,198 +89,200 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }, { threshold: 0.25 });
-
     sections.forEach(s => sectionObserver.observe(s));
 
-    // === Smooth scroll for sidebar links ===
+    // === Sidebar Link Clicks ===
     sidebarLinks.forEach(link => {
         link.addEventListener('click', (e) => {
             e.preventDefault();
             const target = document.getElementById(link.dataset.section);
             if (target) {
                 target.scrollIntoView({ behavior: 'smooth' });
-            }
-
-            // Close mobile nav if open
-            const sidebar = document.getElementById('sidebar');
-            const toggle = document.getElementById('mobileNavToggle');
-            if (sidebar.classList.contains('mobile-open')) {
-                sidebar.classList.remove('mobile-open');
-                toggle.classList.remove('active');
+                // Close mobile menu if open
+                if (sidebar && sidebar.classList.contains('mobile-open')) {
+                    sidebar.classList.remove('mobile-open');
+                    mobileNavToggle && mobileNavToggle.classList.remove('active');
+                }
             }
         });
     });
 
-    // === Mobile nav toggle ===
-    const mobileNavToggle = document.getElementById('mobileNavToggle');
-    const sidebar = document.getElementById('sidebar');
+    // === Sidebar Logo Click (Scroll to Top) ===
+    const sidebarLogo = document.querySelector('.sidebar__logo');
+    if (sidebarLogo) {
+        sidebarLogo.addEventListener('click', (e) => {
+            e.preventDefault();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            if (sidebar && sidebar.classList.contains('mobile-open')) {
+                sidebar.classList.remove('mobile-open');
+                mobileNavToggle && mobileNavToggle.classList.remove('active');
+            }
+        });
+    }
 
-    mobileNavToggle.addEventListener('click', () => {
-        sidebar.classList.toggle('mobile-open');
-        mobileNavToggle.classList.toggle('active');
-    });
+    // === Reveal Animations ===
+    const revealElements = document.querySelectorAll('.reveal, .section__header, .value-card, .feature-card, .live-card');
+    const revealObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                revealObserver.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.1 });
+    revealElements.forEach(el => revealObserver.observe(el));
 
-    // === Feature card hover glow effect ===
+    // === Feature Card 3D Tilt ===
     document.querySelectorAll('.feature-card').forEach(card => {
         card.addEventListener('mousemove', (e) => {
             const rect = card.getBoundingClientRect();
             const x = ((e.clientX - rect.left) / rect.width) * 100;
             const y = ((e.clientY - rect.top) / rect.height) * 100;
+            // 3D tilt math
+            const tiltX = (y / 100 - 0.5) * 8;
+            const tiltY = (x / 100 - 0.5) * -8;
+            card.style.transform = `perspective(1000px) rotateX(${tiltX}deg) rotateY(${tiltY}deg) translateY(-5px) scale(1.02)`;
             card.style.setProperty('--mx', x + '%');
             card.style.setProperty('--my', y + '%');
         });
-    });
-
-    // === Beta form submission (redesigned) ===
-    const betaForm = document.getElementById('betaForm');
-    const betaCard = document.getElementById('betaCard');
-    const betaSuccess = document.getElementById('betaSuccess');
-
-    betaForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-
-        const emailInput = betaForm.querySelector('input[type="email"]');
-        const email = emailInput ? emailInput.value : '';
-        const btn = betaForm.querySelector('.beta__submit-btn');
-
-        if (!email) return;
-
-        btn.style.opacity = '0.5';
-        btn.disabled = true;
-
-        if (supabase) {
-            try {
-                const { error } = await supabase
-                    .from('waitlist')
-                    .insert([{ email: email }]);
-
-                if (error) throw error;
-
-                betaCard.style.display = 'none';
-                betaSuccess.classList.add('show');
-            } catch (err) {
-                console.error('Error saving to waitlist:', err);
-                alert('Connection error. Please try again later.');
-                btn.style.opacity = '1';
-                btn.disabled = false;
-            }
-        } else {
-            // Fallback for local testing if Supabase isn't loaded
-            setTimeout(() => {
-                betaCard.style.display = 'none';
-                betaSuccess.classList.add('show');
-            }, 800);
-        }
-    });
-
-    // === Live Stats — Simulated realtime updates ===
-    const liveData = {
-        users: 1247,
-        videos: 384,
-        debates: 56,
-        minutes: 12891
-    };
-
-    function formatNumber(n) {
-        return n.toLocaleString('en-US');
-    }
-
-    function updateLiveStats() {
-        // Simulate small fluctuations
-        liveData.users += Math.floor(Math.random() * 7) - 2;
-        liveData.videos += Math.floor(Math.random() * 5) - 1;
-        liveData.debates += Math.random() > 0.7 ? 1 : 0;
-        liveData.minutes += Math.floor(Math.random() * 15) + 3;
-
-        // Clamp
-        liveData.users = Math.max(800, liveData.users);
-        liveData.videos = Math.max(100, liveData.videos);
-        liveData.debates = Math.max(20, liveData.debates);
-
-        const usersEl = document.getElementById('liveUsers');
-        const videosEl = document.getElementById('liveVideos');
-        const debatesEl = document.getElementById('liveDebates');
-        const minutesEl = document.getElementById('liveMinutes');
-
-        if (usersEl) usersEl.textContent = formatNumber(liveData.users);
-        if (videosEl) videosEl.textContent = formatNumber(liveData.videos);
-        if (debatesEl) debatesEl.textContent = formatNumber(liveData.debates);
-        if (minutesEl) minutesEl.textContent = formatNumber(liveData.minutes);
-    }
-
-    setInterval(updateLiveStats, 3000);
-
-    // === Live Activity Feed ===
-    const feedEvents = [
-        { icon: '<span class="live__feed-dot"></span>', text: '<b>@curiosity_lab</b> uploaded video "Quantum Entanglement"' },
-        { icon: '<span class="live__feed-dot"></span>', text: '<b>@neural_mind</b> started debate "Will AGI arrive by 2030?"' },
-        { icon: '<span class="live__feed-dot"></span>', text: '<b>@alex_learns</b> joined the platform' },
-        { icon: '<span class="live__feed-dot"></span>', text: '<b>@philosophy_fan</b> added an argument to "AI Consciousness"' },
-        { icon: '<span class="live__feed-dot"></span>', text: '<b>@data_wizard</b> reached Logic Score 500' },
-        { icon: '<span class="live__feed-dot"></span>', text: '<b>@space_educator</b> uploaded video "Mars Colony"' },
-        { icon: '<span class="live__feed-dot"></span>', text: '<b>@bio_student</b> rated "CRISPR Gene Editing"' },
-        { icon: '<span class="live__feed-dot"></span>', text: '<b>@tech_debater</b> started debate "Remote Work Kills Creativity"' },
-        { icon: '<span class="live__feed-dot"></span>', text: '<b>@science_girl</b> joined the platform' },
-        { icon: '<span class="live__feed-dot"></span>', text: '<b>@logic_king</b> responded in "Crypto vs Traditional Finance"' },
-        { icon: '<span class="live__feed-dot"></span>', text: '<b>@history_buff</b> uploaded video "Fall of Rome: Causes..."' },
-        { icon: '<span class="live__feed-dot"></span>', text: '<b>@debate_queen</b> won 10 debates in a row' },
-    ];
-
-    const liveFeed = document.getElementById('liveFeed');
-    let feedIndex = 0;
-
-    function getTimeAgo() {
-        const seconds = Math.floor(Math.random() * 30) + 1;
-        return seconds + 's ago';
-    }
-
-    function addFeedItem() {
-        const event = feedEvents[feedIndex % feedEvents.length];
-        feedIndex++;
-
-        const item = document.createElement('div');
-        item.className = 'live__feed-item';
-        item.innerHTML = `
-            <span class="live__feed-item__icon">${event.icon}</span>
-            <span class="live__feed-item__text">${event.text}</span>
-            <span class="live__feed-item__time">${getTimeAgo()}</span>
-        `;
-
-        if (liveFeed.firstChild) {
-            liveFeed.insertBefore(item, liveFeed.firstChild);
-        } else {
-            liveFeed.appendChild(item);
-        }
-
-        // Keep max 8 items
-        while (liveFeed.children.length > 8) {
-            liveFeed.removeChild(liveFeed.lastChild);
-        }
-    }
-
-    // Initial feed items
-    for (let i = 0; i < 5; i++) {
-        addFeedItem();
-    }
-
-    // Add new items periodically
-    setInterval(addFeedItem, 4000);
-
-    // === Parallax on ambient glows ===
-    let ticking = false;
-    window.addEventListener('mousemove', (e) => {
-        if (ticking) return;
-        ticking = true;
-        requestAnimationFrame(() => {
-            const x = (e.clientX / window.innerWidth - 0.5) * 20;
-            const y = (e.clientY / window.innerHeight - 0.5) * 20;
-
-            document.querySelectorAll('.ambient-glow').forEach((glow, i) => {
-                const factor = (i + 1) * 0.5;
-                glow.style.transform = `translate(${x * factor}px, ${y * factor}px)`;
-            });
-            ticking = false;
+        card.addEventListener('mouseleave', () => {
+            card.style.transform = '';
         });
     });
 
+    // === Live Stats Count-Up ===
+    const liveSection = document.getElementById('live');
+    if (liveSection) {
+        let statsAnimated = false;
+        const statsObserver = new IntersectionObserver((entries) => {
+            if (entries[0].isIntersecting && !statsAnimated) {
+                statsAnimated = true;
+                animateStats();
+            }
+        }, { threshold: 0.4 });
+        statsObserver.observe(liveSection);
+    }
+
+    function animateStats() {
+        const stats = [
+            { id: 'liveUsers', target: 1247 },
+            { id: 'liveVideos', target: 384 },
+            { id: 'liveDebates', target: 56 },
+            { id: 'liveMinutes', target: 12891 }
+        ];
+        stats.forEach(s => {
+            const el = document.getElementById(s.id);
+            if (!el) return;
+            let current = 0;
+            const duration = 2000;
+            const step = (now) => {
+                if (!current) current = now;
+                const progress = Math.min((now - current) / duration, 1);
+                const value = Math.floor(progress * s.target);
+                el.textContent = value.toLocaleString();
+                if (progress < 1) requestAnimationFrame(step);
+            };
+            requestAnimationFrame(step);
+        });
+    }
+
+    // === Beta Form Submission ===
+    const betaForm = document.getElementById('betaForm');
+    if (betaForm) {
+        betaForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const emailInput = document.getElementById('betaEmail');
+            const submitBtn = betaForm.querySelector('button[type="submit"]');
+            if (emailInput && emailInput.value) {
+                submitBtn.disabled = true;
+                submitBtn.style.opacity = '0.5';
+                console.log('Beta registration for:', emailInput.value);
+                // Simulate success
+                setTimeout(() => {
+                    document.getElementById('betaCard').style.display = 'none';
+                    document.getElementById('betaSuccess').style.display = 'flex';
+                }, 1000);
+            }
+        });
+    }
+});
+
+/* =======================================
+   HEAVY EFFECTS (DEFERRED)
+   ======================================= */
+window.addEventListener('load', () => {
+    console.log('Datariot Script: Window load triggered. Starting heavy effects.');
+
+    // Particle Canvas Animation
+    (function () {
+        const canvas = document.getElementById('particleCanvas');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        let w, h;
+        const particles = [];
+        const PARTICLE_COUNT = 60; // Reduced for performance
+        const colors = ['rgba(14,165,233,', 'rgba(168,85,247,', 'rgba(20,184,166,'];
+
+        function resize() {
+            w = canvas.width = window.innerWidth;
+            h = canvas.height = window.innerHeight;
+        }
+        resize();
+        window.addEventListener('resize', resize);
+
+        for (let i = 0; i < PARTICLE_COUNT; i++) {
+            particles.push({
+                x: Math.random() * w, y: Math.random() * h,
+                vx: (Math.random() - 0.5) * 0.4, vy: (Math.random() - 0.5) * 0.4,
+                size: Math.random() * 2 + 1,
+                color: colors[Math.floor(Math.random() * colors.length)]
+            });
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, w, h);
+            particles.forEach((p, i) => {
+                p.x += p.vx; p.y += p.vy;
+                if (p.x < 0 || p.x > w) p.vx *= -1;
+                if (p.y < 0 || p.y > h) p.vy *= -1;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                ctx.fillStyle = p.color + '0.4)';
+                ctx.fill();
+
+                // Limited connections for performance
+                for (let j = i + 1; j < particles.length; j++) {
+                    const p2 = particles[j];
+                    const d = Math.sqrt((p.x - p2.x) ** 2 + (p.y - p2.y) ** 2);
+                    if (d < 100) {
+                        ctx.beginPath();
+                        ctx.moveTo(p.x, p.y);
+                        ctx.lineTo(p2.x, p2.y);
+                        ctx.strokeStyle = p.color + (0.1 * (1 - d / 100)) + ')';
+                        ctx.stroke();
+                    }
+                }
+            });
+            requestAnimationFrame(draw);
+        }
+        draw();
+    })();
+
+    // Live Feed Simulation
+    const feed = document.getElementById('liveFeed');
+    if (feed) {
+        const activities = [
+            '<b>@neural_mind</b> started a new debate',
+            '<b>@quantum_cat</b> joined the platform',
+            '<b>@logic_king</b> shared a short video',
+            '<b>@data_viz</b> uploaded a research clip'
+        ];
+        setInterval(() => {
+            const item = document.createElement('div');
+            item.className = 'live__feed-item reveal visible';
+            item.innerHTML = `<span>${activities[Math.floor(Math.random() * activities.length)]}</span><span class="live__feed-item__time">just now</span>`;
+            feed.prepend(item);
+            if (feed.children.length > 6) feed.lastChild.remove();
+        }, 5000);
+    }
 });

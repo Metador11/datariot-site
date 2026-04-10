@@ -33,6 +33,12 @@
     --cyan: #0EA5E9;
     --cyan-glow: rgba(14, 165, 233, 0.2);
 
+    --purple: #A855F7;
+    --purple-glow: rgba(168, 85, 247, 0.25);
+    --teal: #14B8A6;
+    --teal-glow: rgba(20, 184, 166, 0.25);
+    --rose: #F43F5E;
+    --rose-glow: rgba(244, 63, 94, 0.2);
 
     --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     --font-display: 'Space Grotesk', 'Inter', sans-serif;
@@ -43,6 +49,94 @@
     --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
     --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
     --transition-smooth: 0.4s var(--ease-out-expo);
+}
+
+/* === PARTICLE CANVAS === */
+.particle-canvas {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.6;
+}
+
+/* === FLOATING GRADIENT ORBS === */
+.floating-orbs {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+}
+
+.floating-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(100px);
+    opacity: 0.35;
+    animation: orb-drift 20s ease-in-out infinite;
+}
+
+.floating-orb--1 {
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, var(--purple-glow), transparent 70%);
+    top: 10%;
+    left: -5%;
+    animation-duration: 25s;
+    animation-delay: 0s;
+}
+
+.floating-orb--2 {
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, var(--teal-glow), transparent 70%);
+    top: 50%;
+    right: -5%;
+    animation-duration: 30s;
+    animation-delay: -5s;
+}
+
+.floating-orb--3 {
+    width: 350px;
+    height: 350px;
+    background: radial-gradient(circle, var(--rose-glow), transparent 70%);
+    bottom: 20%;
+    left: 30%;
+    animation-duration: 22s;
+    animation-delay: -10s;
+}
+
+.floating-orb--4 {
+    width: 450px;
+    height: 450px;
+    background: radial-gradient(circle, var(--accent-glow), transparent 70%);
+    top: 30%;
+    left: 50%;
+    animation-duration: 28s;
+    animation-delay: -15s;
+}
+
+@keyframes orb-drift {
+
+    0%,
+    100% {
+        transform: translate(0, 0) scale(1);
+    }
+
+    25% {
+        transform: translate(80px, -60px) scale(1.15);
+    }
+
+    50% {
+        transform: translate(-40px, 80px) scale(0.9);
+    }
+
+    75% {
+        transform: translate(60px, 40px) scale(1.1);
+    }
 }
 
 html,
@@ -305,18 +399,23 @@ a {
     position: fixed;
     top: 20px;
     left: 20px;
-    z-index: 1001;
-    width: 40px;
-    height: 40px;
-    background: rgba(5, 7, 10, 0.8);
+    z-index: 10001;
+    /* High priority */
+    width: 44px;
+    /* Slightly larger tap target */
+    height: 44px;
+    background: rgba(5, 7, 10, 0.85);
     backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     border: 1px solid var(--border);
-    border-radius: 10px;
+    border-radius: 12px;
     cursor: pointer;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     gap: 5px;
+    padding: 0;
+    transition: all 0.3s var(--ease-out-expo);
 }
 
 .mobile-nav-toggle span {
@@ -395,6 +494,13 @@ a {
     align-items: center;
     gap: 24px;
     pointer-events: auto;
+}
+
+@media (max-width: 768px) {
+    .header__links {
+        display: none !important;
+        /* Hide to prevent blocking the toggle */
+    }
 }
 
 .header__link {
@@ -488,9 +594,26 @@ a {
     font-size: 11px;
     letter-spacing: 3px;
     text-transform: uppercase;
-    color: var(--accent-2);
     margin-bottom: 20px;
-    font-weight: 500;
+    font-weight: 600;
+    background: linear-gradient(90deg, var(--accent-2), var(--purple), var(--teal), var(--accent-2));
+    background-size: 300% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: gradient-shift 6s ease-in-out infinite;
+}
+
+@keyframes gradient-shift {
+
+    0%,
+    100% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
 }
 
 .section__title {
@@ -1250,6 +1373,22 @@ a {
     background: linear-gradient(180deg, var(--bg), #05070a);
 }
 
+/* Gradient mesh dividers between sections */
+.section--manifesto::before,
+.section--features::before,
+.section--debates::before,
+.section--live::before,
+.section--beta::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 10%;
+    right: 10%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent) 20%, var(--purple) 50%, var(--teal) 80%, transparent);
+    opacity: 0.6;
+}
+
 .manifesto__content {
     display: grid;
     grid-template-columns: 1.2fr 0.8fr;
@@ -1315,12 +1454,47 @@ a {
     transition: all 0.4s var(--ease-out-expo);
     position: relative;
     overflow: hidden;
+    border-left: 3px solid var(--accent);
+}
+
+.value-card:nth-child(1) {
+    border-left-color: var(--accent);
+}
+
+.value-card:nth-child(2) {
+    border-left-color: var(--teal);
+}
+
+.value-card:nth-child(3) {
+    border-left-color: var(--purple);
+}
+
+.value-card:nth-child(4) {
+    border-left-color: var(--rose);
+}
+
+.value-card:nth-child(1):hover {
+    border-color: var(--accent);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 30px var(--accent-glow);
+}
+
+.value-card:nth-child(2):hover {
+    border-color: var(--teal);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 30px var(--teal-glow);
+}
+
+.value-card:nth-child(3):hover {
+    border-color: var(--purple);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 30px var(--purple-glow);
+}
+
+.value-card:nth-child(4):hover {
+    border-color: var(--rose);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 30px var(--rose-glow);
 }
 
 .value-card:hover {
     transform: translateY(-8px);
-    border-color: var(--accent);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
 }
 
 .value-card__icon {
@@ -1330,6 +1504,26 @@ a {
     border-radius: 12px;
     color: var(--accent);
     margin-bottom: 20px;
+}
+
+.value-card:nth-child(1) .value-card__icon {
+    color: var(--accent);
+    background: rgba(14, 165, 233, 0.1);
+}
+
+.value-card:nth-child(2) .value-card__icon {
+    color: var(--teal);
+    background: rgba(20, 184, 166, 0.1);
+}
+
+.value-card:nth-child(3) .value-card__icon {
+    color: var(--purple);
+    background: rgba(168, 85, 247, 0.1);
+}
+
+.value-card:nth-child(4) .value-card__icon {
+    color: var(--rose);
+    background: rgba(244, 63, 94, 0.1);
 }
 
 .value-card h4 {
@@ -1370,14 +1564,50 @@ a {
     flex-direction: column;
 }
 
+.feature-card::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: 24px;
+    padding: 1px;
+    background: linear-gradient(135deg, var(--accent), var(--purple), var(--teal), var(--accent));
+    background-size: 400% 400%;
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.5s var(--ease-out-expo);
+    animation: gradient-border-spin 4s linear infinite;
+    z-index: -1;
+}
+
+.feature-card:hover::before {
+    opacity: 1;
+}
+
+@keyframes gradient-border-spin {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
 .feature-card--large {
     grid-column: span 2;
 }
 
 .feature-card:hover {
-    border-color: var(--accent);
+    border-color: transparent;
     transform: translateY(-4px) scale(1.01);
-    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5), 0 0 40px rgba(14, 165, 233, 0.1);
 }
 
 .feature-card__icon {
@@ -2251,8 +2481,15 @@ a {
 
     .sidebar.mobile-open {
         display: flex;
-        width: var(--sidebar-width-expanded);
-        box-shadow: 10px 0 40px rgba(0, 0, 0, 0.5);
+        width: 100%;
+        /* Full width on mobile for easier use */
+        height: 100vh;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        border-radius: 0;
+        z-index: 10000;
+        box-shadow: 0 0 40px rgba(0, 0, 0, 0.8);
     }
 
     .sidebar.mobile-open .sidebar__link-text {
