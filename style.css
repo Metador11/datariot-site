@@ -45,6 +45,13 @@
     --transition-smooth: 0.4s var(--ease-out-expo);
 }
 
+html,
+body {
+    overflow-x: hidden;
+    width: 100%;
+    position: relative;
+}
+
 html {
     scroll-behavior: smooth;
     scrollbar-width: thin;
@@ -55,7 +62,6 @@ body {
     font-family: var(--font-sans);
     background: var(--bg);
     color: var(--text-primary);
-    overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
@@ -2302,12 +2308,13 @@ a {
 
 @media (max-width: 480px) {
     .hero__title {
-        font-size: 42px;
+        font-size: clamp(38px, 12vw, 60px);
     }
 
     .hero__actions {
         flex-direction: column;
         width: 100%;
+        gap: 16px;
     }
 
     .hero__actions .btn {
@@ -2324,11 +2331,11 @@ a {
     }
 
     .beta__card-inner {
-        padding: 32px 24px;
+        padding: 32px 20px;
     }
 
     .beta__card-title {
-        font-size: 24px;
+        font-size: 22px;
     }
 }
 
