@@ -1,5 +1,5 @@
 /* ===========================================
-   ORVELIS Landing Page — Interactions & FX
+   DATARIOT Landing Page — Interactions & FX
    =========================================== */
 
 // Initialize Supabase (Global)
@@ -10,7 +10,7 @@ let supabase = null;
     const html = document.documentElement;
     let savedTheme = 'dark';
     try {
-        savedTheme = localStorage.getItem('orvelis-theme') || 'dark';
+        savedTheme = localStorage.getItem('datariot-theme') || 'dark';
     } catch (e) { }
     html.setAttribute('data-theme', savedTheme);
 })();
@@ -22,7 +22,7 @@ window.toggleTheme = function () {
     const next = current === 'dark' ? 'light' : 'dark';
     html.setAttribute('data-theme', next);
     try {
-        localStorage.setItem('orvelis-theme', next);
+        localStorage.setItem('datariot-theme', next);
     } catch (e) { }
     console.log('Theme manual toggle to:', next);
 };
