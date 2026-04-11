@@ -1,7 +1,7 @@
 {
   "name": "datariot",
   "version": "1.0.0",
-  "main": "expo-router/entry",
+  "main": "metro-entry.js",
   "scripts": {
     "start": "NODE_OPTIONS=--max-old-space-size=2048 expo start",
     "start:lan": "NODE_OPTIONS=--max-old-space-size=2048 expo start --lan",

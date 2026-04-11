@@ -39,8 +39,8 @@ function initializeScripts() {
 
     // Initialize Supabase
     try {
-        const supabaseUrl = 'https://uycrtobdewnscwazshcu.supabase.co';
-        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV5Y3J0b2JkZXduc2N3YXpzaGN1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk2NzU1NjYsImV4cCI6MjA3NTI1MTU2Nn0.EsZQOIE879QwU_FKk0Agh-yJBdRJcLTmYi-DCMjYaxU';
+        const supabaseUrl = 'YOUR_SUPABASE_URL';
+        const supabaseKey = 'YOUR_SUPABASE_ANON_KEY';
         if (typeof window.supabase !== 'undefined') {
             supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
             console.log('Datariot Script: Supabase client created.');
