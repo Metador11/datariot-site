@@ -3215,3 +3215,51 @@ body,
     justify-content: center;
     margin-top: 16px;
 }
+/* === FLYING BIRDS ANIMATION === */
+.birds-container {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    overflow: hidden;
+}
+
+.bird {
+    position: absolute;
+    width: 12px;
+    height: 8px;
+    color: rgba(255, 255, 255, 0.4);
+    animation: bird-fly linear infinite;
+}
+
+.bird svg {
+    width: 100%;
+    height: 100%;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    animation: bird-wing 0.6s ease-in-out infinite alternate;
+}
+
+.bird--1 { top: 15%; left: -50px; animation-duration: 25s; animation-delay: 0s; }
+.bird--2 { top: 25%; left: -50px; animation-duration: 30s; animation-delay: -5s; scale: 0.8; }
+.bird--3 { top: 40%; left: -50px; animation-duration: 22s; animation-delay: -10s; scale: 0.6; }
+.bird--4 { top: 10%; right: -50px; animation: bird-fly-reverse 28s linear infinite; animation-delay: -15s; scale: 0.7; }
+.bird--5 { top: 60%; right: -50px; animation: bird-fly-reverse 35s linear infinite; animation-delay: -2s; scale: 0.5; }
+
+@keyframes bird-fly {
+    0% { transform: translateX(0) translateY(0); }
+    100% { transform: translateX(calc(100vw + 100px)) translateY(-50px); }
+}
+
+@keyframes bird-fly-reverse {
+    0% { transform: translateX(0) translateY(0); }
+    100% { transform: translateX(calc(-100vw - 100px)) translateY(30px); }
+}
+
+@keyframes bird-wing {
+    0% { transform: scaleY(0.3); }
+    100% { transform: scaleY(1); }
+}
