@@ -1,0 +1,27 @@
+- Running diagnostics...
+/bin/sh: 1: /home/meta/.linuxbrew/share/android-commandlinetools/platform-tools/adb: not found
+Common
+ ✓ Node.js - Required to execute JavaScript code
+ ✓ npm - Required to install NPM dependencies
+ ✓ Metro - Required for bundling the JavaScript code
+
+Android
+ ✖ Adb - No devices and/or emulators connected. Please create emulator with Android Studio or connect Android device.
+ ✖ JDK - Required to compile Java code
+   - Version found: N/A
+   - Version supported: >= 17 <= 20
+ ✖ Android Studio - Required for building and installing your app on Android
+ ✓ ANDROID_HOME - Environment variable that points to your Android SDK installation
+ ✓ Gradlew - Build tool required for Android builds
+ ✖ Android SDK - Required for building and installing your app on Android
+   - Versions found: N/A
+   - Version supported: Not Found
+
+Errors:   4
+Warnings: 0
+
+Usage
+ › Press f to try to fix issues.
+ › Press e to try to fix errors.
+ › Press w to try to fix warnings.
+ › Press Enter to exit.

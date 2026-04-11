@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Datariot Docs — Platform Documentation</title>
+    <meta name="description"
+        content="Official documentation for the Datariot educational platform. Learn about Smart Feed, Debate Arena, Creator DNA, and AI Sensei." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;450;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header__inner">
+            <div class="header__brand">
+                <img src="assets/logo.jpg" alt="Datariot" class="header__logo">
+                <span class="header__title">DATARIOT <span>Docs</span></span>
+            </div>
+            <div class="header__links">
+                <a href="https://info.datariot.xyz" class="header__link">Landing Page</a>
+                <a href="https://datariot.xyz" class="header__link">Web App</a>
+                <a href="https://info.datariot.xyz#beta" class="header__link header__link--cta">Join Waitlist</a>
+            </div>
+            <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Sidebar Overlay (mobile) -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- Layout -->
+    <div class="layout">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="search">
+                <svg class="search__icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2">
+                    <circle cx="11" cy="11" r="8" />
+                    <path d="M21 21l-4.35-4.35" />
+                </svg>
+                <input type="text" class="search__input" id="searchInput" placeholder="Search docs..." />
+            </div>
+
+            <div class="sidebar__section">
+                <div class="sidebar__label">Getting Started</div>
+                <ul class="sidebar__nav">
+                    <li><a href="#overview" class="sidebar__link active" data-section="overview">
+                            <svg class="sidebar__link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                                <polyline points="9 22 9 12 15 12 15 22" />
+                            </svg>
+                            Overview</a></li>
+                    <li><a href="#architecture" class="sidebar__link" data-section="architecture">
+                            <svg class="sidebar__link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <rect x="2" y="3" width="20" height="14" rx="2" ry="2" />
+                                <line x1="8" y1="21" x2="16" y2="21" />
+                                <line x1="12" y1="17" x2="12" y2="21" />
+                            </svg>
+                            Architecture</a></li>
+                </ul>
+            </div>
+
+            <div class="sidebar__section">
+                <div class="sidebar__label">Core Features</div>
+                <ul class="sidebar__nav">
+                    <li><a href="#smart-feed" class="sidebar__link" data-section="smart-feed">
+                            <svg class="sidebar__link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <circle cx="12" cy="12" r="10" />
+                                <path d="M12 6v6l4 2" />
+                            </svg>
+                            Smart Feed</a></li>
+                    <li><a href="#debate-arena" class="sidebar__link" data-section="debate-arena">
+                            <svg class="sidebar__link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                            </svg>
+                            Debate Arena</a></li>
+                    <li><a href="#creator-dna" class="sidebar__link" data-section="creator-dna">
+                            <svg class="sidebar__link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M16 4L28 10V22L16 28L4 22V10L16 4Z" />
+                                <circle cx="12" cy="12" r="4" />
+                                <path d="M16 8a4 4 0 0 1 0 8" />
+                            </svg>
+                            Creator DNA</a></li>
+                    <li><a href="#ai-sensei" class="sidebar__link" data-section="ai-sensei">
+                            <svg class="sidebar__link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <circle cx="12" cy="8" r="5" />
+                                <path d="M20 21a8 8 0 0 0-16 0" />
+                            </svg>
+                            AI Sensei</a></li>
+                </ul>
+            </div>
+
+            <div class="sidebar__section">
+                <div class="sidebar__label">Platform</div>
+                <ul class="sidebar__nav">
+                    <li><a href="#categories" class="sidebar__link" data-section="categories">
+                            <svg class="sidebar__link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <rect x="3" y="3" width="7" height="7" />
+                                <rect x="14" y="3" width="7" height="7" />
+                                <rect x="14" y="14" width="7" height="7" />
+                                <rect x="3" y="14" width="7" height="7" />
+                            </svg>
+                            Categories</a></li>
+                    <li><a href="#community" class="sidebar__link" data-section="community">
+                            <svg class="sidebar__link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                                <circle cx="9" cy="7" r="4" />
+                                <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                                <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                            </svg>
+                            Community</a></li>
+                    <li><a href="#roadmap" class="sidebar__link" data-section="roadmap">
+                            <svg class="sidebar__link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+                            </svg>
+                            Roadmap</a></li>
+                </ul>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="content">
+            <div class="content__inner">
+
+                <!-- Hero -->
+                <div class="docs-hero">
+                    <div class="docs-hero__badge">
+                        <span class="docs-hero__badge-dot"></span>
+                        v0.1 Beta
+                    </div>
+                    <h1 class="docs-hero__title">Datariot Documentation</h1>
+                    <p class="docs-hero__subtitle">Learn how to use the Datariot educational platform — from Smart Feed
+                        to Debate Arena, Creator DNA to AI Sensei. Everything you need to get started.</p>
+                </div>
+
+                <!-- Overview -->
+                <section class="doc-section" id="overview">
+                    <h2 class="doc-section__title">Overview</h2>
+                    <p>Datariot is a next-generation educational platform that combines short-form video content with
+                        AI-powered learning and structured intellectual debate. Unlike traditional social media, Datariot
+                        optimizes for <strong>understanding</strong>, not watch time.</p>
+
+                    <div class="feature-grid">
+                        <div class="feature-item">
+                            <div class="feature-item__icon">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <circle cx="12" cy="12" r="10" />
+                                    <path d="M12 6v6l4 2" />
+                                </svg>
+                            </div>
+                            <h4 class="feature-item__title">Smart Feed</h4>
+                            <p class="feature-item__desc">AI-curated 60-second videos that adapt to your learning pace
+                                and interests.</p>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-item__icon">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                                </svg>
+                            </div>
+                            <h4 class="feature-item__title">Debate Arena</h4>
+                            <p class="feature-item__desc">Structured debates replace comment sections. Build arguments,
+                                earn Logic Score.</p>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-item__icon">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <circle cx="12" cy="12" r="4" />
+                                    <path d="M16 8a4 4 0 0 1 0 8" />
+                                </svg>
+                            </div>
+                            <h4 class="feature-item__title">Creator DNA</h4>
+                            <p class="feature-item__desc">Your evolving profile that tracks your intellectual journey
+                                and content impact.</p>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-item__icon">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <circle cx="12" cy="8" r="5" />
+                                    <path d="M20 21a8 8 0 0 0-16 0" />
+                                </svg>
+                            </div>
+                            <h4 class="feature-item__title">AI Sensei</h4>
+                            <p class="feature-item__desc">Personal AI tutor that deepens your understanding of any
+                                video content.</p>
+                        </div>
+                    </div>
+
+                    <div class="callout callout--tip">
+                        <div class="callout__title">💡 Tip</div>
+                        <p>Datariot is currently in closed beta. <a href="https://info.datariot.xyz#beta">Join the
+                                waitlist</a> to get early access.</p>
+                    </div>
+                </section>
+
+                <!-- Architecture -->
+                <section class="doc-section" id="architecture">
+                    <h2 class="doc-section__title">Architecture</h2>
+                    <p>Datariot is built as a cross-platform application using modern technologies:</p>
+
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Layer</th>
+                                <th>Technology</th>
+                                <th>Purpose</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Frontend</td>
+                                <td>React Native + Expo</td>
+                                <td>Cross-platform mobile & web app</td>
+                            </tr>
+                            <tr>
+                                <td>Navigation</td>
+                                <td>Expo Router v6</td>
+                                <td>File-based routing</td>
+                            </tr>
+                            <tr>
+                                <td>Backend</td>
+                                <td>Supabase</td>
+                                <td>Auth, DB, Storage, Realtime</td>
+                            </tr>
+                            <tr>
+                                <td>AI</td>
+                                <td>OpenAI GPT-4</td>
+                                <td>AI Sensei chat agent</td>
+                            </tr>
+                            <tr>
+                                <td>State</td>
+                                <td>Zustand</td>
+                                <td>Lightweight state management</td>
+                            </tr>
+                            <tr>
+                                <td>Styling</td>
+                                <td>React Native StyleSheet</td>
+                                <td>Platform-native styles</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h3 class="doc-section__subtitle">Platform Support</h3>
+                    <p>Datariot runs on <strong>iOS</strong>, <strong>Android</strong>, and <strong>Web</strong>. The app
+                        uses a responsive layout system that automatically adapts between mobile (full-screen video
+                        feed)
+                        and desktop (three-column layout with sidebar and right panel).</p>
+                </section>
+
+                <!-- Smart Feed -->
+                <section class="doc-section" id="smart-feed">
+                    <h2 class="doc-section__title">Smart Feed</h2>
+                    <p>The Smart Feed is the core content discovery experience. It uses the <strong>Daily Synergy
+                            algorithm</strong> to curate a personalized stream of 60-second educational videos tailored
+                        to your Creator DNA profile.</p>
+
+                    <h3 class="doc-section__subtitle">Feed Modes</h3>
+                    <p>Datariot offers three distinct feed visualization modes:</p>
+                    <ul>
+                        <li><strong>Pulse Feed</strong> — Vertical swipeable videos with a DNA-inspired background
+                            animation. The primary mobile experience.</li>
+                        <li><strong>Mosaic Feed</strong> — Grid-based layout showing multiple video thumbnails. Great
+                            for browsing and discovering new content.</li>
+                        <li><strong>Classic Feed</strong> — Horizontal scrolling cards with preview information. A
+                            focused, information-dense view.</li>
+                    </ul>
+
+                    <h3 class="doc-section__subtitle">Daily Synergy</h3>
+                    <p>The "Daily Synergy" section appears at the top of your feed and highlights content that
+                        specifically matches your learning trajectory. It analyzes:</p>
+                    <ul>
+                        <li>Your viewing history and engagement patterns</li>
+                        <li>Topics you've debated and your argument quality</li>
+                        <li>Your Creator DNA profile and knowledge gaps</li>
+                        <li>Trending content within your interest categories</li>
+                    </ul>
+
+                    <div class="callout">
+                        <div class="callout__title">ℹ️ Note</div>
+                        <p>The feed requires a minimum of 5 videos per section. If fewer are available for a category,
+                            the algorithm intelligently pads the section with related content.</p>
+                    </div>
+                </section>
+
+                <!-- Debate Arena -->
+                <section class="doc-section" id="debate-arena">
+                    <h2 class="doc-section__title">Debate Arena</h2>
+                    <p>The Debate Arena is Datariot's answer to toxic comment sections. Instead of unstructured
+                        arguments, users engage in <strong>structured intellectual discourse</strong> with clear rules
+                        and scoring.</p>
+
+                    <h3 class="doc-section__subtitle">How It Works</h3>
+                    <ol>
+                        <li><strong>Propose a Thesis</strong> — Share a bold claim and stake your intellectual
+                            reputation. Example: <em>"AI will replace 50% of jobs by 2035."</em></li>
+                        <li><strong>Build Arguments</strong> — Others respond with structured arguments: evidence,
+                            counter-evidence, and logical reasoning. No ad-hominem attacks allowed.</li>
+                        <li><strong>Community Voting</strong> — The community votes on argument quality, not
+                            popularity. Votes are weighted by the voter's Logic Score.</li>
+                        <li><strong>Earn Logic Score</strong> — Your Logic Score rises as you demonstrate critical
+                            thinking. High-quality arguments earn more points.</li>
+                    </ol>
+
+                    <h3 class="doc-section__subtitle">Logic Score</h3>
+                    <p>Your Logic Score is a reputation metric that reflects your ability to construct well-reasoned
+                        arguments. It's calculated based on:</p>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Factor</th>
+                                <th>Weight</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Argument Quality</td>
+                                <td>40%</td>
+                                <td>Community upvotes on your arguments</td>
+                            </tr>
+                            <tr>
+                                <td>Evidence Usage</td>
+                                <td>25%</td>
+                                <td>How well you cite sources and data</td>
+                            </tr>
+                            <tr>
+                                <td>Debate Participation</td>
+                                <td>20%</td>
+                                <td>Consistency and frequency of engagement</td>
+                            </tr>
+                            <tr>
+                                <td>Win Rate</td>
+                                <td>15%</td>
+                                <td>Percentage of debates where your side prevailed</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="callout callout--warning">
+                        <div class="callout__title">⚠️ Warning</div>
+                        <p>Ad-hominem attacks, spam, or bad-faith arguments will result in Logic Score penalties and
+                            potential account restrictions.</p>
+                    </div>
+                </section>
+
+                <!-- Creator DNA -->
+                <section class="doc-section" id="creator-dna">
+                    <h2 class="doc-section__title">Creator DNA</h2>
+                    <p>Creator DNA is your unique profile on Datariot. It evolves as you learn, debate, and create
+                        content. Think of it as your <strong>intellectual fingerprint</strong> — a living representation
+                        of your knowledge, interests, and growth.</p>
+
+                    <h3 class="doc-section__subtitle">Profile Stats</h3>
+                    <p>Your Creator DNA profile displays real-time statistics:</p>
+                    <ul>
+                        <li><strong>Member Since</strong> — When you joined the platform</li>
+                        <li><strong>Total Impact</strong> — Combined views, shares, and engagement across all your
+                            content</li>
+                        <li><strong>Top Interest</strong> — Your most-engaged topic category</li>
+                        <li><strong>Global Rank</strong> — Your position in the global leaderboard</li>
+                        <li><strong>Activity Level</strong> — How active you've been in the last 30 days</li>
+                        <li><strong>Approval Rate</strong> — Percentage of your content that receives positive
+                            engagement</li>
+                    </ul>
+
+                    <h3 class="doc-section__subtitle">How DNA Evolves</h3>
+                    <p>Your Creator DNA is not static. It adapts based on:</p>
+                    <ul>
+                        <li>Videos you watch and how deeply you engage with them</li>
+                        <li>Debates you participate in and arguments you make</li>
+                        <li>Content you create and how the community receives it</li>
+                        <li>Categories you explore and knowledge gaps you fill</li>
+                    </ul>
+                </section>
+
+                <!-- AI Sensei -->
+                <section class="doc-section" id="ai-sensei">
+                    <h2 class="doc-section__title">AI Sensei</h2>
+                    <p>AI Sensei is your personal AI tutor within Datariot. It's available on every video page — just tap
+                        the AI button to dive deeper into any topic you're watching.</p>
+
+                    <h3 class="doc-section__subtitle">Capabilities</h3>
+                    <ul>
+                        <li><strong>Context-Aware Q&A</strong> — Ask questions about the video you're watching. AI
+                            Sensei understands the content and provides detailed explanations.</li>
+                        <li><strong>Deep Dives</strong> — Request deeper explanations of concepts mentioned in videos.
+                            AI Sensei connects ideas across your learning history.</li>
+                        <li><strong>Progress Tracking</strong> — AI Sensei remembers your learning journey and adapts
+                            its explanations to your current knowledge level.</li>
+                        <li><strong>Debate Preparation</strong> — Use AI Sensei to research arguments before entering a
+                            debate. It helps you find evidence and construct logical frameworks.</li>
+                    </ul>
+
+                    <div class="callout callout--tip">
+                        <div class="callout__title">💡 Pro Tip</div>
+                        <p>You can access AI Sensei from the full-screen video view by tapping the pulsing Datariot logo
+                            at the top of the screen.</p>
+                    </div>
+                </section>
+
+                <!-- Categories -->
+                <section class="doc-section" id="categories">
+                    <h2 class="doc-section__title">Categories</h2>
+                    <p>Content on Datariot is organized into curated categories. You can browse, filter, and subscribe to
+                        categories that match your interests.</p>
+
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Category</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Science</td>
+                                <td>Physics, chemistry, biology, and earth sciences</td>
+                            </tr>
+                            <tr>
+                                <td>Technology</td>
+                                <td>AI, programming, cybersecurity, hardware</td>
+                            </tr>
+                            <tr>
+                                <td>Engineering</td>
+                                <td>Mechanical, electrical, software engineering</td>
+                            </tr>
+                            <tr>
+                                <td>Philosophy</td>
+                                <td>Ethics, logic, existentialism, political philosophy</td>
+                            </tr>
+                            <tr>
+                                <td>History</td>
+                                <td>World history, civilizations, modern history</td>
+                            </tr>
+                            <tr>
+                                <td>Sports</td>
+                                <td>Analysis, strategy, sports science</td>
+                            </tr>
+                            <tr>
+                                <td>Esports</td>
+                                <td>Competitive gaming, game analysis, industry trends</td>
+                            </tr>
+                            <tr>
+                                <td>Business</td>
+                                <td>Startups, economics, marketing, finance</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </section>
+
+                <!-- Community -->
+                <section class="doc-section" id="community">
+                    <h2 class="doc-section__title">Community</h2>
+                    <p>Datariot is built around the idea that <strong>learning together multiplies the power of every
+                            insight</strong>. The community is the backbone of the platform.</p>
+
+                    <h3 class="doc-section__subtitle">Community Guidelines</h3>
+                    <ul>
+                        <li><strong>Respect</strong> — Treat every member as a fellow learner. Disagree with ideas, not
+                            people.</li>
+                        <li><strong>Quality</strong> — Prioritize depth over quantity. One well-researched video or
+                            argument is worth more than ten low-effort posts.</li>
+                        <li><strong>Honesty</strong> — Cite your sources. Acknowledge when you're wrong. Intellectual
+                            humility is a strength.</li>
+                        <li><strong>Growth</strong> — Focus on learning and helping others learn. This isn't a
+                            competition — it's a collaboration.</li>
+                    </ul>
+                </section>
+
+                <!-- Roadmap -->
+                <section class="doc-section" id="roadmap">
+                    <h2 class="doc-section__title">Roadmap</h2>
+                    <p>Datariot is continuously evolving. Here's what's coming next:</p>
+
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Phase</th>
+                                <th>Features</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>v0.1</td>
+                                <td>Smart Feed, basic Debates, Creator DNA profile</td>
+                                <td>✅ Live (Beta)</td>
+                            </tr>
+                            <tr>
+                                <td>v0.2</td>
+                                <td>AI Sensei integration, enhanced Logic Score</td>
+                                <td>🔄 In Progress</td>
+                            </tr>
+                            <tr>
+                                <td>v0.3</td>
+                                <td>Community features, mentorship, group learning</td>
+                                <td>📋 Planned</td>
+                            </tr>
+                            <tr>
+                                <td>v1.0</td>
+                                <td>Public launch, API access, creator monetization</td>
+                                <td>🔮 Future</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="callout">
+                        <div class="callout__title">ℹ️ Stay Updated</div>
+                        <p>Follow our progress at <a href="https://info.datariot.xyz">info.datariot.xyz</a> and
+                            <a href="https://info.datariot.xyz#beta">join the waitlist</a> for early access to new
+                            features.
+                        </p>
+                    </div>
+                </section>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <span>© 2026 Datariot. All rights reserved.</span>
+        <div>
+            <a href="https://info.datariot.xyz/privacy.html">Privacy</a> ·
+            <a href="https://info.datariot.xyz/terms.html">Terms</a>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

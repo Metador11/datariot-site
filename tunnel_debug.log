@@ -1,0 +1,64 @@
+2026-03-17T16:51:13.840Z expo:telemetry Switching strategy from detached to instant
+2026-03-17T16:51:13.876Z expo:telemetry Recording 1 event(s)
+2026-03-17T16:51:13.884Z expo:env Loaded environment variables from: /home/meta/Downloads/thinko (copy 1)/.env
+2026-03-17T16:51:13.884Z expo:env /home/meta/Downloads/thinko (copy 1)/.env.development does not exist, skipping this env file
+2026-03-17T16:51:13.884Z expo:env /home/meta/Downloads/thinko (copy 1)/.env.local does not exist, skipping this env file
+2026-03-17T16:51:13.884Z expo:env /home/meta/Downloads/thinko (copy 1)/.env.development.local does not exist, skipping this env file
+env: load .env
+env: export EXPO_PUBLIC_SUPABASE_URL EXPO_PUBLIC_SUPABASE_ANON_KEY SUPABASE_URL SUPABASE_ANON_KEY SUPABASE_SERVICE_ROLE_KEY EXPO_PUBLIC_OPENAI_API_KEY EXPO_PUBLIC_ANTHROPIC_API_KEY
+Starting project at /home/meta/Downloads/thinko (copy 1)
+2026-03-17T16:51:14.052Z expo:utils:fileNotifier Observing /home/meta/Downloads/thinko (copy 1)/babel.config.js
+2026-03-17T16:51:14.115Z expo:start:server:devServer Stopping dev server (bundler: metro)
+2026-03-17T16:51:14.115Z expo:start:server:devServer Stopped dev server (bundler: metro)
+Using src/app as the root directory for Expo Router.
+2026-03-17T16:51:14.375Z expo:metro:config react-native-reanimated package.json: /home/meta/Downloads/thinko (copy 1)/node_modules/react-native-reanimated/package.json
+2026-03-17T16:51:14.376Z expo:metro:config react-native-worklets package.json: /home/meta/Downloads/thinko (copy 1)/node_modules/react-native-worklets/package.json
+
+Expo Metro config:
+- Version: 54.0.14
+- Extensions: ts, tsx, mjs, js, jsx, json, cjs, scss, sass, css
+- React Native: /home/meta/Downloads/thinko (copy 1)/node_modules/react-native
+- Watch Folders: 
+- Node Module Paths: 
+- Sass: null
+- Reanimated: 4.1.6
+- Worklets: 0.5.2
+- Babel Runtime: null
+
+2026-03-17T16:51:14.560Z expo:metro:withMetroResolvers Appending 8 custom resolvers to Metro config. (has custom resolver: false)
+2026-03-17T16:51:14.570Z expo:start:server:urlCreator URL: http://127.0.0.1:8081
+Starting Metro Bundler
+2026-03-17T16:51:14.666Z expo:start:server:middleware:serveStatic Serving static files from: /home/meta/Downloads/thinko (copy 1)/public
+2026-03-17T16:51:14.667Z expo:start:server:devServer [tunnel] connect to port: 8081
+2026-03-17T16:51:14.705Z expo:start:platforms:android:adbReverse Failed to resolve the Android SDK path, skipping ADB: Failed to resolve the Android SDK path. ANDROID_HOME is set to a non-existing path: /home/meta/.linuxbrew/share/android-commandlinetools
+2026-03-17T16:51:14.706Z expo:start:server:ngrok Stopping Tunnel
+2026-03-17T16:51:14.706Z expo:start:server:ngrok Global config path: /home/meta/.expo/ngrok.yml
+2026-03-17T16:51:14.711Z expo:start:server:ngrok Hostname: QZ-q7b0-anonymous-8081.exp.direct
+2026-03-17T16:51:18.382Z expo:start:server:ngrok Resetting project randomness: HaCbw9U
+2026-03-17T16:51:18.556Z expo:start:server:ngrok Stopping Tunnel
+2026-03-17T16:51:18.556Z expo:start:server:ngrok Global config path: /home/meta/.expo/ngrok.yml
+2026-03-17T16:51:18.805Z expo:start:server:ngrok Hostname: HaCbw9U-anonymous-8081.exp.direct
+2026-03-17T16:51:19.687Z expo:start:server:ngrok Resetting project randomness: SaIuqH0
+2026-03-17T16:51:19.788Z expo:start:server:ngrok Stopping Tunnel
+2026-03-17T16:51:19.788Z expo:start:server:ngrok Global config path: /home/meta/.expo/ngrok.yml
+2026-03-17T16:51:19.789Z expo:start:server:ngrok Hostname: SaIuqH0-anonymous-8081.exp.direct
+CommandError: failed to start tunnel
+
+session closed
+
+Check the Ngrok status page for outages: https://status.ngrok.com/
+CommandError: failed to start tunnel
+
+session closed
+
+Check the Ngrok status page for outages: https://status.ngrok.com/
+    at assertNgrok (/home/meta/Downloads/thinko (copy 1)/node_modules/@expo/cli/src/start/server/AsyncNgrok.ts:186:17)
+    at AsyncNgrok.connectToNgrokInternalAsync (/home/meta/Downloads/thinko (copy 1)/node_modules/@expo/cli/src/start/server/AsyncNgrok.ts:206:9)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at AsyncNgrok._connectToNgrokAsync (/home/meta/Downloads/thinko (copy 1)/node_modules/@expo/cli/src/start/server/AsyncNgrok.ts:122:21)
+    at AsyncNgrok.startAsync (/home/meta/Downloads/thinko (copy 1)/node_modules/@expo/cli/src/start/server/AsyncNgrok.ts:92:22)
+    at MetroBundlerDevServer._startTunnelAsync (/home/meta/Downloads/thinko (copy 1)/node_modules/@expo/cli/src/start/server/BundlerDevServer.ts:256:5)
+    at MetroBundlerDevServer.postStartAsync (/home/meta/Downloads/thinko (copy 1)/node_modules/@expo/cli/src/start/server/BundlerDevServer.ts:229:7)
+    at MetroBundlerDevServer.startAsync (/home/meta/Downloads/thinko (copy 1)/node_modules/@expo/cli/src/start/server/BundlerDevServer.ts:164:5)
+    at DevServerManager.startAsync (/home/meta/Downloads/thinko (copy 1)/node_modules/@expo/cli/src/start/server/DevServerManager.ts:184:7)
+    at startAsync (/home/meta/Downloads/thinko (copy 1)/node_modules/@expo/cli/src/start/startAsync.ts:100:3)

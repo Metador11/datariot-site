@@ -1,0 +1,63 @@
+{
+  "expo": {
+    "name": "Orvelis",
+    "slug": "orvelis",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/logo.jpg",
+    "userInterfaceStyle": "dark",
+    "scheme": "orvelis",
+    "splash": {
+      "image": "./assets/logo.jpg",
+      "resizeMode": "cover",
+      "backgroundColor": "#000000"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.orvelis.app",
+      "infoPlist": {
+        "UIViewControllerBasedStatusBarAppearance": true,
+        "NSCameraUsageDescription": "Orvelis needs camera access to record educational videos",
+        "NSMicrophoneUsageDescription": "Orvelis needs microphone access to record educational videos",
+        "NSPhotoLibraryUsageDescription": "Orvelis needs photo library access to upload videos"
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/logo.jpg",
+        "backgroundColor": "#000000"
+      },
+      "package": "com.orvelis.app",
+      "permissions": [
+        "CAMERA",
+        "RECORD_AUDIO",
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE"
+      ]
+    },
+    "web": {
+      "favicon": "./assets/logo.jpg",
+      "bundler": "metro",
+      "baseUrl": ""
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-av",
+        {
+          "microphonePermission": "Allow Orvelis to access your microphone for video recording."
+        }
+      ],
+      "expo-asset",
+      "expo-font",
+      "expo-video",
+      "expo-audio"
+    ],
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}

@@ -1,0 +1,36 @@
+{
+    "public": true,
+    "cleanUrls": true,
+    "rewrites": [
+        {
+            "source": "/(.*)",
+            "has": [
+                {
+                    "type": "host",
+                    "value": "docs.datariot.xyz"
+                }
+            ],
+            "destination": "/datariot-docs/$1"
+        },
+        {
+            "source": "/(.*)",
+            "has": [
+                {
+                    "type": "host",
+                    "value": "info.datariot.xyz"
+                }
+            ],
+            "destination": "/datariot-info/$1"
+        },
+        {
+            "source": "/(.*)",
+            "has": [
+                {
+                    "type": "host",
+                    "value": "datariot.xyz"
+                }
+            ],
+            "destination": "/datariot-xyz/$1"
+        }
+    ]
+}

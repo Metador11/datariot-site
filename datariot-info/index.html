@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Orvelis — Learn. Think. Grow.</title>
+    <meta name="description"
+        content="Orvelis is an educational short-video platform blending meaningful content with cutting-edge AI. Apply for beta access now." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
+    <script>
+        // Theme toggle — runs immediately, no dependencies
+        (function () {
+            var saved = 'dark';
+            try { saved = localStorage.getItem('orvelis-theme') || 'dark'; } catch (e) { }
+            document.documentElement.setAttribute('data-theme', saved);
+        })();
+        function toggleTheme() {
+            var html = document.documentElement;
+            var next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', next);
+            try { localStorage.setItem('orvelis-theme', next); } catch (e) { }
+        }
+    </script>
+</head>
+
+<body>
+    <!-- Ambient glow effects -->
+    <div class="ambient-glow ambient-glow--1"></div>
+    <div class="ambient-glow ambient-glow--2"></div>
+    <div class="ambient-glow ambient-glow--3"></div>
+    <div class="grid-overlay"></div>
+    <div class="mouse-spotlight" id="mouseSpotlight"></div>
+    <canvas id="particleCanvas" class="particle-canvas"></canvas>
+    <div class="floating-orbs">
+        <div class="floating-orb floating-orb--1"></div>
+        <div class="floating-orb floating-orb--2"></div>
+        <div class="floating-orb floating-orb--3"></div>
+        <div class="floating-orb floating-orb--4"></div>
+    </div>
+
+    <!-- Left Sidebar Navigation -->
+    <nav class="sidebar" id="sidebar">
+        <a href="#hero" class="sidebar__logo" data-section="hero" title="Back to top">
+            <span
+                style="font-family: var(--font-display); font-weight: 900; color: var(--text-primary); font-size: 14px;">D</span>
+        </a>
+        <ul class="sidebar__nav">
+            <li><a href="#hero" class="sidebar__link active" data-section="hero">
+                    <span class="sidebar__link-dot"></span>
+                    <span class="sidebar__link-text">Home</span>
+                </a></li>
+            <li><a href="#manifesto" class="sidebar__link" data-section="manifesto">
+                    <span class="sidebar__link-dot"></span>
+                    <span class="sidebar__link-text">Manifesto</span>
+                </a></li>
+            <li><a href="#features" class="sidebar__link" data-section="features">
+                    <span class="sidebar__link-dot"></span>
+                    <span class="sidebar__link-text">Features</span>
+                </a></li>
+            <li><a href="#debates" class="sidebar__link" data-section="debates">
+                    <span class="sidebar__link-dot"></span>
+                    <span class="sidebar__link-text">Debates</span>
+                </a></li>
+            <li><a href="#live" class="sidebar__link" data-section="live">
+                    <span class="sidebar__link-dot"></span>
+                    <span class="sidebar__link-text">Live Stats</span>
+                </a></li>
+            <li><a href="#beta" class="sidebar__link" data-section="beta">
+                    <span class="sidebar__link-dot"></span>
+                    <span class="sidebar__link-text">Beta</span>
+                </a></li>
+        </ul>
+        <div class="sidebar__footer">
+            <span class="sidebar__version">v0.1 beta</span>
+        </div>
+    </nav>
+
+    <!-- Mobile nav toggle -->
+    <button class="mobile-nav-toggle" id="mobileNavToggle" aria-label="Toggle navigation">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+
+    <!-- Theme toggle -->
+    <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" aria-label="Toggle theme">
+        <svg class="theme-toggle__icon theme-toggle__icon--moon" width="18" height="18" viewBox="0 0 18 18" fill="none">
+            <path
+                d="M15.5 9.5C14.5 13 11.5 15.5 8 15.5C4 15.5 1 12.5 1 8.5C1 5 3.5 2 7 1C5.5 3 5.5 6.5 7.5 9C9.5 11.5 13 12 15.5 9.5Z"
+                stroke="currentColor" stroke-width="1.2" fill="none" />
+        </svg>
+        <svg class="theme-toggle__icon theme-toggle__icon--sun" width="18" height="18" viewBox="0 0 18 18" fill="none">
+            <circle cx="9" cy="9" r="4" stroke="currentColor" stroke-width="1.2" />
+            <path d="M9 1V3M9 15V17M1 9H3M15 9H17M3.5 3.5L5 5M13 13L14.5 14.5M14.5 3.5L13 5M5 13L3.5 14.5"
+                stroke="currentColor" stroke-width="1.2" stroke-linecap="round" />
+        </svg>
+    </button>
+
+    <!-- Main Content -->
+    <main class="main">
+        <!-- Top Branding -->
+        <div class="top-branding">
+            <div class="top-branding__logo-wrap">
+                <img src="assets/logo.jpg" alt="Logo" class="top-branding__logo">
+            </div>
+            <span class="top-branding__text">DATARIOT</span>
+
+            <div class="header__links" style="pointer-events: auto;">
+                <a href="https://docs.orvelis.xyz" class="header__link">Documentation</a>
+                <a href="https://orvelis.xyz" class="header__link">Web App</a>
+                <a href="#beta" class="header__link header__link--cta">Join Waitlist</a>
+            </div>
+        </div>
+
+        <!-- HERO SECTION -->
+        <section class="section section--hero" id="hero">
+            <div class="hero__content">
+                <div class="hero__badge">
+                    <span class="hero__badge-dot"></span>
+                    Launching Soon
+                </div>
+                <h1 class="hero__title">
+                    <span class="hero__title-line">
+                        <span class="hero__letter" data-letter="D" style="--i:0">D</span><span class="hero__letter"
+                            data-letter="A" style="--i:1">A</span><span class="hero__letter" data-letter="T"
+                            style="--i:2">T</span><span class="hero__letter" data-letter="A" style="--i:3">A</span><span
+                            class="hero__letter" data-letter="R" style="--i:4">R</span><span class="hero__letter"
+                            data-letter="I" style="--i:5">I</span><span class="hero__letter" data-letter="O"
+                            style="--i:6">O</span><span class="hero__letter" data-letter="T" style="--i:7">T</span>
+                    </span>
+                </h1>
+                <p class="hero__subtitle">
+                    The next-generation educational platform<br />
+                    where <em>knowledge meets creativity</em>.
+                </p>
+                <div class="hero__actions">
+                    <a href="#beta" class="btn btn--primary">
+                        <span>Join the Waitlist</span>
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                            <path d="M3 8H13M13 8L9 4M13 8L9 12" stroke="currentColor" stroke-width="1.5"
+                                stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                    </a>
+                    <a href="#manifesto" class="btn btn--ghost">
+                        <span>Why We Build</span>
+                    </a>
+                </div>
+            </div>
+            <div class="hero__visual">
+                <div class="hero__dna-visual">
+                    <div class="hero__logo-core">
+                        <div class="hero__logo-orb" style="width: 100%; height: 100%; padding: 15px;">
+                            <img src="assets/logo.jpg" alt="Logo" class="hero__logo-main">
+                        </div>
+                    </div>
+                    <!-- DNA Strands -->
+                    <div class="hero__dna-strand hero__dna-strand--1">
+                        <div class="dna-dot"></div>
+                        <div class="dna-dot"></div>
+                        <div class="dna-dot"></div>
+                        <div class="dna-dot"></div>
+                        <div class="dna-dot"></div>
+                    </div>
+                    <div class="hero__dna-strand hero__dna-strand--2">
+                        <div class="dna-dot"></div>
+                        <div class="dna-dot"></div>
+                        <div class="dna-dot"></div>
+                        <div class="dna-dot"></div>
+                        <div class="dna-dot"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="scroll-indicator">
+                <div class="scroll-indicator__line"></div>
+            </div>
+        </section>
+
+        <!-- MANIFESTO SECTION -->
+        <section class="section section--manifesto" id="manifesto">
+            <div class="section__container">
+                <div class="section__header">
+                    <span class="section__label">01 — Manifesto</span>
+                    <h2 class="section__title">Why I'm building this.</h2>
+                </div>
+                <div class="manifesto__content">
+                    <div class="manifesto__letter">
+                        <p class="manifesto__opening">
+                            Every day, billions of people open their phones and lose hours to content that adds nothing
+                            to their lives. I watched my friends, my peers — brilliant minds — scroll endlessly through
+                            entertainment that left them emptier than before.
+                        </p>
+                        <p>
+                            I asked myself: <strong>what if the most addictive thing on your phone was also the most
+                                valuable?</strong>
+                        </p>
+                        <p>
+                            That question became Orvelis. Not a lecture platform. Not another EdTech clone. A living
+                            ecosystem where 60-second videos carry the weight of hours of learning, where debates
+                            replace comment wars, and where your feed gets smarter as <em>you</em> get smarter.
+                        </p>
+                        <p>
+                            We're not building for engagement metrics. We're building for the moment when someone puts
+                            their phone down and realizes they just learned something that changed how they see the
+                            world.
+                        </p>
+                        <p>
+                            The algorithm doesn't optimize for watch time — it optimizes for understanding. Every
+                            recommendation is a step in your personal learning journey, guided by AI that knows where
+                            your gaps are and fills them with exactly the right content.
+                        </p>
+                        <div class="manifesto__signature">
+                            <div class="manifesto__sig-line"></div>
+                            <span>The Orvelis Founder</span>
+                        </div>
+                    </div>
+                    <div class="manifesto__values">
+                        <div class="value-card">
+                            <span class="value-card__icon">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+                                    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+                                </svg>
+                            </span>
+                            <h4>Knowledge over noise</h4>
+                            <p>Every piece of content is curated, verified, and designed to teach.</p>
+                        </div>
+                        <div class="value-card">
+                            <span class="value-card__icon">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                                </svg>
+                            </span>
+                            <h4>Debate over outrage</h4>
+                            <p>Structured argumentation replaces toxic comment sections.</p>
+                        </div>
+                        <div class="value-card">
+                            <span class="value-card__icon">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+                                </svg>
+                            </span>
+                            <h4>Growth over addiction</h4>
+                            <p>Success is measured by what you learn, not how long you stay.</p>
+                        </div>
+                        <div class="value-card">
+                            <span class="value-card__icon">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                                    <circle cx="9" cy="7" r="4" />
+                                    <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                                    <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                                </svg>
+                            </span>
+                            <h4>Community over isolation</h4>
+                            <p>Learning together multiplies the power of every insight.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FEATURES SECTION -->
+        <section class="section section--features" id="features">
+            <div class="section__container">
+                <div class="section__header">
+                    <span class="section__label">02 — Features</span>
+                    <h2 class="section__title">Built for the<br />curious mind.</h2>
+                </div>
+                <div class="features__grid">
+                    <div class="feature-card feature-card--large">
+                        <div class="feature-card__icon">
+                            <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                                <circle cx="16" cy="16" r="12" stroke="currentColor" stroke-width="1.5" />
+                                <path d="M16 8V16L22 22" stroke="currentColor" stroke-width="1.5"
+                                    stroke-linecap="round" />
+                            </svg>
+                        </div>
+                        <h3>Smart Feed</h3>
+                        <p>AI-curated content that adapts to your interests and learning pace. Every swipe is
+                            personalized for maximum knowledge absorption.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-card__icon">
+                            <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                                <path d="M16 4L28 10V22L16 28L4 22V10L16 4Z" stroke="currentColor" stroke-width="1.5"
+                                    stroke-linejoin="round" />
+                                <path d="M16 16L28 10M16 16L4 10M16 16V28" stroke="currentColor" stroke-width="1.5" />
+                            </svg>
+                        </div>
+                        <h3>Creator DNA</h3>
+                        <p>Unique analytics dashboard showing your content's impact, reach, and influence scores.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-card__icon">
+                            <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                                <circle cx="16" cy="12" r="6" stroke="currentColor" stroke-width="1.5" />
+                                <path d="M8 28C8 23.5817 11.5817 20 16 20C20.4183 20 24 23.5817 24 28"
+                                    stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+                            </svg>
+                        </div>
+                        <h3>AI Sensei</h3>
+                        <p>Your personal AI tutor that answers questions about any video, deepens understanding, and
+                            tracks progress.</p>
+                    </div>
+                    <div class="feature-card feature-card--large">
+                        <div class="feature-card__icon">
+                            <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                                <path d="M4 16H28" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+                                <path d="M16 4V28" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+                                <circle cx="16" cy="16" r="6" stroke="currentColor" stroke-width="1.5" />
+                            </svg>
+                        </div>
+                        <h3>Community Learning</h3>
+                        <p>Join topic communities, collaborate on debates, mentor newcomers, and grow together.
+                            Knowledge shared is knowledge multiplied.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- APP SCREENS SECTION -->
+        <section class="section section--screens" id="screens">
+            <div class="section__container">
+                <div class="section__header">
+                    <span class="section__label">02.5 — Platform Screens</span>
+                    <h2 class="section__title">The Core Experience.</h2>
+                </div>
+                <div class="screens__grid">
+                    <div class="screen-card">
+                        <div class="screen-card__visual screen-card__visual--feed">
+                            <img src="assets/smart-feed-real.jpg" alt="Orvelis Smart Feed" class="screen-card__image">
+                        </div>
+                        <div class="screen-card__text">
+                            <h3>Smart Feed</h3>
+                            <p>Discover high-information content tailored to your unique Creator DNA. Our 'Daily
+                                Synergy' algorithm ensures every video matches your intellectual path.</p>
+                        </div>
+                    </div>
+                    <div class="screen-card">
+                        <div class="screen-card__visual screen-card__visual--debate">
+                            <img src="assets/debate-threads-real.jpg" alt="Orvelis Debate Threads"
+                                class="screen-card__image">
+                        </div>
+                        <div class="screen-card__text">
+                            <h3>Debate Arena</h3>
+                            <p>Explore arguments with deep context. Analyze 'Match' scores and dive into structured
+                                arenas where logic and evidence lead the way.</p>
+                        </div>
+                    </div>
+                    <div class="screen-card">
+                        <div class="screen-card__visual screen-card__visual--profile">
+                            <img src="assets/creator-dna-real.jpg" alt="Orvelis Creator DNA"
+                                class="screen-card__image">
+                        </div>
+                        <div class="screen-card__text">
+                            <h3>Creator DNA</h3>
+                            <p>Your universal profile that evolves as you learn. Track your Logic Score and content
+                                impact on your journey through the Orvelis ecosystem.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- DEBATE THREADS SECTION -->
+        <section class="section section--debates" id="debates">
+            <div class="section__container">
+                <div class="section__header">
+                    <span class="section__label">03 — Debate Arena</span>
+                    <h2 class="section__title">Where ideas collide<br />and truths emerge.</h2>
+                </div>
+                <div class="debates__content">
+                    <div class="debates__info">
+                        <p class="debates__lead">
+                            Orvelis Debates isn't just a comment section — it's a structured arena for intellectual
+                            discourse. Propose a thesis, defend it with arguments, and let the community decide through
+                            logic, not likes.
+                        </p>
+                        <div class="debates__how">
+                            <div class="debate-step">
+                                <div class="debate-step__num">1</div>
+                                <div>
+                                    <h4>Propose a Thesis</h4>
+                                    <p>Share a bold claim — "AI will replace 50% of jobs by 2035" — and stake your
+                                        intellectual reputation on it.</p>
+                                </div>
+                            </div>
+                            <div class="debate-step">
+                                <div class="debate-step__num">2</div>
+                                <div>
+                                    <h4>Build Arguments</h4>
+                                    <p>Others respond with structured arguments: evidence, counter-evidence, logical
+                                        reasoning. No ad-hominem, no noise.</p>
+                                </div>
+                            </div>
+                            <div class="debate-step">
+                                <div class="debate-step__num">3</div>
+                                <div>
+                                    <h4>Earn Logic Score</h4>
+                                    <p>The community votes on argument quality. Your Logic Score rises as you
+                                        demonstrate critical thinking.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="debates__preview">
+                        <div class="debate-card-mock">
+                            <div class="debate-card-mock__header">
+                                <span class="debate-card-mock__tag">Trending</span>
+                                <span class="debate-card-mock__score">Logic: 94</span>
+                            </div>
+                            <h4 class="debate-card-mock__thesis">“Quantum computing will make existing encryption
+                                methods obsolete within 10 years”</h4>
+                            <div class="debate-card-mock__meta">
+                                <span>@neural_scientist</span>
+                                <span>147 arguments</span>
+                                <span>62% agree</span>
+                            </div>
+                            <div class="debate-card-mock__args">
+                                <div class="debate-arg debate-arg--for">
+                                    <span class="debate-arg__label">FOR</span>
+                                    <p>Shor's algorithm is theoretically capable of breaking RSA. The only question is
+                                        qubit stability...</p>
+                                    <span class="debate-arg__votes">
+                                        <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+                                            <path d="M5 2V8M5 2L2 5M5 2L8 5" stroke="currentColor" stroke-width="1.5"
+                                                stroke-linecap="round" stroke-linejoin="round" />
+                                        </svg>
+                                        89
+                                    </span>
+                                </div>
+                                <div class="debate-arg debate-arg--against">
+                                    <span class="debate-arg__label">AGAINST</span>
+                                    <p>Post-quantum cryptography standards (NIST) are already being implemented. The
+                                        transition will happen sooner...</p>
+                                    <span class="debate-arg__votes">
+                                        <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+                                            <path d="M5 2V8M5 2L2 5M5 2L8 5" stroke="currentColor" stroke-width="1.5"
+                                                stroke-linecap="round" stroke-linejoin="round" />
+                                        </svg>
+                                        76
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- LIVE STATS SECTION -->
+        <section class="section section--live" id="live">
+            <div class="section__container">
+                <div class="section__header">
+                    <span class="section__label">04 — Live Platform</span>
+                    <h2 class="section__title">The platform is alive.<br />Right now.</h2>
+                </div>
+                <div class="live__grid">
+                    <div class="live-card">
+                        <div class="live-card__pulse"></div>
+                        <span class="live-card__number" id="liveUsers">0</span>
+                        <span class="live-card__label">Users online right now</span>
+                    </div>
+                    <div class="live-card">
+                        <div class="live-card__pulse"></div>
+                        <span class="live-card__number" id="liveVideos">0</span>
+                        <span class="live-card__label">Videos being watched</span>
+                    </div>
+                    <div class="live-card">
+                        <div class="live-card__pulse"></div>
+                        <span class="live-card__number" id="liveDebates">0</span>
+                        <span class="live-card__label">Active debates</span>
+                    </div>
+                    <div class="live-card">
+                        <div class="live-card__pulse"></div>
+                        <span class="live-card__number" id="liveMinutes">0</span>
+                        <span class="live-card__label">Minutes of learning today</span>
+                    </div>
+                </div>
+                <div class="live__feed">
+                    <div class="live__feed-header">
+                        <span class="live__feed-dot"></span>
+                        <span>Live Activity Feed</span>
+                    </div>
+                    <div class="live__feed-items" id="liveFeed">
+                        <!-- JS fills this -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- BETA SECTION — REDESIGNED -->
+        <section class="section section--beta" id="beta">
+            <div class="section__container">
+                <div class="beta__layout">
+                    <div class="beta__info">
+                        <div class="section__header">
+                            <span class="section__label">05 — Early Access</span>
+                            <h2 class="section__title">Get in before<br />everyone else.</h2>
+                        </div>
+                        <div class="beta__perks">
+                            <div class="beta__perk">
+                                <span class="beta__perk-icon">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2">
+                                        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+                                    </svg>
+                                </span>
+                                <div>
+                                    <h4>Priority Access</h4>
+                                    <p>Be first in line when we launch</p>
+                                </div>
+                            </div>
+                            <div class="beta__perk">
+                                <span class="beta__perk-icon">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2">
+                                        <circle cx="12" cy="12" r="10" />
+                                        <circle cx="12" cy="12" r="6" />
+                                        <circle cx="12" cy="12" r="2" />
+                                    </svg>
+                                </span>
+                                <div>
+                                    <h4>Shape the Product</h4>
+                                    <p>Your feedback directly influences our roadmap</p>
+                                </div>
+                            </div>
+                            <div class="beta__perk">
+                                <span class="beta__perk-icon">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2">
+                                        <circle cx="12" cy="8" r="7" />
+                                        <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88" />
+                                    </svg>
+                                </span>
+                                <div>
+                                    <h4>Founding Member Badge</h4>
+                                    <p>Exclusive profile badge forever</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="beta__card">
+                        <div class="beta__card-inner" id="betaCard">
+                            <div class="beta__card-glow"></div>
+                            <h3 class="beta__card-title">Join the Waitlist</h3>
+                            <p class="beta__card-desc">Drop your email — we'll send you an invite when it's time.</p>
+                            <form class="beta__inline-form" id="betaForm">
+                                <div class="beta__input-wrap">
+                                    <input type="email" id="betaEmail" placeholder="your@email.com" required
+                                        autocomplete="email" />
+                                    <button type="submit" class="beta__submit-btn">
+                                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                            <path d="M4 10H16M16 10L11 5M16 10L11 15" stroke="currentColor"
+                                                stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            </form>
+                            <span class="beta__card-note">No spam. Unsubscribe anytime.</span>
+                        </div>
+                        <div class="beta__success" id="betaSuccess">
+                            <div class="beta__success-icon">✓</div>
+                            <h3>You're on the list!</h3>
+                            <p>We'll reach out with access details soon.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FOOTER -->
+        <footer class="footer">
+            <div class="footer__container">
+                <div class="footer__top">
+                    <div class="footer__brand">
+                        <span class="footer__logo">
+                            <img src="assets/logo.jpg" alt=""
+                                style="width: 20px; height: 20px; border-radius: 50%; vertical-align: middle; margin-right: 8px;">
+                            DATARIOT
+                        </span>
+                        <span class="footer__tagline">Learn. Think. Grow.</span>
+                    </div>
+                    <div class="footer__columns">
+                        <div class="footer__col">
+                            <h5>Product</h5>
+                            <a href="https://docs.orvelis.xyz">Documentation</a>
+                            <a href="https://orvelis.xyz">Web App</a>
+                            <a href="#features">Features</a>
+                            <a href="#debates">Debates</a>
+                        </div>
+                        <div class="footer__col">
+                            <h5>Company</h5>
+                            <a href="#manifesto">Manifesto</a>
+                            <a href="#">Careers</a>
+                            <a href="#">Press</a>
+                        </div>
+                        <div class="footer__col">
+                            <h5>Legal</h5>
+                            <a href="privacy.html">Privacy Policy</a>
+                            <a href="terms.html">Terms of Service</a>
+                            <a href="cookies.html">Cookie Policy</a>
+                        </div>
+                        <div class="footer__col">
+                            <h5>Social</h5>
+                            <a href="#">Twitter</a>
+                            <a href="#">Telegram</a>
+                            <a href="#">GitHub</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="footer__bottom">
+                    <span>© 2026 Orvelis. All rights reserved.</span>
+                    <div class="footer__bottom-links">
+                        <a href="privacy.html">Privacy</a>
+                        <a href="terms.html">Terms</a>
+                        <a href="cookies.html">Cookies</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+
+    </main>
+
+    <!-- External Scripts (Handling everything now) -->
+    <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script defer src="script.js"></script>
+</body>
+
+</html>
