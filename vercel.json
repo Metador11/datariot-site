@@ -9,7 +9,7 @@
                     "value": "docs.datariot.xyz"
                 }
             ],
-            "destination": "/datariot-docs/index.html"
+            "destination": "/datariot-docs/"
         },
         {
             "source": "/:path*",
@@ -29,7 +29,7 @@
                     "value": "info.datariot.xyz"
                 }
             ],
-            "destination": "/datariot-info/index.html"
+            "destination": "/datariot-info/"
         },
         {
             "source": "/:path*",
@@ -49,7 +49,7 @@
                     "value": "datariot.xyz"
                 }
             ],
-            "destination": "/datariot-xyz/index.html"
+            "destination": "/datariot-xyz/"
         },
         {
             "source": "/:path*",
