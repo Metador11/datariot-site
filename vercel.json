@@ -2,6 +2,16 @@
     "cleanUrls": true,
     "rewrites": [
         {
+            "source": "/",
+            "has": [
+                {
+                    "type": "host",
+                    "value": "docs.datariot.xyz"
+                }
+            ],
+            "destination": "/datariot-docs/index.html"
+        },
+        {
             "source": "/:path*",
             "has": [
                 {
@@ -12,6 +22,16 @@
             "destination": "/datariot-docs/:path*"
         },
         {
+            "source": "/",
+            "has": [
+                {
+                    "type": "host",
+                    "value": "info.datariot.xyz"
+                }
+            ],
+            "destination": "/datariot-info/index.html"
+        },
+        {
             "source": "/:path*",
             "has": [
                 {
@@ -20,6 +40,16 @@
                 }
             ],
             "destination": "/datariot-info/:path*"
+        },
+        {
+            "source": "/",
+            "has": [
+                {
+                    "type": "host",
+                    "value": "datariot.xyz"
+                }
+            ],
+            "destination": "/datariot-xyz/index.html"
         },
         {
             "source": "/:path*",
