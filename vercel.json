@@ -1,17 +1,6 @@
 {
-    "public": true,
     "cleanUrls": true,
     "rewrites": [
-        {
-            "source": "/",
-            "has": [
-                {
-                    "type": "host",
-                    "value": "docs.datariot.xyz"
-                }
-            ],
-            "destination": "/datariot-docs/index.html"
-        },
         {
             "source": "/(.*)",
             "has": [
@@ -23,16 +12,6 @@
             "destination": "/datariot-docs/$1"
         },
         {
-            "source": "/",
-            "has": [
-                {
-                    "type": "host",
-                    "value": "info.datariot.xyz"
-                }
-            ],
-            "destination": "/datariot-info/index.html"
-        },
-        {
             "source": "/(.*)",
             "has": [
                 {
@@ -41,16 +20,6 @@
                 }
             ],
             "destination": "/datariot-info/$1"
-        },
-        {
-            "source": "/",
-            "has": [
-                {
-                    "type": "host",
-                    "value": "datariot.xyz"
-                }
-            ],
-            "destination": "/datariot-xyz/index.html"
         },
         {
             "source": "/(.*)",
