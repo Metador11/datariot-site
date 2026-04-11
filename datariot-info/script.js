@@ -1,7 +1,7 @@
 /* ===========================================
    DATARIOT Landing Page — Interactions & FX
    =========================================== */
-console.log('Orvelis Script: Initiating...');
+console.log('Datariot Script: Initiating...');
 
 // Initialize Supabase (Global)
 let supabase = null;
@@ -35,7 +35,7 @@ window.toggleTheme = function () {
 function initializeScripts() {
     if (window.scriptsInitialized) return;
     window.scriptsInitialized = true;
-    console.log('Orvelis Script: DOMContentLoaded triggered.');
+    console.log('Datariot Script: DOMContentLoaded triggered.');
 
     // Initialize Supabase
     try {
@@ -43,9 +43,9 @@ function initializeScripts() {
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV5Y3J0b2JkZXduc2N3YXpzaGN1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk2NzU1NjYsImV4cCI6MjA3NTI1MTU2Nn0.EsZQOIE879QwU_FKk0Agh-yJBdRJcLTmYi-DCMjYaxU';
         if (typeof window.supabase !== 'undefined') {
             supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
-            console.log('Orvelis Script: Supabase client created.');
+            console.log('Datariot Script: Supabase client created.');
         } else {
-            console.warn('Orvelis Script: Supabase not found on window.');
+            console.warn('Datariot Script: Supabase not found on window.');
         }
     } catch (e) {
         console.error('Supabase initialization failed:', e);
@@ -56,7 +56,7 @@ function initializeScripts() {
     const sidebar = document.getElementById('sidebar');
 
     if (mobileNavToggle && sidebar) {
-        console.log('Orvelis Script: Mobile toggle and sidebar found.');
+        console.log('Datariot Script: Mobile toggle and sidebar found.');
 
         const toggleMenu = (e) => {
             if (e) {
@@ -74,12 +74,12 @@ function initializeScripts() {
                 document.body.style.overflow = '';
             }
 
-            console.log('Orvelis Script: Mobile menu toggled. State:', sidebar.classList.contains('mobile-open'));
+            console.log('Datariot Script: Mobile menu toggled. State:', sidebar.classList.contains('mobile-open'));
         };
 
         mobileNavToggle.addEventListener('click', toggleMenu);
     } else {
-        console.error('Orvelis Script: Mobile toggle elements NOT found!', { mobileNavToggle, sidebar });
+        console.error('Datariot Script: Mobile toggle elements NOT found!', { mobileNavToggle, sidebar });
     }
 
     // === Sidebar Active Section Tracking ===
@@ -230,7 +230,7 @@ if (document.readyState === 'loading') {
    HEAVY EFFECTS (DEFERRED)
    ======================================= */
 window.addEventListener('load', () => {
-    console.log('Orvelis Script: Window load triggered. Starting heavy effects.');
+    console.log('Datariot Script: Window load triggered. Starting heavy effects.');
 
     // Particle Canvas Animation
     (function () {
