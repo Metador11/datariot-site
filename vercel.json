@@ -1,5 +1,5 @@
 {
-    "cleanUrls": true,
+    "cleanUrls": false,
     "rewrites": [
         {
             "source": "/",
@@ -9,7 +9,7 @@
                     "value": "docs.datariot.xyz"
                 }
             ],
-            "destination": "/datariot-docs/"
+            "destination": "/docs.html"
         },
         {
             "source": "/:path*",
