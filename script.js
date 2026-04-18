@@ -476,4 +476,47 @@ window.addEventListener('load', () => {
             if (feed.children.length > 6) feed.lastChild.remove();
         }, 5000);
     }
+
+    // Spawn Floating 3D Video Cards to emphasize "Short Video Platform"
+    const targetSections = [document.querySelector('.section--screens'), document.querySelector('.section--beta')];
+
+    targetSections.forEach(sec => {
+        if (!sec) return;
+
+        for (let i = 0; i < 4; i++) {
+            const card = document.createElement('div');
+            card.className = 'short-video-float';
+
+            const gradient = document.createElement('div');
+            gradient.className = 'float-gradient';
+            card.appendChild(gradient);
+
+            sec.appendChild(card);
+
+            // Random initial placement
+            gsap.set(card, {
+                left: gsap.utils.random(10, 80) + "%",
+                top: gsap.utils.random(10, 80) + "%",
+                z: gsap.utils.random(-400, 100),
+                rotationX: gsap.utils.random(-25, 25),
+                rotationY: gsap.utils.random(-35, 35),
+                rotationZ: gsap.utils.random(-20, 20),
+                opacity: gsap.utils.random(0.3, 0.7)
+            });
+
+            // Continuous drifting and rotating
+            gsap.to(card, {
+                y: "-=200",
+                x: "+=random(-80, 80)",
+                rotationX: "+=random(-40, 40)",
+                rotationY: "+=random(-50, 50)",
+                rotationZ: "+=random(-15, 15)",
+                duration: gsap.utils.random(12, 22),
+                repeat: -1,
+                yoyo: true,
+                ease: "sine.inOut"
+            });
+        }
+    });
+
 });
