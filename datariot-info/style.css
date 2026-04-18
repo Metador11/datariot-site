@@ -1460,7 +1460,7 @@ a {
 
 /* === MANIFESTO SECTION === */
 .section--manifesto {
-    padding: 120px 60px;
+    padding: 80px 60px 40px;
     background: linear-gradient(180deg, var(--bg), #05070a);
 }
 
