@@ -653,6 +653,8 @@ a {
     max-width: 1100px;
     width: 100%;
     margin: 0 auto;
+    position: relative;
+    z-index: 2;
 }
 
 .section__header {
@@ -3675,17 +3677,17 @@ html.lenis body {
     width: 140px;
     height: 250px;
     border-radius: 16px;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     pointer-events: none;
-    z-index: 0;
+    z-index: 1;
     transform-style: preserve-3d;
     display: flex;
     justify-content: center;
     align-items: center;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(255, 255, 255, 0.05);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8), inset 0 0 20px rgba(255, 255, 255, 0.1);
 }
 
 .short-video-float::before {
