@@ -388,6 +388,41 @@ function initializeScripts() {
                 filter: "blur(10px)"
             });
         }
+
+        // Add 3D scroll-linked fan-out animation to the "Short Video Screens"
+        const screenCards = gsap.utils.toArray('.screen-card');
+        if (screenCards.length > 0) {
+            // Apply 3D perspective to their container
+            gsap.set('.screens__grid', { perspective: 1200 });
+
+            gsap.from(screenCards, {
+                scrollTrigger: {
+                    trigger: ".section--screens",
+                    start: "top 85%",
+                    end: "top 30%",
+                    scrub: 1.5
+                },
+                y: 300,
+                z: -500,
+                rotationX: 50,
+                rotationY: (i) => [-20, 0, 20][i % 3], // Fan out effect
+                opacity: 0,
+                stagger: 0.15,
+                ease: "power2.out"
+            });
+
+            // Allow continuous subtle floating when resting
+            screenCards.forEach((card, i) => {
+                gsap.to(card, {
+                    y: "-=15",
+                    duration: 3,
+                    repeat: -1,
+                    yoyo: true,
+                    ease: "sine.inOut",
+                    delay: i * 0.4
+                });
+            });
+        }
     }
 }
 
