@@ -339,15 +339,41 @@ function initializeScripts() {
                     duration: 1.5
                 }, "-=1.8");
 
-            // 3. 3D Spinning loop for the logo
+            // 3. Premium 3D Magnetic Tilt and Continuous Float Effect
             gsap.to(heroLogoWrap, {
-                rotationY: 360,
-                duration: 8,
+                y: -15,
+                duration: 3,
                 repeat: -1,
-                ease: "none",
-                transformOrigin: "center center",
+                yoyo: true,
+                ease: "sine.inOut",
                 delay: 2.2
             });
+
+            // 3D Magnetic Tilt Tracking on Mouse Move
+            setTimeout(() => {
+                window.addEventListener('mousemove', (e) => {
+                    const x = (e.clientX / window.innerWidth - 0.5) * 2;
+                    const y = (e.clientY / window.innerHeight - 0.5) * 2;
+
+                    gsap.to(heroLogoWrap, {
+                        rotationY: x * 45,
+                        rotationX: -y * 45,
+                        ease: "power3.out",
+                        transformPerspective: 1000,
+                        transformOrigin: "center center",
+                        duration: 0.8
+                    });
+                });
+
+                document.body.addEventListener('mouseleave', () => {
+                    gsap.to(heroLogoWrap, {
+                        rotationY: 0,
+                        rotationX: 0,
+                        ease: "power3.out",
+                        duration: 1.2
+                    });
+                });
+            }, 2200);
         }
 
         if (heroContent) {
