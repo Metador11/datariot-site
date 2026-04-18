@@ -1489,13 +1489,13 @@ a {
 }
 
 .manifesto__letter {
-    font-size: 20px;
+    font-size: 16px;
     line-height: 1.6;
     color: var(--text-secondary);
 }
 
 .manifesto__opening {
-    font-size: 24px;
+    font-size: 18px;
     color: var(--text-primary);
     font-weight: 500;
     margin-bottom: 32px;
@@ -3591,6 +3591,7 @@ html.lenis body {
         transform: rotate(360deg);
     }
 }
+
 /* === MOBILE ADAPTATION FOR 3D ELEMENTS === */
 @media (max-width: 768px) {
     .hero__brand-logo-wrap {
@@ -3629,7 +3630,7 @@ html.lenis body {
     .hero__brand-text {
         font-size: 60px;
     }
-    
+
     .abstract-spin--1 {
         width: 200px;
         height: 200px;
