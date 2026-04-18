@@ -1460,7 +1460,7 @@ a {
 
 /* === MANIFESTO SECTION === */
 .section--manifesto {
-    padding: 80px 60px 40px;
+    padding: 40px 60px 20px;
     background: linear-gradient(180deg, var(--bg), #05070a);
 }
 
@@ -1498,11 +1498,11 @@ a {
     font-size: 18px;
     color: var(--text-primary);
     font-weight: 500;
-    margin-bottom: 32px;
+    margin-bottom: 16px;
 }
 
 .manifesto__letter p {
-    margin-bottom: 24px;
+    margin-bottom: 12px;
 }
 
 .manifesto__letter strong {
@@ -1511,7 +1511,7 @@ a {
 }
 
 .manifesto__signature {
-    margin-top: 48px;
+    margin-top: 24px;
     display: flex;
     align-items: center;
     gap: 16px;
