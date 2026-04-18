@@ -1539,14 +1539,17 @@ a {
 }
 
 .value-card {
-    padding: 32px;
+    padding: 24px;
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: 20px;
+    border-radius: 16px;
     transition: all 0.4s var(--ease-out-expo);
     position: relative;
     overflow: hidden;
     border-left: 3px solid var(--accent);
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
 }
 
 .value-card:nth-child(1) {
@@ -1595,7 +1598,8 @@ a {
     background: rgba(99, 102, 241, 0.1);
     border-radius: 12px;
     color: var(--accent);
-    margin-bottom: 20px;
+    margin-bottom: 0;
+    flex-shrink: 0;
 }
 
 .value-card:nth-child(1) .value-card__icon {
@@ -1618,10 +1622,14 @@ a {
     background: rgba(244, 63, 94, 0.1);
 }
 
+.value-card__text {
+    flex-grow: 1;
+}
+
 .value-card h4 {
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 600;
-    margin-bottom: 12px;
+    margin-bottom: 8px;
     color: var(--text-primary);
 }
 
@@ -1629,6 +1637,7 @@ a {
     font-size: 14px;
     line-height: 1.5;
     color: var(--text-tertiary);
+    margin-bottom: 0;
 }
 
 
