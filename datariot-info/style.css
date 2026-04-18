@@ -3591,3 +3591,47 @@ html.lenis body {
         transform: rotate(360deg);
     }
 }
+/* === MOBILE ADAPTATION FOR 3D ELEMENTS === */
+@media (max-width: 768px) {
+    .hero__brand-logo-wrap {
+        width: 100px;
+        height: 100px;
+    }
+
+    .abstract-spin--1 {
+        width: 300px;
+        height: 300px;
+        right: -10%;
+        opacity: 0.1;
+    }
+
+    .abstract-spin--2 {
+        width: 160px;
+        height: 160px;
+        top: 15%;
+        left: 5%;
+    }
+
+    .section--hero {
+        padding: 0 24px;
+        flex-direction: column;
+        justify-content: center;
+        gap: 40px;
+    }
+
+    .hero__brand-text {
+        font-size: 80px;
+        letter-spacing: -2px;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero__brand-text {
+        font-size: 60px;
+    }
+    
+    .abstract-spin--1 {
+        width: 200px;
+        height: 200px;
+    }
+}
