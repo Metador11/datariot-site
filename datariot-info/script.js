@@ -107,7 +107,11 @@ function initializeScripts() {
             const target = document.getElementById(targetId);
             console.log('Sidebar Click: Navigating to', targetId);
             if (target) {
-                target.scrollIntoView({ behavior: 'smooth' });
+                if (window.lenisInstance) {
+                    window.lenisInstance.scrollTo(target, { offset: 0, duration: 1.5 });
+                } else {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
                 // Close mobile menu if open
                 if (sidebar && sidebar.classList.contains('mobile-open')) {
                     sidebar.classList.remove('mobile-open');
@@ -216,6 +220,149 @@ function initializeScripts() {
                 }, 1000);
             }
         });
+    }
+
+    // === Lenis Smooth Scroll ===
+    if (typeof Lenis !== 'undefined') {
+        window.lenisInstance = new Lenis({
+            duration: 1.2,
+            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+            direction: 'vertical',
+            gestureDirection: 'vertical',
+            smooth: true,
+            mouseMultiplier: 1,
+            smoothTouch: false,
+            touchMultiplier: 2,
+            infinite: false,
+        });
+
+        if (typeof ScrollTrigger !== 'undefined' && typeof gsap !== 'undefined') {
+            window.lenisInstance.on('scroll', ScrollTrigger.update);
+            gsap.ticker.add((time) => {
+                window.lenisInstance.raf(time * 1000);
+            });
+            gsap.ticker.lagSmoothing(0);
+        } else {
+            function raf(time) {
+                window.lenisInstance.raf(time);
+                requestAnimationFrame(raf);
+            }
+            requestAnimationFrame(raf);
+        }
+    }
+
+    // === GSAP & ScrollTrigger Animations ===
+    if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+        gsap.registerPlugin(ScrollTrigger);
+
+        if (typeof SplitType !== 'undefined') {
+            // Wait slightly for fonts
+            setTimeout(() => {
+                const titles = document.querySelectorAll('.section__title');
+                titles.forEach(title => {
+                    const split = new SplitType(title, { types: 'lines, words' });
+                    split.lines.forEach(line => {
+                        const wrapper = document.createElement('div');
+                        wrapper.className = 'split-line';
+                        line.parentNode.insertBefore(wrapper, line);
+                        wrapper.appendChild(line);
+                    });
+
+                    gsap.from(split.words, {
+                        scrollTrigger: {
+                            trigger: title,
+                            start: 'top 90%',
+                            toggleActions: 'play none none none'
+                        },
+                        y: 60,
+                        opacity: 0,
+                        rotationZ: 3,
+                        duration: 0.8,
+                        stagger: 0.02,
+                        ease: "power4.out"
+                    });
+                });
+            }, 100);
+        }
+
+        // Cards Stagger Anim
+        const sectionsWithCards = document.querySelectorAll('.section');
+        sectionsWithCards.forEach(section => {
+            const cards = section.querySelectorAll('.advantage-card, .feature-card, .screen-card, .value-card, .debate-step');
+            if (cards.length > 0) {
+                gsap.from(cards, {
+                    scrollTrigger: {
+                        trigger: section,
+                        start: 'top 85%',
+                        toggleActions: 'play none none none'
+                    },
+                    y: 60,
+                    scale: 0.98,
+                    opacity: 0,
+                    duration: 0.8,
+                    stagger: 0.1,
+                    ease: "power3.out"
+                });
+            }
+        });
+
+        // Premium Hero Entrance & Parallax Sequence
+        const heroContent = document.querySelector('.hero__content');
+        const heroLogoWrap = document.querySelector('.hero__brand-logo-wrap');
+        const heroText = document.querySelector('.hero__brand-text');
+
+        if (heroLogoWrap && heroText) {
+            // Remove CSS animations to prevent conflicts
+            heroLogoWrap.style.animation = 'none';
+            heroText.style.animation = 'none';
+
+            // Initial setup
+            gsap.set(heroLogoWrap, { opacity: 0, scale: 0.3, rotationZ: -15, filter: "blur(10px)" });
+            gsap.set(heroText, { opacity: 0, y: 50, filter: "blur(15px)" });
+
+            const tl = gsap.timeline({ defaults: { ease: "power4.out" }, delay: 0.2 });
+
+            // 1. Logo Pops In & Focuses
+            tl.to(heroLogoWrap, {
+                opacity: 1,
+                scale: 1,
+                rotationZ: 0,
+                filter: "blur(0px)",
+                duration: 2.2,
+                ease: "elastic.out(1, 0.5)",
+            })
+                // 2. Text Blurs In and Slides Up
+                .to(heroText, {
+                    opacity: 1,
+                    y: 0,
+                    filter: "blur(0px)",
+                    duration: 1.5
+                }, "-=1.8");
+
+            // 3. 3D Spinning loop for the logo
+            gsap.to(heroLogoWrap, {
+                rotationY: 360,
+                duration: 8,
+                repeat: -1,
+                ease: "none",
+                transformOrigin: "center center",
+                delay: 2.2
+            });
+        }
+
+        if (heroContent) {
+            gsap.to(heroContent, {
+                scrollTrigger: {
+                    trigger: ".section--hero",
+                    start: "top top",
+                    end: "bottom top",
+                    scrub: 1
+                },
+                y: 120,
+                opacity: 0,
+                filter: "blur(10px)"
+            });
+        }
     }
 }
 

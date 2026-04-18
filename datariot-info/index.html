@@ -4,13 +4,30 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Datariot — Learn. Think. Grow.</title>
+    <title>Datariot — Short. Smart. Engaging.</title>
     <meta name="description"
         content="Datariot is an educational short-video platform blending meaningful content with cutting-edge AI. Apply for beta access now." />
+
+    <!-- Twitter Card data -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@datariot_xyz">
+    <meta name="twitter:title" content="Datariot — Short. Smart. Engaging.">
+    <meta name="twitter:description"
+        content="Datariot is an educational short-video platform blending meaningful content with cutting-edge AI. Apply for beta access now.">
+    <meta name="twitter:image" content="https://info.datariot.xyz/assets/twitter-card-v3.png">
+
+    <!-- Open Graph data -->
+    <meta property="og:title" content="Datariot — Short. Smart. Engaging.">
+    <meta property="og:description"
+        content="Datariot is an educational short-video platform blending meaningful content with cutting-edge AI. Apply for beta access now.">
+    <meta property="og:image" content="https://info.datariot.xyz/assets/twitter-card-v3.png">
+    <meta property="og:url" content="https://info.datariot.xyz/">
+    <meta property="og:type" content="website">
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&family=Oxanium:wght@400;500;600;700;800&display=swap"
         rel="stylesheet" />
     <link rel="stylesheet" href="style.css" />
     <script>
@@ -163,12 +180,36 @@
 
         <!-- HERO SECTION -->
         <section class="section section--hero hero--shimmer" id="hero">
+            <!-- Geex-Style Spinning Elements -->
+            <div class="abstract-spin abstract-spin--1">
+                <svg viewBox="0 0 200 200">
+                    <circle cx="100" cy="100" r="90" fill="none" stroke="var(--blue-1)" stroke-width="1.5"
+                        stroke-dasharray="2 6" />
+                    <circle cx="100" cy="100" r="70" fill="none" stroke="var(--blue-2)" stroke-width="1.5"
+                        stroke-dasharray="4 8" />
+                    <circle cx="100" cy="100" r="50" fill="none" stroke="var(--accent)" stroke-width="1" />
+                </svg>
+            </div>
+            <div class="abstract-spin abstract-spin--2">
+                <svg viewBox="0 0 100 100" style="overflow: visible;">
+                    <defs>
+                        <path id="textCircle" d="M 50, 50 m -40, 0 a 40,40 0 1,1 80,0 a 40,40 0 1,1 -80,0" />
+                    </defs>
+                    <text font-size="11" font-family="'Oxanium', monospace" font-weight="600" fill="currentColor"
+                        opacity="0.6">
+                        <textPath href="#textCircle" startOffset="0%">
+                            DATARIOT • OPEN SOURCE • PREMIUM • AI •
+                        </textPath>
+                    </text>
+                </svg>
+            </div>
+
             <div class="hero__shimmer-bg"></div>
             <div class="hero__shimmer-overlay"></div>
             <div class="hero__content hero__content--centered">
                 <div class="hero__brand-center">
                     <div class="hero__brand-logo-wrap">
-                        <img src="assets/logo.jpg" alt="Datariot Logo" class="hero__brand-logo">
+                        <img src="assets/logo.png" alt="Datariot Logo" class="hero__brand-logo">
                     </div>
                     <h1 class="hero__brand-text">DATARIOT</h1>
                 </div>
@@ -266,6 +307,54 @@
             </div>
         </section>
 
+        <!-- ADVANTAGES SECTION -->
+        <section class="section section--advantages" id="advantages">
+            <div class="section__container">
+                <div class="section__header">
+                    <span class="section__label">01.5 — Our Advantages</span>
+                    <h2 class="section__title">Why Choose Datariot?</h2>
+                </div>
+                <div class="advantages__grid">
+                    <div class="advantage-card">
+                        <span class="advantage-card__number">01</span>
+                        <h4>Animal News Network</h4>
+                        <p>Top AI news translated into engaging 60-second scripts and delivered by AI-generated animals.
+                            Learning made perfectly fun.</p>
+                    </div>
+                    <div class="advantage-card">
+                        <span class="advantage-card__number">02</span>
+                        <h4>Open Source Democracy</h4>
+                        <p>Our code is 100% open source. Users propose and vote on platform changes, directly shaping
+                            the future of Datariot.</p>
+                    </div>
+                    <div class="advantage-card">
+                        <span class="advantage-card__number">03</span>
+                        <h4>No-Garbage Algorithm</h4>
+                        <p>We filter out all the noise. A strict "zero-trash" policy ensured by community consensus and
+                            AI moderation.</p>
+                    </div>
+                    <div class="advantage-card">
+                        <span class="advantage-card__number">04</span>
+                        <h4>Strict Safety Standards</h4>
+                        <p>Total safety at the core. We use advanced AI to block porn, spam, and harmful content,
+                            ensuring a clean and professional environment for everyone.</p>
+                    </div>
+                    <div class="advantage-card">
+                        <span class="advantage-card__number">05</span>
+                        <h4>Global Multi-lingual</h4>
+                        <p>An international platform where content is automatically translated. Shorts can be watched
+                            and understood by anyone, anywhere in the world.</p>
+                    </div>
+                    <div class="advantage-card">
+                        <span class="advantage-card__number">06</span>
+                        <h4>AI Fact-Checking</h4>
+                        <p>Say goodbye to misinformation. Every claim is scrutinized and verified by our omnipresent AI
+                            engines.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <!-- FEATURES SECTION -->
         <section class="section section--features" id="features">
             <div class="section__container">
@@ -335,6 +424,9 @@
                 <div class="screens__grid">
                     <div class="screen-card">
                         <div class="screen-card__visual screen-card__visual--feed">
+                            <div class="screen-card__overlay"></div>
+                            <div class="screen-card__scanline"></div>
+                            <div class="screen-card__frame"></div>
                             <img src="assets/smart-feed-real.jpg" alt="Datariot Smart Feed" class="screen-card__image">
                         </div>
                         <div class="screen-card__text">
@@ -345,6 +437,9 @@
                     </div>
                     <div class="screen-card">
                         <div class="screen-card__visual screen-card__visual--debate">
+                            <div class="screen-card__overlay"></div>
+                            <div class="screen-card__scanline"></div>
+                            <div class="screen-card__frame"></div>
                             <img src="assets/debate-threads-real.jpg" alt="Datariot Debate Threads"
                                 class="screen-card__image">
                         </div>
@@ -356,6 +451,9 @@
                     </div>
                     <div class="screen-card">
                         <div class="screen-card__visual screen-card__visual--profile">
+                            <div class="screen-card__overlay"></div>
+                            <div class="screen-card__scanline"></div>
+                            <div class="screen-card__frame"></div>
                             <img src="assets/creator-dna-real.jpg" alt="Datariot Creator DNA"
                                 class="screen-card__image">
                         </div>
@@ -582,7 +680,7 @@
                 <div class="footer__top">
                     <div class="footer__brand">
                         <span class="footer__logo">
-                            <img src="assets/logo.jpg" alt=""
+                            <img src="assets/logo.png" alt=""
                                 style="width: 20px; height: 20px; border-radius: 50%; vertical-align: middle; margin-right: 8px;">
                             DATARIOT
                         </span>
@@ -630,6 +728,13 @@
 
     <!-- External Scripts (Handling everything now) -->
     <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <!-- Premium Animation Libraries -->
+    <script defer src="https://unpkg.com/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script defer src="https://unpkg.com/split-type"></script>
+
     <script defer src="script.js"></script>
 </body>
 
