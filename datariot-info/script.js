@@ -339,41 +339,38 @@ function initializeScripts() {
                     duration: 1.5
                 }, "-=1.8");
 
-            // 3. Premium 3D Magnetic Tilt and Continuous Float Effect
+            // 3. Premium Continuous 3D Spin & Drift Effect
+            // The user requested it to not stand still, so we give it continuous movement
             gsap.to(heroLogoWrap, {
-                y: -15,
-                duration: 3,
+                rotationY: 360,
+                duration: 6,
                 repeat: -1,
-                yoyo: true,
-                ease: "sine.inOut",
+                ease: "none",
+                transformOrigin: "center center",
                 delay: 2.2
             });
 
-            // 3D Magnetic Tilt Tracking on Mouse Move
-            setTimeout(() => {
-                window.addEventListener('mousemove', (e) => {
-                    const x = (e.clientX / window.innerWidth - 0.5) * 2;
-                    const y = (e.clientY / window.innerHeight - 0.5) * 2;
-
+            // Complex drifting so it literally doesn't stay in one place
+            gsap.to(heroLogoWrap, {
+                x: "random(-30, 30)",
+                y: "random(-30, 30)",
+                rotationZ: "random(-10, 10)",
+                duration: 4,
+                repeat: -1,
+                yoyo: true,
+                ease: "sine.inOut",
+                delay: 2.2,
+                onRepeat: function () {
+                    // Get new random values each cycle
                     gsap.to(heroLogoWrap, {
-                        rotationY: x * 45,
-                        rotationX: -y * 45,
-                        ease: "power3.out",
-                        transformPerspective: 1000,
-                        transformOrigin: "center center",
-                        duration: 0.8
+                        x: gsap.utils.random(-30, 30),
+                        y: gsap.utils.random(-30, 30),
+                        rotationZ: gsap.utils.random(-10, 10),
+                        duration: 4,
+                        ease: "sine.inOut"
                     });
-                });
-
-                document.body.addEventListener('mouseleave', () => {
-                    gsap.to(heroLogoWrap, {
-                        rotationY: 0,
-                        rotationX: 0,
-                        ease: "power3.out",
-                        duration: 1.2
-                    });
-                });
-            }, 2200);
+                }
+            });
         }
 
         if (heroContent) {
