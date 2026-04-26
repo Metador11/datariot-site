@@ -4568,6 +4568,7 @@ body,
     display: flex;
     align-items: center;
     z-index: 1000;
+    background: transparent !important;
 }
 
 @media (max-width: 1024px) {
