@@ -79,6 +79,25 @@
     --blue-3-glow: rgba(14, 165, 233, 0.15);
 }
 
+[data-theme="light"] {
+    --bg: #ffffff;
+    --bg-elevated: #ffffff;
+    --surface: #ffffff;
+    --surface-2: #f8fafc;
+    --border: rgba(0, 0, 0, 0.06);
+    --border-hover: rgba(0, 0, 0, 0.12);
+
+    --text-primary: #111827;
+    --text-secondary: rgba(17, 24, 39, 0.65);
+    --text-tertiary: rgba(17, 24, 39, 0.4);
+    --text-accent: #64748b;
+
+    --accent: #64748b;
+    --accent-glow: rgba(100, 116, 139, 0.15);
+    --accent-2: #475569;
+    --accent-bright: #334155;
+}
+
 /* === PARTICLE CANVAS === */
 .particle-canvas {
     position: fixed;
@@ -4409,6 +4428,9 @@ a {
     box-shadow: 0 8px 25px rgba(100, 116, 139, 0.35), 0 4px 15px rgba(0, 0, 0, 0.08);
 }
 
+[data-theme="light"] .section--hero,
+[data-theme="light"] .section--global,
+[data-theme="light"] .section--advantages,
 [data-theme="light"] .section--manifesto,
 [data-theme="light"] .section--features,
 [data-theme="light"] .section--screens,
@@ -4416,7 +4438,7 @@ a {
 [data-theme="light"] .section--live,
 [data-theme="light"] .section--beta,
 [data-theme="light"] .footer {
-    background: var(--bg);
+    background: var(--bg) !important;
 }
 
 [data-theme="light"] .section--manifesto::before,
@@ -4428,7 +4450,7 @@ a {
 }
 
 [data-theme="light"] .top-branding {
-    background: rgba(255, 255, 255, 0.7);
+    background: var(--bg) !important;
     backdrop-filter: blur(12px);
     border-bottom-color: rgba(0, 0, 0, 0.05);
 }
@@ -4583,10 +4605,9 @@ body,
 }
 
 [data-theme="light"] .hero__shimmer-bg {
-    background: linear-gradient(-45deg, #94a3b8, #cbd5e1, #e2e8f0, #f8fafc, #ffffff);
-    background-size: 400% 400%;
-    opacity: 0.6;
-    filter: blur(40px);
+    background: var(--bg) !important;
+    animation: none;
+    opacity: 1;
 }
 
 .hero__shimmer-overlay {
@@ -4597,7 +4618,7 @@ body,
 }
 
 [data-theme="light"] .hero__shimmer-overlay {
-    background: radial-gradient(circle at center, transparent 0%, rgba(255, 255, 255, 0.8) 100%);
+    background: radial-gradient(circle at center, transparent 30%, rgba(255, 255, 255, 0.9) 100%);
 }
 
 @keyframes shimmer-bg {
