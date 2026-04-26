@@ -1,51 +1,50 @@
 /**
- * Orvelis Theme
- * Blue-focused color palette for educational content platform
+ * Datariot Theme
+ * Cyber-Elite Style: Obsidian (#000814), Neon Azure (#0EA5E9), White (#FFFFFF)
  */
 
 export const colors = {
-    // Primary - Sky Blue (Logo Color)
+    // Primary - Neon Azure
     primary: {
         DEFAULT: '#0EA5E9',
         light: '#38BDF8',
-        dark: '#0369A1',
-        ultra: '#075985',
-        glow: 'rgba(14, 165, 233, 0.15)',
+        dark: '#0284C7',
+        ultra: '#7DD3FC',
+        onPrimary: '#FFFFFF',
+        glow: 'rgba(14, 165, 233, 0.4)',
     },
 
-    // Secondary - Matching Sky Blue for consistency
+    // Secondary - Cyan Glow
     secondary: {
-        DEFAULT: '#0EA5E9',
-        dark: '#0369A1',
-        light: '#38BDF8',
-        glow: 'rgba(14, 165, 233, 0.12)',
+        DEFAULT: '#06B6D4',
+        dark: '#0891B2',
+        light: '#22D3EE',
+        onSecondary: '#FFFFFF',
+        glow: 'rgba(6, 182, 212, 0.3)',
     },
 
-    // Backgrounds - Pure Black & Obsidian
+    // Backgrounds - Obsidian
     background: {
-        primary: '#000000', // Added back for compatibility
-        DEFAULT: '#000000', // Pure Black
-        paper: '#020408',   // Obsidian
-        secondary: '#05070A',
-        tertiary: '#0F172A',
-        // Web specific
-        web: '#000000',
-        webSecondary: '#020408',
+        primary: '#000814',
+        DEFAULT: '#000814',
+        paper: '#020617',
+        secondary: '#0F172A',
+        tertiary: '#1E293B',
+        web: '#000814',
+        webSecondary: '#020617',
     },
 
-
-    // Surface colors - Cinematic Blur / Glass
+    // Surfaces - Glassmorphic
     surface: {
-        DEFAULT: '#0F172A',
-        light: '#1E293B',
-        overlay: 'rgba(2, 4, 8, 0.8)',
-        // Web specific
-        card: 'rgba(15, 23, 42, 0.8)',
-        border: 'rgba(255, 255, 255, 0.08)',
-        borderHover: 'rgba(255, 255, 255, 0.15)',
+        DEFAULT: 'rgba(15, 23, 42, 0.8)',
+        light: 'rgba(30, 41, 59, 0.8)',
+        overlay: 'rgba(0, 8, 20, 0.85)',
+        card: 'rgba(15, 23, 42, 0.65)',
+        border: 'rgba(14, 165, 233, 0.2)',
+        borderHover: 'rgba(14, 165, 233, 0.5)',
     },
 
-    // Text colors - High Contrast B&W
+    // Text colors
     text: {
         primary: '#FFFFFF',
         secondary: 'rgba(255, 255, 255, 0.7)',
@@ -64,13 +63,11 @@ export const colors = {
     transparent: 'transparent',
 } as const;
 
-
-
 export const typography = {
     fontFamilies: {
-        regular: 'System',
-        medium: 'System',
-        bold: 'System',
+        regular: 'Oxanium_400Regular',
+        medium: 'Oxanium_500Medium',
+        bold: 'Oxanium_700Bold',
     },
 
     sizes: {
@@ -114,23 +111,23 @@ export const borderRadius = {
 
 export const shadows = {
     sm: {
-        shadowColor: colors.black,
+        shadowColor: '#0EA5E9',
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.1,
         shadowRadius: 4,
         elevation: 2,
     },
     md: {
-        shadowColor: colors.black,
+        shadowColor: '#0EA5E9',
         shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.15,
+        shadowOpacity: 0.2,
         shadowRadius: 8,
         elevation: 4,
     },
     lg: {
-        shadowColor: colors.black,
+        shadowColor: '#0EA5E9',
         shadowOffset: { width: 0, height: 8 },
-        shadowOpacity: 0.2,
+        shadowOpacity: 0.3,
         shadowRadius: 16,
         elevation: 8,
     },

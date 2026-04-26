@@ -27,6 +27,47 @@ interface PulseItemProps {
     isScreenFocused: boolean;
 }
 
+interface PulseVideoProps {
+    videoUrl: string;
+    isActive: boolean;
+    isMuted: boolean;
+}
+
+import { encodeVideoUrl } from '../../../lib/utils/url';
+
+const PulseVideo = ({ videoUrl, isActive, isMuted }: PulseVideoProps) => {
+    const player = useVideoPlayer(encodeVideoUrl(videoUrl), (player) => {
+        player.loop = true;
+        player.muted = isMuted;
+    });
+
+    useEffect(() => {
+        if (isActive) {
+            const playVideo = async () => {
+                try {
+                    await player.play();
+                } catch (e: any) {
+                    if (e.name !== 'AbortError') {
+                        console.error("PulseItem: Playback failed", e);
+                    }
+                }
+            };
+            playVideo();
+        } else {
+            player.pause();
+        }
+    }, [isActive, player]);
+
+    return (
+        <VideoView
+            player={player}
+            style={StyleSheet.absoluteFill}
+            contentFit="cover"
+            nativeControls={false}
+        />
+    );
+};
+
 export const PulseItem = memo(({
     video,
     status,
@@ -41,19 +82,6 @@ export const PulseItem = memo(({
 
     const [isPaused, setIsPaused] = useState(false);
 
-    const player = useVideoPlayer(video.videoUrl, (player) => {
-        player.loop = true;
-        player.muted = isMuted;
-    });
-
-    useEffect(() => {
-        if (isFocus && isScreenFocused && !isPaused) {
-            player.play();
-        } else {
-            player.pause();
-        }
-    }, [isFocus, isScreenFocused, isPaused, player]);
-
     const togglePlayback = () => {
         if (isFocus) {
             setIsPaused(!isPaused);
@@ -61,7 +89,6 @@ export const PulseItem = memo(({
             onSelect();
         }
     };
-
 
     const animatedStyle = useAnimatedStyle(() => {
         const width = withSpring(isFocus ? FOCUS_WIDTH : SATELLITE_WIDTH);
@@ -87,21 +114,25 @@ export const PulseItem = memo(({
                 {/* Neon Glow Border for Focus */}
                 {isFocus && (
                     <LinearGradient
-                        colors={[theme.colors.primary.DEFAULT, '#38BDF8']}
+                        colors={[theme.colors.primary.DEFAULT, '#D9E4FF']}
                         style={styles.neonBorder}
                         start={{ x: 0, y: 0 }}
                         end={{ x: 1, y: 1 }}
                     />
                 )}
 
-
                 <View style={styles.contentContainer}>
-                    <VideoView
-                        player={player}
-                        style={StyleSheet.absoluteFill}
-                        contentFit="cover"
-                        nativeControls={false}
-                    />
+                    {video.videoUrl ? (
+                        <PulseVideo
+                            videoUrl={video.videoUrl}
+                            isActive={isFocus && isScreenFocused && !isPaused}
+                            isMuted={isMuted}
+                        />
+                    ) : (
+                        <View style={[StyleSheet.absoluteFill, { backgroundColor: '#111', justifyContent: 'center', alignItems: 'center' }]}>
+                            <Ionicons name="videocam-off" size={32} color="rgba(255,255,255,0.1)" />
+                        </View>
+                    )}
 
                     {/* Blur Overlay for Satellites */}
                     {!isFocus && (

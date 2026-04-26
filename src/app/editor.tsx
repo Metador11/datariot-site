@@ -20,7 +20,7 @@ export default function EditorScreen() {
     const params = useLocalSearchParams();
     const videoUri = params.videoUri as string;
 
-    const player = useVideoPlayer(videoUri, player => {
+    const player = useVideoPlayer(videoUri || null, player => {
         player.timeUpdateEventInterval = 0.05; // Update every 50ms for smooth timeline
     });
 
@@ -295,16 +295,16 @@ const styles = StyleSheet.create({
     selectedRegion: {
         position: 'absolute',
         height: '100%',
-        backgroundColor: 'rgba(255, 215, 0, 0.3)', // Gold with opacity
+        backgroundColor: 'rgba(217, 228, 255, 0.3)', // Logo Blue with opacity
         borderTopWidth: 2,
         borderBottomWidth: 2,
-        borderColor: '#FFD700',
+        borderColor: '#D9E4FF',
     },
     handle: {
         position: 'absolute',
         width: HANDLE_WIDTH,
         height: TIMELINE_HEIGHT + 10, // Slightly taller
-        backgroundColor: '#FFD700',
+        backgroundColor: '#D9E4FF',
         borderRadius: 4,
         justifyContent: 'center',
         alignItems: 'center',

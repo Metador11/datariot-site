@@ -84,113 +84,58 @@ const HomeScreen = () => {
 
             {/* Top Navigation Tabs */}
             <View style={[styles.topNav, { paddingTop: isWeb ? 20 : insets.top + 10 }]} pointerEvents="box-none">
-                <View style={[styles.topNavContent, isWeb && { justifyContent: 'center' }]} pointerEvents="box-none">
+                <View style={styles.topNavContent} pointerEvents="box-none">
                     {/* Profile/Menu Button - Top Left */}
-                    {!isWeb && (
-                        <Pressable
-                            style={[
-                                styles.profileButton,
-                                {
-                                    backgroundColor: isDark ? 'rgba(30, 30, 30, 0.6)' : 'rgba(255, 255, 255, 0.6)',
-                                    shadowColor: '#000',
-                                    shadowOpacity: 0.1,
-                                    shadowRadius: 10,
-                                    elevation: 5
-                                }
-                            ]}
-                            onPress={() => setIsMenuOpen(true)}
-                        >
-                            <BlurView intensity={60} tint={isDark ? 'dark' : 'light'} style={StyleSheet.absoluteFill} />
-                            <Feather name="menu" size={22} color={theme.colors.text.primary} />
-                        </Pressable>
-                    )}
+                    <Pressable
+                        style={[
+                            styles.profileButton,
+                            {
+                                backgroundColor: isDark ? 'rgba(0, 0, 0, 0.6)' : 'rgba(255, 255, 255, 0.9)',
+                                borderColor: theme.colors.surface.border,
+                                borderWidth: 1,
+                            }
+                        ]}
+                        onPress={() => setIsMenuOpen(true)}
+                    >
+                        <BlurView intensity={60} tint={isDark ? 'dark' : 'light'} style={StyleSheet.absoluteFill} />
+                        <Feather name="menu" size={22} color={theme.colors.text.primary} />
+                    </Pressable>
 
                     <View style={styles.pillContainer}>
-                        <BlurView intensity={70} tint={isDark ? 'dark' : 'light'} style={styles.pillBlur}>
+                        <BlurView intensity={70} tint={isDark ? 'dark' : 'light'} style={[
+                            styles.pillBlur,
+                            {
+                                backgroundColor: isDark ? 'rgba(0, 0, 0, 0.4)' : 'rgba(255, 255, 255, 0.8)',
+                                borderColor: theme.colors.surface.border
+                            }
+                        ]}>
                             {isDark && (
-                                <View style={[StyleSheet.absoluteFill, { backgroundColor: 'rgba(255,255,255,0.05)' }]} />
+                                <View style={[StyleSheet.absoluteFill, { backgroundColor: 'rgba(0,0,0,0.05)' }]} />
                             )}
 
-                            <Pressable
+                            <TabButton
+                                theme={theme}
+                                label="Arena (Beta)"
+                                icon="shield"
+                                isActive={activeTab === 'ai'}
                                 onPress={() => setActiveTab('ai')}
-                                style={[styles.tabButton, activeTab === 'ai' && styles.tabButtonActive]}
-                            >
-                                {activeTab === 'ai' && (
-                                    <View style={StyleSheet.absoluteFill}>
-                                        <LinearGradient
-                                            colors={['#0EA5E9', '#38BDF8']}
-                                            start={{ x: 0, y: 0 }}
-                                            end={{ x: 1, y: 1 }}
-                                            style={styles.tabIndicatorBackground}
-                                        />
+                            />
 
-                                    </View>
-                                )}
-                                <View style={styles.tabButtonInner}>
-                                    <Ionicons
-                                        name="sparkles"
-                                        size={14}
-                                        color={activeTab === 'ai' ? '#FFF' : theme.colors.text.secondary}
-                                        style={{ marginRight: 4 }}
-                                    />
-                                    <Text style={[
-                                        styles.tabText,
-                                        { color: theme.colors.text.secondary },
-                                        activeTab === 'ai' && [styles.tabTextActive, { color: '#FFF' }]
-                                    ]}>
-                                        AI
-                                    </Text>
-                                </View>
-                            </Pressable>
-
-
-                            <Pressable
+                            <TabButton
+                                theme={theme}
+                                label="Feed"
+                                icon="flame"
+                                isActive={activeTab === 'trending'}
                                 onPress={() => setActiveTab('trending')}
-                                style={[styles.tabButton, activeTab === 'trending' && styles.tabButtonActive]}
-                            >
-                                {activeTab === 'trending' && (
-                                    <View style={[StyleSheet.absoluteFill, styles.tabIndicatorBackground, { backgroundColor: isDark ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.05)' }]} />
-                                )}
-                                <View style={styles.tabButtonInner}>
-                                    <Ionicons
-                                        name="flame"
-                                        size={14}
-                                        color={activeTab === 'trending' ? theme.colors.text.primary : theme.colors.text.secondary}
-                                        style={{ marginRight: 4 }}
-                                    />
-                                    <Text style={[
-                                        styles.tabText,
-                                        { color: theme.colors.text.secondary },
-                                        activeTab === 'trending' && [styles.tabTextActive, { color: theme.colors.text.primary }]
-                                    ]}>
-                                        Trends
-                                    </Text>
-                                </View>
-                            </Pressable>
+                            />
 
-                            <Pressable
+                            <TabButton
+                                theme={theme}
+                                label="My Circle"
+                                icon="users"
+                                isActive={activeTab === 'following'}
                                 onPress={() => setActiveTab('following')}
-                                style={[styles.tabButton, activeTab === 'following' && styles.tabButtonActive]}
-                            >
-                                {activeTab === 'following' && (
-                                    <View style={[StyleSheet.absoluteFill, styles.tabIndicatorBackground, { backgroundColor: isDark ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.05)' }]} />
-                                )}
-                                <View style={styles.tabButtonInner}>
-                                    <Feather
-                                        name="users"
-                                        size={14}
-                                        color={activeTab === 'following' ? theme.colors.text.primary : theme.colors.text.secondary}
-                                        style={{ marginRight: 4 }}
-                                    />
-                                    <Text style={[
-                                        styles.tabText,
-                                        { color: theme.colors.text.secondary },
-                                        activeTab === 'following' && [styles.tabTextActive, { color: theme.colors.text.primary }]
-                                    ]}>
-                                        Follow
-                                    </Text>
-                                </View>
-                            </Pressable>
+                            />
                         </BlurView>
                     </View>
 
@@ -206,44 +151,41 @@ const HomeScreen = () => {
                     )}
 
                     {/* Profile Button - Top Right */}
-                    {/* View Mode Toggle (Cycles through Mosaic and Classic) */}
-                    {!isWeb && (
-                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                            <Pressable
-                                style={[
-                                    styles.pulseToggle,
-                                    {
-                                        backgroundColor: viewMode === 'mosaic' ? theme.colors.primary.DEFAULT : (isDark ? 'rgba(30, 30, 30, 0.6)' : 'rgba(255, 255, 255, 0.6)'),
-                                    }
-                                ]}
-                                onPress={() => setViewMode(viewMode === 'mosaic' ? 'classic' : 'mosaic')}
-                            >
-                                <BlurView intensity={60} tint={isDark ? 'dark' : 'light'} style={StyleSheet.absoluteFill} />
-                                <Ionicons
-                                    name={viewMode === 'mosaic' ? "grid" : "apps"}
-                                    size={22}
-                                    color={viewMode === 'mosaic' ? "#FFF" : theme.colors.text.primary}
-                                />
-                            </Pressable>
+                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                        <Pressable
+                            style={[
+                                styles.pulseToggle,
+                                {
+                                    backgroundColor: viewMode === 'mosaic' ? theme.colors.primary.DEFAULT : (isDark ? 'rgba(0, 0, 0, 0.6)' : 'rgba(255, 255, 255, 0.9)'),
+                                    borderColor: theme.colors.surface.border,
+                                    borderWidth: 1,
+                                }
+                            ]}
+                            onPress={() => setViewMode(viewMode === 'mosaic' ? 'classic' : 'mosaic')}
+                        >
+                            <BlurView intensity={60} tint={isDark ? 'dark' : 'light'} style={StyleSheet.absoluteFill} />
+                            <Ionicons
+                                name={viewMode === 'mosaic' ? "grid" : "apps"}
+                                size={22}
+                                color={viewMode === 'mosaic' ? "#FFF" : theme.colors.text.primary}
+                            />
+                        </Pressable>
 
-                            <Pressable
-                                style={[
-                                    styles.profileButton,
-                                    {
-                                        backgroundColor: isDark ? 'rgba(30, 30, 30, 0.6)' : 'rgba(255, 255, 255, 0.6)',
-                                        shadowColor: '#000',
-                                        shadowOpacity: 0.1,
-                                        shadowRadius: 10,
-                                        elevation: 5
-                                    }
-                                ]}
-                                onPress={() => router.push('/profile')}
-                            >
-                                <BlurView intensity={60} tint={isDark ? 'dark' : 'light'} style={StyleSheet.absoluteFill} />
-                                <Feather name="user" size={22} color={theme.colors.text.primary} />
-                            </Pressable>
-                        </View>
-                    )}
+                        <Pressable
+                            style={[
+                                styles.profileButton,
+                                {
+                                    backgroundColor: isDark ? 'rgba(0, 0, 0, 0.6)' : 'rgba(255, 255, 255, 0.9)',
+                                    borderColor: theme.colors.surface.border,
+                                    borderWidth: 1,
+                                }
+                            ]}
+                            onPress={() => router.push('/profile')}
+                        >
+                            <BlurView intensity={60} tint={isDark ? 'dark' : 'light'} style={StyleSheet.absoluteFill} />
+                            <Feather name="user" size={22} color={theme.colors.text.primary} />
+                        </Pressable>
+                    </View>
                 </View>
             </View>
 
@@ -395,7 +337,7 @@ const styles = StyleSheet.create({
     pillBlur: {
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor: 'rgba(15, 23, 42, 0.4)',
+        backgroundColor: 'rgba(0, 0, 0, 0.4)',
         borderRadius: 30,
         padding: 4,
         overflow: 'hidden',
@@ -492,5 +434,37 @@ const styles = StyleSheet.create({
         fontWeight: '600',
     },
 });
+
+const TabButton = ({ theme, label, icon, isActive, onPress }: any) => {
+    const isDark = theme.colors.background.primary === '#000814'; // Simple check for dark mode
+
+    return (
+        <Pressable
+            onPress={onPress}
+            style={[styles.tabButton, isActive && styles.tabButtonActive]}
+        >
+            {isActive && (
+                <View style={[StyleSheet.absoluteFill, { padding: 2 }]}>
+                    <View style={[styles.tabIndicatorBackground, { backgroundColor: theme.colors.primary.DEFAULT }]} />
+                </View>
+            )}
+            <View style={styles.tabButtonInner}>
+                <Ionicons
+                    name={icon}
+                    size={14}
+                    color={isActive ? '#FFF' : theme.colors.text.secondary}
+                    style={{ marginRight: 4 }}
+                />
+                <Text style={[
+                    styles.tabText,
+                    { color: theme.colors.text.secondary },
+                    isActive && [styles.tabTextActive, { color: '#FFF' }]
+                ]}>
+                    {label}
+                </Text>
+            </View>
+        </Pressable>
+    );
+};
 
 export default HomeScreen;

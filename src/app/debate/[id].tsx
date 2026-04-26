@@ -35,9 +35,9 @@ const VoteButton = ({ isVoted, score, onPress }: { isVoted: boolean; score: numb
             onPress={handlePress}
         >
             <Animated.View style={[styles.voteIconContainer, animatedStyle]}>
-                <Ionicons name={isVoted ? "bulb" : "bulb-outline"} size={16} color={isVoted ? "#0055FF" : theme.colors.text.secondary} />
+                <Ionicons name={isVoted ? "bulb" : "bulb-outline"} size={16} color={isVoted ? "#D9E4FF" : theme.colors.text.secondary} />
             </Animated.View>
-            <Text style={[styles.voteText, { color: isVoted ? "#0055FF" : theme.colors.text.secondary }]}>
+            <Text style={[styles.voteText, { color: isVoted ? "#D9E4FF" : theme.colors.text.secondary }]}>
                 {score} Logic Quality
             </Text>
         </Pressable>
@@ -213,9 +213,8 @@ export default function DebateThreadScreen() {
 
     const renderArgument = ({ item }: { item: Argument }) => {
         const isFor = item.side === 'FOR';
-        // Neutral or malformed we skip special styling or treat as standard
-        const colorMain = isFor ? '#10B981' : '#EF4444';
-        const bgLabel = isDark ? (isFor ? 'rgba(16,185,129,0.1)' : 'rgba(239,68,68,0.1)') : (isFor ? 'rgba(16,185,129,0.1)' : 'rgba(239,68,68,0.1)');
+        const colorMain = isFor ? "#D9E4FF" : "#FFFFFF";
+        const bgLabel = isFor ? 'rgba(217, 228, 255, 0.15)' : 'rgba(255, 255, 255, 0.15)';
 
         return (
             <View style={[styles.argumentCard, { backgroundColor: isDark ? 'rgba(255,255,255,0.03)' : '#FFF' }]}>
@@ -258,6 +257,18 @@ export default function DebateThreadScreen() {
 
                     <Text style={[styles.argText, { color: theme.colors.text.primary }]}>{item.content}</Text>
 
+                    {item.videoUrl && (
+                        <View style={styles.argVideoContainer}>
+                            <Image
+                                source={{ uri: item.videoUrl.replace('.mp4', '.jpg') }}
+                                style={styles.argVideoThumbnail}
+                            />
+                            <View style={styles.playOverlay}>
+                                <Ionicons name="play" size={24} color="#FFF" />
+                            </View>
+                        </View>
+                    )}
+
                     <View style={styles.argFooter}>
                         <VoteButton
                             isVoted={item.isVoted}
@@ -290,8 +301,8 @@ export default function DebateThreadScreen() {
                 <Text style={[styles.headerTitle, { color: theme.colors.text.primary }]}>Debate Thread</Text>
                 {post && (
                     <Pressable onPress={handleLikePost} style={styles.headerLikeBtn}>
-                        <Text style={{ fontSize: 18, color: post.isLiked ? '#0055FF' : theme.colors.text.secondary }}>✦</Text>
-                        <Text style={[styles.headerLikeCount, { color: post.isLiked ? '#0055FF' : theme.colors.text.secondary }]}>{post.likes}</Text>
+                        <Text style={{ fontSize: 18, color: post.isLiked ? "#D9E4FF" : theme.colors.text.secondary }}>✦</Text>
+                        <Text style={[styles.headerLikeCount, { color: post.isLiked ? "#D9E4FF" : theme.colors.text.secondary }]}>{post.likes}</Text>
                     </Pressable>
                 )}
                 {!post && <View style={{ width: 40 }} />}
@@ -305,7 +316,7 @@ export default function DebateThreadScreen() {
                 ListHeaderComponent={() => (
                     <View style={styles.listHeader}>
                         {loadingPost ? (
-                            <ActivityIndicator color="#0055FF" />
+                            <ActivityIndicator color="#D9E4FF" />
                         ) : post ? (
                             <View>
                                 <DebateCard
@@ -321,14 +332,14 @@ export default function DebateThreadScreen() {
                                         <Text style={[styles.statsTitle, { color: theme.colors.text.primary }]}>Logic Balance</Text>
 
                                         <View style={styles.statsBarRow}>
-                                            <Text style={[styles.statsCount, { color: '#10B981', width: 40 }]}>{stats.forScore}</Text>
+                                            <Text style={[styles.statsCount, { color: '#D9E4FF', width: 40 }]}>{stats.forScore}</Text>
 
                                             <View style={styles.progressBarContainer}>
                                                 <Animated.View style={[styles.progressBarFillFor, forStyle]} />
                                                 <Animated.View style={[styles.progressBarFillAgainst, againstStyle]} />
                                             </View>
 
-                                            <Text style={[styles.statsCount, { color: '#EF4444', textAlign: 'right', width: 40 }]}>{stats.againstScore}</Text>
+                                            <Text style={[styles.statsCount, { color: '#FFFFFF', textAlign: 'right', width: 40 }]}>{stats.againstScore}</Text>
                                         </View>
 
                                         <View style={styles.statsLabelRow}>
@@ -376,11 +387,34 @@ export default function DebateThreadScreen() {
                         <View style={styles.sideSelector}>
                             <Text style={[styles.promptText, { color: theme.colors.text.primary }]}>Take a stance:</Text>
                             <View style={styles.stanceButtons}>
-                                <Pressable style={[styles.stanceBtn, { backgroundColor: 'rgba(16,185,129,0.15)' }]} onPress={() => setSelectedSide('FOR')}>
-                                    <Text style={[styles.stanceBtnText, { color: '#10B981' }]}>Argue FOR</Text>
+                                <Pressable style={[styles.stanceBtn, { backgroundColor: 'rgba(217, 228, 255, 0.15)' }]} onPress={() => setSelectedSide('FOR')}>
+                                    <Text style={[styles.stanceBtnText, { color: '#D9E4FF' }]}>Argue FOR</Text>
                                 </Pressable>
-                                <Pressable style={[styles.stanceBtn, { backgroundColor: 'rgba(239,68,68,0.15)' }]} onPress={() => setSelectedSide('AGAINST')}>
-                                    <Text style={[styles.stanceBtnText, { color: '#EF4444' }]}>Argue AGAINST</Text>
+                                <Pressable style={[styles.stanceBtn, { backgroundColor: 'rgba(255, 255, 255, 0.15)' }]} onPress={() => setSelectedSide('AGAINST')}>
+                                    <Text style={[styles.stanceBtnText, { color: '#FFFFFF' }]}>Argue AGAINST</Text>
+                                </Pressable>
+                            </View>
+
+                            <View style={styles.videoResponseRow}>
+                                <Pressable
+                                    style={styles.videoResponseBtn}
+                                    onPress={() => router.push({
+                                        pathname: '/(tabs)/create',
+                                        params: { debateId: id, side: 'FOR' }
+                                    })}
+                                >
+                                    <Ionicons name="videocam" size={16} color="#D9E4FF" />
+                                    <Text style={[styles.videoResponseBtnText, { color: '#D9E4FF' }]}>Video FOR</Text>
+                                </Pressable>
+                                <Pressable
+                                    style={styles.videoResponseBtn}
+                                    onPress={() => router.push({
+                                        pathname: '/(tabs)/create',
+                                        params: { debateId: id, side: 'AGAINST' }
+                                    })}
+                                >
+                                    <Ionicons name="videocam" size={16} color="#FFFFFF" />
+                                    <Text style={[styles.videoResponseBtnText, { color: '#FFFFFF' }]}>Video AGAINST</Text>
                                 </Pressable>
                             </View>
                         </View>
@@ -399,11 +433,11 @@ export default function DebateThreadScreen() {
                             <View style={styles.typeRow}>
                                 <View style={[
                                     styles.sideBadgeInput,
-                                    { backgroundColor: selectedSide === 'FOR' ? 'rgba(16,185,129,0.1)' : 'rgba(239,68,68,0.1)' }
+                                    { backgroundColor: selectedSide === 'FOR' ? 'rgba(217, 228, 255, 0.1)' : 'rgba(255, 255, 255, 0.1)' }
                                 ]}>
                                     <Text style={[
                                         styles.sideBadgeText,
-                                        { color: selectedSide === 'FOR' ? '#10B981' : '#EF4444' }
+                                        { color: selectedSide === 'FOR' ? '#000000' : '#FFFFFF' }
                                     ]}>{selectedSide}</Text>
                                 </View>
 
@@ -449,6 +483,45 @@ const styles = StyleSheet.create({
     },
     backButton: { padding: 8, marginLeft: -8 },
     headerTitle: { fontSize: 18, fontWeight: 'bold' },
+    videoResponseRow: {
+        flexDirection: 'row',
+        gap: 12,
+        marginTop: 12,
+    },
+    videoResponseBtn: {
+        flex: 1,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: 8,
+        paddingVertical: 10,
+        borderRadius: 12,
+        backgroundColor: 'rgba(255, 255, 255, 0.1)',
+        borderWidth: 1,
+        borderColor: 'rgba(255, 255, 255, 0.1)',
+    },
+    videoResponseBtnText: {
+        fontSize: 13,
+        fontWeight: 'bold',
+    },
+    argVideoContainer: {
+        width: '100%',
+        height: 180,
+        borderRadius: 12,
+        overflow: 'hidden',
+        marginBottom: 12,
+        backgroundColor: '#000',
+    },
+    argVideoThumbnail: {
+        width: '100%',
+        height: '100%',
+    },
+    playOverlay: {
+        ...StyleSheet.absoluteFillObject,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0,0,0,0.2)',
+    },
     headerLikeBtn: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -479,7 +552,7 @@ const styles = StyleSheet.create({
     },
     sortText: {
         fontSize: 12,
-        color: '#0055FF',
+        color: '#D9E4FF',
         fontWeight: 'bold',
     },
     argCountBadge: {
@@ -664,7 +737,7 @@ const styles = StyleSheet.create({
         width: 40,
         height: 40,
         borderRadius: 20,
-        backgroundColor: '#0055FF',
+        backgroundColor: '#D9E4FF',
         justifyContent: 'center',
         alignItems: 'center',
     },
@@ -715,11 +788,11 @@ const styles = StyleSheet.create({
         overflow: 'hidden',
     },
     progressBarFillFor: {
-        backgroundColor: '#10B981',
+        backgroundColor: '#D9E4FF',
         height: '100%',
     },
     progressBarFillAgainst: {
-        backgroundColor: '#EF4444',
+        backgroundColor: '#FFFFFF',
         height: '100%',
     },
     statsCount: {

@@ -38,7 +38,7 @@ export const ArenaHero: React.FC<ArenaHeroProps> = ({ debate, onPress }) => {
         >
             <Pressable onPress={onPress} style={styles.content}>
                 <LinearGradient
-                    colors={['#0044CC', '#000814']}
+                    colors={['#D9E4FF', '#000814']}
                     start={{ x: 0, y: 0 }}
                     end={{ x: 1, y: 1 }}
                     style={StyleSheet.absoluteFill}
@@ -52,7 +52,7 @@ export const ArenaHero: React.FC<ArenaHeroProps> = ({ debate, onPress }) => {
                     </View>
                     <View style={styles.liveContainer}>
                         <Animated.View style={[styles.liveDot, pulseStyle]} />
-                        <Text style={styles.liveText}>ARENA_LIVE</Text>
+                        <Text style={styles.liveText}>ARENA_BETA</Text>
                     </View>
                 </View>
 
@@ -91,7 +91,7 @@ export const ArenaHero: React.FC<ArenaHeroProps> = ({ debate, onPress }) => {
                     </View>
 
                     <Pressable style={styles.enterButton} onPress={onPress}>
-                        <Text style={styles.enterButtonText}>ENTER ARENA</Text>
+                        <Text style={styles.enterButtonText}>VIEW ARENA (BETA)</Text>
                         <Ionicons name="flash" size={16} color="#000" />
                     </Pressable>
                 </View>

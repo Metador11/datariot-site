@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '../client';
 import { useAuth } from './useAuth';
+import { encodeVideoUrl } from '../../utils/url';
 
 export interface Video {
     id: string;
@@ -25,6 +26,11 @@ export interface Video {
     dnaRationale?: string;
     isHighSynergy?: boolean;
     dnaMatch?: number;
+    logicStats?: {
+        forScore: number;
+        againstScore: number;
+        forPercentage: number;
+    };
 }
 
 export type FeedType = 'trending' | 'following' | 'ai' | 'user' | 'search';
@@ -61,7 +67,7 @@ export function useVideos({ type, userId, searchQuery, hashtag, category, sort =
 
         return {
             id: video.id,
-            videoUrl: video.url || video.s3_url,
+            videoUrl: encodeVideoUrl(video.url || video.s3_url) || '',
             title: finalTitle,
             description: video.description || '',
             author: authorName,
@@ -168,7 +174,60 @@ export function useVideos({ type, userId, searchQuery, hashtag, category, sort =
                 return new Set<string>();
             })();
 
-            const [profilesMap, likedVideoIds] = await Promise.all([fetchProfilesPromise, fetchLikesPromise]);
+            // Fetch Logic Stats (Who's Winning) for these videos
+            const fetchLogicStatsPromise = (async () => {
+                const urls = videoData.map((v: any) => v.url || v.s3_url).filter(Boolean);
+                if (urls.length === 0) return {};
+
+                // 1. Find posts matching these video URLs
+                const { data: postData } = await supabase
+                    .from('posts')
+                    .select('id, video_url')
+                    .in('video_url', urls);
+
+                if (!postData || postData.length === 0) return {};
+
+                const postIds = postData.map((p: any) => p.id);
+                const urlToPostId: Record<string, string> = {};
+                postData.forEach((p: any) => { if (p.video_url) urlToPostId[p.video_url] = p.id; });
+
+                // 2. Fetch comments for these posts
+                const { data: commentData } = await supabase
+                    .from('comments')
+                    .select('post_id, text, likes_count')
+                    .in('post_id', postIds);
+
+                const statsMap: Record<string, { forScore: number, againstScore: number }> = {};
+                if (commentData) {
+                    commentData.forEach((c: any) => {
+                        const pid = c.post_id;
+                        if (!statsMap[pid]) statsMap[pid] = { forScore: 0, againstScore: 0 };
+                        const text = c.text || '';
+                        if (text.startsWith('FOR:|')) statsMap[pid].forScore += c.likes_count || 0;
+                        else if (text.startsWith('AGAINST:|')) statsMap[pid].againstScore += c.likes_count || 0;
+                    });
+                }
+
+                // 3. Map back to video URLs
+                const finalMap: Record<string, any> = {};
+                Object.entries(urlToPostId).forEach(([url, pid]) => {
+                    if (statsMap[pid]) {
+                        const s = statsMap[pid];
+                        finalMap[url] = {
+                            forScore: s.forScore,
+                            againstScore: s.againstScore,
+                            forPercentage: (s.forScore + s.againstScore) > 0 ? (s.forScore / (s.forScore + s.againstScore)) * 100 : 50
+                        };
+                    }
+                });
+                return finalMap;
+            })();
+
+            const [profilesMap, likedVideoIds, videoLogicMap] = await Promise.all([
+                fetchProfilesPromise,
+                fetchLikesPromise,
+                fetchLogicStatsPromise
+            ]);
 
             // 4. Format videos - filter for "real" user-uploaded content
             const placeholderPatterns = [
@@ -181,9 +240,14 @@ export function useVideos({ type, userId, searchQuery, hashtag, category, sort =
             ];
 
             const formattedVideos = videoData
-                .map((v: any) =>
-                    formatVideo(v, profilesMap[v.user_id], likedVideoIds.has(v.id))
-                )
+                .map((v: any) => {
+                    const formatted = formatVideo(v, profilesMap[v.user_id], likedVideoIds.has(v.id));
+                    const videoUrl = v.url || v.s3_url;
+                    if (videoUrl && videoLogicMap[videoUrl]) {
+                        formatted.logicStats = videoLogicMap[videoUrl];
+                    }
+                    return formatted;
+                })
                 .filter((v: Video) => {
                     // 1. Must have a valid URL
                     if (!v.videoUrl || v.videoUrl.length === 0) return false;
@@ -206,10 +270,9 @@ export function useVideos({ type, userId, searchQuery, hashtag, category, sort =
                 });
 
             // console.log('Formatted and filtered videos:', formattedVideos.length);
-            // if (formattedVideos.length > 0) {
-            //     console.log('First video URL:', formattedVideos[0].videoUrl);
-            //     console.log('First video Author:', formattedVideos[0].author);
-            // }
+            if (formattedVideos.length > 0) {
+                console.log('[useVideos] Fetched URLs:', formattedVideos.map((v: Video) => v.videoUrl));
+            }
 
             if (isRefresh) {
                 setVideos(formattedVideos);

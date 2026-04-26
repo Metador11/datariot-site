@@ -34,28 +34,29 @@ const darkColors = { ...baseTheme.colors };
 const lightColors = {
     ...baseTheme.colors,
     background: {
-        primary: '#F8FAFC',
-        DEFAULT: '#F8FAFC',
-        secondary: '#F1F5F9',
-        tertiary: '#E2E8F0',
+        primary: '#FFFFFF',
+        DEFAULT: '#FFFFFF',
+        secondary: '#F8FAFC',
+        tertiary: '#F1F5F9',
         web: '#F8FAFC',
-        webSecondary: '#F1F5F9',
+        webSecondary: '#FFFFFF',
     },
 
     surface: {
         ...baseTheme.colors.surface,
         DEFAULT: '#FFFFFF',
         light: '#F8FAFC',
-        overlay: 'rgba(255, 255, 255, 0.8)',
+        overlay: 'rgba(255, 255, 255, 0.9)',
         card: '#FFFFFF',
+        border: 'rgba(15, 23, 42, 0.1)',
+        borderHover: 'rgba(15, 23, 42, 0.2)',
     },
     text: {
         primary: '#0F172A',
         secondary: '#475569',
-        muted: '#64748B',
+        muted: '#94A3B8',
         accent: '#0EA5E9',
     },
-
 };
 
 

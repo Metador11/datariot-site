@@ -22,7 +22,7 @@ export const ResponsiveLayout = ({ children }: ResponsiveLayoutProps) => {
 
     const platformGlow = Platform.OS === 'web' ? (
         <LinearGradient
-            colors={['rgba(14, 165, 233, 0.1)', 'rgba(14, 165, 233, 0.03)', 'transparent']}
+            colors={['rgba(217, 228, 255, 0.1)', 'rgba(217, 228, 255, 0.03)', 'transparent']}
             style={styles.ambientGlow}
         />
 
@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'center',
         paddingTop: 0,
-        maxWidth: 1600,
+        maxWidth: 1700, // Increased from 1600
         alignSelf: 'center',
         width: '100%',
         zIndex: 1,
@@ -100,7 +100,7 @@ const styles = StyleSheet.create({
     fullWidthColumn: {
         flex: 1,
         width: '100%',
-        maxWidth: 1200,
+        maxWidth: 1300, // Increased from 1200
         alignSelf: 'center',
     },
     leftColumn: {
@@ -110,11 +110,7 @@ const styles = StyleSheet.create({
     },
     centerColumn: {
         flex: 1,
-        maxWidth: 720,
-        borderRightWidth: 1,
-        borderLeftWidth: 1,
-        borderColor: 'rgba(255, 255, 255, 0.06)',
-        backgroundColor: '#020408',
+        maxWidth: 900, // Increased from 720 to fix "tablet stripe" look
 
         // @ts-ignore — web-only
         overflowY: 'auto',

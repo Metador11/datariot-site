@@ -145,7 +145,7 @@ export default function InboxScreen() {
             {/* Focus Mode & Calls Header */}
             <View style={styles.topControls}>
                 <TouchableOpacity
-                    style={[styles.focusButton, { backgroundColor: isDark ? '#FFF' : theme.colors.text.primary }, isFocusMode && [styles.focusButtonActive, { backgroundColor: isDark ? '#333' : theme.colors.surface.light }]]}
+                    style={[styles.focusButton, { backgroundColor: isDark ? '#FFFFFF' : theme.colors.text.primary }, isFocusMode && [styles.focusButtonActive, { backgroundColor: isDark ? 'rgba(0,0,0,0.8)' : 'rgba(0,0,0,0.1)' }]]}
                     onPress={() => setIsFocusMode(!isFocusMode)}
                 >
                     <Ionicons
@@ -289,9 +289,9 @@ const styles = StyleSheet.create({
         borderRadius: 20,
     },
     focusButtonActive: {
-        backgroundColor: '#333',
+        backgroundColor: 'rgba(0,0,0,0.8)',
         borderWidth: 1,
-        borderColor: '#555',
+        borderColor: 'rgba(255,255,255,0.2)',
     },
     focusText: {
         marginLeft: 6,
@@ -306,7 +306,7 @@ const styles = StyleSheet.create({
         width: 36,
         height: 36,
         borderRadius: 18,
-        backgroundColor: 'rgba(51, 133, 255, 0.1)',
+        backgroundColor: 'rgba(217, 228, 255, 0.1)',
         justifyContent: 'center',
         alignItems: 'center',
     },
@@ -360,10 +360,10 @@ const styles = StyleSheet.create({
         width: 56,
         height: 56,
         borderRadius: 28,
-        backgroundColor: '#3385FF',
+        backgroundColor: '#D9E4FF',
         justifyContent: 'center',
         alignItems: 'center',
-        shadowColor: '#3385FF',
+        shadowColor: '#000000',
         shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.3,
         shadowRadius: 8,
@@ -389,7 +389,7 @@ const styles = StyleSheet.create({
         width: 48,
         height: 48,
         borderRadius: 24,
-        backgroundColor: '#3385FF',
+        backgroundColor: '#D9E4FF',
         justifyContent: 'center',
         alignItems: 'center',
         marginRight: 12,

@@ -119,8 +119,8 @@ export function CoubClassicFeed({
             )}
 
             <SectionHeader
-                title="Orvelis Daily Synergy"
-                subtitle="Curated based on your Creator DNA"
+                title="Datariot Originals"
+                subtitle="Curated high-quality video content"
             />
             <DiscoveryCarousel
                 videos={synergyVideos}
@@ -128,8 +128,8 @@ export function CoubClassicFeed({
             />
 
             <SectionHeader
-                title="System Trending"
-                subtitle="High engagement across the graph"
+                title="Trending Now"
+                subtitle="High engagement across the platform"
             />
         </View>
     );

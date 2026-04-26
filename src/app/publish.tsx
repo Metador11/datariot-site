@@ -8,11 +8,13 @@ import { useAudioRecorder, useAudioPlayer, requestRecordingPermissionsAsync, Rec
 import * as ImagePicker from 'expo-image-picker';
 import { useAuth } from '@lib/supabase/hooks/useAuth';
 import { VIDEO_CATEGORIES, CATEGORY_DISPLAY_NAMES, VideoCategory } from '@lib/constants/categories';
+import { supabase } from '@lib/supabase/client';
+import { generateDebateSeed, generateVideoAnalysis, DebateSeed } from '@lib/ai/client';
 
 export default function PublishScreen() {
     const router = useRouter();
     const params = useLocalSearchParams();
-    const { videoUri, trimStart, trimEnd } = params;
+    const { videoUri, trimStart, trimEnd, debateId, side } = params;
     const { user } = useAuth();
 
     const [caption, setCaption] = useState('');
@@ -22,8 +24,10 @@ export default function PublishScreen() {
     // New Media State
     const [imageUri, setImageUri] = useState<string | null>(null);
     const [audioUri, setAudioUri] = useState<string | null>(null);
+    const [aiSeed, setAiSeed] = useState<DebateSeed | null>(null);
+    const [suggesting, setSuggesting] = useState(false);
 
-    const videoPlayer = useVideoPlayer(videoUri as string | null, player => {
+    const videoPlayer = useVideoPlayer((videoUri as string) || null, player => {
         player.loop = false;
         player.muted = true;
     });
@@ -109,39 +113,118 @@ export default function PublishScreen() {
 
         setUploading(true);
 
-        try {
-            const supabase = (await import('@lib/supabase/client')).supabase;
+        const uploadFile = async (uri: string, bucket: string, path: string) => {
+            const formData = new FormData();
+            const filename = uri.split('/').pop() || 'file';
+            const exc = filename.split('.').pop() || '';
+            const type = bucket === 'videos' ? 'video/mp4' : (bucket === 'images' ? 'image/jpeg' : 'audio/mpeg');
 
-            if (videoUri) {
-                // ... Video Logic (unchanged from original for now) ...
-                const { error } = await supabase
-                    .from('videos') // Assuming 'videos' table for full screen videos
+            formData.append('file', {
+                uri,
+                name: filename,
+                type: type,
+            } as any);
+
+            const { data, error } = await supabase.storage
+                .from(bucket)
+                .upload(path, formData, {
+                    contentType: type,
+                    upsert: true
+                });
+
+            if (error) throw error;
+            const { data: { publicUrl } } = supabase.storage.from(bucket).getPublicUrl(path);
+            return publicUrl;
+        };
+
+        try {
+            let uploadedVideoUrl = null;
+            let uploadedImageUrl = null;
+
+            if (debateId) {
+                // Video ARGUMENT flow
+                let videoId = null;
+                if (videoUri) {
+                    const fileName = `${user.id}/${Date.now()}.mp4`;
+                    uploadedVideoUrl = await uploadFile(videoUri as string, 'videos', fileName);
+
+                    const { data: vData, error: vError } = await supabase
+                        .from('videos')
+                        .insert({
+                            user_id: user.id,
+                            title: `Response to ${debateId}`,
+                            url: uploadedVideoUrl,
+                            duration: Math.round((Number(trimEnd || 0) - Number(trimStart || 0)) / 1000) || 600,
+                            is_published: true
+                        })
+                        .select('id')
+                        .single();
+                    if (vError) throw vError;
+                    videoId = vData.id;
+                }
+
+                const prefix = side === 'AGAINST' ? 'AGAINST:|' : 'FOR:|';
+                const { error: commentError } = await supabase
+                    .from('comments')
                     .insert({
+                        post_id: debateId,
                         user_id: user.id,
-                        title: caption.substring(0, 50) || 'New Short Video',
-                        description: caption,
-                        video_url: videoUri,
-                        category: selectedCategory,
-                        duration: Math.round((Number(trimEnd || 0) - Number(trimStart || 0)) / 1000) || 60,
-                        is_published: true
+                        text: prefix + caption,
+                        video_id: videoId
                     });
-                if (error) throw error;
+                if (commentError) throw commentError;
+
             } else {
-                // Generic Posts (Text, Image, Audio)
-                const { error } = await supabase
+                // New DEBATE thesis flow
+                if (videoUri) {
+                    const fileName = `${user.id}/${Date.now()}.mp4`;
+                    uploadedVideoUrl = await uploadFile(videoUri as string, 'videos', fileName);
+
+                    const { error: videoError } = await supabase
+                        .from('videos')
+                        .insert({
+                            user_id: user.id,
+                            title: caption.substring(0, 50) || 'New Short Video',
+                            description: caption,
+                            url: uploadedVideoUrl,
+                            category: selectedCategory,
+                            duration: Math.round((Number(trimEnd || 0) - Number(trimStart || 0)) / 1000) || 600,
+                            is_published: true
+                        });
+                    if (videoError) throw videoError;
+                } else if (imageUri) {
+                    const fileName = `${user.id}/${Date.now()}.jpg`;
+                    uploadedImageUrl = await uploadFile(imageUri, 'posts', fileName);
+                }
+
+                const { data: postData, error: postError } = await supabase
                     .from('posts')
                     .insert({
                         user_id: user.id,
                         content: caption,
-                        image_url: imageUri || null, // Mock upload
+                        image_url: uploadedImageUrl,
                         is_published: true,
-                        // Add type field if schema supports it
-                        // type: imageUri ? 'image' : audioUri ? 'audio' : 'text'
-                    });
+                        video_url: videoUri ? uploadedVideoUrl : null
+                    })
+                    .select('id')
+                    .single();
 
-                if (error) {
-                    console.error("Post insert error:", error);
-                    throw error;
+                if (postError) {
+                    console.error("Post insert error:", postError);
+                    throw postError;
+                }
+
+                // AI Seeding: Insert generated arguments
+                if (aiSeed && postData) {
+                    const aiArgs = aiSeed.arguments.map(arg => ({
+                        post_id: postData.id,
+                        user_id: user.id,
+                        text: `AI_ORACLE:|${arg.side}:|${arg.text}`,
+                        likes_count: arg.strength,
+                        is_published: true
+                    }));
+
+                    await supabase.from('comments').insert(aiArgs);
                 }
             }
 
@@ -174,17 +257,37 @@ export default function PublishScreen() {
         setIsVerifying(true);
         setVerificationStatus('idle');
 
-        // Mock verification delay
-        setTimeout(() => {
-            setIsVerifying(false);
-            // innovative AI logic: always approve for now!
-            const passed = true;
-            if (passed) {
+        try {
+            // Real AI Analysis
+            const analysis = await generateVideoAnalysis();
+            if (analysis) {
                 setVerificationStatus('verified');
             } else {
                 setVerificationStatus('rejected');
             }
-        }, 2000);
+        } catch (error) {
+            console.error("AI Verification error:", error);
+            setVerificationStatus('idle');
+        } finally {
+            setIsVerifying(false);
+        }
+    };
+
+    const handleAISuggest = async () => {
+        setSuggesting(true);
+        try {
+            const seed = await generateDebateSeed(caption || "New Video");
+            if (seed) {
+                setCaption(seed.thesis);
+                setAiSeed(seed);
+                setVerificationStatus('verified');
+            }
+        } catch (error) {
+            console.error("AI Suggestion error:", error);
+            Alert.alert("Error", "AI is currently resting. Try again soon!");
+        } finally {
+            setSuggesting(false);
+        }
     };
 
     const isVideoSelection = !!videoUri;
@@ -238,6 +341,22 @@ export default function PublishScreen() {
                         autoFocus={!isVideoSelection}
                     />
 
+                    {/* AI Suggestion Button */}
+                    <TouchableOpacity
+                        style={[styles.aiSuggestBtn, suggesting && { opacity: 0.7 }]}
+                        onPress={handleAISuggest}
+                        disabled={suggesting}
+                    >
+                        {suggesting ? (
+                            <ActivityIndicator size="small" color="#000" />
+                        ) : (
+                            <>
+                                <Ionicons name="sparkles" size={16} color="#000" />
+                                <Text style={styles.aiSuggestText}>AI Logic Oracle: Extract Thesis</Text>
+                            </>
+                        )}
+                    </TouchableOpacity>
+
                     {/* PREVIEWS */}
                     {isVideoSelection && (
                         <View style={styles.mediaPreview}>
@@ -251,7 +370,7 @@ export default function PublishScreen() {
                             {/* Verification Overlay */}
                             {isVerifying && (
                                 <View style={styles.verificationOverlay}>
-                                    <ActivityIndicator size="large" color="#3385FF" />
+                                    <ActivityIndicator size="large" color="#D9E4FF" />
                                     <Text style={styles.verificationText}>Verifying AI Content...</Text>
                                 </View>
                             )}
@@ -269,8 +388,8 @@ export default function PublishScreen() {
                                     <Ionicons name="alert-circle" size={48} color="#ef4444" />
                                     <Text style={styles.errorTitle}>Verification Failed</Text>
                                     <Text style={styles.errorText}>
-                                        This video does not appear to be AI-generated.
-                                        Please upload AI-related content only.
+                                        This video does not appear to be high-quality content.
+                                        Please upload engaging short videos only.
                                     </Text>
                                 </View>
                             )}
@@ -338,7 +457,7 @@ export default function PublishScreen() {
                 {!isVideoSelection && (
                     <View style={styles.toolbar}>
                         <TouchableOpacity style={styles.toolbarButton} onPress={pickImage}>
-                            <Ionicons name="image-outline" size={24} color="#3385FF" />
+                            <Ionicons name="image-outline" size={24} color="#D9E4FF" />
                         </TouchableOpacity>
 
                         <TouchableOpacity
@@ -352,16 +471,16 @@ export default function PublishScreen() {
                             <MaterialIcons
                                 name="mic"
                                 size={24}
-                                color={isRecording ? "#FFF" : "#3385FF"}
+                                color={isRecording ? "#FFF" : "#D9E4FF"}
                             />
                         </TouchableOpacity>
 
                         <TouchableOpacity style={styles.toolbarButton}>
-                            <MaterialIcons name="poll" size={24} color="#3385FF" />
+                            <MaterialIcons name="poll" size={24} color="#D9E4FF" />
                         </TouchableOpacity>
 
                         <TouchableOpacity style={styles.toolbarButton}>
-                            <Ionicons name="location-outline" size={24} color="#3385FF" />
+                            <Ionicons name="location-outline" size={24} color="#D9E4FF" />
                         </TouchableOpacity>
 
                         {isRecording && (
@@ -401,7 +520,7 @@ const styles = StyleSheet.create({
         padding: 8,
     },
     postButton: {
-        backgroundColor: '#3385FF',
+        backgroundColor: '#D9E4FF',
         paddingHorizontal: 20,
         paddingVertical: 8,
         borderRadius: 20,
@@ -485,8 +604,8 @@ const styles = StyleSheet.create({
         borderColor: 'rgba(255,255,255,0.1)',
     },
     categoryChipActive: {
-        backgroundColor: '#3385FF',
-        borderColor: '#3385FF',
+        backgroundColor: '#D9E4FF',
+        borderColor: '#D9E4FF',
     },
     categoryChipText: {
         color: '#AAA',
@@ -556,7 +675,7 @@ const styles = StyleSheet.create({
         width: 40,
         height: 40,
         borderRadius: 20,
-        backgroundColor: '#3385FF',
+        backgroundColor: '#D9E4FF',
         alignItems: 'center',
         justifyContent: 'center',
         marginRight: 12,
@@ -570,7 +689,7 @@ const styles = StyleSheet.create({
     },
     bar: {
         width: 4,
-        backgroundColor: '#3385FF',
+        backgroundColor: '#D9E4FF',
         borderRadius: 2,
     },
     deleteAudio: {
@@ -594,7 +713,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         marginRight: 8,
-        backgroundColor: 'rgba(51, 133, 255, 0.1)',
+        backgroundColor: 'rgba(217, 228, 255, 0.1)',
     },
     recordingButton: {
         backgroundColor: '#ef4444',
@@ -638,5 +757,22 @@ const styles = StyleSheet.create({
         fontSize: 14,
         textAlign: 'center',
         lineHeight: 20,
+    },
+    aiSuggestBtn: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: '#D9E4FF',
+        paddingHorizontal: 16,
+        paddingVertical: 10,
+        borderRadius: 12,
+        marginHorizontal: 20,
+        marginTop: 8,
+        gap: 8,
+        alignSelf: 'flex-start',
+    },
+    aiSuggestText: {
+        color: '#000',
+        fontSize: 13,
+        fontWeight: '700',
     },
 });

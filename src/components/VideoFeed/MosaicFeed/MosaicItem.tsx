@@ -8,7 +8,7 @@ import { useTheme } from '../../Theme/ThemeProvider';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const GRID_SPACING = 12;
-const ITEM_WIDTH = (SCREEN_WIDTH - (GRID_SPACING * 3)) / 2;
+// Item width is handled by flex and numColumns in parent
 
 interface MosaicItemProps {
     video: any;
@@ -23,33 +23,64 @@ const formatNumber = (num: number): string => {
     return num.toString();
 };
 
-export const MosaicItem = memo(({ video, isActive, isScreenFocused, onPress }: MosaicItemProps) => {
-    const { theme, mode } = useTheme();
-    const isDark = mode === 'dark';
+import { encodeVideoUrl } from '../../../lib/utils/url';
 
-    const player = useVideoPlayer(video.videoUrl, (player) => {
+interface MosaicVideoProps {
+    videoUrl: string;
+    isActive: boolean;
+    isScreenFocused: boolean;
+}
+
+const MosaicVideo = ({ videoUrl, isActive, isScreenFocused }: MosaicVideoProps) => {
+    const player = useVideoPlayer(encodeVideoUrl(videoUrl), (player) => {
         player.loop = true;
         player.muted = true;
     });
 
     useEffect(() => {
         if (isActive && isScreenFocused) {
-            player.play();
+            const playVideo = async () => {
+                try {
+                    await player.play();
+                } catch (e: any) {
+                    if (e.name !== 'AbortError') {
+                        console.error("MosaicItem: Playback failed", e);
+                    }
+                }
+            };
+            playVideo();
         } else {
             player.pause();
         }
     }, [isActive, isScreenFocused, player]);
 
     return (
+        <VideoView
+            player={player}
+            style={StyleSheet.absoluteFill}
+            contentFit="cover"
+            nativeControls={false}
+        />
+    );
+};
+
+export const MosaicItem = memo(({ video, isActive, isScreenFocused, onPress }: MosaicItemProps) => {
+    const { theme, mode } = useTheme();
+    const isDark = mode === 'dark';
+
+    return (
         <Pressable onPress={onPress} style={styles.container}>
             <View style={styles.card}>
                 {/* Video Layer */}
-                <VideoView
-                    player={player}
-                    style={StyleSheet.absoluteFill}
-                    contentFit="cover"
-                    nativeControls={false}
-                />
+                {video.videoUrl ? (
+                    <MosaicVideo
+                        videoUrl={video.videoUrl}
+                        isActive={isActive}
+                        isScreenFocused={isScreenFocused}
+                    />
+                ) : (
+                    <View style={[StyleSheet.absoluteFill, { backgroundColor: '#111' }]} />
+                )}
 
                 {/* Dark Overlay for better text contrast */}
                 <LinearGradient
@@ -97,8 +128,9 @@ export const MosaicItem = memo(({ video, isActive, isScreenFocused, onPress }: M
 
 const styles = StyleSheet.create({
     container: {
-        width: ITEM_WIDTH,
-        height: ITEM_WIDTH,
+        flex: 1, // Use flex instead of fixed width
+        aspectRatio: 1, // Keep it square
+        marginHorizontal: GRID_SPACING / 2,
         marginBottom: GRID_SPACING,
         borderRadius: 24,
         overflow: 'hidden',

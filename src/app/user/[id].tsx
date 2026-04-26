@@ -141,7 +141,7 @@ const ProfileHeader = ({ profile, user, scrollY, headerImageUrl, activeTab, setA
                                 </View>
                             ) : (
                                 <LinearGradient
-                                    colors={[theme.colors.primary.DEFAULT, '#FF4B8B']} // Gradient based on primary
+                                    colors={[theme.colors.primary.DEFAULT, theme.colors.primary.DEFAULT]} // Strict 3-color palette
                                     start={{ x: 0, y: 0 }}
                                     end={{ x: 1, y: 0 }}
                                     style={styles.modernButton}
@@ -188,24 +188,36 @@ const ProfileHeader = ({ profile, user, scrollY, headerImageUrl, activeTab, setA
     );
 };
 
-const VideoGridItem = ({ item, index, onPress }: { item: any, index: number, onPress: () => void }) => {
-    const player = useVideoPlayer(encodeVideoUrl(item.videoUrl), player => {
+const InternalVideoGridItem = ({ videoUrl }: { videoUrl: string }) => {
+    const player = useVideoPlayer(encodeVideoUrl(videoUrl), player => {
         player.muted = true;
         player.loop = false;
         player.pause();
     });
 
     return (
+        <VideoView
+            player={player}
+            style={styles.videoThumbnail}
+            contentFit="cover"
+            nativeControls={false}
+        />
+    );
+};
+
+const VideoGridItem = ({ item, index, onPress }: { item: any, index: number, onPress: () => void }) => {
+    return (
         <Pressable
             style={styles.videoGridItem}
             onPress={onPress}
         >
-            <VideoView
-                player={player}
-                style={styles.videoThumbnail}
-                contentFit="cover"
-                nativeControls={false}
-            />
+            {item.videoUrl ? (
+                <InternalVideoGridItem videoUrl={item.videoUrl} />
+            ) : (
+                <View style={[styles.videoThumbnail, { justifyContent: 'center', alignItems: 'center' }]}>
+                    <Ionicons name="videocam-off" size={24} color="rgba(255,255,255,0.1)" />
+                </View>
+            )}
             <View style={styles.viewsOverlay}>
                 <Ionicons name="play-outline" size={12} color="white" />
                 <Text style={styles.viewsText}>{item.likes || 0}</Text>
@@ -263,7 +275,7 @@ export default function UserProfileScreen() {
 
             <View style={styles.postFooter}>
                 <Pressable style={styles.actionButtonInteraction}>
-                    <Text style={{ color: '#3385FF', fontSize: 18 }}>✦</Text>
+                    <Text style={{ color: '#D9E4FF', fontSize: 18 }}>✦</Text>
                     <Text style={styles.actionText}>{item.likes || 0}</Text>
                 </Pressable>
 

@@ -80,10 +80,10 @@ function CommentRow({
                     </Pressable>
                     <Pressable onPress={handleLike} style={[styles.commentLike, comment.isLiked && styles.commentLikePill]} hitSlop={16}>
                         <Animated.View style={{ transform: [{ scale: heartScale }] }}>
-                            <Text style={[styles.sparkle, comment.isLiked && { color: '#0066FF' }]}>✦</Text>
+                            <Text style={[styles.sparkle, comment.isLiked && { color: '#D9E4FF' }]}>✦</Text>
                         </Animated.View>
                         {comment.likes > 0 && (
-                            <Text style={[styles.commentLikeCount, comment.isLiked && { color: '#0066FF' }]}>
+                            <Text style={[styles.commentLikeCount, comment.isLiked && { color: '#D9E4FF' }]}>
                                 {comment.likes}
                             </Text>
                         )}
@@ -187,7 +187,7 @@ export function CommentsModal({ visible, videoId, onClose }: CommentsModalProps)
                     <View style={styles.listWrapper}>
                         {loading ? (
                             <View style={styles.loader}>
-                                <ActivityIndicator color="#0066FF" />
+                                <ActivityIndicator color="#D9E4FF" />
                             </View>
                         ) : comments.length === 0 ? (
                             <View style={styles.empty}>
@@ -217,10 +217,10 @@ export function CommentsModal({ visible, videoId, onClose }: CommentsModalProps)
 
                     {/* Reply indicator */}
                     {replyTo && (
-                        <View style={[styles.replyIndicator, { backgroundColor: isDark ? 'rgba(0,102,255,0.15)' : 'rgba(0,102,255,0.08)' }]}>
+                        <View style={[styles.replyIndicator, { backgroundColor: isDark ? 'rgba(217, 228, 255, 0.15)' : 'rgba(217, 228, 255, 0.08)' }]}>
                             <Text style={styles.replyIndicatorText}>Replying to @{replyTo.name}</Text>
                             <Pressable onPress={() => setReplyTo(null)} hitSlop={8}>
-                                <Ionicons name="close" size={16} color="rgba(0,102,255,0.8)" />
+                                <Ionicons name="close" size={16} color="rgba(217, 228, 255, 0.8)" />
                             </Pressable>
                         </View>
                     )}
@@ -252,7 +252,7 @@ export function CommentsModal({ visible, videoId, onClose }: CommentsModalProps)
                             style={[
                                 styles.sendBtn,
                                 {
-                                    backgroundColor: text.trim() && user ? '#0066FF' : isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.08)',
+                                    backgroundColor: text.trim() && user ? '#D9E4FF' : isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.08)',
                                 }
                             ]}
                         >
@@ -364,7 +364,7 @@ const styles = StyleSheet.create({
     replyBtn: {
         fontSize: 12,
         fontWeight: '600',
-        color: '#0066FF',
+        color: '#D9E4FF',
     },
     commentLike: {
         flexDirection: 'row',
@@ -376,7 +376,7 @@ const styles = StyleSheet.create({
         borderRadius: 12,
     },
     commentLikePill: {
-        backgroundColor: 'rgba(0,102,255,0.1)',
+        backgroundColor: 'rgba(217, 228, 255, 0.1)',
     },
     sparkle: {
         fontSize: 14,
@@ -393,7 +393,7 @@ const styles = StyleSheet.create({
         gap: 8,
         paddingLeft: 4,
         borderLeftWidth: 2,
-        borderLeftColor: 'rgba(0,102,255,0.2)',
+        borderLeftColor: 'rgba(217, 228, 255, 0.2)',
     },
     replyRow: {
         flexDirection: 'row',
@@ -416,7 +416,7 @@ const styles = StyleSheet.create({
     },
     replyIndicatorText: {
         fontSize: 13,
-        color: '#0066FF',
+        color: '#D9E4FF',
         fontWeight: '600',
     },
     inputRow: {

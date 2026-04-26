@@ -49,7 +49,7 @@ export default function LoginFormScreen() {
             >
                 {/* Back Button */}
                 <Pressable onPress={() => router.back()} style={styles.backButton}>
-                    <Text style={[styles.backButtonText, { color: theme.colors.text.secondary }]}>← Back</Text>
+                    <Text style={[styles.backButtonText, { color: '#D9E4FF' }]}>← Back</Text>
                 </Pressable>
 
                 <View style={styles.content}>
@@ -63,7 +63,7 @@ export default function LoginFormScreen() {
                             style={[styles.input, {
                                 backgroundColor: isDark ? 'rgba(255,255,255,0.06)' : '#F1F5F9',
                                 color: theme.colors.text.primary,
-                                borderColor: isDark ? 'rgba(0, 212, 255, 0.2)' : 'rgba(0,0,0,0.08)',
+                                borderColor: isDark ? 'rgba(217, 228, 255, 0.2)' : 'rgba(0,0,0,0.08)',
                             }]}
                             placeholder="Email"
                             placeholderTextColor={theme.colors.text.muted}
@@ -76,7 +76,7 @@ export default function LoginFormScreen() {
                             style={[styles.input, {
                                 backgroundColor: isDark ? 'rgba(255,255,255,0.06)' : '#F1F5F9',
                                 color: theme.colors.text.primary,
-                                borderColor: isDark ? 'rgba(0, 212, 255, 0.2)' : 'rgba(0,0,0,0.08)',
+                                borderColor: isDark ? 'rgba(217, 228, 255, 0.2)' : 'rgba(0,0,0,0.08)',
                             }]}
                             placeholder="Password"
                             placeholderTextColor={theme.colors.text.muted}
@@ -93,7 +93,7 @@ export default function LoginFormScreen() {
                             disabled={loading}
                         >
                             <LinearGradient
-                                colors={['#06B6D4', '#8B5CF6', '#EC4899']}
+                                colors={['#D9E4FF', '#D9E4FF']}
                                 start={{ x: 0, y: 0 }}
                                 end={{ x: 1, y: 0 }}
                                 style={styles.loginButtonGradient}
@@ -113,7 +113,7 @@ export default function LoginFormScreen() {
                             ]}
                             onPress={() => {/* TODO: Google Auth */ }}
                         >
-                            <AntDesign name="google" size={20} color="#000000" style={styles.googleIcon} />
+                            <AntDesign name="google" size={20} color="#D9E4FF" style={styles.googleIcon} />
                             <Text style={styles.googleButtonText}>Continue with Google</Text>
                         </Pressable>
                     </View>
@@ -163,17 +163,17 @@ const styles = StyleSheet.create({
         borderWidth: 1,
     },
     errorText: {
-        color: '#EF4444',
+        color: '#FFFFFF',
         fontSize: 14,
         textAlign: 'center',
     },
     loginButton: {
         borderRadius: 16,
         overflow: 'hidden',
-        shadowColor: '#06B6D4',
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.3,
-        shadowRadius: 12,
+        shadowColor: '#D9E4FF',
+        shadowOffset: { width: 0, height: 8 },
+        shadowOpacity: 0.4,
+        shadowRadius: 16,
         elevation: 8,
     },
     loginButtonGradient: {
@@ -184,7 +184,7 @@ const styles = StyleSheet.create({
     loginButtonText: {
         fontSize: 18,
         fontWeight: '700',
-        color: '#FFFFFF',
+        color: '#000000',
     },
     buttonDisabled: {
         opacity: 0.5,

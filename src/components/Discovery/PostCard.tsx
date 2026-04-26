@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { View, Text, StyleSheet, Pressable, Image, Animated } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useVideoPlayer, VideoView } from 'expo-video';
@@ -35,7 +35,7 @@ interface PostCardProps {
 
 // Generate a deterministic color from a string (for the accent)
 const getAccentColor = (str: string): string => {
-    const colors = ['#FF3B6B', '#0066FF', '#AF52DE', '#FF6B35', '#34C759', '#FF9500', '#5856D6'];
+    const colors = ['#FF3B6B', '#D9E4FF', '#D9E4FF', '#FF6B35', '#34C759', '#FF9500', '#D9E4FF'];
     let hash = 0;
     for (let i = 0; i < str.length; i++) hash = str.charCodeAt(i) + ((hash << 5) - hash);
     return colors[Math.abs(hash) % colors.length];
@@ -173,12 +173,12 @@ export const PostCard = ({
                                 <Animated.View style={{ transform: [{ scale: heartScale }] }}>
                                     <Text style={[
                                         styles.sparkle,
-                                        post.isLiked && { color: '#0066FF' }
+                                        post.isLiked && { color: '#D9E4FF' }
                                     ]}>✦</Text>
                                 </Animated.View>
                                 <Text style={[
                                     styles.pillText,
-                                    { color: post.isLiked ? '#0066FF' : isDark ? 'rgba(255,255,255,0.55)' : 'rgba(0,0,0,0.45)' }
+                                    { color: post.isLiked ? '#D9E4FF' : isDark ? 'rgba(255,255,255,0.55)' : 'rgba(0,0,0,0.45)' }
                                 ]}>
                                     {formatNumber(post.likes)}
                                 </Text>

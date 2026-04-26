@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { Tabs } from 'expo-router';
 import { setAudioModeAsync } from 'expo-audio';
 import { Feather, SimpleLineIcons, Ionicons, MaterialCommunityIcons, Entypo } from '@expo/vector-icons';
-import { View, Dimensions, Platform } from 'react-native';
+import { View, Dimensions, Platform, useWindowDimensions } from 'react-native';
 import { ResponsiveLayout } from '../../components/Layout/ResponsiveLayout';
 import { useTheme } from '../../components/Theme/ThemeProvider';
 
@@ -23,20 +23,21 @@ const TabLayout = () => {
         initAudio();
     }, []);
 
+    const { width } = useWindowDimensions();
     const { theme, mode } = useTheme();
     const isDark = mode === 'dark';
-    const isWeb = Platform.OS === 'web';
+    const isDesktopWeb = Platform.OS === 'web' && width > 768;
 
     return (
         <ResponsiveLayout>
             <Tabs
                 screenOptions={{
                     headerShown: false,
-                    tabBarActiveTintColor: theme.colors.text.primary,
+                    tabBarActiveTintColor: '#D9E4FF',
                     tabBarInactiveTintColor: isDark ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0,0,0,0.5)',
                     tabBarStyle: {
-                        backgroundColor: isWeb ? 'transparent' : 'transparent',
-                        display: isWeb ? 'none' : 'flex',
+                        backgroundColor: 'transparent',
+                        display: isDesktopWeb ? 'none' : 'flex',
                         position: 'absolute',
                         bottom: Platform.OS === 'ios' ? 4 : 12,
                         left: 0,

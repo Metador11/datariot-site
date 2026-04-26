@@ -17,9 +17,8 @@ const { width } = Dimensions.get('window');
 // STRICT COLORS:
 // White: #FFFFFF
 // Black: #000000
-// Blue: #0055FF (Primary, electric/vivid blue)
-
-const BLUE = '#0055FF';
+// Light Cyan: #D9E4FF (Primary, electric/vivid white-blue)
+const BLUE = '#D9E4FF';
 
 function ActionCard({
     onPress,
@@ -66,7 +65,7 @@ function ActionCard({
                     styles.card,
                     isPrimary
                         ? { backgroundColor: BLUE }
-                        : { backgroundColor: bg, borderColor: isDark ? '#333' : '#E5E5E5', borderWidth: 2 }
+                        : { backgroundColor: bg, borderColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)', borderWidth: 2 }
                 ]}
             >
                 <View style={styles.cardHeader}>
@@ -74,7 +73,7 @@ function ActionCard({
                         styles.iconCirle,
                         isPrimary
                             ? { backgroundColor: '#FFFFFF' }
-                            : { backgroundColor: isDark ? '#111' : '#F5F5F5' }
+                            : { backgroundColor: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)' }
                     ]}>
                         <Ionicons
                             name={icon}
@@ -86,21 +85,21 @@ function ActionCard({
                         styles.arrowCircle,
                         isPrimary
                             ? { backgroundColor: 'rgba(0,0,0,0.1)' }
-                            : { backgroundColor: isDark ? '#111' : '#F5F5F5' }
+                            : { backgroundColor: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)' }
                     ]}>
                         <Feather
                             name="arrow-up-right"
                             size={20}
-                            color={isPrimary ? '#FFFFFF' : fg}
+                            color={isPrimary ? '#000000' : fg}
                         />
                     </View>
                 </View>
 
                 <View style={styles.cardFooter}>
-                    <Text style={[styles.cardTitle, isPrimary ? { color: '#FFFFFF' } : { color: fg }]}>
+                    <Text style={[styles.cardTitle, isPrimary ? { color: '#000000' } : { color: fg }]}>
                         {title}
                     </Text>
-                    <Text style={[styles.cardSubtitle, isPrimary ? { color: 'rgba(255,255,255,0.8)' } : { color: isDark ? '#888' : '#666' }]}>
+                    <Text style={[styles.cardSubtitle, isPrimary ? { color: 'rgba(0,0,0,0.6)' } : { color: isDark ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0.5)' }]}>
                         {subtitle}
                     </Text>
                 </View>
@@ -185,7 +184,7 @@ export default function CreateScreen() {
 
                     {/* FOOTER TEXT */}
                     <Animated.View entering={FadeInDown.delay(300).springify()} style={styles.footerWrap}>
-                        <Text style={[styles.footerText, { color: isDark ? '#555' : '#AAA' }]}>
+                        <Text style={[styles.footerText, { color: isDark ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.2)' }]}>
                             {`DESIGN SYSTEM\nB/W/BLU`}
                         </Text>
                     </Animated.View>

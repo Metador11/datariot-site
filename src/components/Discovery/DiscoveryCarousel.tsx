@@ -121,9 +121,9 @@ const styles = StyleSheet.create({
         padding: 8,
         borderRadius: 12,
         overflow: 'hidden',
-        backgroundColor: 'rgba(0,136,255,0.1)',
+        backgroundColor: 'rgba(217, 228, 255, 0.1)',
         borderWidth: 1,
-        borderColor: 'rgba(0,136,255,0.2)',
+        borderColor: 'rgba(217, 228, 255, 0.2)',
     },
     rationaleText: {
         color: '#FFF',
@@ -138,7 +138,7 @@ const styles = StyleSheet.create({
         right: 16,
     },
     author: {
-        color: '#0088FF',
+        color: '#D9E4FF',
         fontSize: 12,
         fontWeight: '800',
         marginBottom: 2,

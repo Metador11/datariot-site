@@ -71,7 +71,7 @@ export default function ChatScreen() {
     return (
         <View style={[styles.container, { backgroundColor: theme.colors.background.primary }]}>
             <LinearGradient
-                colors={isDark ? ['#0f172a', '#000000'] : ['#f8fafc', '#ffffff']}
+                colors={isDark ? ['#000000', '#000000'] : ['#FFFFFF', '#FFFFFF']}
                 style={StyleSheet.absoluteFill}
             />
             <Stack.Screen options={{ headerShown: false }} />
@@ -90,10 +90,10 @@ export default function ChatScreen() {
                             <Text style={[styles.headerTitle, { color: theme.colors.primary.light }]}>{name || 'Chat'}</Text>
                             <Text style={[styles.headerStatus, { color: theme.colors.primary.DEFAULT }]}>SYSTEM.ONLINE</Text>
                         </View>
-                        <TouchableOpacity style={[styles.headerAction, { backgroundColor: isDark ? 'rgba(6, 182, 212, 0.1)' : 'rgba(6, 182, 212, 0.05)' }]}>
+                        <TouchableOpacity style={[styles.headerAction, { backgroundColor: isDark ? 'rgba(217, 228, 255, 0.1)' : 'rgba(217, 228, 255, 0.05)' }]}>
                             <Ionicons name="call" size={22} color={theme.colors.primary.light} />
                         </TouchableOpacity>
-                        <TouchableOpacity style={[styles.headerAction, { marginLeft: 8, backgroundColor: isDark ? 'rgba(6, 182, 212, 0.1)' : 'rgba(6, 182, 212, 0.05)' }]}>
+                        <TouchableOpacity style={[styles.headerAction, { marginLeft: 8, backgroundColor: isDark ? 'rgba(217, 228, 255, 0.1)' : 'rgba(217, 228, 255, 0.05)' }]}>
                             <Ionicons name="videocam" size={24} color={theme.colors.primary.light} />
                         </TouchableOpacity>
                     </View>
@@ -101,7 +101,7 @@ export default function ChatScreen() {
                     {/* Messages */}
                     {error ? (
                         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 20 }}>
-                            <Ionicons name="alert-circle-outline" size={48} color="#FF4466" />
+                            <Ionicons name="alert-circle-outline" size={48} color="#FFFFFF" />
                             <Text style={{ color: '#FFF', textAlign: 'center', marginTop: 12, fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace' }}>{error}</Text>
                             <TouchableOpacity
                                 onPress={() => router.replace('/inbox')}
@@ -127,12 +127,12 @@ export default function ChatScreen() {
                                 ]}>
                                     {item.media_url ? (
                                         <View style={styles.videoPlaceholder}>
-                                            <Ionicons name="play-circle" size={48} color="#FFF" />
-                                            <Text style={{ color: '#FFF', marginTop: 8 }}>Video Message</Text>
+                                            <Ionicons name="play-circle" size={48} color={theme.colors.primary.DEFAULT} />
+                                            <Text style={{ color: '#FFFFFF', marginTop: 8 }}>Video Message</Text>
                                         </View>
                                     ) : (
                                         item.sender === 'me' ? (
-                                            <View style={[styles.myBubbleContent, { backgroundColor: isDark ? 'rgba(6, 182, 212, 0.15)' : 'rgba(6, 182, 212, 0.1)', borderColor: theme.colors.primary.light }]}>
+                                            <View style={[styles.myBubbleContent, { backgroundColor: isDark ? 'rgba(217, 228, 255, 0.15)' : 'rgba(217, 228, 255, 0.1)', borderColor: theme.colors.primary.light }]}>
                                                 <Text style={[styles.messageTextMy, { color: theme.colors.primary.light }]}>{item.content}</Text>
                                             </View>
                                         ) : (
@@ -149,7 +149,7 @@ export default function ChatScreen() {
 
                     {/* Input */}
                     <View style={[styles.floatingInputWrapper, { paddingBottom: Math.max(insets.bottom, 16) }]}>
-                        <View style={[styles.floatingInputContainer, { backgroundColor: isDark ? 'rgba(6, 182, 212, 0.05)' : 'rgba(6, 182, 212, 0.05)' }]}>
+                        <View style={[styles.floatingInputContainer, { backgroundColor: isDark ? 'rgba(217, 228, 255, 0.05)' : 'rgba(217, 228, 255, 0.05)' }]}>
                             <TouchableOpacity style={styles.attachButton} onPress={attachMedia} disabled={uploading}>
                                 {uploading ? (
                                     <ActivityIndicator size="small" color={theme.colors.primary.light} />
@@ -160,7 +160,7 @@ export default function ChatScreen() {
                             <TextInput
                                 style={[styles.input, { color: theme.colors.primary.light }]}
                                 placeholder="> MESSAGE..."
-                                placeholderTextColor="rgba(6, 182, 212, 0.5)"
+                                placeholderTextColor="rgba(217, 228, 255, 0.5)"
                                 value={inputText}
                                 onChangeText={setInputText}
                                 multiline
@@ -219,7 +219,7 @@ const styles = StyleSheet.create({
     },
     headerAction: {
         padding: 10,
-        backgroundColor: 'rgba(51, 133, 255, 0.1)',
+        backgroundColor: 'rgba(217, 228, 255, 0.1)',
         borderRadius: 20,
     },
     messageList: {
@@ -277,7 +277,7 @@ const styles = StyleSheet.create({
         fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
     },
     messageTime: {
-        color: 'rgba(150,150,150,0.8)',
+        color: 'rgba(255, 255, 255, 0.4)',
         fontSize: 10,
         marginTop: 6,
         paddingHorizontal: 4,

@@ -1,11 +1,18 @@
 import React, { useEffect } from 'react';
 import { Stack } from 'expo-router';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { Platform } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { ThemeProvider } from '../components/Theme/ThemeProvider';
 import * as SplashScreen from 'expo-splash-screen';
-import { useFonts } from 'expo-font';
+import {
+    useFonts,
+    Oxanium_400Regular,
+    Oxanium_500Medium,
+    Oxanium_600SemiBold,
+    Oxanium_700Bold
+} from '@expo-google-fonts/oxanium';
 
 import { Feather, Ionicons, MaterialCommunityIcons, Entypo, SimpleLineIcons, AntDesign, FontAwesome5, MaterialIcons } from '@expo/vector-icons';
 
@@ -15,7 +22,11 @@ import { SpeedInsights } from '@vercel/speed-insights/react';
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-    const [fontsLoaded] = useFonts({
+    const [fontsLoaded, fontError] = useFonts({
+        Oxanium_400Regular,
+        Oxanium_500Medium,
+        Oxanium_600SemiBold,
+        Oxanium_700Bold,
         ...Feather.font,
         ...Ionicons.font,
         ...MaterialCommunityIcons.font,
@@ -27,12 +38,12 @@ export default function RootLayout() {
     });
 
     useEffect(() => {
-        if (fontsLoaded) {
+        if (fontsLoaded || fontError) {
             SplashScreen.hideAsync().catch(() => { });
         }
-    }, [fontsLoaded]);
+    }, [fontsLoaded, fontError]);
 
-    if (!fontsLoaded) {
+    if (!fontsLoaded && !fontError) {
         return null;
     }
 
@@ -47,8 +58,12 @@ export default function RootLayout() {
                     </Stack>
                 </SafeAreaProvider>
             </GestureHandlerRootView>
-            <Analytics />
-            <SpeedInsights />
+            {Platform.OS === 'web' && (
+                <>
+                    <Analytics />
+                    <SpeedInsights />
+                </>
+            )}
         </ThemeProvider>
     );
 }

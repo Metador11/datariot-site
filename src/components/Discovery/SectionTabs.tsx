@@ -34,7 +34,7 @@ export const SectionTabs = ({ tabs, activeTab, onTabPress }: SectionTabsProps) =
                         >
                             {isActive ? (
                                 <LinearGradient
-                                    colors={['rgba(0, 102, 255, 0.95)', 'rgba(0, 60, 200, 0.98)']}
+                                    colors={['rgba(217, 228, 255, 0.95)', 'rgba(217, 228, 255, 0.98)']}
                                     start={{ x: 0, y: 0 }}
                                     end={{ x: 1, y: 1 }}
                                     style={styles.activeBackground}
@@ -79,10 +79,10 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
         paddingVertical: 10,
         borderRadius: 24,
-        shadowColor: '#0066FF',
+        shadowColor: '#D9E4FF',
         shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.5,
-        shadowRadius: 8,
+        shadowOpacity: 0.4,
+        shadowRadius: 10,
         elevation: 8,
     },
     inactiveBackground: {
@@ -93,9 +93,9 @@ const styles = StyleSheet.create({
         borderColor: 'rgba(255,255,255,0.08)',
     },
     activeText: {
-        color: '#FFFFFF',
+        color: '#000000',
         fontSize: 14,
-        fontWeight: '700',
+        fontWeight: '800',
         letterSpacing: 0.2,
     },
     inactiveText: {

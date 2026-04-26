@@ -7,22 +7,23 @@ module.exports = {
         extend: {
             colors: {
                 primary: {
-                    DEFAULT: '#0066FF',
-                    dark: '#0052CC',
-                    light: '#3385FF',
+                    DEFAULT: '#0EA5E9',
+                    dark: '#0284C7',
+                    light: '#38BDF8',
                 },
                 secondary: {
-                    DEFAULT: '#00D4FF',
-                    dark: '#00A8CC',
-                    light: '#33DDFF',
+                    DEFAULT: '#06B6D4',
+                    dark: '#0891B2',
+                    light: '#22D3EE',
                 },
                 background: {
                     DEFAULT: '#000814',
-                    light: '#001D3D',
+                    light: '#0F172A',
+                    paper: '#020617',
                 },
                 surface: {
-                    DEFAULT: '#003566',
-                    light: '#034078',
+                    DEFAULT: 'rgba(15, 23, 42, 0.8)',
+                    light: 'rgba(30, 41, 59, 0.8)',
                 },
             },
         },

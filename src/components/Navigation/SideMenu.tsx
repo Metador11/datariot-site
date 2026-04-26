@@ -24,17 +24,17 @@ interface SideMenuProps {
 
 // Minimalist Menu Configuration
 const MENU_ITEMS = [
-    { title: 'HOME', route: '/(tabs)/index' },
-    { title: 'DISCOVER', route: '/(tabs)/discover' },
-    { title: 'DEBATE BRANCHES', route: '/(tabs)/discover' },
-    { title: 'PROFILE', route: '/(tabs)/profile' },
+    { title: 'DEBATE ARENA', route: '/(tabs)/index' },
+    { title: 'RULES', route: '/rules' },
+    { title: 'LEADERBOARD', route: '/leaderboard' },
+    { title: 'FORUM', route: '/forum' },
     { title: 'SETTINGS', route: '/settings' },
 ];
 
 const SOCIAL_LINKS = [
-    { id: 'twitter', icon: 'twitter', url: 'https://twitter.com/orvelis', color: '#FFFFFF' },
-    { id: 'discord', icon: 'discord', url: 'https://discord.gg/orvelis', color: '#FFFFFF' },
-    { id: 'instagram', icon: 'instagram', url: 'https://instagram.com/orvelis', color: '#FFFFFF' },
+    { id: 'twitter', icon: 'twitter', url: 'https://twitter.com/datariot_xyz', color: '#FFFFFF' },
+    { id: 'discord', icon: 'discord', url: 'https://discord.gg/KvBpEVrk2', color: '#FFFFFF' },
+    { id: 'instagram', icon: 'instagram', url: 'https://instagram.com/datariot.xyz', color: '#FFFFFF' },
 ];
 
 export function SideMenu({ isOpen, onClose }: SideMenuProps) {
@@ -137,7 +137,7 @@ export function SideMenu({ isOpen, onClose }: SideMenuProps) {
                 )}
                 {/* Subtle Gradient Overlay for depth */}
                 <LinearGradient
-                    colors={['rgba(50, 100, 255, 0.1)', 'transparent']}
+                    colors={['rgba(217, 228, 255, 0.1)', 'transparent']}
                     style={StyleSheet.absoluteFill}
                     start={{ x: 0, y: 0 }}
                     end={{ x: 1, y: 1 }}
@@ -154,7 +154,7 @@ export function SideMenu({ isOpen, onClose }: SideMenuProps) {
                         source={require('../../../assets/logo.jpg')}
                         style={{ width: 20, height: 20, marginRight: 8, borderRadius: 10 }}
                     />
-                    <Text style={styles.logoText}>ORVELIS</Text>
+                    <Text style={styles.logoText}>DATARIOT</Text>
                 </View>
             </View>
 
@@ -311,7 +311,7 @@ const styles = StyleSheet.create({
         width: 6,
         height: 6,
         borderRadius: 3,
-        backgroundColor: '#3385FF',
+        backgroundColor: '#D9E4FF',
         marginLeft: 15,
         marginTop: 5,
     },

@@ -1,57 +1,62 @@
 import React from 'react';
 import { View, Text, StyleSheet, Pressable, Image as RNImage } from 'react-native';
-import { theme } from '@design-system/theme';
+import { theme as baseTheme } from '../../design-system/theme';
+import { useTheme } from '../Theme/ThemeProvider';
 import { Feather } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import { LinearGradient } from 'expo-linear-gradient';
-
 
 export const WebTopNav = () => {
     const router = useRouter();
+    const { theme, mode, toggleTheme } = useTheme();
+    const isDark = mode === 'dark';
 
     return (
-        <View style={styles.container}>
+        <View style={[styles.container, { backgroundColor: 'transparent' }]}>
             <View style={styles.content}>
                 {/* Left: Logo */}
                 <View style={styles.left}>
                     <Pressable onPress={() => router.push('/')} style={{ flexDirection: 'row', alignItems: 'center' }}>
-                        <View style={styles.logoIconPlaceholder}>
+                        <View style={[styles.logoIconPlaceholder, { borderColor: theme.colors.surface.border, backgroundColor: isDark ? '#1E293B' : '#F1F5F9' }]}>
                             <RNImage
                                 source={require('../../../assets/logo.jpg')}
                                 style={styles.logoImage}
                             />
                         </View>
-                        <Text style={styles.logo}>ORVELIS</Text>
+                        <Text style={[styles.logo, { color: theme.colors.text.primary, fontFamily: theme.typography.fontFamilies.bold }]}>DATARIOT</Text>
                     </Pressable>
                 </View>
 
                 {/* Center: Navigation Links */}
                 <View style={styles.center}>
-                    <NavButton title="Discover" onPress={() => router.push('/')} />
-                    <NavButton title="Manifesto" />
-                    <NavButton title="Program" />
-                    <NavButton title="Support" />
+                    <NavButton theme={theme} title="Arena (Beta)" onPress={() => router.push('/')} />
+                    <NavButton theme={theme} title="Rules" />
+                    <NavButton theme={theme} title="Leaderboard" />
+                    <NavButton theme={theme} title="Forum" />
                 </View>
 
                 {/* Right: Actions */}
                 <View style={styles.right}>
-                    <Pressable style={styles.searchButton}>
-                        <Feather name="search" size={18} color="rgba(255, 255, 255, 0.4)" />
-                        <Text style={styles.searchText}>Search creators...</Text>
+                    <Pressable style={[styles.searchButton, { backgroundColor: theme.colors.surface.light, borderColor: theme.colors.surface.border }]}>
+                        <Feather name="search" size={18} color={theme.colors.primary.DEFAULT} />
+                        <Text style={[styles.searchText, { color: theme.colors.text.muted }]}>Search creators...</Text>
                     </Pressable>
 
                     <Pressable
-                        style={styles.loginButton}
+                        onPress={toggleTheme}
+                        style={[styles.themeIconButton, { backgroundColor: theme.colors.surface.light, borderColor: theme.colors.surface.border }]}
+                    >
+                        <Feather
+                            name={isDark ? 'sun' : 'moon'}
+                            size={20}
+                            color={theme.colors.text.primary}
+                        />
+                    </Pressable>
+
+                    <Pressable
+                        style={[styles.loginButton, { backgroundColor: theme.colors.primary.DEFAULT }]}
                         onPress={() => router.push('/auth/login')}
                     >
-                        <LinearGradient
-                            colors={['#0EA5E9', '#0284C7']}
-                            start={{ x: 0, y: 0 }}
-                            end={{ x: 1, y: 1 }}
-                            style={StyleSheet.absoluteFill}
-                        />
-
-                        <Text style={styles.loginText}>Launch App</Text>
+                        <Text style={[styles.loginText, { fontFamily: theme.typography.fontFamilies.bold }]}>Launch App</Text>
                     </Pressable>
                 </View>
             </View>
@@ -60,9 +65,9 @@ export const WebTopNav = () => {
     );
 };
 
-const NavButton = ({ title, onPress }: { title: string, onPress?: () => void }) => (
+const NavButton = ({ title, onPress, theme }: { title: string, onPress?: () => void, theme: any }) => (
     <Pressable style={styles.navButton} onPress={onPress}>
-        <Text style={styles.navButtonText}>{title}</Text>
+        <Text style={[styles.navButtonText, { color: theme.colors.text.secondary, fontFamily: theme.typography.fontFamilies.medium }]}>{title}</Text>
     </Pressable>
 );
 
@@ -70,16 +75,11 @@ const styles = StyleSheet.create({
     container: {
         height: 72,
         width: '100%',
-        backgroundColor: 'rgba(2, 4, 8, 0.75)',
-        borderBottomWidth: 1,
-        borderBottomColor: 'rgba(255, 255, 255, 0.08)',
         zIndex: 100,
         position: 'absolute',
         top: 0,
         left: 0,
         right: 0,
-        // @ts-ignore
-        backdropFilter: 'blur(20px)',
     },
     content: {
         flex: 1,
@@ -98,11 +98,9 @@ const styles = StyleSheet.create({
         width: 32,
         height: 32,
         borderRadius: 8,
-        backgroundColor: '#1E293B',
         marginRight: 12,
         overflow: 'hidden',
         borderWidth: 1,
-        borderColor: 'rgba(255, 255, 255, 0.1)',
     },
     logoImage: {
         width: '100%',
@@ -111,8 +109,6 @@ const styles = StyleSheet.create({
     },
     logo: {
         fontSize: 18,
-        fontWeight: '900',
-        color: '#FFFFFF',
         letterSpacing: 2,
     },
     center: {
@@ -134,9 +130,7 @@ const styles = StyleSheet.create({
         borderRadius: 20,
     },
     navButtonText: {
-        color: 'rgba(255, 255, 255, 0.6)',
         fontSize: 14,
-        fontWeight: '600',
         letterSpacing: 0.3,
     },
     searchButton: {
@@ -145,14 +139,11 @@ const styles = StyleSheet.create({
         gap: 10,
         paddingVertical: 10,
         paddingHorizontal: 16,
-        backgroundColor: 'rgba(255, 255, 255, 0.03)',
         borderWidth: 1,
-        borderColor: 'rgba(255, 255, 255, 0.08)',
         borderRadius: 12,
         width: 200,
     },
     searchText: {
-        color: 'rgba(255, 255, 255, 0.3)',
         fontSize: 13,
         fontWeight: '500',
     },
@@ -164,17 +155,19 @@ const styles = StyleSheet.create({
         position: 'relative',
         justifyContent: 'center',
         alignItems: 'center',
-        shadowColor: '#0EA5E9',
-        shadowOffset: { width: 0, height: 8 },
-        shadowOpacity: 0.25,
-        shadowRadius: 16,
     },
-
     loginText: {
         color: '#FFFFFF',
         fontSize: 14,
-        fontWeight: '800',
         letterSpacing: 0.5,
+    },
+    themeIconButton: {
+        width: 44,
+        height: 44,
+        borderRadius: 12,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderWidth: 1,
     },
 });
 

@@ -3,6 +3,7 @@ import { View, StyleSheet, Dimensions, Text, Pressable } from 'react-native';
 import { useVideoPlayer, VideoView } from 'expo-video';
 import { Ionicons } from '@expo/vector-icons';
 import { useIsFocused } from '@react-navigation/native';
+import { encodeVideoUrl } from '../../lib/utils/url';
 
 interface FeedItemProps {
     item: any;
@@ -17,6 +18,58 @@ interface FeedItemProps {
     onFollow: () => void;
 }
 
+interface InternalVideoProps {
+    videoUrl: string;
+    isActive: boolean;
+    isFocused: boolean;
+    isPaused: boolean;
+}
+
+const InternalVideo = ({ videoUrl, isActive, isFocused, isPaused }: InternalVideoProps) => {
+    const player = useVideoPlayer(encodeVideoUrl(videoUrl) || '', player => {
+        player.loop = true;
+        player.muted = true;
+    });
+
+    useEffect(() => {
+        if (isActive && isFocused && !isPaused) {
+            const playVideo = async () => {
+                try {
+                    await player.play();
+                } catch (e: any) {
+                    // Silently handle AbortError which is common on web when scrolling
+                    if (e.name !== 'AbortError') {
+                        console.error("FeedItem: Playback failed", e);
+                    }
+                }
+            };
+            playVideo();
+        } else {
+            player.pause();
+        }
+    }, [isActive, isFocused, isPaused, player]);
+
+    return (
+        <>
+            <VideoView
+                player={player}
+                style={StyleSheet.absoluteFill}
+                contentFit="cover"
+                nativeControls={false}
+                pointerEvents="none"
+            />
+            <View style={[StyleSheet.absoluteFill, { backgroundColor: 'rgba(0,0,0,0.3)' }]} />
+            <VideoView
+                player={player}
+                style={StyleSheet.absoluteFill}
+                contentFit="contain"
+                nativeControls={false}
+                pointerEvents="none"
+            />
+        </>
+    );
+};
+
 export const FeedItem = React.memo(({
     item,
     isActive,
@@ -28,43 +81,27 @@ export const FeedItem = React.memo(({
 }: FeedItemProps) => {
     const isFocused = useIsFocused();
     const [isPaused, setIsPaused] = React.useState(false);
-    const player = useVideoPlayer(item.videoUrl || item.url || '', player => {
-        player.loop = true;
-    });
-
-    useEffect(() => {
-        if (isActive && isFocused && !isPaused) {
-            player.play();
-        } else {
-            player.pause();
-        }
-    }, [isActive, isFocused, isPaused, player]);
 
     const togglePlayback = () => {
         setIsPaused(!isPaused);
     };
 
-
     return (
         <View style={[styles.container, { height }]}>
-            {/* Background Blurred Layer (fills everything) */}
-            <VideoView
-                player={player}
-                style={StyleSheet.absoluteFill}
-                contentFit="cover"
-                nativeControls={false}
-                pointerEvents="none"
-            />
-            <View style={[StyleSheet.absoluteFill, { backgroundColor: 'rgba(0,0,0,0.3)' }]} />
-
             <Pressable style={StyleSheet.absoluteFill} onPress={togglePlayback}>
-                <VideoView
-                    player={player}
-                    style={StyleSheet.absoluteFill}
-                    contentFit="contain"
-                    nativeControls={false}
-                    pointerEvents="none"
-                />
+                {(item.videoUrl || item.url) ? (
+                    <InternalVideo
+                        videoUrl={(item.videoUrl || item.url)}
+                        isActive={isActive}
+                        isFocused={isFocused}
+                        isPaused={isPaused}
+                    />
+                ) : (
+                    <View style={[StyleSheet.absoluteFill, { backgroundColor: '#050505', justifyContent: 'center', alignItems: 'center' }]}>
+                        <Ionicons name="videocam-off" size={48} color="rgba(255,255,255,0.15)" />
+                        <Text style={{ color: 'rgba(255,255,255,0.3)', marginTop: 12, fontSize: 12, fontWeight: '600' }}>STREAM_UNAVAILABLE</Text>
+                    </View>
+                )}
 
                 {isPaused && (
                     <View style={styles.pauseOverlay}>
@@ -74,27 +111,26 @@ export const FeedItem = React.memo(({
             </Pressable>
 
             {/* Simple fallback overlay */}
-            <View style={styles.overlay}>
+            <View style={styles.overlay} pointerEvents="box-none">
                 <View style={styles.infoContainer}>
                     <Text style={styles.title}>{item.title}</Text>
                     <Text style={styles.description}>{item.description}</Text>
                 </View>
                 <View style={styles.actionsContainer}>
                     <Pressable onPress={onLike} style={styles.actionButton}>
-                        <Text style={[styles.customIcon, { color: item.isLiked ? '#0EA5E9' : '#FFF' }]}>✦</Text>
+                        <Text style={[styles.customIcon, { color: item.isLiked ? '#D9E4FF' : '#FFF' }]}>✦</Text>
                         <Text style={styles.actionIconText}>{item.likes || 0}</Text>
                     </Pressable>
-
 
                     <Pressable onPress={onComment} style={styles.actionButton}>
                         <Ionicons name="chatbubble" size={24} color="#FFF" style={styles.plainIcon} />
                         <Text style={styles.actionIconText}>{item.comments || 0}</Text>
                     </Pressable>
+
                     <Pressable onPress={onSave} style={styles.actionButton}>
-                        <Ionicons name="bookmark" size={24} color={item.isSaved ? '#0EA5E9' : '#FFF'} style={styles.plainIcon} />
+                        <Ionicons name="bookmark" size={24} color={item.isSaved ? '#D9E4FF' : '#FFF'} style={styles.plainIcon} />
                         <Text style={styles.actionIconText}>{item.saved || 0}</Text>
                     </Pressable>
-
 
                     <Pressable onPress={onMore} style={styles.actionButton}>
                         <Ionicons name="ellipsis-horizontal" size={24} color="#FFF" style={styles.plainIcon} />
@@ -136,14 +172,14 @@ const styles = StyleSheet.create({
         bottom: 20,
         right: 16,
         alignItems: 'center',
-        gap: 16, // Reduced gap between vertical icons
+        gap: 16,
     },
     actionButton: {
         alignItems: 'center',
         justifyContent: 'center',
     },
     customIcon: {
-        fontSize: 26, // Slightly larger base to visually match Ionicons 24
+        fontSize: 26,
         lineHeight: 28,
         textAlign: 'center',
         textShadowColor: 'rgba(0, 0, 0, 0.5)',
@@ -163,7 +199,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: 'rgba(0,0,0,0.2)',
     },
-
     actionIconText: {
         color: '#FFF',
         fontSize: 11,

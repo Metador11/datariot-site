@@ -3,10 +3,14 @@ import { View, Text, StyleSheet, Pressable, TextInput } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import { Feather } from '@expo/vector-icons';
+import { theme as baseTheme } from '../../design-system/theme';
+import { useTheme } from '../Theme/ThemeProvider';
 
 export const WebRightPanel = () => {
     const router = useRouter();
     const [searchQuery, setSearchQuery] = useState('');
+    const { theme, mode } = useTheme();
+    const isDark = mode === 'dark';
 
     const handleSearch = () => {
         if (searchQuery.trim()) {
@@ -15,14 +19,14 @@ export const WebRightPanel = () => {
     };
 
     return (
-        <View style={styles.container}>
+        <View style={[styles.container, { backgroundColor: 'transparent' }]}>
             {/* Search Bar */}
-            <View style={styles.searchContainer}>
-                <Feather name="search" size={18} color="rgba(255, 255, 255, 0.5)" style={styles.searchIcon} />
+            <View style={[styles.searchContainer, { backgroundColor: theme.colors.surface.light, borderColor: theme.colors.surface.border }]}>
+                <Feather name="search" size={18} color={theme.colors.primary.DEFAULT} style={styles.searchIcon} />
                 <TextInput
-                    style={styles.searchInput}
-                    placeholder="Search Orvelis..."
-                    placeholderTextColor="rgba(255, 255, 255, 0.5)"
+                    style={[styles.searchInput, { color: theme.colors.text.primary }]}
+                    placeholder="Search creators..."
+                    placeholderTextColor={theme.colors.text.muted}
                     value={searchQuery}
                     onChangeText={setSearchQuery}
                     onSubmitEditing={handleSearch}
@@ -33,34 +37,37 @@ export const WebRightPanel = () => {
             {/* Hot Collections */}
             <View style={styles.sectionContainer}>
                 <View style={styles.sectionHeader}>
-                    <Text style={styles.sectionTitle}>Trending Now</Text>
+                    <Text style={[styles.sectionTitle, { color: theme.colors.text.primary, fontFamily: theme.typography.fontFamilies.bold }]}>Trending Now</Text>
                     <Pressable onPress={() => router.push('/discover')}>
-                        <Text style={styles.seeAll}>See All</Text>
+                        <Text style={[styles.seeAll, { color: theme.colors.primary.DEFAULT }]}>See All</Text>
                     </Pressable>
                 </View>
 
 
                 <View style={styles.collectionsList}>
                     <CollectionItem
+                        theme={theme}
                         iconName="music"
                         title="Music of the Week"
                         views="2.3M views"
-                        colors={['#0EA5E9', '#0369A1']}
-                        shadowColor="rgba(14, 165, 233, 0.4)"
+                        colors={[theme.colors.primary.DEFAULT, theme.colors.primary.light]}
+                        shadowColor={theme.colors.primary.glow}
                     />
                     <CollectionItem
+                        theme={theme}
                         iconName="smile"
                         title="Best Memes"
                         views="1.8M views"
-                        colors={['#0EA5E9', '#0284C7']}
-                        shadowColor="rgba(14, 165, 233, 0.4)"
+                        colors={[theme.colors.primary.DEFAULT, theme.colors.primary.light]}
+                        shadowColor={theme.colors.primary.glow}
                     />
                     <CollectionItem
+                        theme={theme}
                         iconName="zap"
                         title="Aesthetic"
                         views="945K views"
-                        colors={['#38BDF8', '#0EA5E9']}
-                        shadowColor="rgba(56, 189, 248, 0.4)"
+                        colors={[theme.colors.primary.DEFAULT, theme.colors.primary.light]}
+                        shadowColor={theme.colors.primary.glow}
                     />
                 </View>
 
@@ -68,18 +75,14 @@ export const WebRightPanel = () => {
 
             {/* Weekly Challenge */}
             <View style={styles.sectionContainer}>
-                <Text style={styles.sectionTitleWithoutAction}>Challenge</Text>
-                <View style={styles.challengeWrapper}>
+                <Text style={[styles.sectionTitleWithoutAction, { color: theme.colors.text.primary, fontFamily: theme.typography.fontFamilies.bold }]}>Challenge</Text>
+                <View style={[styles.challengeWrapper, { borderColor: theme.colors.surface.border }]}>
                     <LinearGradient
-                        colors={['#0EA5E9', '#0284C7']}
+                        colors={[theme.colors.primary.DEFAULT, theme.colors.primary.light]}
                         start={{ x: 0, y: 0 }}
                         end={{ x: 1, y: 1 }}
                         style={styles.challengeCard}
                     >
-
-                        <View style={styles.challengeGlow1} />
-                        <View style={styles.challengeGlow2} />
-
                         <View style={styles.challengeContent}>
                             <View style={styles.topBadge}>
                                 <Text style={styles.topBadgeText}>WEEKLY</Text>
@@ -90,7 +93,7 @@ export const WebRightPanel = () => {
                                     <View style={styles.challengeCircle} />
                                 </View>
                                 <View>
-                                    <Text style={styles.challengeTitle}>Slow Motion</Text>
+                                    <Text style={[styles.challengeTitle, { fontFamily: theme.typography.fontFamilies.bold }]}>Slow Motion</Text>
                                     <Text style={styles.challengeSub}>1.2K joined</Text>
                                 </View>
                             </View>
@@ -104,7 +107,7 @@ export const WebRightPanel = () => {
                                     (pressed || hovered) && styles.challengeBtnHovered
                                 ]}
                             >
-                                <Text style={styles.challengeBtnText}>Join Challenge</Text>
+                                <Text style={[styles.challengeBtnText, { color: theme.colors.primary.DEFAULT }]}>Join Challenge</Text>
                             </Pressable>
                         </View>
                     </LinearGradient>
@@ -113,30 +116,34 @@ export const WebRightPanel = () => {
 
 
             {/* Footer Links */}
-            <View style={styles.footer}>
+            <View style={[styles.footer, { borderTopColor: theme.colors.surface.border }]}>
                 <View style={styles.footerRow}>
-                    <Text style={styles.footerLink}>About</Text>
-                    <Text style={styles.footerLink}>Help</Text>
-                    <Text style={styles.footerLink}>Press</Text>
-                    <Text style={styles.footerLink}>API</Text>
+                    <Text style={[styles.footerLink, { color: theme.colors.text.secondary }]}>About</Text>
+                    <Text style={[styles.footerLink, { color: theme.colors.text.secondary }]}>Help</Text>
+                    <Text style={[styles.footerLink, { color: theme.colors.text.secondary }]}>Press</Text>
+                    <Text style={[styles.footerLink, { color: theme.colors.text.secondary }]}>API</Text>
                 </View>
                 <View style={styles.footerRow}>
-                    <Text style={styles.footerLink}>Privacy</Text>
-                    <Text style={styles.footerLink}>Terms</Text>
-                    <Text style={styles.footerLink}>Locations</Text>
+                    <Text style={[styles.footerLink, { color: theme.colors.text.secondary }]}>Privacy</Text>
+                    <Text style={[styles.footerLink, { color: theme.colors.text.secondary }]}>Terms</Text>
+                    <Text style={[styles.footerLink, { color: theme.colors.text.secondary }]}>Locations</Text>
                 </View>
-                <Text style={styles.copyright}>© 2026 Orvelis</Text>
+                <Text style={[styles.copyright, { color: theme.colors.text.muted }]}>© 2026 Datariot</Text>
             </View>
         </View>
     );
 };
 
-const CollectionItem = ({ iconName, title, views, colors, shadowColor }: { iconName: string, title: string, views: string, colors: string[], shadowColor: string }) => {
+const CollectionItem = ({ iconName, title, views, colors, shadowColor, theme }: { iconName: string, title: string, views: string, colors: string[], shadowColor: string, theme: any }) => {
     const [isHovered, setIsHovered] = useState(false);
 
     return (
         <Pressable
-            style={[styles.collectionItem, isHovered && styles.collectionItemHovered]}
+            style={[
+                styles.collectionItem,
+                { backgroundColor: theme.colors.surface.light },
+                isHovered && { backgroundColor: theme.colors.surface.borderHover }
+            ]}
             onHoverIn={() => setIsHovered(true)}
             onHoverOut={() => setIsHovered(false)}
         >
@@ -150,11 +157,11 @@ const CollectionItem = ({ iconName, title, views, colors, shadowColor }: { iconN
             </LinearGradient>
 
             <View style={styles.collectionInfo}>
-                <Text style={styles.collectionTitle}>{title}</Text>
-                <Text style={styles.collectionViews}>{views}</Text>
+                <Text style={[styles.collectionTitle, { color: theme.colors.text.primary, fontFamily: theme.typography.fontFamilies.bold }]}>{title}</Text>
+                <Text style={[styles.collectionViews, { color: theme.colors.text.muted }]}>{views}</Text>
             </View>
             <View style={[styles.arrowContainer, isHovered && styles.arrowContainerHovered]}>
-                <Feather name="chevron-right" size={14} color="rgba(255,255,255,0.7)" />
+                <Feather name="chevron-right" size={14} color={theme.colors.text.muted} />
             </View>
         </Pressable>
     );
@@ -181,15 +188,11 @@ const styles: any = StyleSheet.create({
     searchContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor: 'rgba(255, 255, 255, 0.05)', // Glass effect
         borderRadius: 16,
         paddingHorizontal: 16,
         height: 50,
         marginBottom: 40,
         borderWidth: 1,
-        borderColor: 'rgba(255, 255, 255, 0.1)',
-        // @ts-ignore
-        transition: 'all 0.2s ease',
     },
     searchIcon: {
         marginRight: 10,
@@ -197,7 +200,6 @@ const styles: any = StyleSheet.create({
     searchInput: {
         flex: 1,
         height: '100%',
-        color: '#FFFFFF',
         fontSize: 14,
         fontWeight: '500',
         // @ts-ignore
@@ -217,15 +219,11 @@ const styles: any = StyleSheet.create({
     },
     sectionTitle: {
         fontSize: 14,
-        fontWeight: '700',
-        color: 'rgba(255,255,255,0.9)',
         letterSpacing: 0.5,
         textTransform: 'uppercase',
     },
     sectionTitleWithoutAction: {
         fontSize: 14,
-        fontWeight: '700',
-        color: 'rgba(255,255,255,0.9)',
         letterSpacing: 0.5,
         textTransform: 'uppercase',
         marginBottom: 16,
@@ -233,7 +231,6 @@ const styles: any = StyleSheet.create({
     },
     seeAll: {
         fontSize: 12,
-        color: '#0EA5E9',
         fontWeight: '700',
     },
 
@@ -248,18 +245,8 @@ const styles: any = StyleSheet.create({
         alignItems: 'center',
         padding: 12,
         borderRadius: 16,
-        backgroundColor: 'rgba(255, 255, 255, 0.02)',
         borderWidth: 1,
         borderColor: 'transparent',
-        // @ts-ignore
-        transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
-        // @ts-ignore
-        cursor: 'pointer',
-    },
-    collectionItemHovered: {
-        backgroundColor: 'rgba(255, 255, 255, 0.06)',
-        borderColor: 'rgba(255, 255, 255, 0.05)',
-        transform: [{ translateX: 4 }],
     },
     collectionIcon: {
         width: 40,
@@ -277,29 +264,23 @@ const styles: any = StyleSheet.create({
     },
     collectionTitle: {
         fontSize: 14,
-        fontWeight: '600',
-        color: '#FFFFFF',
         marginBottom: 2,
     },
     collectionViews: {
         fontSize: 11,
-        color: 'rgba(255, 255, 255, 0.5)',
         fontWeight: '500',
     },
     arrowContainer: {
         width: 24,
         height: 24,
         borderRadius: 12,
-        backgroundColor: 'rgba(255,255,255,0.05)',
+        backgroundColor: 'rgba(0,0,0,0.05)',
         alignItems: 'center',
         justifyContent: 'center',
         opacity: 0,
-        // @ts-ignore
-        transition: 'all 0.2s',
     },
     arrowContainerHovered: {
         opacity: 1,
-        backgroundColor: 'rgba(255,255,255,0.1)',
     },
 
     // Challenge Card
@@ -307,35 +288,12 @@ const styles: any = StyleSheet.create({
         borderRadius: 24,
         overflow: 'hidden',
         borderWidth: 1,
-        borderColor: 'rgba(255,255,255,0.1)',
-        backgroundColor: 'rgba(0,0,0,0.2)',
     },
     challengeCard: {
         padding: 20,
         position: 'relative',
         overflow: 'hidden',
     },
-    challengeGlow1: {
-        position: 'absolute',
-        top: -40,
-        right: -40,
-        width: 150,
-        height: 150,
-        borderRadius: 75,
-        backgroundColor: 'rgba(255,255,255,0.1)',
-        filter: 'blur(40px)',
-    },
-    challengeGlow2: {
-        position: 'absolute',
-        bottom: -30,
-        left: -30,
-        width: 100,
-        height: 100,
-        borderRadius: 50,
-        backgroundColor: 'rgba(14, 165, 233, 0.4)',
-        filter: 'blur(30px)',
-    },
-
     challengeContent: {
         position: 'relative',
         zIndex: 1,
@@ -349,7 +307,7 @@ const styles: any = StyleSheet.create({
         marginBottom: 16,
     },
     topBadgeText: {
-        color: 'rgba(255,255,255,0.9)',
+        color: 'white',
         fontSize: 10,
         fontWeight: '800',
         letterSpacing: 1,
@@ -376,7 +334,6 @@ const styles: any = StyleSheet.create({
     },
     challengeTitle: {
         fontSize: 18,
-        fontWeight: '800',
         color: '#FFFFFF',
         marginBottom: 2,
     },
@@ -389,7 +346,7 @@ const styles: any = StyleSheet.create({
     challengeDesc: {
         fontSize: 13,
         lineHeight: 20,
-        color: 'rgba(255, 255, 255, 0.8)',
+        color: 'rgba(255, 255, 255, 0.9)',
         marginBottom: 20,
     },
     challengeBtn: {
@@ -402,31 +359,23 @@ const styles: any = StyleSheet.create({
         shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.3,
         shadowRadius: 8,
-        // @ts-ignore
-        transition: 'all 0.2s',
-        // @ts-ignore
-        cursor: 'pointer',
     },
     challengeBtnHovered: {
         transform: [{ scale: 1.02 }],
         shadowOpacity: 0.4,
     },
     challengeBtnText: {
-        color: '#0EA5E9',
         fontWeight: '800',
         fontSize: 13,
         letterSpacing: 0.5,
     },
 
-
-
     // Footer
     footer: {
         marginTop: 'auto',
-        opacity: 0.4,
+        opacity: 0.7,
         paddingTop: 20,
         borderTopWidth: 1,
-        borderTopColor: 'rgba(255,255,255,0.05)',
     },
     footerRow: {
         flexDirection: 'row',
@@ -436,14 +385,12 @@ const styles: any = StyleSheet.create({
     },
     footerLink: {
         fontSize: 11,
-        color: '#F8FAFC',
         fontWeight: '500',
         // @ts-ignore
         cursor: 'pointer',
     },
     copyright: {
         fontSize: 11,
-        color: 'rgba(248, 250, 252, 0.7)',
         marginTop: 4,
     }
 });

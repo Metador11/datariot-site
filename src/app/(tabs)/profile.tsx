@@ -108,7 +108,7 @@ const ProfileHeader = ({ profile, user, scrollY, headerImageUrl, activeTab, setA
     return (
         <View>
             <View style={styles.headerContainer}>
-                <Animated.View style={[StyleSheet.absoluteFill, bannerStyle, { backgroundColor: isDark ? '#1a1a2e' : '#e0e7ff' }]}>
+                <Animated.View style={[StyleSheet.absoluteFill, bannerStyle, { backgroundColor: isDark ? '#000000' : '#FFFFFF' }]}>
                     <ImageBackground
                         source={{ uri: headerImageUrl }}
                         style={StyleSheet.absoluteFill}
@@ -125,7 +125,7 @@ const ProfileHeader = ({ profile, user, scrollY, headerImageUrl, activeTab, setA
                 <View style={styles.profileTopSection}>
                     <View style={styles.avatarContainer}>
 
-                        <View style={[styles.avatar, { overflow: 'hidden', borderColor: theme.colors.background.primary, backgroundColor: isDark ? '#1a1a2e' : '#e0e7ff' }]}>
+                        <View style={[styles.avatar, { overflow: 'hidden', borderColor: theme.colors.background.primary, backgroundColor: isDark ? '#000000' : '#FFFFFF' }]}>
                             {profile?.avatar_url ? (
                                 <Image source={{ uri: profile.avatar_url }} style={StyleSheet.absoluteFill} />
                             ) : (
@@ -180,7 +180,7 @@ const ProfileHeader = ({ profile, user, scrollY, headerImageUrl, activeTab, setA
                             style={[styles.achievementsBtn, { backgroundColor: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.03)' }]}
                         >
                             <View style={styles.achievementsBtnLeft}>
-                                <Ionicons name="finger-print" size={18} color="#7AB5FF" />
+                                <Ionicons name="finger-print" size={18} color="#D9E4FF" />
                                 <Text style={[styles.achievementsBtnText, { color: theme.colors.text.primary }]}>Creator DNA</Text>
                             </View>
                             <Ionicons name="chevron-forward" size={16} color={theme.colors.text.secondary} />
@@ -210,7 +210,7 @@ const ProfileHeader = ({ profile, user, scrollY, headerImageUrl, activeTab, setA
                                     <MaterialCommunityIcons
                                         name={activeTab === tab ? 'play-box-multiple' : 'play-box-multiple-outline'}
                                         size={22}
-                                        color={activeTab === tab ? '#7AB5FF' : theme.colors.text.secondary}
+                                        color={activeTab === tab ? '#D9E4FF' : theme.colors.text.secondary}
                                     />
                                 ) : (
                                     <Ionicons
@@ -220,11 +220,11 @@ const ProfileHeader = ({ profile, user, scrollY, headerImageUrl, activeTab, setA
                                                 : (tab === 'posts' ? 'infinite-outline' : 'library-outline')
                                         }
                                         size={22}
-                                        color={activeTab === tab ? '#7AB5FF' : theme.colors.text.secondary}
+                                        color={activeTab === tab ? '#D9E4FF' : theme.colors.text.secondary}
                                     />
                                 )}
                                 {activeTab === tab && (
-                                    <Text style={[styles.activeTabText, { color: '#7AB5FF' }]}>
+                                    <Text style={[styles.activeTabText, { color: '#D9E4FF' }]}>
                                         {tab === 'videos' ? 'Essence' : tab === 'posts' ? 'Theses' : 'Vault'}
                                     </Text>
                                 )}
@@ -237,13 +237,24 @@ const ProfileHeader = ({ profile, user, scrollY, headerImageUrl, activeTab, setA
     );
 };
 
-const ProfileVideoGridItem = ({ item, onPress, isDark, featured = false }: { item: any, onPress: () => void, isDark: boolean, featured?: boolean }) => {
-    const player = useVideoPlayer(encodeVideoUrl(item.videoUrl), player => {
+const InternalProfileVideoGridItem = ({ videoUrl }: { videoUrl: string }) => {
+    const player = useVideoPlayer(encodeVideoUrl(videoUrl), player => {
         player.muted = true;
         player.loop = false;
         player.pause();
     });
 
+    return (
+        <VideoView
+            player={player}
+            style={StyleSheet.absoluteFill}
+            contentFit="cover"
+            nativeControls={false}
+        />
+    );
+};
+
+const ProfileVideoGridItem = ({ item, onPress, isDark, featured = false }: { item: any, onPress: () => void, isDark: boolean, featured?: boolean }) => {
     const scale = useSharedValue(1);
     const animStyle = useAnimatedStyle(() => ({ transform: [{ scale: scale.value }] }));
 
@@ -278,13 +289,14 @@ const ProfileVideoGridItem = ({ item, onPress, isDark, featured = false }: { ite
             onPress={onPress}
             style={{ width: itemWidth, height: itemHeight, marginBottom: 1 }}
         >
-            <Animated.View style={[{ flex: 1, overflow: 'hidden', borderRadius: featured ? 0 : 0, backgroundColor: isDark ? '#111' : '#ddd' }, animStyle]}>
-                <VideoView
-                    player={player}
-                    style={StyleSheet.absoluteFill}
-                    contentFit="cover"
-                    nativeControls={false}
-                />
+            <Animated.View style={[{ flex: 1, overflow: 'hidden', borderRadius: featured ? 0 : 0, backgroundColor: isDark ? '#000000' : '#EEEEEE' }, animStyle]}>
+                {item.videoUrl ? (
+                    <InternalProfileVideoGridItem videoUrl={item.videoUrl} />
+                ) : (
+                    <View style={[StyleSheet.absoluteFill, { justifyContent: 'center', alignItems: 'center' }]}>
+                        <Ionicons name="videocam-off" size={featured ? 32 : 24} color="rgba(255,255,255,0.1)" />
+                    </View>
+                )}
                 {/* Bottom gradient overlay */}
                 <LinearGradient
                     colors={['transparent', 'rgba(0,0,0,0.72)']}
@@ -292,7 +304,7 @@ const ProfileVideoGridItem = ({ item, onPress, isDark, featured = false }: { ite
                 >
                     {featured && (
                         <View style={styles.featuredBadge}>
-                            <Ionicons name="flame" size={11} color="#FF6B35" />
+                            <Ionicons name="flame" size={11} color="#FFFFFF" />
                             <Text style={styles.featuredBadgeText}>FEATURED</Text>
                         </View>
                     )}
@@ -571,7 +583,7 @@ export default function ProfileScreen() {
                             style={styles.authSignInWrapper}
                         >
                             <LinearGradient
-                                colors={['#06B6D4', '#8B5CF6', '#EC4899']}
+                                colors={['#D9E4FF', '#D9E4FF']}
                                 start={{ x: 0, y: 0 }}
                                 end={{ x: 1, y: 0 }}
                                 style={styles.authSignInGradient}
@@ -725,7 +737,7 @@ export default function ProfileScreen() {
                 onRequestClose={() => setShowAchievements(false)}
             >
                 <Pressable style={styles.modalOverlay} onPress={() => setShowAchievements(false)}>
-                    <Pressable style={[styles.modalContent, { backgroundColor: isDark ? '#0F0F1A' : '#FAFAFA' }]}>
+                    <Pressable style={[styles.modalContent, { backgroundColor: isDark ? '#000000' : '#FFFFFF' }]}>
                         {/* Handle */}
                         <View style={styles.modalHandle} />
 
@@ -870,7 +882,7 @@ const styles = StyleSheet.create({
         width: 14,
         height: 14,
         borderRadius: 7,
-        backgroundColor: '#10B981', // Emerald 500
+        backgroundColor: '#D9E4FF',
         borderWidth: 2,
     },
     avatarText: {
@@ -914,7 +926,7 @@ const styles = StyleSheet.create({
         width: 36,
         height: 4,
         borderRadius: 2,
-        backgroundColor: 'rgba(128,128,128,0.3)',
+        backgroundColor: 'rgba(255, 255, 255, 0.1)',
         alignSelf: 'center',
         marginBottom: 20,
     },
@@ -937,7 +949,7 @@ const styles = StyleSheet.create({
     },
     modalCloseBtn: {
         padding: 6,
-        backgroundColor: 'rgba(128,128,128,0.12)',
+        backgroundColor: 'rgba(255, 255, 255, 0.05)',
         borderRadius: 20,
     },
     // XP Card
@@ -1121,7 +1133,7 @@ const styles = StyleSheet.create({
         borderRadius: 14,
         overflow: 'hidden',
         alignSelf: 'flex-start',
-        shadowColor: '#7C3AED',
+        shadowColor: '#D9E4FF',
         shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.45,
         shadowRadius: 10,
@@ -1206,7 +1218,7 @@ const styles = StyleSheet.create({
     tabIndicator: {
         position: 'absolute',
         height: 40, // Height of the sliding pill
-        backgroundColor: '#7AB5FF',
+        backgroundColor: '#D9E4FF',
         borderRadius: 20,
         zIndex: 1,
     },
@@ -1274,10 +1286,10 @@ const styles = StyleSheet.create({
         paddingVertical: 3,
         marginBottom: 6,
         borderWidth: 1,
-        borderColor: 'rgba(255,107,53,0.4)',
+        borderColor: 'rgba(255,255,255,0.4)',
     },
     featuredBadgeText: {
-        color: '#FF6B35',
+        color: '#FFFFFF',
         fontSize: 9,
         fontWeight: '900',
         letterSpacing: 1,
@@ -1331,7 +1343,7 @@ const styles = StyleSheet.create({
         maxWidth: 300,
         borderRadius: 16,
         overflow: 'hidden',
-        shadowColor: '#06B6D4',
+        shadowColor: '#000000',
         shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.45,
         shadowRadius: 18,
@@ -1345,6 +1357,7 @@ const styles = StyleSheet.create({
         paddingVertical: 18,
         paddingHorizontal: 32,
         borderRadius: 16,
+        backgroundColor: '#D9E4FF',
     },
     authSignInText: {
         fontSize: 18,

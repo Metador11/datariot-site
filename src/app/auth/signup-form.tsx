@@ -92,7 +92,7 @@ export default function SignupFormScreen() {
                             disabled={loading}
                         >
                             <LinearGradient
-                                colors={[theme.colors.secondary.DEFAULT, theme.colors.secondary.dark]}
+                                colors={['#D9E4FF', '#D9E4FF']}
                                 start={{ x: 0, y: 0 }}
                                 end={{ x: 1, y: 0 }}
                                 style={styles.signupButtonGradient}
@@ -113,7 +113,7 @@ export default function SignupFormScreen() {
                             ]}
                             onPress={() => {/* TODO: Google Auth */ }}
                         >
-                            <AntDesign name="google" size={20} color="#000000" style={styles.googleIcon} />
+                            <AntDesign name="google" size={20} color="#D9E4FF" style={styles.googleIcon} />
                             <Text style={styles.googleButtonText}>Continue with Google</Text>
                         </Pressable>
                     </View>
@@ -135,7 +135,7 @@ const styles = StyleSheet.create({
         padding: theme.spacing.lg,
     },
     backButtonText: {
-        color: theme.colors.secondary.DEFAULT,
+        color: '#D9E4FF',
         fontSize: theme.typography.sizes.lg,
     },
     content: {
@@ -167,7 +167,7 @@ const styles = StyleSheet.create({
         fontSize: theme.typography.sizes.lg,
         color: theme.colors.text.primary,
         borderWidth: 1,
-        borderColor: 'rgba(0, 212, 255, 0.2)',
+        borderColor: 'rgba(217, 228, 255, 0.2)',
     },
     errorText: {
         color: theme.colors.error,
@@ -175,9 +175,13 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     signupButton: {
-        borderRadius: theme.borderRadius.xl,
+        borderRadius: 16,
         overflow: 'hidden',
-        ...theme.shadows.md,
+        shadowColor: '#D9E4FF',
+        shadowOffset: { width: 0, height: 8 },
+        shadowOpacity: 0.4,
+        shadowRadius: 16,
+        elevation: 8,
     },
     signupButtonGradient: {
         paddingVertical: theme.spacing.lg,
@@ -187,7 +191,7 @@ const styles = StyleSheet.create({
     signupButtonText: {
         fontSize: theme.typography.sizes.xl,
         fontWeight: '600',
-        color: theme.colors.white,
+        color: '#000000',
     },
     buttonDisabled: {
         opacity: 0.5,

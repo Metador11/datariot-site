@@ -78,7 +78,7 @@ export const DNAMatchCard: React.FC<DNAMatchCardProps> = ({ creator, onPress }) 
                 </View>
 
                 <View style={styles.dnaDecoration}>
-                    <MaterialCommunityIcons name="dna" size={120} color="rgba(0,136,255,0.1)" />
+                    <MaterialCommunityIcons name="dna" size={120} color="rgba(217, 228, 255, 0.1)" />
                 </View>
             </Pressable>
         </Animated.View>
@@ -121,32 +121,33 @@ const styles = StyleSheet.create({
     },
     matchText: {
         color: '#FFF',
+        fontFamily: theme.typography.fontFamilies.bold,
         fontSize: 10,
-        fontWeight: '900',
-        letterSpacing: 1,
+        letterSpacing: 1.5,
     },
     interestBadge: {
         backgroundColor: theme.colors.primary.DEFAULT,
-        paddingHorizontal: 10,
-        paddingVertical: 4,
-        borderRadius: 4,
+        paddingHorizontal: 12,
+        paddingVertical: 5,
+        borderRadius: 2, // More modular look
     },
     interestText: {
         color: '#FFF',
+        fontFamily: theme.typography.fontFamilies.bold,
         fontSize: 10,
-        fontWeight: '800',
     },
     bottomInfo: {
-        gap: 8,
+        gap: 6,
     },
     username: {
         color: '#FFF',
-        fontSize: 28,
-        fontWeight: '900',
+        fontFamily: theme.typography.fontFamilies.bold,
+        fontSize: 26,
         letterSpacing: -0.5,
     },
     bio: {
-        color: 'rgba(255,255,255,0.8)',
+        color: 'rgba(255,255,255,0.7)',
+        fontFamily: theme.typography.fontFamilies.regular,
         fontSize: 14,
         lineHeight: 20,
     },
@@ -154,7 +155,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        marginTop: 12,
+        marginTop: 14,
     },
     previewStats: {
         flexDirection: 'row',
@@ -166,23 +167,27 @@ const styles = StyleSheet.create({
         gap: 4,
     },
     statValue: {
-        color: 'rgba(255,255,255,0.6)',
+        color: 'rgba(255,255,255,0.5)',
+        fontFamily: theme.typography.fontFamilies.medium,
         fontSize: 12,
-        fontWeight: '600',
     },
     exploreButton: {
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor: theme.colors.primary.light,
-        paddingHorizontal: 16,
+        backgroundColor: theme.colors.primary.DEFAULT,
+        paddingHorizontal: 18,
         paddingVertical: 10,
-        borderRadius: 30,
+        borderRadius: 4, // Modular look
         gap: 8,
+        shadowColor: theme.colors.primary.DEFAULT,
+        shadowOffset: { width: 0, height: 0 },
+        shadowOpacity: 0.4,
+        shadowRadius: 8,
     },
     exploreButtonText: {
-        color: '#000',
+        color: '#FFF',
+        fontFamily: theme.typography.fontFamilies.bold,
         fontSize: 12,
-        fontWeight: '900',
     },
     dnaDecoration: {
         position: 'absolute',

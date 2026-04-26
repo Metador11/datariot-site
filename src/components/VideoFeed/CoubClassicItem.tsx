@@ -1,19 +1,17 @@
 import React, { useRef, useState, memo } from 'react';
-import { View, Text, StyleSheet, Pressable, Dimensions, Animated, Image, Platform } from 'react-native';
-import { useVideoPlayer, VideoView } from 'expo-video';
-import { useEventListener } from 'expo';
+import { View, Text, StyleSheet, Pressable, Dimensions, Animated, Image, Platform, useWindowDimensions } from 'react-native';
+import { Video, ResizeMode, Audio } from 'expo-av';
 import { Ionicons } from '@expo/vector-icons';
 import { BlurView } from 'expo-blur';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useTheme } from '../Theme/ThemeProvider';
 import { useRouter } from 'expo-router';
 import { useIsFocused } from '@react-navigation/native';
+import { encodeVideoUrl } from '../../lib/utils/url';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const isWeb = Platform.OS === 'web';
-const CARD_MARGIN = isWeb ? 0 : 16;
-const CARD_WIDTH = isWeb ? '100%' as any : SCREEN_WIDTH - (CARD_MARGIN * 2);
-const VIDEO_HEIGHT = isWeb ? 380 : (SCREEN_WIDTH - 32) * (9 / 16);
+// Constants moved inside component for responsiveness
 
 
 interface FeedItemProps {
@@ -32,6 +30,49 @@ const formatNumber = (num: number): string => {
     return num.toString();
 };
 
+interface VideoPlayerLayerProps {
+    videoUrl: string;
+    isActive: boolean;
+    isFocused: boolean;
+    isPaused: boolean;
+    isMuted: boolean;
+    onTimeUpdate: (currentTime: number, duration: number) => void;
+}
+
+const VideoPlayerLayer = ({ videoUrl, isActive, isFocused, isPaused, isMuted, onTimeUpdate }: VideoPlayerLayerProps) => {
+    const videoRef = useRef<Video>(null);
+
+    return (
+        <View style={StyleSheet.absoluteFillObject}>
+            <Video
+                ref={videoRef}
+                source={{ uri: 'https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/360/Big_Buck_Bunny_360_10s_1MB.mp4' }}
+                style={StyleSheet.absoluteFillObject}
+                resizeMode={ResizeMode.COVER}
+                shouldPlay={isActive && isFocused && !isPaused}
+                isLooping
+                isMuted={isMuted}
+                onPlaybackStatusUpdate={(status: any) => {
+                    if (status.isLoaded && status.durationMillis) {
+                        onTimeUpdate(status.positionMillis, status.durationMillis);
+                    }
+                }}
+            />
+            <BlurView intensity={30} tint="dark" style={StyleSheet.absoluteFillObject} />
+
+            {/* Foreground Sharp Layer (shows full content) */}
+            <Video
+                source={{ uri: 'https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/360/Big_Buck_Bunny_360_10s_1MB.mp4' }}
+                style={StyleSheet.absoluteFillObject}
+                resizeMode={ResizeMode.CONTAIN}
+                shouldPlay={isActive && isFocused && !isPaused}
+                isLooping
+                isMuted={isMuted}
+            />
+        </View>
+    );
+};
+
 export const CoubClassicItem = memo(({
     item,
     isActive,
@@ -45,7 +86,15 @@ export const CoubClassicItem = memo(({
     const [progress, setProgress] = useState(0);
     const [isExpanded, setIsExpanded] = useState(false);
     const [isPaused, setIsPaused] = useState(false);
+    const { width: windowWidth } = useWindowDimensions();
     const { theme, mode } = useTheme();
+
+    const isWeb = Platform.OS === 'web';
+    const isMobileWeb = isWeb && windowWidth <= 768;
+
+    const cardMargin = isWeb ? (isMobileWeb ? 0 : 0) : 16; // Maintain 0 for web to fill column
+    const cardWidth = isWeb ? '100%' as any : windowWidth - (cardMargin * 2);
+    const videoHeight = isWeb ? (isMobileWeb ? (windowWidth * 9 / 16) : 380) : (windowWidth - 32) * (9 / 16);
 
     const router = useRouter();
     const isDark = mode === 'dark';
@@ -53,25 +102,6 @@ export const CoubClassicItem = memo(({
 
     // Animation for like button
     const likeScale = useRef(new Animated.Value(1)).current;
-
-    const player = useVideoPlayer(item.videoUrl, player => {
-        player.loop = true;
-        player.muted = isMuted;
-    });
-
-    useEventListener(player, 'timeUpdate', ({ currentTime }) => {
-        if (player.duration > 0) {
-            setProgress(currentTime / player.duration);
-        }
-    });
-
-    React.useEffect(() => {
-        if (isActive && isFocused && !isPaused) {
-            player.play();
-        } else {
-            player.pause();
-        }
-    }, [isActive, isFocused, isPaused, player]);
 
     const togglePlayback = () => {
         setIsPaused(!isPaused);
@@ -103,35 +133,37 @@ export const CoubClassicItem = memo(({
     };
 
     return (
-        <View style={styles.card}>
+        <View style={[styles.card, { width: isWeb ? '100%' : windowWidth, paddingHorizontal: isWeb ? 16 : cardMargin }]}>
             {/* Main Video Container (16:9) */}
-            <Pressable style={styles.videoContainer} onPress={togglePlayback}>
+            <Pressable style={[styles.videoContainer, { width: cardWidth, height: videoHeight }]} onPress={togglePlayback}>
 
                 {/* Floating Avatar Badge overlapping the video */}
                 <Pressable onPress={handleNavigateProfile} style={styles.floatingAuthorBadge}>
                     <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
-                    <Image source={{ uri: item.avatarUrl || 'https://i.pravatar.cc/100' }} style={styles.avatar} />
+                    <Image
+                        source={{ uri: item.avatarUrl || 'https://i.pravatar.cc/100' }}
+                        style={styles.avatar}
+                        // @ts-ignore
+                        crossOrigin="anonymous"
+                    />
                     <Text style={[styles.authorNameBadge, { textShadowColor: 'rgba(0,0,0,0.5)', textShadowOffset: { width: 0, height: 1 }, textShadowRadius: 2 }]}>{item.author}</Text>
                 </Pressable>
 
                 {/* Background Blurred Layer (fills everything) */}
-                <VideoView
-                    player={player}
-                    style={StyleSheet.absoluteFillObject}
-                    contentFit="cover"
-                    nativeControls={false}
-                    pointerEvents="none"
-                />
-                <BlurView intensity={30} tint="dark" style={StyleSheet.absoluteFillObject} />
-
-                {/* Foreground Sharp Layer (shows full content) */}
-                <VideoView
-                    player={player}
-                    style={StyleSheet.absoluteFillObject}
-                    contentFit="contain"
-                    nativeControls={false}
-                    pointerEvents="none"
-                />
+                {item.videoUrl ? (
+                    <VideoPlayerLayer
+                        videoUrl={item.videoUrl}
+                        isActive={isActive}
+                        isFocused={isFocused}
+                        isPaused={isPaused}
+                        isMuted={isMuted}
+                        onTimeUpdate={(current, duration) => setProgress(current / duration)}
+                    />
+                ) : (
+                    <View style={[StyleSheet.absoluteFillObject, { backgroundColor: '#020408', justifyContent: 'center', alignItems: 'center' }]}>
+                        <Ionicons name="videocam-off" size={48} color="rgba(255,255,255,0.1)" />
+                    </View>
+                )}
 
                 {/* Dark Gradient Overlay for better text visibility */}
                 <View style={styles.overlayGradient} pointerEvents="none" />
@@ -152,14 +184,14 @@ export const CoubClassicItem = memo(({
 
                 {/* Glowing Progress Bar integrated into bottom edge of video */}
                 <View style={styles.progressBarContainer} pointerEvents="none">
-                    <View style={[styles.progressBarFill, { width: `${progress * 100}%`, backgroundColor: '#0EA5E9' }]} />
+                    <View style={[styles.progressBarFill, { width: `${progress * 100}%`, backgroundColor: '#D9E4FF' }]} />
                 </View>
 
 
             </Pressable>
 
             {/* Overlapping Glass Panel for Info & Actions */}
-            <View style={styles.infoPanelWrapper}>
+            <View style={[styles.infoPanelWrapper, { width: isWeb ? '92%' : cardWidth - 32 }]}>
                 <BlurView intensity={isDark ? 50 : 80} tint={isDark ? "dark" : "light"} style={styles.infoPanel}>
                     {isDark && (
                         <LinearGradient
@@ -188,6 +220,30 @@ export const CoubClassicItem = memo(({
                             {!isExpanded && item.title && item.title.length > 50 && (
                                 <Text style={styles.readMoreText}>more</Text>
                             )}
+
+                            {/* Logic Balance Bar (Who's Winning) */}
+                            {item.logicStats && (
+                                <View style={styles.logicBalanceWrapper}>
+                                    <View style={styles.logicBalanceTrack}>
+                                        <View
+                                            style={[
+                                                styles.logicBalanceFill,
+                                                { width: `${item.logicStats.forPercentage}%`, backgroundColor: '#00C853' }
+                                            ]}
+                                        />
+                                        <View
+                                            style={[
+                                                styles.logicBalanceFill,
+                                                { width: `${100 - item.logicStats.forPercentage}%`, backgroundColor: '#D50000' }
+                                            ]}
+                                        />
+                                    </View>
+                                    <View style={styles.logicScoreRow}>
+                                        <Text style={styles.logicScoreText}>{item.logicStats.forScore} FOR</Text>
+                                        <Text style={styles.logicScoreText}>{item.logicStats.againstScore} AGAINST</Text>
+                                    </View>
+                                </View>
+                            )}
                         </Pressable>
 
                         {/* Right Side: Action Row */}
@@ -195,7 +251,7 @@ export const CoubClassicItem = memo(({
                             {/* Like */}
                             <Pressable style={styles.actionIconBtn} onPress={handleLike}>
                                 <Animated.View style={{ transform: [{ scale: likeScale }] }}>
-                                    <Text style={[styles.customIcon, { color: item.isLiked ? '#0EA5E9' : theme.colors.text.primary }]}>✦</Text>
+                                    <Text style={[styles.customIcon, { color: item.isLiked ? '#D9E4FF' : theme.colors.text.primary }]}>✦</Text>
                                 </Animated.View>
                                 <Text style={[styles.actionIconText, { color: theme.colors.text.secondary }]}>{formatNumber(item.likes)}</Text>
                             </Pressable>
@@ -212,7 +268,7 @@ export const CoubClassicItem = memo(({
                                 <Ionicons
                                     name="bookmark"
                                     size={24}
-                                    color={item.isSaved ? '#0EA5E9' : theme.colors.text.primary}
+                                    color={item.isSaved ? '#D9E4FF' : theme.colors.text.primary}
                                     style={styles.plainIcon}
                                 />
                                 <Text style={[styles.actionIconText, { color: theme.colors.text.secondary }]}>{formatNumber(item.shares)}</Text>
@@ -246,14 +302,10 @@ CoubClassicItem.displayName = 'CoubClassicItem';
 
 const styles = StyleSheet.create({
     card: {
-        width: isWeb ? '100%' : SCREEN_WIDTH,
-        paddingHorizontal: isWeb ? 16 : CARD_MARGIN,
         marginBottom: isWeb ? 24 : 32,
         alignItems: 'center',
     },
     videoContainer: {
-        width: CARD_WIDTH,
-        height: VIDEO_HEIGHT,
         backgroundColor: '#020408',
         borderRadius: 32,
         overflow: 'hidden',
@@ -271,7 +323,6 @@ const styles = StyleSheet.create({
     },
 
     infoPanelWrapper: {
-        width: isWeb ? '92%' : CARD_WIDTH - 32,
         marginTop: -12, // Overlap just a little bit
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 4 },
@@ -404,5 +455,35 @@ const styles = StyleSheet.create({
         shadowRadius: 4,
         borderTopRightRadius: 3,
         borderBottomRightRadius: 3,
+    },
+    // Logic Balance Styles for Feed
+    logicBalanceWrapper: {
+        marginTop: 10,
+        backgroundColor: 'rgba(0,0,0,0.2)',
+        padding: 8,
+        borderRadius: 12,
+        borderWidth: 1,
+        borderColor: 'rgba(255,255,255,0.05)',
+    },
+    logicBalanceTrack: {
+        height: 4,
+        borderRadius: 2,
+        flexDirection: 'row',
+        overflow: 'hidden',
+        backgroundColor: 'rgba(255,255,255,0.1)',
+    },
+    logicBalanceFill: {
+        height: '100%',
+    },
+    logicScoreRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginTop: 4,
+    },
+    logicScoreText: {
+        fontSize: 9,
+        fontWeight: '900',
+        color: 'rgba(255,255,255,0.6)',
+        letterSpacing: 0.5,
     },
 });

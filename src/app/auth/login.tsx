@@ -48,7 +48,7 @@ export default function WelcomeScreen() {
                             source={require('../../../assets/logo.jpg')}
                             style={{ width: 32, height: 32, marginRight: 12, borderRadius: 16 }}
                         />
-                        <Text style={[styles.appName, { color: theme.colors.text.primary }]}>Orvelis</Text>
+                        <Text style={[styles.appName, { color: theme.colors.text.primary }]}>Datariot</Text>
                     </View>
 
                     {/* Tagline */}
@@ -65,13 +65,13 @@ export default function WelcomeScreen() {
                                 style={styles.loginPressable}
                             >
                                 <LinearGradient
-                                    colors={['#06B6D4', '#8B5CF6', '#EC4899']}
+                                    colors={['#D9E4FF', '#D9E4FF']}
                                     start={{ x: 0, y: 0 }}
                                     end={{ x: 1, y: 0 }}
                                     style={styles.loginGradient}
                                 >
                                     <Text style={styles.loginButtonText}>Sign In</Text>
-                                    <Feather name="arrow-right" size={20} color="#FFFFFF" style={styles.loginArrow} />
+                                    <Feather name="arrow-right" size={20} color="#000000" style={styles.loginArrow} />
                                 </LinearGradient>
                             </Pressable>
                         </Animated.View>
@@ -97,7 +97,7 @@ export default function WelcomeScreen() {
                             ]}
                             onPress={() => {/* TODO: Google Auth */ }}
                         >
-                            <AntDesign name="google" size={20} color="#000000" style={styles.googleIcon} />
+                            <AntDesign name="google" size={20} color="#D9E4FF" style={styles.googleIcon} />
                             <Text style={styles.googleButtonText}>Continue with Google</Text>
                         </Pressable>
                     </View>
@@ -141,7 +141,7 @@ const styles = StyleSheet.create({
     loginButtonWrapper: {
         width: '100%',
         borderRadius: 16,
-        shadowColor: '#06B6D4',
+        shadowColor: '#D9E4FF',
         shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.45,
         shadowRadius: 18,
@@ -159,11 +159,15 @@ const styles = StyleSheet.create({
         paddingVertical: 18,
         paddingHorizontal: 24,
         borderRadius: 16,
+        shadowColor: '#D9E4FF',
+        shadowOffset: { width: 0, height: 8 },
+        shadowOpacity: 0.4,
+        shadowRadius: 20,
     },
     loginButtonText: {
         fontSize: 18,
         fontWeight: '800',
-        color: '#FFFFFF',
+        color: '#000000',
         textAlign: 'center',
         letterSpacing: 1,
         textTransform: 'uppercase',

@@ -1,5 +1,5 @@
 import React, { useRef, useState, useCallback, useMemo } from 'react';
-import { View, StyleSheet, FlatList, ViewToken, Dimensions } from 'react-native';
+import { View, StyleSheet, FlatList, ViewToken, Dimensions, Platform } from 'react-native';
 import { MosaicItem } from './MosaicItem';
 import { useTheme } from '../../Theme/ThemeProvider';
 import { Video } from '../../../lib/supabase/hooks/useVideos';
@@ -26,6 +26,9 @@ export function MosaicFeed({
     paddingBottom = 40,
 }: MosaicFeedProps) {
     const { theme } = useTheme();
+    const { width } = Dimensions.get('window');
+    const isWeb = Platform.OS === 'web' && width > 768;
+    const numColumns = isWeb ? 3 : 2;
     const [viewableItems, setViewableItems] = useState<Set<string>>(new Set());
 
     const onViewableItemsChanged = useCallback(
@@ -66,13 +69,14 @@ export function MosaicFeed({
                 ListHeaderComponent={
                     <View style={{ marginTop: 20, marginBottom: 12 }}>
                         <SectionHeader
-                            title="Orvelis Daily Synergy"
+                            title="Datariot Daily Synergy"
                             subtitle="Curated based on your Creator DNA"
                         />
                     </View>
                 }
                 keyExtractor={(item) => item.id}
-                numColumns={2}
+                key={isWeb ? 'web-mosaic' : 'mobile-mosaic'}
+                numColumns={numColumns}
                 showsVerticalScrollIndicator={false}
                 onViewableItemsChanged={onViewableItemsChanged}
                 viewabilityConfig={viewabilityConfig}

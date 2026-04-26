@@ -23,12 +23,12 @@ import { useTheme } from '../components/Theme/ThemeProvider';
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 const CATEGORIES = [
-    { id: 'restaurant', label: 'Restaurant', icon: 'restaurant-outline' as const, gradient: ['#FF6B6B', '#FF8E53'] as const },
-    { id: 'cafe', label: 'Cafe', icon: 'cafe-outline' as const, gradient: ['#A18CD1', '#FBC2EB'] as const },
-    { id: 'beauty', label: 'Beauty', icon: 'sparkles-outline' as const, gradient: ['#FDDB92', '#D1FDFF'] as const },
-    { id: 'fitness', label: 'Fitness', icon: 'fitness-outline' as const, gradient: ['#43E97B', '#38F9D7'] as const },
-    { id: 'shop', label: 'Shop', icon: 'bag-handle-outline' as const, gradient: ['#4FACFE', '#00F2FE'] as const },
-    { id: 'other', label: 'Other', icon: 'ellipsis-horizontal-outline' as const, gradient: ['#667EEA', '#764BA2'] as const },
+    { id: 'restaurant', label: 'Restaurant', icon: 'restaurant-outline' as const, gradient: ['#D9E4FF', '#D9E4FF'] as const },
+    { id: 'cafe', label: 'Cafe', icon: 'cafe-outline' as const, gradient: ['#D9E4FF', '#D9E4FF'] as const },
+    { id: 'beauty', label: 'Beauty', icon: 'sparkles-outline' as const, gradient: ['#D9E4FF', '#D9E4FF'] as const },
+    { id: 'fitness', label: 'Fitness', icon: 'fitness-outline' as const, gradient: ['#D9E4FF', '#D9E4FF'] as const },
+    { id: 'shop', label: 'Shop', icon: 'bag-handle-outline' as const, gradient: ['#D9E4FF', '#D9E4FF'] as const },
+    { id: 'other', label: 'Other', icon: 'ellipsis-horizontal-outline' as const, gradient: ['#D9E4FF', '#D9E4FF'] as const },
 ];
 
 const REACH_OPTIONS = [
@@ -79,7 +79,7 @@ export default function BusinessScreen() {
 
             {/* Full-screen gradient background */}
             <LinearGradient
-                colors={['#0D0D1A', '#111128', '#0A0A18']}
+                colors={['#000000', '#000000', '#000000']}
                 style={StyleSheet.absoluteFill}
             />
 
@@ -98,7 +98,7 @@ export default function BusinessScreen() {
                             <Ionicons name="chevron-back" size={22} color="rgba(255,255,255,0.8)" />
                         </Pressable>
                         <View style={styles.headerBadge}>
-                            <Ionicons name="megaphone-outline" size={13} color="#A78BFA" />
+                            <Ionicons name="megaphone-outline" size={13} color="#D9E4FF" />
                             <Text style={styles.headerBadgeText}>For Business</Text>
                         </View>
                     </View>
@@ -222,7 +222,7 @@ export default function BusinessScreen() {
                                     >
                                         {isActive && (
                                             <LinearGradient
-                                                colors={['rgba(167,139,250,0.2)', 'rgba(99,102,241,0.15)']}
+                                                colors={['rgba(217, 228, 255,0.2)', 'rgba(217, 228, 255,0.15)']}
                                                 style={StyleSheet.absoluteFill}
                                                 start={{ x: 0, y: 0 }}
                                                 end={{ x: 1, y: 1 }}
@@ -237,7 +237,7 @@ export default function BusinessScreen() {
                                                 <Text style={styles.reachDesc}>{opt.description}</Text>
                                             </View>
                                         </View>
-                                        <View style={[styles.reachPriceBadge, isActive && { backgroundColor: '#A78BFA' }]}>
+                                        <View style={[styles.reachPriceBadge, isActive && { backgroundColor: '#D9E4FF' }]}>
                                             <Text style={styles.reachPriceText}>{opt.price}</Text>
                                         </View>
                                     </Pressable>
@@ -301,7 +301,7 @@ export default function BusinessScreen() {
                                 { icon: 'flash-outline', value: '24h', label: 'Launch' },
                             ].map((s, i) => (
                                 <BlurView key={i} intensity={18} tint="dark" style={styles.statCard}>
-                                    <Ionicons name={s.icon as any} size={18} color="#A78BFA" />
+                                    <Ionicons name={s.icon as any} size={18} color="#D9E4FF" />
                                     <Text style={styles.statValue}>{s.value}</Text>
                                     <Text style={styles.statLabel}>{s.label}</Text>
                                 </BlurView>
@@ -311,7 +311,7 @@ export default function BusinessScreen() {
                         {/* CTA Button */}
                         <Pressable onPress={handleLaunch} style={styles.launchWrapper}>
                             <LinearGradient
-                                colors={['#7C3AED', '#A855F7', '#EC4899']}
+                                colors={['#D9E4FF', '#D9E4FF']}
                                 style={styles.launchBtn}
                                 start={{ x: 0, y: 0 }}
                                 end={{ x: 1, y: 0 }}
@@ -336,7 +336,7 @@ export default function BusinessScreen() {
 const styles = StyleSheet.create({
     root: {
         flex: 1,
-        backgroundColor: '#0D0D1A',
+        backgroundColor: '#000000',
     },
     safeArea: {
         flex: 1,
@@ -350,7 +350,7 @@ const styles = StyleSheet.create({
     blobTop: {
         width: 300,
         height: 300,
-        backgroundColor: '#7C3AED',
+        backgroundColor: '#D9E4FF',
         top: -80,
         right: -80,
         transform: [{ scale: 1.4 }],
@@ -358,7 +358,7 @@ const styles = StyleSheet.create({
     blobMid: {
         width: 250,
         height: 250,
-        backgroundColor: '#EC4899',
+        backgroundColor: '#D9E4FF',
         top: 350,
         left: -120,
         opacity: 0.12,
@@ -383,15 +383,15 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         gap: 5,
-        backgroundColor: 'rgba(167,139,250,0.15)',
+        backgroundColor: 'rgba(217, 228, 255, 0.15)',
         borderWidth: 1,
-        borderColor: 'rgba(167,139,250,0.3)',
+        borderColor: 'rgba(217, 228, 255, 0.3)',
         paddingHorizontal: 12,
         paddingVertical: 5,
         borderRadius: 20,
     },
     headerBadgeText: {
-        color: '#A78BFA',
+        color: '#D9E4FF',
         fontSize: 12,
         fontWeight: '600',
     },
@@ -415,7 +415,7 @@ const styles = StyleSheet.create({
         marginBottom: 12,
     },
     heroGradientText: {
-        color: '#A78BFA',
+        color: '#D9E4FF',
     },
     heroSubtitle: {
         fontSize: 15,
@@ -508,7 +508,7 @@ const styles = StyleSheet.create({
         overflow: 'hidden',
     },
     reachCardActive: {
-        borderColor: 'rgba(167,139,250,0.4)',
+        borderColor: 'rgba(217, 228, 255, 0.4)',
     },
     reachLeft: {
         flexDirection: 'row',
@@ -525,13 +525,13 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     reachRadioActive: {
-        borderColor: '#A78BFA',
+        borderColor: '#D9E4FF',
     },
     reachRadioDot: {
         width: 8,
         height: 8,
         borderRadius: 4,
-        backgroundColor: '#A78BFA',
+        backgroundColor: '#D9E4FF',
     },
     reachLabel: {
         fontSize: 15,
@@ -628,7 +628,7 @@ const styles = StyleSheet.create({
         paddingVertical: 8,
     },
     previewCtaText: {
-        color: '#fff',
+        color: '#000000',
         fontSize: 12,
         fontWeight: '700',
     },
@@ -661,7 +661,7 @@ const styles = StyleSheet.create({
         borderRadius: 18,
         overflow: 'hidden',
         marginBottom: 16,
-        shadowColor: '#7C3AED',
+        shadowColor: '#000000',
         shadowOffset: { width: 0, height: 8 },
         shadowOpacity: 0.5,
         shadowRadius: 20,
@@ -676,7 +676,7 @@ const styles = StyleSheet.create({
         borderRadius: 18,
     },
     launchText: {
-        color: '#fff',
+        color: '#000000',
         fontSize: 17,
         fontWeight: '800',
         letterSpacing: 0.3,

@@ -215,7 +215,7 @@ export function VideoControls({
                     <View style={styles.leftActions}>
                         <Pressable onPress={() => { animateLike(); onLike(); }} style={styles.actionButton}>
                             <Animated.View style={{ transform: [{ scale: scaleAnim }] }}>
-                                <Text style={[styles.actionIcon, { color: isLiked ? '#0EA5E9' : 'white' }]}>✦</Text>
+                                <Text style={[styles.actionIcon, { color: isLiked ? '#D9E4FF' : 'white' }]}>✦</Text>
                             </Animated.View>
                             <Text style={styles.actionLabel}>Like</Text>
                             <Text style={styles.actionCount}>{formatCount(likes)}</Text>
@@ -356,8 +356,9 @@ const styles = StyleSheet.create({
     },
     username: {
         fontSize: 16,
-        fontWeight: 'bold',
+        fontFamily: theme.typography.fontFamilies.bold,
         color: 'white',
+        letterSpacing: 0.5,
     },
     titleContainer: {
         flexDirection: 'row',
@@ -365,11 +366,12 @@ const styles = StyleSheet.create({
     },
     title: {
         color: 'white',
+        fontFamily: theme.typography.fontFamilies.regular,
         fontSize: 15,
     },
     hashtag: {
         color: '#0EA5E9',
-        fontWeight: '600',
+        fontFamily: theme.typography.fontFamilies.bold,
     },
 
     interactionSection: {
@@ -392,39 +394,45 @@ const styles = StyleSheet.create({
     },
     actionIconActive: {
         color: '#0EA5E9',
+        textShadowColor: 'rgba(14, 165, 233, 0.8)',
+        textShadowOffset: { width: 0, height: 0 },
+        textShadowRadius: 10,
     },
 
     actionLabel: {
         color: 'white',
         fontSize: 10,
-        fontWeight: '500',
+        fontFamily: theme.typography.fontFamilies.medium,
         marginTop: 2,
     },
     actionCount: {
         color: 'white',
         fontSize: 12,
-        fontWeight: '600',
+        fontFamily: theme.typography.fontFamilies.bold,
         marginTop: 2,
     },
     commentBar: {
         flex: 1,
         height: 40,
-        backgroundColor: 'rgba(255,255,255,0.15)',
-        borderRadius: 20,
+        backgroundColor: 'rgba(255,255,255,0.1)',
+        borderRadius: 4, // Modular look
+        borderWidth: 1,
+        borderColor: 'rgba(255,255,255,0.1)',
         marginLeft: 16,
         flexDirection: 'row',
         alignItems: 'center',
         paddingHorizontal: 16,
     },
     commentPlaceholder: {
-        color: 'rgba(255,255,255,0.6)',
+        color: 'rgba(255,255,255,0.5)',
+        fontFamily: theme.typography.fontFamilies.regular,
         flex: 1,
     },
     sendIcon: {
         width: 24,
         height: 24,
-        borderRadius: 12,
-        backgroundColor: 'white',
+        borderRadius: 4,
+        backgroundColor: '#0EA5E9',
         alignItems: 'center',
         justifyContent: 'center',
     },
@@ -454,18 +462,20 @@ const styles = StyleSheet.create({
         top: 14,
         left: 0,
         right: 0,
-        height: 4,
-        backgroundColor: 'rgba(255, 255, 255, 0.2)',
-        borderRadius: 2,
+        height: 2,
+        backgroundColor: 'rgba(255, 255, 255, 0.1)',
     },
     trackFill: {
         position: 'absolute',
         top: 14,
         left: 0,
-        height: 4,
-        backgroundColor: '#FFFFFF',
-        borderRadius: 2,
+        height: 2,
+        backgroundColor: '#0EA5E9',
         zIndex: 1,
+        shadowColor: '#0EA5E9',
+        shadowOffset: { width: 0, height: 0 },
+        shadowOpacity: 0.8,
+        shadowRadius: 4,
     },
     timeWrapper: {
         justifyContent: 'center',
@@ -473,10 +483,10 @@ const styles = StyleSheet.create({
     },
     timeText: {
         color: '#FFFFFF',
-        fontSize: 12,
-        fontWeight: '800', // Even bolder
+        fontFamily: theme.typography.fontFamilies.bold,
+        fontSize: 11,
         textAlign: 'right',
-        minWidth: 90,
+        minWidth: 80,
         textShadowColor: 'rgba(0, 0, 0, 0.9)',
         textShadowOffset: { width: 0, height: 1 },
         textShadowRadius: 4,

@@ -32,7 +32,7 @@ export default function SettingsScreen() {
                         style={styles.promoteWrapper}
                     >
                         <LinearGradient
-                            colors={['#7C3AED', '#A855F7', '#EC4899']}
+                            colors={['#D9E4FF', '#D9E4FF', '#EC4899']}
                             start={{ x: 0, y: 0 }}
                             end={{ x: 1, y: 0 }}
                             style={styles.promoteGradient}
@@ -136,7 +136,7 @@ const styles = StyleSheet.create({
         marginBottom: 8,
         borderRadius: 16,
         overflow: 'hidden',
-        shadowColor: '#7C3AED',
+        shadowColor: '#D9E4FF',
         shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.35,
         shadowRadius: 12,

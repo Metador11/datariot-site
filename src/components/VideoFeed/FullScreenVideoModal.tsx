@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback, useMemo } from 'react';
+import React, { useState, useRef, useCallback, useMemo, useEffect } from 'react';
 import {
     Modal,
     View,
@@ -9,7 +9,6 @@ import {
     Pressable,
     FlatList,
     Dimensions,
-
     ViewToken,
     StatusBar,
     useWindowDimensions,
@@ -17,11 +16,11 @@ import {
 } from 'react-native';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useVideoPlayer, VideoView } from 'expo-video';
-import { useEventListener } from 'expo';
+import { Video, ResizeMode } from 'expo-av';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useIsFocused } from '@react-navigation/native';
 import { useRouter } from 'expo-router';
+import { encodeVideoUrl } from '../../lib/utils/url';
 import { VideoControls } from '../VideoPlayer/VideoControls';
 import { CommentsModal } from './CommentsModal';
 import { GestureDetector, Gesture } from 'react-native-gesture-handler';
@@ -49,6 +48,34 @@ interface FullScreenVideoModalProps {
     onFollow: (id: string) => void;
 }
 
+interface InternalFullScreenVideoProps {
+    videoUrl: string;
+    isActive: boolean;
+    isPaused: boolean;
+    onTimeUpdate: (currentTime: number, duration: number) => void;
+}
+
+const InternalFullScreenVideo = ({ videoUrl, isActive, isPaused, onTimeUpdate }: InternalFullScreenVideoProps) => {
+    const videoRef = useRef<Video>(null);
+
+    return (
+        <Video
+            ref={videoRef}
+            source={{ uri: encodeVideoUrl(videoUrl) || '' }}
+            style={StyleSheet.absoluteFill}
+            resizeMode={ResizeMode.CONTAIN}
+            shouldPlay={isActive && !isPaused}
+            isLooping
+            isMuted={true}
+            onPlaybackStatusUpdate={(status: any) => {
+                if (status.isLoaded && status.durationMillis) {
+                    onTimeUpdate(status.positionMillis, status.durationMillis);
+                }
+            }}
+        />
+    );
+};
+
 function FullScreenVideoItem({
     item,
     isActive,
@@ -69,34 +96,15 @@ function FullScreenVideoItem({
     onFollow: () => void;
 }) {
     const [isPaused, setIsPaused] = useState(false);
-    const player = useVideoPlayer(item.videoUrl || item.url || '', player => {
-        player.loop = true;
-    });
-
     const [currentTime, setCurrentTime] = useState(0);
     const [duration, setDuration] = useState(0);
-
-    useEventListener(player, 'timeUpdate', ({ currentTime: ct }) => {
-        setCurrentTime(ct * 1000);
-        setDuration((player.duration || 0) * 1000);
-    });
-
-    React.useEffect(() => {
-        if (isActive && !isPaused) {
-            player.play();
-        } else {
-            player.pause();
-            if (!isActive) player.currentTime = 0;
-        }
-    }, [isActive, isPaused, player]);
 
     const togglePlayback = () => {
         setIsPaused(!isPaused);
     };
 
-
     const handleSeek = (value: number) => {
-        player.currentTime = value / 1000;
+        console.log('Seek not yet implemented with hook isolation');
     };
 
     // Double tap to like gesture
@@ -109,13 +117,21 @@ function FullScreenVideoItem({
         <GestureDetector gesture={doubleTap}>
             <View style={{ width: SCREEN_WIDTH, height, backgroundColor: '#000' }}>
                 <Pressable style={StyleSheet.absoluteFill} onPress={togglePlayback}>
-                    <VideoView
-                        player={player}
-                        style={StyleSheet.absoluteFill}
-                        contentFit="contain"
-                        nativeControls={false}
-                        pointerEvents="none"
-                    />
+                    {(item.videoUrl || item.url) ? (
+                        <InternalFullScreenVideo
+                            videoUrl={item.videoUrl || item.url}
+                            isActive={isActive}
+                            isPaused={isPaused}
+                            onTimeUpdate={(ct, dur) => {
+                                setCurrentTime(ct);
+                                setDuration(dur);
+                            }}
+                        />
+                    ) : (
+                        <View style={[StyleSheet.absoluteFill, { justifyContent: 'center', alignItems: 'center' }]}>
+                            <Ionicons name="videocam-off" size={64} color="rgba(255,255,255,0.15)" />
+                        </View>
+                    )}
 
                     {isPaused && (
                         <View style={styles.pauseOverlay}>
@@ -126,7 +142,6 @@ function FullScreenVideoItem({
 
                 <VideoControls
                     isPlaying={isActive && !isPaused}
-
                     title={item.title || ''}
                     author={item.author || item.authorName || ''}
                     authorId={item.authorId || ''}
@@ -172,7 +187,7 @@ export function FullScreenVideoModal({
 
     // AI Pulsing Animation
     const pulseAnim = useSharedValue(1);
-    React.useEffect(() => {
+    useEffect(() => {
         pulseAnim.value = withRepeat(
             withSequence(
                 withTiming(0.4, { duration: 1000 }),
@@ -199,12 +214,11 @@ export function FullScreenVideoModal({
     }, []);
 
     // Jump to correct video when opened
-    React.useEffect(() => {
+    useEffect(() => {
         if (visible && initialVideoId) {
-            const index = videos.findIndex(v => v.id === initialVideoId);
+            const index = videos.findIndex((v: any) => v.id === initialVideoId);
             if (index !== -1) {
                 setActiveIndex(index);
-                // Scroll after render
                 requestAnimationFrame(() => {
                     flatListRef.current?.scrollToIndex({ index, animated: false });
                 });
@@ -213,7 +227,6 @@ export function FullScreenVideoModal({
     }, [visible, initialVideoId, videos]);
 
     const viewabilityConfig = useMemo(() => ({ itemVisiblePercentThreshold: 60 }), []);
-
     const isFocused = useIsFocused();
 
     const onViewableItemsChanged = useCallback(({ viewableItems }: { viewableItems: ViewToken[] }) => {
@@ -234,15 +247,12 @@ export function FullScreenVideoModal({
         >
             <StatusBar barStyle="light-content" translucent backgroundColor="transparent" />
             <View style={styles.container}>
-                {/* Dark shadow for status bar visibility */}
                 <LinearGradient
                     colors={['rgba(0,0,0,0.6)', 'transparent']}
                     style={[styles.statusShadow, { height: insets.top + 30 }]}
                     pointerEvents="none"
                 />
-                {/* Header Elements */}
                 <View style={[styles.headerWrapper, { top: Math.max(insets.top, 20) }]}>
-                    {/* Close Button kept on left */}
                     <TouchableOpacity
                         style={styles.closeButton}
                         onPress={onClose}
@@ -250,7 +260,6 @@ export function FullScreenVideoModal({
                         <Ionicons name="close" size={28} color="#FFF" />
                     </TouchableOpacity>
 
-                    {/* Right Side Logo - Small & Static */}
                     <TouchableOpacity
                         activeOpacity={0.7}
                         onPress={() => {
@@ -326,35 +335,12 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
-    brandingContainer: {
-        alignItems: 'center',
-        justifyContent: 'center',
-        flex: 1,
-    },
-    brandingText: {
-        color: '#FFF',
-        fontSize: 14,
-        fontWeight: '800',
-        letterSpacing: 4,
-        fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
-        textShadowColor: 'rgba(0, 140, 255, 0.5)',
-        textShadowOffset: { width: 0, height: 0 },
-        textShadowRadius: 10,
-    },
-    brandingLine: {
-        width: 20,
-        height: 2,
-        backgroundColor: '#0EA5E9',
-        marginTop: 2,
-        borderRadius: 1,
-    },
     pauseOverlay: {
         ...StyleSheet.absoluteFillObject,
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: 'rgba(0,0,0,0.2)',
     },
-
     aiLogoContainer: {
         width: 44,
         height: 44,
@@ -370,9 +356,6 @@ const styles = StyleSheet.create({
     aiLogo: {
         width: 32,
         height: 32,
-    },
-    rightPlaceholder: {
-        width: 36,
     },
     statusShadow: {
         position: 'absolute',

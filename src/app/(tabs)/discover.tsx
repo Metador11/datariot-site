@@ -125,7 +125,7 @@ export default function DiscoverScreen() {
                 <View style={styles.searchContainer}>
                     <BlurView intensity={20} tint={isDark ? "dark" : "light"} style={styles.searchBarBlur}>
                         <View style={[styles.searchBar, {
-                            backgroundColor: isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.04)',
+                            backgroundColor: isDark ? 'rgba(0, 0, 0, 0.6)' : 'rgba(255, 255, 255, 0.6)',
                             borderColor: isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)'
                         }]}>
                             <Ionicons name="bulb-outline" size={20} color={theme.colors.primary.light} />

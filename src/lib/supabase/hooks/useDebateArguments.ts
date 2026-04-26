@@ -12,6 +12,7 @@ export interface Argument {
     timestamp: string;
     strength: number;
     isVoted: boolean;
+    videoUrl?: string; // Optional video content
 }
 
 export function useDebateArguments(postId: string | null) {
@@ -26,9 +27,9 @@ export function useDebateArguments(postId: string | null) {
         try {
             const { data, error } = await supabase
                 .from('comments')
-                .select('*')
+                .select('*, videos(url)') // Join with videos to get the URL
                 .eq('post_id', postId)
-                .order('likes_count', { ascending: false }); // Sort by Argument Strength
+                .order('likes_count', { ascending: false });
 
             if (error) throw error;
             if (!data) return;
@@ -95,6 +96,7 @@ export function useDebateArguments(postId: string | null) {
                     timestamp,
                     strength: c.likes_count || 0,
                     isVoted: votedIds.has(c.id),
+                    videoUrl: c.videos?.url, // From the join
                 };
             };
 

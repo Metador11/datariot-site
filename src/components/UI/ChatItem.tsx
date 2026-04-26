@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
+import { theme } from '../../design-system/theme';
 import { useTheme } from '../Theme/ThemeProvider';
 
 interface ChatItemProps {
@@ -68,7 +69,7 @@ export function ChatItem({
 
                     {unreadCount > 0 && (
                         <LinearGradient
-                            colors={['#3385FF', '#6B21A8']}
+                            colors={['#D9E4FF', '#D9E4FF']}
                             start={{ x: 0, y: 0 }}
                             end={{ x: 1, y: 1 }}
                             style={styles.badge}
@@ -85,7 +86,7 @@ export function ChatItem({
         return (
             <TouchableOpacity onPress={onPress} activeOpacity={0.8} style={styles.outerAiContainer}>
                 <LinearGradient
-                    colors={['rgba(51, 133, 255, 0.5)', 'rgba(107, 33, 168, 0.5)']}
+                    colors={['rgba(217, 228, 255, 0.5)', 'rgba(217, 228, 255, 0.5)']}
                     start={{ x: 0, y: 0 }}
                     end={{ x: 1, y: 1 }}
                     style={styles.aiBorder}
@@ -134,7 +135,7 @@ const styles = StyleSheet.create({
         marginHorizontal: 16,
         marginBottom: 12,
         borderRadius: 24,
-        shadowColor: '#3385FF',
+        shadowColor: '#D9E4FF',
         shadowOffset: { width: 0, height: 8 },
         shadowOpacity: 0.3,
         shadowRadius: 16,
@@ -154,20 +155,22 @@ const styles = StyleSheet.create({
     avatarContainer: {
         width: 52,
         height: 52,
-        borderRadius: 20,
+        borderRadius: 4, // Modular modular look
         justifyContent: 'center',
         alignItems: 'center',
         marginRight: 16,
     },
     aiAvatarContainer: {
-        shadowColor: '#3385FF',
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.4,
-        shadowRadius: 8,
+        shadowColor: '#0EA5E9',
+        shadowOffset: { width: 0, height: 0 },
+        shadowOpacity: 0.6,
+        shadowRadius: 12,
+        borderWidth: 1,
+        borderColor: '#0EA5E9',
     },
     avatarText: {
         fontSize: 20,
-        fontWeight: '700',
+        fontFamily: theme.typography.fontFamilies.bold,
     },
     onlineBadge: {
         position: 'absolute',
@@ -190,15 +193,15 @@ const styles = StyleSheet.create({
     },
     name: {
         fontSize: 16,
-        fontWeight: '700',
+        fontFamily: theme.typography.fontFamilies.bold,
         letterSpacing: -0.3,
     },
     aiName: {
-        fontWeight: '800',
+        letterSpacing: 0.5,
     },
     time: {
         fontSize: 12,
-        fontWeight: '600',
+        fontFamily: theme.typography.fontFamilies.medium,
     },
     footer: {
         flexDirection: 'row',
@@ -207,32 +210,32 @@ const styles = StyleSheet.create({
     },
     message: {
         fontSize: 14,
+        fontFamily: theme.typography.fontFamilies.regular,
         flex: 1,
         marginRight: 16,
         lineHeight: 20,
     },
     aiMessage: {
         fontStyle: 'italic',
-        fontWeight: '500',
     },
     unreadMessage: {
-        fontWeight: '600',
+        fontWeight: 'bold',
     },
     badge: {
         paddingHorizontal: 8,
         paddingVertical: 4,
-        borderRadius: 12,
+        borderRadius: 2,
         minWidth: 24,
         alignItems: 'center',
         justifyContent: 'center',
-        shadowColor: '#3385FF',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.4,
+        shadowColor: '#0EA5E9',
+        shadowOffset: { width: 0, height: 0 },
+        shadowOpacity: 0.5,
         shadowRadius: 4,
     },
     badgeText: {
         color: '#FFF',
         fontSize: 10,
-        fontWeight: '800',
+        fontFamily: theme.typography.fontFamilies.bold,
     },
 });

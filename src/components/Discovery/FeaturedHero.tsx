@@ -5,7 +5,7 @@ import { BlurView } from 'expo-blur';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { theme } from '@design-system/theme';
 import { encodeVideoUrl } from '@lib/utils/url';
-import { useVideoPlayer, VideoView } from 'expo-video';
+import { Video, ResizeMode } from 'expo-av';
 
 interface FeaturedVideo {
     id: string;
@@ -24,24 +24,17 @@ interface FeaturedHeroProps {
 }
 
 const FeaturedVideoPlayer = ({ videoUrl, isCurrent }: { videoUrl: string, isCurrent: boolean }) => {
-    const player = useVideoPlayer(encodeVideoUrl(videoUrl), player => {
-        player.loop = true;
-    });
-
-    React.useEffect(() => {
-        if (isCurrent) {
-            player.play();
-        } else {
-            player.pause();
-        }
-    }, [isCurrent, player]);
+    const videoRef = React.useRef<Video>(null);
 
     return (
-        <VideoView
-            player={player}
+        <Video
+            ref={videoRef}
+            source={{ uri: encodeVideoUrl(videoUrl) || '' }}
             style={[styles.video, StyleSheet.absoluteFill, { opacity: isCurrent ? 1 : 0 }]}
-            contentFit="cover"
-            nativeControls={false}
+            resizeMode={ResizeMode.COVER}
+            shouldPlay={isCurrent}
+            isLooping
+            isMuted={true}
         />
     );
 };
@@ -65,10 +58,14 @@ export const FeaturedHero = ({ featuredVideos, onVideoPress }: FeaturedHeroProps
                         source={{ uri: item.thumbnailUrl || item.avatarUrl }} // Fallback to avatar if no thumbnail
                         style={styles.video}
                         resizeMode="cover"
+                        // @ts-ignore
+                        crossOrigin="anonymous"
                     />
 
 
-                    <FeaturedVideoPlayer videoUrl={item.videoUrl} isCurrent={isCurrent} />
+                    {item.videoUrl ? (
+                        <FeaturedVideoPlayer videoUrl={item.videoUrl} isCurrent={isCurrent} />
+                    ) : null}
 
                     {/* Simple Overlay */}
                     <View style={styles.overlay}>
@@ -86,22 +83,29 @@ export const FeaturedHero = ({ featuredVideos, onVideoPress }: FeaturedHeroProps
 
                                 <View style={styles.statsRow}>
                                     <View style={styles.statItem}>
-                                        <Text style={styles.statLabel}>VIEWS</Text>
+                                        <Text style={styles.statLabel}>SPECTATORS</Text>
                                         <Text style={styles.statText}>{formatNumber(item.views)}</Text>
                                     </View>
                                     <View style={styles.statItem}>
-                                        <Text style={styles.statLabel}>LIKES</Text>
+                                        <Text style={styles.statLabel}>VOTES</Text>
                                         <Text style={styles.statText}>{formatNumber(item.likes)}</Text>
                                     </View>
                                 </View>
                             </View>
+
+                            {item.title.toLowerCase().includes('vs') && (
+                                <View style={styles.vsContainer}>
+                                    <BlurView intensity={30} tint="light" style={StyleSheet.absoluteFill} />
+                                    <Text style={styles.vsText}>VS</Text>
+                                </View>
+                            )}
 
                         </View>
 
                         {/* Popular Badge */}
                         <View style={styles.trendingBadge}>
                             <BlurView intensity={60} tint="dark" style={StyleSheet.absoluteFill} />
-                            <Text style={styles.badgeText}>SYSTEM_TRENDING</Text>
+                            <Text style={styles.badgeText}>LIVE_DEBATE</Text>
                         </View>
                     </View>
                 </View>
@@ -264,5 +268,30 @@ const styles = StyleSheet.create({
     },
     activeDot: {
         backgroundColor: theme.colors.primary.light,
+    },
+    vsContainer: {
+        position: 'absolute',
+        top: '40%',
+        left: '50%',
+        marginLeft: -30,
+        width: 60,
+        height: 60,
+        borderRadius: 30,
+        borderWidth: 2,
+        borderColor: '#D9E4FF',
+        justifyContent: 'center',
+        alignItems: 'center',
+        overflow: 'hidden',
+        backgroundColor: 'rgba(217, 228, 255, 0.1)',
+        shadowColor: '#D9E4FF',
+        shadowOffset: { width: 0, height: 0 },
+        shadowOpacity: 0.8,
+        shadowRadius: 20,
+    },
+    vsText: {
+        color: '#D9E4FF',
+        fontSize: 20,
+        fontWeight: '900',
+        letterSpacing: 1,
     },
 });

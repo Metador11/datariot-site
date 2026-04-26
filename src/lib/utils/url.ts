@@ -2,8 +2,8 @@
  * Safely encodes a video URL for compatibility with native players (especially iOS).
  * Handles Cyrillic and other non-ASCII characters in the path and query.
  */
-export function encodeVideoUrl(url: string): string {
-    if (!url) return '';
+export function encodeVideoUrl(url: string | null | undefined): string | null {
+    if (!url) return null;
 
     // Skip encoding for local files (file://, assets-library://) 
     // and data URIs which should be used as-is.

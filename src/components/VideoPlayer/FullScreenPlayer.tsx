@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect, forwardRef, useImperativeHandle } f
 import { View, StyleSheet, Dimensions, Pressable, ActivityIndicator, Text } from 'react-native';
 import { useVideoPlayer, VideoView } from 'expo-video';
 import { useEventListener } from 'expo';
+import { Ionicons } from '@expo/vector-icons';
 import { GestureDetector, Gesture } from 'react-native-gesture-handler';
 import Animated, {
     useSharedValue,
@@ -39,6 +40,7 @@ export const FullScreenPlayer = forwardRef<FullScreenPlayerHandle, FullScreenPla
 }, ref) => {
     const player = useVideoPlayer(encodeVideoUrl(videoUrl), player => {
         player.loop = true;
+        player.muted = true; // Mute for autoplay
     });
 
     const [isPlaying, setIsPlaying] = useState(true);
@@ -113,7 +115,7 @@ export const FullScreenPlayer = forwardRef<FullScreenPlayerHandle, FullScreenPla
     useEffect(() => {
         if (!isMounted.current) return;
         try {
-            if (isActive) {
+            if (isActive && videoUrl) {
                 player.play();
                 setIsPlaying(true);
             } else {
@@ -123,7 +125,7 @@ export const FullScreenPlayer = forwardRef<FullScreenPlayerHandle, FullScreenPla
         } catch (e) {
             console.warn('[FullScreenPlayer] handleAutoPlay failed:', e);
         }
-    }, [isActive]);
+    }, [isActive, videoUrl]);
 
     const togglePlayPause = () => {
         if (!isMounted.current) return;
@@ -131,7 +133,7 @@ export const FullScreenPlayer = forwardRef<FullScreenPlayerHandle, FullScreenPla
             if (isPlaying) {
                 player.pause();
                 setIsPlaying(false);
-            } else {
+            } else if (videoUrl) {
                 player.play();
                 setIsPlaying(true);
             }
@@ -202,16 +204,22 @@ export const FullScreenPlayer = forwardRef<FullScreenPlayerHandle, FullScreenPla
         <GestureDetector gesture={composedGesture}>
             <Animated.View style={[styles.container, animatedStyle]}>
                 <View style={styles.videoContainer}>
-                    <VideoView
-                        key={`${videoUrl}-${retryCount}`}
-                        player={player}
-                        style={styles.video}
-                        contentFit="contain"
-                        nativeControls={false}
-                    />
+                    {videoUrl ? (
+                        <VideoView
+                            key={`${videoUrl}-${retryCount}`}
+                            player={player}
+                            style={styles.video}
+                            contentFit="contain"
+                            nativeControls={false}
+                        />
+                    ) : (
+                        <View style={[styles.video, { justifyContent: 'center', alignItems: 'center' }]}>
+                            <Ionicons name="videocam-off" size={64} color="rgba(255,255,255,0.15)" />
+                        </View>
+                    )}
                     {isLoading && (
                         <View style={styles.centerOverlay}>
-                            <ActivityIndicator size="large" color="#0066FF" />
+                            <ActivityIndicator size="large" color="#D9E4FF" />
                         </View>
                     )}
                     {hasError && (
@@ -276,7 +284,7 @@ const styles = StyleSheet.create({
         marginBottom: 16,
     },
     retryButton: {
-        backgroundColor: '#0066FF',
+        backgroundColor: '#D9E4FF',
         paddingHorizontal: 24,
         paddingVertical: 10,
         borderRadius: 20,

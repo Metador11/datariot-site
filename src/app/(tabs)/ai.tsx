@@ -172,11 +172,11 @@ export default function AIScreen() {
                         <Text style={[styles.cardText, { color: theme.colors.text.secondary }]}>{analysis.essence}</Text>
                     </View>
                     <View style={styles.analysisSection}>
-                        <Text style={[styles.analysisLabel, { color: '#F87171' }]}>MANIPULATION</Text>
+                        <Text style={[styles.analysisLabel, { color: '#FFFFFF' }]}>MANIPULATION</Text>
                         <Text style={[styles.cardText, { color: theme.colors.text.secondary }]}>{analysis.manipulation}</Text>
                     </View>
                     <View style={styles.analysisSection}>
-                        <Text style={[styles.analysisLabel, { color: '#4ADE80' }]}>REAL VALUE</Text>
+                        <Text style={[styles.analysisLabel, { color: '#FFFFFF' }]}>REAL VALUE</Text>
                         <Text style={[styles.cardText, { color: theme.colors.text.secondary }]}>{analysis.realValue}</Text>
                     </View>
                 </Animated.View>
@@ -307,19 +307,19 @@ const styles = StyleSheet.create({
         width: 48,
         height: 48,
         borderRadius: 24,
-        backgroundColor: 'rgba(96, 165, 250, 0.1)',
+        backgroundColor: 'rgba(217, 228, 255, 0.1)',
         justifyContent: 'center',
         alignItems: 'center',
         marginRight: 16,
         borderWidth: 1,
-        borderColor: 'rgba(96, 165, 250, 0.3)',
-        shadowColor: '#60A5FA',
+        borderColor: 'rgba(217, 228, 255, 0.3)',
+        shadowColor: '#D9E4FF',
         shadowOffset: { width: 0, height: 0 },
         shadowOpacity: 0.3,
         shadowRadius: 10,
     },
     headerTitle: {
-        color: '#60A5FA', // Blue accent
+        color: '#D9E4FF', // Blue accent
         fontSize: 20,
         fontWeight: '700',
         letterSpacing: 4, // Wide spacing for terminal look
@@ -357,7 +357,7 @@ const styles = StyleSheet.create({
         borderRadius: 16,
     },
     messageText: {
-        color: '#E2E8F0',
+        color: '#FFFFFF',
         fontSize: 16,
         lineHeight: 24,
     },
@@ -393,7 +393,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(255,255,255,0.2)',
     },
     toolText: {
-        color: '#94A3B8',
+        color: 'rgba(255, 255, 255, 0.5)',
         fontSize: 13,
         fontWeight: '600',
     },
@@ -466,7 +466,7 @@ const styles = StyleSheet.create({
         marginBottom: 16,
     },
     analysisLabel: {
-        color: '#60A5FA',
+        color: '#D9E4FF',
         fontSize: 10,
         fontWeight: '700',
         letterSpacing: 1.5,
@@ -508,7 +508,7 @@ const styles = StyleSheet.create({
     },
     suggestionText: {
         fontSize: 14,
-        color: '#E2E8F0',
+        color: '#FFFFFF',
         fontWeight: '500',
     },
 });

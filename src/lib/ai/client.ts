@@ -241,3 +241,40 @@ export async function chatWithAI(message: string, history: any[]): Promise<strin
         return generateMockResponse(message);
     }
 }
+
+export interface DebateSeed {
+    thesis: string;
+    arguments: { side: 'FOR' | 'AGAINST'; text: string; strength: number }[];
+}
+
+// Generate Debate Seed (Thesis + Arguments)
+export async function generateDebateSeed(contentHint: string): Promise<DebateSeed> {
+    const systemPrompt = "You are the Datariot Logic Oracle. Analyze a topic and generate a controversial but logical 'Post Thesis' and 4 balanced arguments (2 FOR, 2 AGAINST). Output JSON.";
+    const userPrompt = `Topic/Video info: "${contentHint}". Return JSON with: thesis (1 sentence, provocative), arguments (array of {side, text, strength}). Strength should be 5-20.`;
+
+    const callGPT = async () => {
+        const completion = await openai.chat.completions.create({
+            messages: [
+                { role: "system", content: systemPrompt },
+                { role: "user", content: userPrompt }
+            ],
+            model: "gpt-4o",
+            response_format: { type: "json_object" }
+        });
+        const content = completion.choices[0].message.content;
+        return content ? JSON.parse(content) : null;
+    };
+
+    try {
+        return await callGPT();
+    } catch {
+        console.warn("[AI] Debate seeding failed. Using generic seed.");
+        return {
+            thesis: `Should we prioritize logic over emotion in the discussion of: ${contentHint}?`,
+            arguments: [
+                { side: 'FOR', text: "Logical consistency is the only way to reach a universal truth.", strength: 10 },
+                { side: 'AGAINST', text: "Human experience is fundamentally emotional, ignoring it leads to flawed conclusions.", strength: 12 }
+            ]
+        };
+    }
+}

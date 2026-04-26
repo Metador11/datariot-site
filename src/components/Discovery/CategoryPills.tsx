@@ -12,17 +12,17 @@ interface CategoryPillsProps {
 
 // Unique colors per category
 const CATEGORY_COLORS: Record<string, string> = {
-    'Viral': '#818CF8', // Indigo 400
-    'Comedy': '#F472B6', // Pink 400
-    'Tech': '#22D3EE', // Cyan 400
-    'Music': '#A78BFA', // Violet 400
-    'Dance': '#FB7185', // Rose 400
-    'Education': '#34D399', // Emerald 400
-    'Lifestyle': '#FBBF24', // Amber 400
-    'Gaming': '#6366F1', // Indigo 500
-    'Sport': '#38BDF8', // Sky 400
-    'E-sports': '#4F46E5', // Indigo 600
-    'All': '#6366F1',
+    'Viral': '#D9E4FF',
+    'Comedy': '#D9E4FF',
+    'Tech': '#D9E4FF',
+    'Music': '#D9E4FF',
+    'Dance': '#D9E4FF',
+    'Education': '#D9E4FF',
+    'Lifestyle': '#D9E4FF',
+    'Gaming': '#D9E4FF',
+    'Sport': '#D9E4FF',
+    'E-sports': '#D9E4FF',
+    'All': '#D9E4FF',
 };
 
 
@@ -39,7 +39,7 @@ export const CategoryPills = ({ categories, activeCategory, onCategoryPress }: C
         >
             {categories.map((category) => {
                 const isActive = activeCategory === category;
-                const color = CATEGORY_COLORS[category] || '#0066FF';
+                const color = CATEGORY_COLORS[category] || '#D9E4FF';
 
                 return (
                     <Pressable
@@ -74,7 +74,7 @@ export const CategoryPills = ({ categories, activeCategory, onCategoryPress }: C
                                 styles.text,
                                 {
                                     color: isActive
-                                        ? '#FFFFFF'
+                                        ? '#000000'
                                         : isDark ? 'rgba(255,255,255,0.9)' : 'rgba(0,0,0,0.8)',
                                     fontWeight: isActive ? '800' : '700',
                                 }
@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
         width: '100%',
     },
     container: {
-        paddingHorizontal: theme.spacing.lg,
+        paddingHorizontal: theme.spacing.md,
         gap: 10,
         paddingTop: 8,
         paddingBottom: 8,

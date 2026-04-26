@@ -8,7 +8,9 @@ export const VIDEO_CATEGORIES = [
     'Education',
     'Comedy',
     'Viral',
-    'Lifestyle'
+    'Lifestyle',
+    'Debate',
+    'Politics'
 ] as const;
 
 export type VideoCategory = typeof VIDEO_CATEGORIES[number];
@@ -23,5 +25,7 @@ export const CATEGORY_DISPLAY_NAMES: Record<VideoCategory, string> = {
     'Education': 'Education',
     'Comedy': 'Comedy',
     'Viral': 'Trending',
-    'Lifestyle': 'Lifestyle'
+    'Lifestyle': 'Lifestyle',
+    'Debate': 'Debate',
+    'Politics': 'Politics'
 };
