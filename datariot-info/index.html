@@ -1,25 +1,25 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-theme="light">
 
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Datariot — Short. Smart. Engaging.</title>
+    <title>Datariot — Premium Short-Form Video Platform.</title>
     <meta name="description"
-        content="Datariot is an educational short-video platform blending meaningful content with cutting-edge AI. Apply for beta access now." />
+        content="Datariot is a premium short-form video platform for creators who care about quality. Upload videos up to 10 minutes, engage with your audience, and enter the Debate Arena." />
 
     <!-- Twitter Card data -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:site" content="@datariot_xyz">
-    <meta name="twitter:title" content="Datariot — Short. Smart. Engaging.">
+    <meta name="twitter:title" content="Datariot — Premium Short-Form Video Platform.">
     <meta name="twitter:description"
-        content="Datariot is an educational short-video platform blending meaningful content with cutting-edge AI. Apply for beta access now.">
+        content="The home for high-quality short-form video. Create. Share. Debate. Up to 10 minutes per video.">
     <meta name="twitter:image" content="https://info.datariot.xyz/assets/twitter-card-v3.png">
 
     <!-- Open Graph data -->
-    <meta property="og:title" content="Datariot — Short. Smart. Engaging.">
+    <meta property="og:title" content="Datariot — Premium Short-Form Video Platform.">
     <meta property="og:description"
-        content="Datariot is an educational short-video platform blending meaningful content with cutting-edge AI. Apply for beta access now.">
+        content="The home for high-quality short-form video. Create. Share. Debate. Up to 10 minutes per video.">
     <meta property="og:image" content="https://info.datariot.xyz/assets/twitter-card-v3.png">
     <meta property="og:url" content="https://info.datariot.xyz/">
     <meta property="og:type" content="website">
@@ -33,8 +33,8 @@
     <script>
         // Theme toggle — runs immediately, no dependencies
         (function () {
-            var saved = 'dark';
-            try { saved = localStorage.getItem('orvelis-theme') || 'dark'; } catch (e) { }
+            var saved = 'light';
+            try { saved = localStorage.getItem('orvelis-theme') || 'light'; } catch (e) { }
             document.documentElement.setAttribute('data-theme', saved);
         })();
         function toggleTheme() {
@@ -47,6 +47,11 @@
 </head>
 
 <body>
+    <!-- Top Right Logo -->
+    <a href="#hero" class="top-right-logo" aria-label="Datariot Home">
+        <img src="assets/logo.png" alt="Datariot Logo">
+    </a>
+
     <!-- Ambient glow effects -->
     <div class="ambient-glow ambient-glow--1"></div>
     <div class="ambient-glow ambient-glow--2"></div>
@@ -96,6 +101,10 @@
                     <span class="sidebar__link-dot"></span>
                     <span class="sidebar__link-text">Home</span>
                 </a></li>
+            <li><a href="#global" class="sidebar__link" data-section="global">
+                    <span class="sidebar__link-dot"></span>
+                    <span class="sidebar__link-text">Global</span>
+                </a></li>
             <li><a href="#manifesto" class="sidebar__link" data-section="manifesto">
                     <span class="sidebar__link-dot"></span>
                     <span class="sidebar__link-text">Manifesto</span>
@@ -106,7 +115,7 @@
                 </a></li>
             <li><a href="#debates" class="sidebar__link" data-section="debates">
                     <span class="sidebar__link-dot"></span>
-                    <span class="sidebar__link-text">Debates</span>
+                    <span class="sidebar__link-text">Arena (Beta)</span>
                 </a></li>
             <li><a href="#live" class="sidebar__link" data-section="live">
                     <span class="sidebar__link-dot"></span>
@@ -180,6 +189,7 @@
 
         <!-- HERO SECTION -->
         <section class="section section--hero hero--shimmer" id="hero">
+            <div id="canvas-3d-hero"></div>
             <!-- Geex-Style Spinning Elements -->
             <div class="abstract-spin abstract-spin--1">
                 <svg viewBox="0 0 200 200">
@@ -198,7 +208,7 @@
                     <text font-size="11" font-family="'Oxanium', monospace" font-weight="600" fill="currentColor"
                         opacity="0.6">
                         <textPath href="#textCircle" startOffset="0%">
-                            DATARIOT • OPEN SOURCE • PREMIUM • AI •
+                            DATARIOT • SHORT VIDEO • CREATIVE FREEDOM • ARENA •
                         </textPath>
                     </text>
                 </svg>
@@ -212,6 +222,9 @@
                         <img src="assets/logo.png" alt="Datariot Logo" class="hero__brand-logo">
                     </div>
                     <h1 class="hero__brand-text">DATARIOT</h1>
+                    <p class="hero__tagline">Premium Short-Form Video Platform.</p>
+                    <p class="hero__sub-copy">The home for high-quality content. Upload videos up to 10 minutes.
+                        Share your craft. Enter the arena where the best argument wins.</p>
                 </div>
             </div>
             <div class="scroll-indicator">
@@ -219,8 +232,32 @@
             </div>
         </section>
 
+        <!-- GLOBAL PLATFORM SECTION — Base Chain style -->
+        <section class="section section--global" id="global">
+            <div class="section__container">
+                <div class="section__header global__header">
+                    <span class="section__label">00 — Who Is Datariot</span>
+                    <h2 class="section__title global__title">A global platform<br />for every voice.</h2>
+                    <p class="global__subtitle">Multilingual. Borderless. Built to be heard.</p>
+                    <p class="global__desc">No matter where you are or what language you speak — your ideas deserve to
+                        be seen. Datariot connects creators across every continent, every culture, every timezone. One
+                        platform. Every voice.</p>
+                </div>
+                <div class="global__map-wrap">
+                    <div id="canvas-3d-globe"></div>
+                </div>
+                <div class="global__map-legend">
+                    <span class="global__legend-item"><span
+                            class="global__legend-dot global__legend-dot--active"></span>Active creators</span>
+                    <span class="global__legend-item"><span
+                            class="global__legend-dot global__legend-dot--growing"></span>Growing communities</span>
+                </div>
+            </div>
+        </section>
+
         <!-- MANIFESTO SECTION -->
         <section class="section section--manifesto" id="manifesto">
+            <div id="canvas-3d-middle"></div>
             <div class="section__container">
                 <div class="section__header">
                     <span class="section__label">01 — Manifesto</span>
@@ -229,28 +266,26 @@
                 <div class="manifesto__content">
                     <div class="manifesto__letter">
                         <p class="manifesto__opening">
-                            Every day, billions of people open their phones and lose hours to content that adds nothing
-                            to their lives. I watched my friends, my peers — brilliant minds — scroll endlessly through
-                            entertainment that left them emptier than before.
+                            The internet is broken. Short videos have become a race to the bottom — mindless scrolls,
+                            outrage bait, and hollow engagement. Creators are trapped in algorithms that favor
+                            quantity over quality.
                         </p>
                         <p>
-                            I asked myself: <strong>what if the most addictive thing on your phone was also the most
-                                valuable?</strong>
+                            I asked myself: <strong>what if we built a platform where content is judged by its
+                                substance, not just its view count?</strong>
                         </p>
                         <p>
-                            That question became Datariot. Not a lecture platform. Not another EdTech clone. A living
-                            ecosystem where 60-second videos carry the weight of hours of learning, where debates
-                            replace comment wars, and where your feed gets smarter as <em>you</em> get smarter.
+                            That question became Datariot. A premium video platform for the curious, the creative,
+                            and the courageous. Whether you're sharing a documentary, a tutorial, or a bold
+                            perspective, your voice matters here.
                         </p>
                         <p>
-                            We're not building for engagement metrics. We're building for the moment when someone puts
-                            their phone down and realizes they just learned something that changed how they see the
-                            world.
+                            And for those who want to push further, we've built the <strong>Debate Arena</strong>.
+                            A space where logic meets video. Where you don't just state an opinion — you defend it.
                         </p>
                         <p>
-                            The algorithm doesn't optimize for watch time — it optimizes for understanding. Every
-                            recommendation is a step in your personal learning journey, guided by AI that knows where
-                            your gaps are and fills them with exactly the right content.
+                            Join the riot against shallow content. Create with purpose. Debate with logic.
+                            Be part of the platform where videos actually say something.
                         </p>
                         <div class="manifesto__signature">
                             <div class="manifesto__sig-line"></div>
@@ -259,55 +294,32 @@
                     </div>
                     <div class="manifesto__values">
                         <div class="value-card">
-                            <span class="value-card__icon">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                    stroke-width="2">
-                                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
-                                    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
-                                </svg>
-                            </span>
+                            <div class="value-card__icon-3d" data-icon="logic"></div>
                             <div class="value-card__text">
-                                <h4>Knowledge over noise</h4>
-                                <p>Every piece of content is curated, verified, and designed to teach.</p>
+                                <h4>Logic over noise</h4>
+                                <p>Arguments are judged by reasoning quality, not popularity or shock value.</p>
                             </div>
                         </div>
                         <div class="value-card">
-                            <span class="value-card__icon">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                    stroke-width="2">
-                                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-                                </svg>
-                            </span>
+                            <div class="value-card__icon-3d" data-icon="debate"></div>
                             <div class="value-card__text">
                                 <h4>Debate over outrage</h4>
-                                <p>Structured argumentation replaces toxic comment sections.</p>
+                                <p>Structured video argumentation replaces toxic comment sections.</p>
                             </div>
                         </div>
                         <div class="value-card">
-                            <span class="value-card__icon">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                    stroke-width="2">
-                                    <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
-                                </svg>
-                            </span>
+                            <div class="value-card__icon-3d" data-icon="accountability"></div>
                             <div class="value-card__text">
-                                <h4>Growth over addiction</h4>
-                                <p>Success is measured by what you learn, not how long you stay.</p>
+                                <h4>Accountability over anonymity</h4>
+                                <p>Camera-on, face-first debates. No hiding behind avatars.</p>
                             </div>
                         </div>
                         <div class="value-card">
-                            <span class="value-card__icon">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                    stroke-width="2">
-                                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-                                    <circle cx="9" cy="7" r="4" />
-                                    <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
-                                    <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-                                </svg>
-                            </span>
+                            <div class="value-card__icon-3d" data-icon="truth"></div>
                             <div class="value-card__text">
-                                <h4>Community over isolation</h4>
-                                <p>Learning together multiplies the power of every insight.</p>
+                                <h4>Truth over popularity</h4>
+                                <p>The community votes on argument quality. Your Logic Score is your real reputation.
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -319,104 +331,174 @@
         <section class="section section--advantages" id="advantages">
             <div class="section__container">
                 <div class="section__header">
-                    <span class="section__label">01.5 — Our Advantages</span>
-                    <h2 class="section__title">Why Choose Datariot?</h2>
+                    <span class="section__label">01.5 — Why Datariot</span>
+                    <h2 class="section__title">The Debate Arena Advantage.</h2>
                 </div>
-                <div class="advantages__grid">
-                    <div class="advantage-card">
-                        <span class="advantage-card__number">01</span>
-                        <h4>Animal News Network</h4>
-                        <p>Top AI news translated into engaging 60-second scripts and delivered by AI-generated animals.
-                            Learning made perfectly fun.</p>
+                <div class="advantages-orbital">
+                    <div class="orbital-core core-3d">
+                        <!-- 3D Gyroscope -->
+                        <div class="gyroscope">
+                            <div class="gyro-ring rx"></div>
+                            <div class="gyro-ring ry"></div>
+                            <div class="gyro-ring rz"></div>
+                            <div class="gyro-sphere"></div>
+                        </div>
+                        <div class="orbital-core__glow"></div>
+                        <h3>The Arena</h3>
                     </div>
-                    <div class="advantage-card">
-                        <span class="advantage-card__number">02</span>
-                        <h4>Open Source Democracy</h4>
-                        <p>Our code is 100% open source. Users propose and vote on platform changes, directly shaping
-                            the future of Datariot.</p>
-                    </div>
-                    <div class="advantage-card">
-                        <span class="advantage-card__number">03</span>
-                        <h4>No-Garbage Algorithm</h4>
-                        <p>We filter out all the noise. A strict "zero-trash" policy ensured by community consensus and
-                            AI moderation.</p>
-                    </div>
-                    <div class="advantage-card">
-                        <span class="advantage-card__number">04</span>
-                        <h4>Strict Safety Standards</h4>
-                        <p>Total safety at the core. We use advanced AI to block porn, spam, and harmful content,
-                            ensuring a clean and professional environment for everyone.</p>
-                    </div>
-                    <div class="advantage-card">
-                        <span class="advantage-card__number">05</span>
-                        <h4>Global Multi-lingual</h4>
-                        <p>An international platform where content is automatically translated. Shorts can be watched
-                            and understood by anyone, anywhere in the world.</p>
-                    </div>
-                    <div class="advantage-card">
-                        <span class="advantage-card__number">06</span>
-                        <h4>AI Fact-Checking</h4>
-                        <p>Say goodbye to misinformation. Every claim is scrutinized and verified by our omnipresent AI
-                            engines.</p>
+
+                    <div class="orbital-ring">
+                        <!-- Orbit Nodes -->
+                        <div class="orbital-node on--1">
+                            <span class="advantage-card__number">01</span>
+                            <h4>10-Minute Limits</h4>
+                            <p>No more rushed points. You have up to 10 minutes to deliver high-quality, engaging video
+                                content.</p>
+                        </div>
+                        <div class="orbital-node on--2">
+                            <span class="advantage-card__number">02</span>
+                            <h4>Smart Discovery</h4>
+                            <p>Our algorithms prioritize substance and community value, ensuring your best work is seen.
+                            </p>
+                        </div>
+                        <div class="orbital-node on--3">
+                            <span class="advantage-card__number">03</span>
+                            <h4>Debate Framework</h4>
+                            <p>Challenge any perspective with a video response. Engage in structured debates where logic
+                                leads.</p>
+                        </div>
+                        <div class="orbital-node on--4">
+                            <span class="advantage-card__number">04</span>
+                            <h4>Premium Aesthetics</h4>
+                            <p>A sophisticated, dark-mode first interface designed to make your video content look
+                                cinematic.</p>
+                        </div>
+                        <div class="orbital-node on--5">
+                            <span class="advantage-card__number">05</span>
+                            <h4>Logic Score</h4>
+                            <p>Build your reputation through the Arena. Get scored on your reasoning and climb the
+                                leaderboard.</p>
+                        </div>
+                        <div class="orbital-node on--6">
+                            <span class="advantage-card__number">06</span>
+                            <h4>Verified Ecosystem</h4>
+                            <p>Engage with a community of sharp minds. No bots, no noise. Just high-quality video
+                                discourse.</p>
+                        </div>
                     </div>
                 </div>
             </div>
         </section>
 
         <!-- FEATURES SECTION -->
-        <section class="section section--features" id="features">
+        <section class="section section--features section--3d-features" id="features">
+            <div id="canvas-3d-features"></div>
+
+            <!-- Large radial bg glow -->
+            <div class="feature-section-glow"></div>
+
             <div class="section__container">
-                <div class="section__header">
-                    <span class="section__label">02 — Features</span>
-                    <h2 class="section__title">Built for the<br />curious mind.</h2>
+                <div class="section__header section__header--stack">
+                    <span class="section__label">02 — Platform</span>
+                    <h2 class="section__title feature__title--3d">
+                        <span class="text-layer" data-text="Built for the">Built for the</span>
+                        <span class="text-layer text-layer--accent" data-text="modern creator.">modern creator.</span>
+                    </h2>
                 </div>
-                <div class="features__grid">
-                    <div class="feature-card feature-card--large">
-                        <div class="feature-card__icon">
-                            <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-                                <circle cx="16" cy="16" r="12" stroke="currentColor" stroke-width="1.5" />
-                                <path d="M16 8V16L22 22" stroke="currentColor" stroke-width="1.5"
-                                    stroke-linecap="round" />
-                            </svg>
+
+                <div class="features__fragments">
+                    <!-- FRAGMENT 1: Premium Feed -->
+                    <div class="feature-fragment feature-fragment--large">
+                        <div class="fragment-visual feat3d--feed">
+                            <div class="holo-cascade">
+                                <div class="h-voxel hv--1"></div>
+                                <div class="h-voxel hv--2"></div>
+                                <div class="h-voxel hv--3"></div>
+                                <div class="h-voxel hv--4"></div>
+                                <div class="h-voxel hv--5"></div>
+                                <div class="h-voxel hv--6"></div>
+                            </div>
                         </div>
-                        <h3>Smart Feed</h3>
-                        <p>AI-curated content that adapts to your interests and learning pace. Every swipe is
-                            personalized for maximum knowledge absorption.</p>
+                        <div class="fragment-content">
+                            <span class="fragment-tag">01 / PROJECTION</span>
+                            <h3>Premium Feed</h3>
+                            <p>High-substance curation. No mindless doomscrolling, just pure creative value.</p>
+                        </div>
+                        <div class="fragment-glow"></div>
                     </div>
-                    <div class="feature-card">
-                        <div class="feature-card__icon">
-                            <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-                                <path d="M16 4L28 10V22L16 28L4 22V10L16 4Z" stroke="currentColor" stroke-width="1.5"
-                                    stroke-linejoin="round" />
-                                <path d="M16 16L28 10M16 16L4 10M16 16V28" stroke="currentColor" stroke-width="1.5" />
-                            </svg>
+
+                    <!-- FRAGMENT 2: Debate Arena -->
+                    <div class="feature-fragment">
+                        <div class="fragment-visual feat3d--arena">
+                            <div class="holo-shield">
+                                <div class="shield-ring sr--1"></div>
+                                <div class="shield-ring sr--2"></div>
+                                <div class="shield-core"></div>
+                                <div class="shield-scan"></div>
+                            </div>
                         </div>
-                        <h3>Creator DNA</h3>
-                        <p>Unique analytics dashboard showing your content's impact, reach, and influence scores.</p>
+                        <div class="fragment-content">
+                            <span class="fragment-tag">02 / INTERACTION</span>
+                            <h3>Debate Arena</h3>
+                            <p>Challenge any video with focused counter-arguments.</p>
+                        </div>
+                        <div class="fragment-glow"></div>
                     </div>
-                    <div class="feature-card">
-                        <div class="feature-card__icon">
-                            <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-                                <circle cx="16" cy="12" r="6" stroke="currentColor" stroke-width="1.5" />
-                                <path d="M8 28C8 23.5817 11.5817 20 16 20C20.4183 20 24 23.5817 24 28"
-                                    stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
-                            </svg>
+
+                    <!-- FRAGMENT 3: Logic Score -->
+                    <div class="feature-fragment">
+                        <div class="fragment-visual feat3d--score">
+                            <div class="holo-crystal">
+                                <div class="crystal-facet cf--1"></div>
+                                <div class="crystal-facet cf--2"></div>
+                                <div class="crystal-facet cf--3"></div>
+                                <div class="crystal-facet cf--4"></div>
+                                <div class="crystal-core"></div>
+                            </div>
                         </div>
-                        <h3>AI Sensei</h3>
-                        <p>Your personal AI tutor that answers questions about any video, deepens understanding, and
-                            tracks progress.</p>
+                        <div class="fragment-content">
+                            <span class="fragment-tag">03 / REPUTATION</span>
+                            <h3>Logic Score</h3>
+                            <p>Your reputation built on argument quality.</p>
+                        </div>
+                        <div class="fragment-glow"></div>
                     </div>
-                    <div class="feature-card feature-card--large">
-                        <div class="feature-card__icon">
-                            <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-                                <path d="M4 16H28" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
-                                <path d="M16 4V28" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
-                                <circle cx="16" cy="16" r="6" stroke="currentColor" stroke-width="1.5" />
-                            </svg>
+
+                    <!-- FRAGMENT 4: Community Jury -->
+                    <div class="feature-fragment">
+                        <div class="fragment-visual feat3d--jury">
+                            <div class="holo-jury">
+                                <div class="j-ring"></div>
+                                <div class="j-node jn--1"></div>
+                                <div class="j-node jn--2"></div>
+                                <div class="j-node jn--3"></div>
+                            </div>
                         </div>
-                        <h3>Community Learning</h3>
-                        <p>Join topic communities, collaborate on debates, mentor newcomers, and grow together.
-                            Knowledge shared is knowledge multiplied.</p>
+                        <div class="fragment-content">
+                            <span class="fragment-tag">04 / GOVERNANCE</span>
+                            <h3>Community Jury</h3>
+                            <p>Democratic voting based on logic.</p>
+                        </div>
+                        <div class="fragment-glow"></div>
+                    </div>
+
+                    <!-- FRAGMENT 5: Creator Hub -->
+                    <div class="feature-fragment">
+                        <div class="fragment-visual feat3d--profile">
+                            <div class="holo-dna">
+                                <div class="dna-helix dna-helix--a"></div>
+                                <div class="dna-helix dna-helix--b"></div>
+                                <div class="dna-bar db--1"></div>
+                                <div class="dna-bar db--2"></div>
+                                <div class="dna-bar db--3"></div>
+                            </div>
+                        </div>
+                        <div class="fragment-content">
+                            <span class="fragment-tag">05 / IDENTITY</span>
+                            <h3>Identity Helix</h3>
+                            <p>Track your creative DNA.</p>
+                        </div>
+                        <div class="fragment-glow"></div>
                     </div>
                 </div>
             </div>
@@ -429,97 +511,135 @@
                     <span class="section__label">02.5 — Platform Screens</span>
                     <h2 class="section__title">The Core Experience.</h2>
                 </div>
-                <div class="screens__grid">
-                    <div class="screen-card">
-                        <div class="screen-card__visual screen-card__visual--feed">
-                            <div class="screen-card__overlay"></div>
-                            <div class="screen-card__scanline"></div>
-                            <div class="screen-card__frame"></div>
-                            <img src="assets/smart-feed-real.jpg" alt="Datariot Smart Feed" class="screen-card__image">
+                <div class="screens__showcase-wrapper">
+                    <div class="screens__showcase">
+                        <!-- Background Glows -->
+                        <div class="showcase__glow showcase__glow--1"></div>
+                        <div class="showcase__glow showcase__glow--2"></div>
+
+                        <div class="phone-mockup phone-mockup--left">
+                            <div class="phone-mockup__inner">
+                                <div class="phone-mockup__glass"></div>
+                                <div class="phone-mockup__screen">
+                                    <img src="assets/creator-dna-real.jpg" alt="Creator Hub">
+                                </div>
+                                <div class="phone-mockup__bezel"></div>
+                            </div>
                         </div>
-                        <div class="screen-card__text">
-                            <h3>Smart Feed</h3>
-                            <p>Discover high-information content tailored to your unique Creator DNA. Our 'Daily
-                                Synergy' algorithm ensures every video matches your intellectual path.</p>
+
+                        <div class="phone-mockup phone-mockup--center">
+                            <div class="phone-mockup__inner">
+                                <div class="phone-mockup__glass"></div>
+                                <div class="phone-mockup__screen">
+                                    <img src="assets/smart-feed-real.jpg" alt="Smart Feed">
+                                </div>
+                                <div class="phone-mockup__bezel"></div>
+                            </div>
+                            <div class="phone-mockup__floating-icon">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+                                </svg>
+                            </div>
+                        </div>
+
+                        <div class="phone-mockup phone-mockup--right">
+                            <div class="phone-mockup__inner">
+                                <div class="phone-mockup__glass"></div>
+                                <div class="phone-mockup__screen">
+                                    <img src="assets/debate-threads-real.jpg" alt="Debate Arena">
+                                </div>
+                                <div class="phone-mockup__bezel"></div>
+                            </div>
                         </div>
                     </div>
-                    <div class="screen-card">
-                        <div class="screen-card__visual screen-card__visual--debate">
-                            <div class="screen-card__overlay"></div>
-                            <div class="screen-card__scanline"></div>
-                            <div class="screen-card__frame"></div>
-                            <img src="assets/debate-threads-real.jpg" alt="Datariot Debate Threads"
-                                class="screen-card__image">
+
+                    <div class="screens__description-grid">
+                        <div class="desc-item" data-for="left">
+                            <h3>Identity Helix</h3>
+                            <p>Your reputation, logic score, and creative essence.</p>
                         </div>
-                        <div class="screen-card__text">
+                        <div class="desc-item desc-item--active" data-for="center">
+                            <h3>Smart Discovery</h3>
+                            <p>AI-driven synergy tailored to your creator DNA.</p>
+                        </div>
+                        <div class="desc-item" data-for="right">
                             <h3>Debate Arena</h3>
-                            <p>Explore arguments with deep context. Analyze 'Match' scores and dive into structured
-                                arenas where logic and evidence lead the way.</p>
-                        </div>
-                    </div>
-                    <div class="screen-card">
-                        <div class="screen-card__visual screen-card__visual--profile">
-                            <div class="screen-card__overlay"></div>
-                            <div class="screen-card__scanline"></div>
-                            <div class="screen-card__frame"></div>
-                            <img src="assets/creator-dna-real.jpg" alt="Datariot Creator DNA"
-                                class="screen-card__image">
-                        </div>
-                        <div class="screen-card__text">
-                            <h3>Creator DNA</h3>
-                            <p>Your universal profile that evolves as you learn. Track your Logic Score and content
-                                impact on your journey through the Datariot ecosystem.</p>
+                            <p>Enter the arena where logic leads the way.</p>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- DEBATE THREADS SECTION -->
+        <!-- HOW IT WORKS SECTION -->
         <section class="section section--debates" id="debates">
+            <div id="canvas-3d-end"></div>
             <div class="section__container">
                 <div class="section__header">
-                    <span class="section__label">03 — Debate Arena</span>
-                    <h2 class="section__title">Where ideas collide<br />and truths emerge.</h2>
+                    <span class="section__label">03 — How It Works</span>
+                    <h2 class="section__title">Create. Share.<br />Debate.</h2>
                 </div>
-                <div class="debates__content">
-                    <div class="debates__info">
-                        <p class="debates__lead">
-                            Datariot Debates isn't just a comment section — it's a structured arena for intellectual
-                            discourse. Propose a thesis, defend it with arguments, and let the community decide through
-                            logic, not likes.
+                <div class="arena-forge">
+                    <div class="forge-lead">
+                        <p>
+                            Ready to share your voice? Upload videos up to 10 minutes.
+                            And if you want to challenge a point, enter the Debate Arena — where
+                            logic matters more than likes.
                         </p>
-                        <div class="debates__how">
-                            <div class="debate-step">
-                                <div class="debate-step__num">1</div>
-                                <div>
-                                    <h4>Propose a Thesis</h4>
-                                    <p>Share a bold claim — "AI will replace 50% of jobs by 2035" — and stake your
-                                        intellectual reputation on it.</p>
-                                </div>
+                    </div>
+
+                    <div class="forge-pipeline">
+                        <!-- Central Energy Conduit -->
+                        <div class="forge-conduit"></div>
+
+                        <!-- Step 1: Share (Left) -->
+                        <div class="forge-node forge-node--left node--1">
+                            <div class="node-content">
+                                <span class="node-num">01</span>
+                                <h4>Share Your Content</h4>
+                                <p>Upload your video (up to 10 mins). Teach, tell a story, or make a bold claim. Quality
+                                    is the only metric.</p>
                             </div>
-                            <div class="debate-step">
-                                <div class="debate-step__num">2</div>
-                                <div>
-                                    <h4>Build Arguments</h4>
-                                    <p>Others respond with structured arguments: evidence, counter-evidence, logical
-                                        reasoning. No ad-hominem, no noise.</p>
-                                </div>
+                            <div class="node-pulse"></div>
+                            <svg class="node-connector" width="100" height="20">
+                                <path d="M0 10 Q 50 10 100 10" stroke="var(--accent)" stroke-width="2" fill="none" />
+                            </svg>
+                        </div>
+
+                        <!-- Step 2: Invite (Right) -->
+                        <div class="forge-node forge-node--right node--2">
+                            <div class="node-content">
+                                <span class="node-num">02</span>
+                                <h4>Invite Responses</h4>
+                                <p>Allow others to respond with their own videos. Engage in thoughtful discourse across
+                                    categories.</p>
                             </div>
-                            <div class="debate-step">
-                                <div class="debate-step__num">3</div>
-                                <div>
-                                    <h4>Earn Logic Score</h4>
-                                    <p>The community votes on argument quality. Your Logic Score rises as you
-                                        demonstrate critical thinking.</p>
-                                </div>
+                            <div class="node-pulse"></div>
+                            <svg class="node-connector" width="100" height="20">
+                                <path d="M100 10 Q 50 10 0 10" stroke="var(--accent)" stroke-width="2" fill="none" />
+                            </svg>
+                        </div>
+
+                        <!-- Step 3: Arena (Left) -->
+                        <div class="forge-node forge-node--left node--3">
+                            <div class="node-content">
+                                <span class="node-num">03</span>
+                                <h4>Enter the Arena</h4>
+                                <p>Turn any discussion into a structured debate. Let the jury vote and build your global
+                                    Logic Score.</p>
                             </div>
+                            <div class="node-pulse"></div>
+                            <svg class="node-connector" width="100" height="20">
+                                <path d="M0 10 Q 50 10 100 10" stroke="var(--accent)" stroke-width="2" fill="none" />
+                            </svg>
                         </div>
                     </div>
-                    <div class="debates__preview">
+
+                    <div class="forge-output scroll-reveal">
                         <div class="debate-card-mock">
                             <div class="debate-card-mock__header">
-                                <span class="debate-card-mock__tag">Trending</span>
+                                <span class="debate-card-mock__tag">🔥 Live Debate</span>
                                 <span class="debate-card-mock__score">Logic: 94</span>
                             </div>
                             <h4 class="debate-card-mock__thesis">“Quantum computing will make existing encryption
@@ -587,7 +707,7 @@
                     <div class="live-card">
                         <div class="live-card__pulse"></div>
                         <span class="live-card__number" id="liveMinutes">0</span>
-                        <span class="live-card__label">Minutes of learning today</span>
+                        <span class="live-card__label">Arguments recorded today</span>
                     </div>
                 </div>
                 <div class="live__feed">
@@ -692,7 +812,7 @@
                                 style="width: 20px; height: 20px; border-radius: 50%; vertical-align: middle; margin-right: 8px;">
                             DATARIOT
                         </span>
-                        <span class="footer__tagline">Learn. Think. Grow.</span>
+                        <span class="footer__tagline">Create. Share. Debate.</span>
                     </div>
                     <div class="footer__columns">
                         <div class="footer__col">
@@ -742,6 +862,8 @@
     <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
     <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
     <script defer src="https://unpkg.com/split-type"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js"></script>
+    <script defer src="3d-fx.js"></script>
 
     <script defer src="script.js"></script>
 </body>

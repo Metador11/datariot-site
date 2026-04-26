@@ -312,7 +312,7 @@ a {
     left: 24px;
     bottom: 24px;
     width: var(--sidebar-width);
-    background: rgba(5, 7, 10, 0.6);
+    background: var(--surface);
     backdrop-filter: blur(24px);
     -webkit-backdrop-filter: blur(24px);
     border: none;
@@ -490,7 +490,7 @@ a {
     width: 44px;
     /* Slightly larger tap target */
     height: 44px;
-    background: rgba(5, 7, 10, 0.85);
+    background: var(--surface);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border: 1px solid var(--border);
@@ -570,7 +570,7 @@ a {
         flex-direction: column;
         gap: 16px;
         text-align: center;
-        background: rgba(5, 7, 10, 0.4);
+        background: var(--surface);
         border-bottom: 1px solid var(--border);
         width: 100%;
     }
@@ -4229,7 +4229,7 @@ a {
     height: 40px;
     border-radius: 50%;
     border: 1px solid var(--border);
-    background: rgba(5, 7, 10, 0.6);
+    background: var(--surface);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
     cursor: pointer;

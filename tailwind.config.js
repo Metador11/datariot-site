@@ -17,13 +17,13 @@ module.exports = {
                     light: '#22D3EE',
                 },
                 background: {
-                    DEFAULT: '#000814',
-                    light: '#0F172A',
-                    paper: '#020617',
+                    DEFAULT: '#FFFFFF',
+                    light: '#F8FAFC',
+                    paper: '#F1F5F9',
                 },
                 surface: {
-                    DEFAULT: 'rgba(15, 23, 42, 0.8)',
-                    light: 'rgba(30, 41, 59, 0.8)',
+                    DEFAULT: 'rgba(241, 245, 249, 0.8)',
+                    light: 'rgba(255, 255, 255, 0.8)',
                 },
             },
         },

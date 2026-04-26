@@ -9,9 +9,9 @@ let supabase = null;
 // Immediate Theme Initialization to prevent flash
 (function () {
     const html = document.documentElement;
-    let savedTheme = 'dark';
+    let savedTheme = 'light';
     try {
-        savedTheme = localStorage.getItem('orvelis-theme') || 'dark';
+        savedTheme = localStorage.getItem('orvelis-theme') || 'light';
     } catch (e) { }
     html.setAttribute('data-theme', savedTheme);
 })();
@@ -150,22 +150,101 @@ function initializeScripts() {
         revealElements.forEach(el => revealObserver.observe(el));
     }
 
-    // === Feature Card 3D Tilt ===
-    document.querySelectorAll('.feature-card').forEach(card => {
-        card.addEventListener('mousemove', (e) => {
-            const rect = card.getBoundingClientRect();
-            const x = ((e.clientX - rect.left) / rect.width) * 100;
-            const y = ((e.clientY - rect.top) / rect.height) * 100;
-            const tiltX = (y / 100 - 0.5) * 8;
-            const tiltY = (x / 100 - 0.5) * -8;
-            card.style.transform = `perspective(1000px) rotateX(${tiltX}deg) rotateY(${tiltY}deg) translateY(-5px) scale(1.02)`;
-            card.style.setProperty('--mx', x + '%');
-            card.style.setProperty('--my', y + '%');
+    // === Holographic Fragment 3D Interaction ===
+    document.querySelectorAll('.feature-fragment').forEach(fragment => {
+        fragment.addEventListener('mousemove', (e) => {
+            const rect = fragment.getBoundingClientRect();
+            const x = (e.clientX - rect.left) / rect.width;
+            const y = (e.clientY - rect.top) / rect.height;
+
+            const tiltX = (y - 0.5) * 15; // Deeper tilt
+            const tiltY = (x - 0.5) * -15;
+
+            fragment.style.transform = `perspective(2000px) rotateX(${tiltX}deg) rotateY(${tiltY}deg)`;
+
+            const visual = fragment.querySelector('.fragment-visual');
+            const content = fragment.querySelector('.fragment-content');
+            const glow = fragment.querySelector('.fragment-glow');
+
+            if (visual) visual.style.transform = `translateZ(100px) translateX(${(x - 0.5) * 30}px) translateY(${(y - 0.5) * 30}px)`;
+            if (content) content.style.transform = `translateZ(150px) translateX(${(x - 0.5) * 50}px) translateY(${(y - 0.5) * 50}px)`;
+
+            if (glow) {
+                const gx = (x - 0.5) * 100;
+                const gy = (y - 0.5) * 100;
+                glow.style.transform = `translate(${gx}px, ${gy}px) scale(1.2)`;
+            }
         });
-        card.addEventListener('mouseleave', () => {
-            card.style.transform = '';
+
+        fragment.addEventListener('mouseleave', () => {
+            fragment.style.transform = '';
+            const visual = fragment.querySelector('.fragment-visual');
+            const content = fragment.querySelector('.fragment-content');
+            const glow = fragment.querySelector('.fragment-glow');
+            if (visual) visual.style.transform = '';
+            if (content) content.style.transform = '';
+            if (glow) glow.style.transform = '';
         });
     });
+
+    // Section-wide Z-Parallax on Scroll
+    if (typeof ScrollTrigger !== 'undefined' && typeof gsap !== 'undefined') {
+        const fragments = document.querySelectorAll('.feature-fragment');
+        fragments.forEach((f, i) => {
+            gsap.to(f, {
+                scrollTrigger: {
+                    trigger: '#features',
+                    start: 'top bottom',
+                    end: 'bottom top',
+                    scrub: 1
+                },
+                z: i % 2 === 0 ? 100 : -100, // Disperse in Z-space correctly
+                y: i % 2 === 0 ? -50 : 50,
+                ease: 'none'
+            });
+        });
+
+        // Orbital Accelerator Rotation
+        gsap.to('.orbital-ring', {
+            scrollTrigger: {
+                trigger: '#advantages',
+                start: 'top bottom',
+                end: 'bottom top',
+                scrub: 1.5
+            },
+            rotationZ: 180, // Rotate a half circle as user scrolls down
+            ease: 'none'
+        });
+
+        // Inverse rotate the nodes so they stay upright
+        gsap.to('.orbital-node', {
+            scrollTrigger: {
+                trigger: '#advantages',
+                start: 'top bottom',
+                end: 'bottom top',
+                scrub: 1.5
+            },
+            rotationZ: -180,
+            ease: 'none'
+        });
+
+        // Arena Forge Nodes Reveal
+        const forgeNodes = document.querySelectorAll('.forge-node');
+        forgeNodes.forEach((node, i) => {
+            gsap.from(node, {
+                scrollTrigger: {
+                    trigger: node,
+                    start: 'top 90%',
+                    toggleActions: 'play none none reverse'
+                },
+                opacity: 0,
+                x: i % 2 === 0 ? -100 : 100,
+                rotationY: i % 2 === 0 ? 30 : -30,
+                duration: 1.2,
+                ease: 'power4.out'
+            });
+        });
+    }
 
     // === Live Stats Count-Up ===
     const liveSection = document.getElementById('live');
@@ -288,7 +367,7 @@ function initializeScripts() {
         // Cards Stagger Anim
         const sectionsWithCards = document.querySelectorAll('.section');
         sectionsWithCards.forEach(section => {
-            const cards = section.querySelectorAll('.advantage-card, .feature-card, .screen-card, .value-card, .debate-step');
+            const cards = section.querySelectorAll('.advantage-card, .feature-tile, .phone-mockup, .value-card, .debate-step');
             if (cards.length > 0) {
                 gsap.from(cards, {
                     scrollTrigger: {
@@ -389,37 +468,65 @@ function initializeScripts() {
             });
         }
 
-        // Add 3D scroll-linked fan-out animation to the "Short Video Screens"
-        const screenCards = gsap.utils.toArray('.screen-card');
-        if (screenCards.length > 0) {
-            // Apply 3D perspective to their container
-            gsap.set('.screens__grid', { perspective: 1200 });
+        // PREMIUM: 3D Scroll-Linked Triple Phone Showcase
+        const phones = gsap.utils.toArray('.phone-mockup');
+        const descItems = gsap.utils.toArray('.desc-item');
 
-            gsap.from(screenCards, {
+        if (phones.length > 0) {
+            gsap.set('.screens__showcase', { perspective: 2000 });
+
+            const phonesTl = gsap.timeline({
                 scrollTrigger: {
                     trigger: ".section--screens",
-                    start: "top 85%",
-                    end: "top 30%",
-                    scrub: 1.5
-                },
-                y: 300,
-                z: -500,
-                rotationX: 50,
-                rotationY: (i) => [-20, 0, 20][i % 3], // Fan out effect
-                opacity: 0,
-                stagger: 0.15,
-                ease: "power2.out"
+                    start: "top 80%",
+                    end: "top 20%",
+                    scrub: 1.5,
+                }
             });
 
-            // Allow continuous subtle floating when resting
-            screenCards.forEach((card, i) => {
-                gsap.to(card, {
-                    y: "-=15",
-                    duration: 3,
+            // Entrance animation: Fan out from center
+            phonesTl.from('.phone-mockup--left', {
+                x: 0,
+                rotationY: 0,
+                opacity: 0,
+                filter: "blur(0px) brightness(1)",
+                ease: "power2.out"
+            }, 0);
+
+            phonesTl.from('.phone-mockup--right', {
+                x: 0,
+                rotationY: 0,
+                opacity: 0,
+                filter: "blur(0px) brightness(1)",
+                ease: "power2.out"
+            }, 0);
+
+            phonesTl.from('.phone-mockup--center', {
+                z: 0,
+                scale: 0.8,
+                opacity: 0,
+                ease: "back.out(1.7)"
+            }, 0.1);
+
+            // Animate description items
+            if (descItems.length > 0) {
+                phonesTl.from(descItems, {
+                    y: 30,
+                    opacity: 0,
+                    stagger: 0.1,
+                    ease: "power2.out"
+                }, 0.3);
+            }
+
+            // Continuous Floating for fanned state
+            phones.forEach((phone, i) => {
+                gsap.to(phone, {
+                    y: "-=20",
+                    duration: 3 + i,
                     repeat: -1,
                     yoyo: true,
                     ease: "sine.inOut",
-                    delay: i * 0.4
+                    delay: i * 0.5
                 });
             });
         }
@@ -554,4 +661,5 @@ window.addEventListener('load', () => {
         }
     });
 
+    // Global Activity Map logic moved to 3d-fx.js (Three.js 3D Globe)
 });

@@ -17,7 +17,7 @@ const THEME_STORAGE_KEY = '@orvelis_theme_mode';
 
 // Default values for context creation
 const defaultContext: ThemeContextType = {
-    mode: 'dark', // App is dark by default
+    mode: 'light', // App is light by default (Pure Light)
     toggleTheme: () => { },
     setThemeMode: () => { },
     theme: baseTheme,
@@ -65,7 +65,7 @@ interface ThemeProviderProps {
 }
 
 export const ThemeProvider = ({ children }: ThemeProviderProps) => {
-    const [mode, setModeState] = useState<ThemeMode>('dark');
+    const [mode, setModeState] = useState<ThemeMode>('light');
     const [isLoaded, setIsLoaded] = useState(false);
 
     useEffect(() => {
