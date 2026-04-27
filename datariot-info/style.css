@@ -5058,8 +5058,10 @@ html.lenis body {
     }
 
     .hero__brand-text {
-        font-size: 80px;
-        letter-spacing: -2px;
+        font-family: 'Syncopate', sans-serif;
+        font-size: min(15vw, 60px);
+        letter-spacing: 0.2em;
+        color: #38BDF8;
     }
 
     /* Manifesto Mobile Optimization */
@@ -5088,7 +5090,8 @@ html.lenis body {
 
 @media (max-width: 480px) {
     .hero__brand-text {
-        font-size: 60px;
+        font-size: min(12vw, 42px);
+        letter-spacing: 0.15em;
     }
 
     .abstract-spin--1 {
