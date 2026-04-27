@@ -152,7 +152,7 @@ export function DebateCard({ item, onPress, onDelete, isOwnPost }: DebateCardPro
                 <View style={styles.statGroup}>
                     <Ionicons name="bulb-outline" size={18} color="#D9E4FF" />
                     <Text style={[styles.statText, { color: theme.colors.text.secondary }]}>
-                        <Text style={{ fontWeight: 'bold', color: theme.colors.text.primary }}>{threadWeight}</Text> Logic Score
+                        <Text style={{ fontWeight: 'bold', color: theme.colors.text.primary }}>{threadWeight}</Text> Reputation
                     </Text>
                 </View>
 

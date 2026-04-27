@@ -22,7 +22,7 @@ export const LogicLeaderboard: React.FC<LogicLeaderboardProps> = ({ users, onUse
             <View style={styles.header}>
                 <View style={styles.titleRow}>
                     <MaterialCommunityIcons name="trophy-outline" size={20} color={theme.colors.warning} />
-                    <Text style={styles.title}>LOGIC MASTERS</Text>
+                    <Text style={styles.title}>REPUTATION MASTERS</Text>
                 </View>
                 <Pressable>
                     <Text style={styles.viewAll}>View All</Text>

@@ -38,7 +38,7 @@ const VoteButton = ({ isVoted, score, onPress }: { isVoted: boolean; score: numb
                 <Ionicons name={isVoted ? "bulb" : "bulb-outline"} size={16} color={isVoted ? "#D9E4FF" : theme.colors.text.secondary} />
             </Animated.View>
             <Text style={[styles.voteText, { color: isVoted ? "#D9E4FF" : theme.colors.text.secondary }]}>
-                {score} Logic Quality
+                {score} Reputation
             </Text>
         </Pressable>
     );

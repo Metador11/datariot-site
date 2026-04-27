@@ -45,7 +45,7 @@ export const IntellectRecommendations: React.FC<IntellectRecommendationsProps> =
                             <Text style={[styles.activity, { color: theme.colors.text.muted }]} numberOfLines={1}>{intellect.activity}</Text>
                             <View style={styles.logicRow}>
                                 <MaterialCommunityIcons name="molecule" size={12} color={theme.colors.primary.DEFAULT} />
-                                <Text style={[styles.logicText, { color: theme.colors.primary.DEFAULT }]}>{intellect.logicScore.toLocaleString()}</Text>
+                                <Text style={[styles.logicText, { color: theme.colors.primary.DEFAULT }]}>Reputation: {intellect.logicScore.toLocaleString()}</Text>
                             </View>
                         </View>
 
