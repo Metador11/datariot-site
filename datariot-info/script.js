@@ -6,14 +6,9 @@ console.log('Datariot Script: Initiating...');
 // Initialize Supabase (Global)
 let supabase = null;
 
-// Immediate Theme Initialization to prevent flash
+// Immediate Theme Initialization to prevent flash — strictly light by default
 (function () {
-    const html = document.documentElement;
-    let savedTheme = 'light';
-    try {
-        savedTheme = localStorage.getItem('orvelis-theme') || 'light';
-    } catch (e) { }
-    html.setAttribute('data-theme', savedTheme);
+    document.documentElement.setAttribute('data-theme', 'light');
 })();
 
 // Global Toggle Function (Bulletproof)

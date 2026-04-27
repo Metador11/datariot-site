@@ -58,7 +58,7 @@ export const WebSidebar = () => {
     const router = useRouter();
     const pathname = usePathname();
     const { user, signOut } = useAuth();
-    const { theme } = useTheme();
+    const { theme, mode } = useTheme();
     const [likedVideos, setLikedVideos] = useState<any[]>([]);
     const handleSignOut = async () => {
         await signOut();
@@ -115,11 +115,15 @@ export const WebSidebar = () => {
             {/* Logo Section */}
             <View style={styles.logoContainer}>
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                    <RNImage
-                        source={require('../../../assets/logo.jpg')}
-                        style={{ width: 28, height: 28, marginRight: 10, borderRadius: 14 }}
-                    />
-                    <Text style={[styles.logo, { color: theme.colors.text.primary, fontFamily: theme.typography.fontFamilies.bold }]}>Datariot</Text>
+                    <View style={{ marginRight: 10, position: 'relative', width: 32, height: 32, alignItems: 'center', justifyContent: 'center' }}>
+                        {/* Blue 'Ice' Tone Overlay */}
+                        <View style={{ position: 'absolute', width: 34, height: 34, backgroundColor: 'rgba(56, 189, 248, 0.15)', borderRadius: 17 }} />
+                        <RNImage
+                            source={require('../../../assets/logo.jpg')}
+                            style={{ width: 30, height: 30, borderRadius: 15 }}
+                        />
+                    </View>
+                    <Text style={[styles.logo, { color: theme.colors.primary.DEFAULT, fontFamily: theme.typography.fontFamilies.brand, letterSpacing: 2, fontSize: 18 }]}>Datariot</Text>
                 </View>
             </View>
 
@@ -181,25 +185,27 @@ export const WebSidebar = () => {
             </View>
 
             {/* Liked Videos Section */}
-            {likedVideos.length > 0 && (
-                <View style={styles.mediaSection}>
-                    <Text style={[styles.sectionLabel, { color: theme.colors.text.muted, fontFamily: theme.typography.fontFamilies.bold }]}>RECENT VIDEOS</Text>
-                    <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.mediaScroll}>
-                        {likedVideos.map((video, idx) => (
-                            <Pressable key={video.id} style={styles.mediaCard} onPress={() => router.push({ pathname: '/video-player', params: { type: 'video', initialVideoId: video.id } })}>
-                                <View
-                                    style={[styles.mediaGradient, { backgroundColor: theme.colors.surface.card, borderColor: theme.colors.surface.border }]}
-                                >
-                                    <View style={[styles.mediaIconPlaceholder, { backgroundColor: theme.colors.surface.borderHover }]}>
-                                        <Feather name="play" size={12} color={theme.colors.primary.DEFAULT} />
+            {
+                likedVideos.length > 0 && (
+                    <View style={styles.mediaSection}>
+                        <Text style={[styles.sectionLabel, { color: theme.colors.text.muted, fontFamily: theme.typography.fontFamilies.bold }]}>RECENT VIDEOS</Text>
+                        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.mediaScroll}>
+                            {likedVideos.map((video, idx) => (
+                                <Pressable key={video.id} style={styles.mediaCard} onPress={() => router.push({ pathname: '/video-player', params: { type: 'video', initialVideoId: video.id } })}>
+                                    <View
+                                        style={[styles.mediaGradient, { backgroundColor: theme.colors.surface.card, borderColor: theme.colors.surface.border }]}
+                                    >
+                                        <View style={[styles.mediaIconPlaceholder, { backgroundColor: theme.colors.surface.borderHover }]}>
+                                            <Feather name="play" size={12} color={theme.colors.primary.DEFAULT} />
+                                        </View>
+                                        <Text numberOfLines={1} style={[styles.mediaTitle, { color: theme.colors.text.primary, fontFamily: theme.typography.fontFamilies.bold }]}>{video.title}</Text>
                                     </View>
-                                    <Text numberOfLines={1} style={[styles.mediaTitle, { color: theme.colors.text.primary, fontFamily: theme.typography.fontFamilies.bold }]}>{video.title}</Text>
-                                </View>
-                            </Pressable>
-                        ))}
-                    </ScrollView>
-                </View>
-            )}
+                                </Pressable>
+                            ))}
+                        </ScrollView>
+                    </View>
+                )
+            }
 
             {/* User Profile Section at Bottom */}
             <View style={[styles.footer, { borderTopColor: theme.colors.surface.border }]}>
@@ -249,7 +255,7 @@ export const WebSidebar = () => {
 
             </View>
 
-        </View>
+        </View >
     );
 };
 

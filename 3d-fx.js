@@ -19,13 +19,16 @@ window.addEventListener('load', () => {
         // The background is handled by CSS, so we set transparent alpha
         const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
 
-        const renderer = new THREE.WebGLRenderer({
-            alpha: true,
-            antialias: window.innerWidth > 768 // Disable AA on mobile for performance
-        });
-        renderer.setSize(container.clientWidth, container.clientHeight);
-        renderer.setPixelRatio(window.innerWidth > 768 ? Math.min(window.devicePixelRatio, 1.5) : 1);
-        container.appendChild(renderer.domElement);
+        let renderer;
+        try {
+            renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+            renderer.setSize(container.clientWidth, container.clientHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+            container.appendChild(renderer.domElement);
+        } catch (e) {
+            console.warn('initMiddleAnimation: Renderer creation failed.', e);
+            return;
+        }
 
         // Lights
         const light = new THREE.DirectionalLight(0x0EA5E9, 1);
@@ -51,7 +54,7 @@ window.addEventListener('load', () => {
         scene.add(sphereCore);
 
         // Orbiting particles
-        const particleCount = window.innerWidth > 768 ? 200 : 50;
+        const particleCount = 200;
         const particlesGeometry = new THREE.BufferGeometry();
         const posArray = new Float32Array(particleCount * 3);
         for (let i = 0; i < particleCount * 3; i++) {
@@ -144,10 +147,16 @@ window.addEventListener('load', () => {
         // Scene Setup
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
-        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-        renderer.setSize(container.clientWidth, container.clientHeight);
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
-        container.appendChild(renderer.domElement);
+        let renderer;
+        try {
+            renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+            renderer.setSize(container.clientWidth, container.clientHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+            container.appendChild(renderer.domElement);
+        } catch (e) {
+            console.warn('initEndAnimation: Renderer creation failed.', e);
+            return;
+        }
 
         camera.position.z = 6;
 
@@ -252,28 +261,29 @@ window.addEventListener('load', () => {
         const container = document.getElementById('canvas-3d-hero');
         if (!container) return;
 
-        const scene = new THREE.Scene();
-        // Fog makes distant ones fade out
-        scene.fog = new THREE.Fog(0x020408, 5, 20);
+        const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+        scene.fog = new THREE.Fog(isLight ? 0xffffff : 0x020408, 5, 20);
 
         const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
-        const renderer = new THREE.WebGLRenderer({
-            alpha: true,
-            antialias: window.innerWidth > 768,
-            logarithmicDepthBuffer: window.innerWidth > 768
-        });
-        renderer.setSize(container.clientWidth, container.clientHeight);
-        renderer.setPixelRatio(window.innerWidth > 768 ? Math.min(window.devicePixelRatio, 2) : 1);
-        container.appendChild(renderer.domElement);
+        let renderer;
+        try {
+            renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, logarithmicDepthBuffer: true });
+            renderer.setSize(container.clientWidth, container.clientHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            container.appendChild(renderer.domElement);
+        } catch (e) {
+            console.warn('initVideoScreensAnimation: Renderer creation failed.', e);
+            return;
+        }
 
         camera.position.z = 8;
         camera.position.y = 2; // looking slightly down
 
         // Lighting
-        const ambient = new THREE.AmbientLight(0xffffff, 0.5);
+        const ambient = new THREE.AmbientLight(0xffffff, isLight ? 0.8 : 0.5);
         scene.add(ambient);
 
-        const pointLight = new THREE.PointLight(0x0EA5E9, 2, 50);
+        const pointLight = new THREE.PointLight(0x0EA5E9, isLight ? 1.5 : 2, 50);
         pointLight.position.set(0, 5, 5);
         scene.add(pointLight);
 
@@ -392,10 +402,16 @@ window.addEventListener('load', () => {
 
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
-        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: window.innerWidth > 768 });
-        renderer.setSize(container.clientWidth, container.clientHeight);
-        renderer.setPixelRatio(window.innerWidth > 768 ? Math.min(window.devicePixelRatio, 2) : 1);
-        container.appendChild(renderer.domElement);
+        let renderer;
+        try {
+            renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+            renderer.setSize(container.clientWidth, container.clientHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            container.appendChild(renderer.domElement);
+        } catch (e) {
+            console.warn('initFeaturesAnimation: Renderer creation failed.', e);
+            return;
+        }
 
         camera.position.z = 10;
 
@@ -596,13 +612,14 @@ window.addEventListener('load', () => {
             container.appendChild(renderer.domElement);
 
             const scene = new THREE.Scene();
+            const isMobile = window.innerWidth < 768;
             const camera = new THREE.PerspectiveCamera(45, W / H, 0.1, 1000);
-            camera.position.z = 12;
+            camera.position.z = isMobile ? 10 : 12;
 
             const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
             const globeColor = isDark ? 0x0EA5E9 : 0x0284C7;
 
-            const radius = 5;
+            const radius = isMobile ? 3.2 : 4.5;
             const globe = new THREE.Points(
                 new THREE.SphereGeometry(radius, 48, 48),
                 new THREE.PointsMaterial({ color: globeColor, size: 0.08, transparent: true, opacity: 0.85 })
@@ -659,7 +676,8 @@ window.addEventListener('load', () => {
     }
 
     function render2DFallback(container) {
-        if (container.querySelector('canvas')) return; // Avoid double init
+        if (container.querySelector('canvas')) return;
+        console.log('Globe: Redesigned 2D Fallback active.');
 
         const canvas = document.createElement('canvas');
         canvas.style.display = 'block';
@@ -689,38 +707,82 @@ window.addEventListener('load', () => {
                 return;
             }
 
-            const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-            const barColor = isDark ? 'rgba(14, 165, 233,' : 'rgba(2, 132, 199,';
-            const accent = isDark ? '14, 165, 233' : '2, 132, 199';
-
             ctx.clearRect(0, 0, W, H);
 
-            // Draw Vertical Bars (Base Style)
-            const gap = 4;
-            const bw = (W / 80) - gap;
-            for (let x = 0; x < W; x += bw + gap) {
-                const nx = x / W;
-                for (let y = 0; y < H; y += gap + 2) {
-                    const ny = y / H;
-                    const land = Math.sin(nx * 10 + Math.sin(ny * 12)) * Math.cos(ny * 8 + Math.cos(nx * 6));
-                    if (land > 0.15) {
-                        ctx.fillStyle = barColor + (0.05 + Math.sin(nx * 15 + now * 0.001) * 0.1) + ')';
-                        ctx.fillRect(x, y, bw, 3);
+            const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+            const accentBase = isDark ? '14, 165, 233' : '2, 132, 199';
+            const rotation = now * 0.0002;
+            const isMobile = window.innerWidth < 768;
+            const radius = Math.min(W, H) * (isMobile ? 0.45 : 0.55); // Slightly larger factors to match new layout
+            const centerX = W / 2;
+            const centerY = H / 2;
+
+            // Draw Pseudo-3D Dot Sphere
+            const rows = 40;
+            const cols = 80;
+
+            for (let i = 0; i < rows; i++) {
+                const phi = (i / rows) * Math.PI;
+                const sinPhi = Math.sin(phi);
+                const cosPhi = Math.cos(phi);
+
+                for (let j = 0; j < cols; j++) {
+                    const theta = (j / cols) * Math.PI * 2 + rotation;
+
+                    // 3D coordinates
+                    const x = radius * sinPhi * Math.cos(theta);
+                    const y = radius * cosPhi;
+                    const z = radius * sinPhi * Math.sin(theta);
+
+                    // Only draw points on the front side (z > 0)
+                    if (z > 0) {
+                        const opacity = (z / radius) * 0.5;
+                        const size = (z / radius) * 1.5 + 0.5;
+
+                        // Simple "land" noise simulation
+                        const land = Math.sin(phi * 6) * Math.cos(theta * 8) + Math.cos(phi * 4) * Math.sin(theta * 6);
+
+                        if (land > 0.1) {
+                            ctx.fillStyle = `rgba(${accentBase}, ${opacity})`;
+                            ctx.beginPath();
+                            ctx.arc(centerX + x, centerY + y, size, 0, Math.PI * 2);
+                            ctx.fill();
+                        }
                     }
                 }
             }
 
-            // City Markers
-            cities.forEach(([lat, lon], i) => {
-                const x = ((lon + 180) / 360) * W;
-                const y = ((90 - lat) / 180) * H;
-                const p = Math.sin(now * 0.005 + i) * 0.5 + 0.5;
+            // Draw Rotating City Markers
+            cities.forEach(([lat, lon], idx) => {
+                const phi = (90 - lat) * (Math.PI / 180);
+                const theta = (lon + 180) * (Math.PI / 180) + rotation;
 
-                ctx.fillStyle = `rgba(${accent}, ${0.1 + p * 0.2})`;
-                ctx.beginPath(); ctx.arc(x, y, 12 + p * 15, 0, Math.PI * 2); ctx.fill();
+                const x = radius * Math.sin(phi) * Math.cos(theta);
+                const y = radius * Math.cos(phi);
+                const z = radius * Math.sin(phi) * Math.sin(theta);
 
-                ctx.fillStyle = `rgb(${accent})`;
-                ctx.beginPath(); ctx.arc(x, y, 3, 0, Math.PI * 2); ctx.fill();
+                if (z > 0) {
+                    const p = Math.sin(now * 0.003 + idx) * 0.5 + 0.5;
+                    const scale = z / radius;
+
+                    // Outer pulse
+                    ctx.fillStyle = `rgba(${accentBase}, ${0.1 * p * scale})`;
+                    ctx.beginPath();
+                    ctx.arc(centerX + x, centerY + y, (15 + p * 20) * scale, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    // Inner core
+                    ctx.fillStyle = `rgba(${accentBase}, ${0.8 * scale})`;
+                    ctx.beginPath();
+                    ctx.arc(centerX + x, centerY + y, 3 * scale, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    // Glow
+                    ctx.shadowBlur = 10 * scale;
+                    ctx.shadowColor = `rgb(${accentBase})`;
+                    ctx.fill();
+                    ctx.shadowBlur = 0;
+                }
             });
 
             requestAnimationFrame(draw);
@@ -728,10 +790,165 @@ window.addEventListener('load', () => {
         requestAnimationFrame(draw);
     }
 
-    // Initialize all
-    initVideoScreensAnimation();
-    initMiddleAnimation();
-    initFeaturesAnimation();
-    initEndAnimation();
-    initGlobeAnimation();
+    /* =========================================================
+       ANIMATION 6: 3D CARD TILT (Manifesto Cards)
+       ========================================================= */
+    function initCardTilt() {
+        // Target all types of interactive cards
+        const cards = document.querySelectorAll('.value-card, .advantage-card, .feature-card');
+        if (!cards.length) return;
+
+        cards.forEach(card => {
+            // Add glare element if not exists
+            let glare = card.querySelector('.card-glare');
+            if (!glare) {
+                glare = document.createElement('div');
+                glare.className = 'card-glare';
+                card.appendChild(glare);
+            }
+
+            // Store initial state
+            const is3DFeature = card.classList.contains('feature-card--3d');
+            const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+
+            if (!isTouchDevice) {
+                card.addEventListener('mousemove', (e) => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+
+                    const centerX = rect.width / 2;
+                    const centerY = rect.height / 2;
+
+                    // Intensity of tilt
+                    const rotateX = ((y - centerY) / centerY) * -12;
+                    const rotateY = ((x - centerX) / centerX) * 12;
+
+                    // Update card transform
+                    let transformStr = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+
+                    if (is3DFeature) {
+                        transformStr += ` translateY(-5px)`;
+                    } else {
+                        transformStr += ` translateY(-8px)`;
+                    }
+
+                    card.style.transform = transformStr;
+
+                    // Update glare position
+                    const glareX = (x / rect.width) * 100;
+                    const glareY = (y / rect.height) * 100;
+                    glare.style.background = `radial-gradient(circle at ${glareX}% ${glareY}%, rgba(255,255,255,0.1) 0%, transparent 80%)`;
+                    glare.style.opacity = '1';
+
+                    // Parallax layers for 3D cards
+                    if (is3DFeature) {
+                        const layers = card.querySelectorAll('.feat3d, .feature-card__text-3d');
+                        layers.forEach(layer => {
+                            const depth = layer.classList.contains('feat3d') ? 50 : 30;
+                            layer.style.transform = `translateZ(${depth}px) rotateX(${rotateX * 0.3}deg) rotateY(${rotateY * 0.3}deg)`;
+                        });
+
+                        const bg = card.querySelector('.feature-card__parallax-bg');
+                        if (bg) {
+                            bg.style.transform = `translateZ(-20px) translate(${(x - centerX) * 0.05}px, ${(y - centerY) * 0.05}px)`;
+                            bg.style.opacity = '1';
+                        }
+                    } else {
+                        // Standard cards
+                        const icon = card.querySelector('.card-icon-3d, .value-card__icon-3d');
+                        if (icon) icon.style.transform = `translateZ(60px)`;
+
+                        const text = card.querySelector('.value-card__text, h3, h4');
+                        if (text) text.style.transform = `translateZ(30px)`;
+                    }
+                });
+
+                card.addEventListener('mouseleave', () => {
+                    card.style.transform = '';
+                    glare.style.opacity = '0';
+
+                    const elementsToReset = card.querySelectorAll('.feature-card__icon-3d, .feature-card__text-3d, .feature-card__parallax-bg, .card-icon-3d, .value-card__icon-3d, .value-card__text, h3, h4, .feat3d');
+                    elementsToReset.forEach(el => {
+                        el.style.transform = '';
+                        if (el.classList.contains('feature-card__parallax-bg')) el.style.opacity = '0';
+                    });
+                });
+            }
+        });
+
+        // Device Orientation for Mobile Tilt
+        if (window.DeviceOrientationEvent) {
+            window.addEventListener('deviceorientation', (e) => {
+                if (e.beta === null || e.gamma === null) return;
+
+                // Subtle tilt based on phone tilt
+                const rotateX = Math.max(-10, Math.min(10, (e.beta - 45) * 0.5));
+                const rotateY = Math.max(-10, Math.min(10, e.gamma * 0.5));
+
+                const cards3d = document.querySelectorAll('.feature-card--3d');
+                cards3d.forEach(card => {
+                    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+
+                    const bg = card.querySelector('.feature-card__parallax-bg');
+                    if (bg) {
+                        bg.style.opacity = '0.5';
+                        bg.style.transform = `translateZ(-20px) translate(${rotateY * 2}px, ${rotateX * 2}px)`;
+                    }
+                });
+            });
+        }
+    }
+
+    /* =========================================================
+       ANIMATION 7: CSS-BASED 3D ICONS (Cubes)
+       ========================================================= */
+    function initCSS3DIcons() {
+        const containers = document.querySelectorAll('.card-icon-3d, .value-card__icon-3d');
+        if (!containers.length) return;
+
+        containers.forEach(container => {
+            // Create a 3D cube structure
+            container.innerHTML = `
+                <div class="cube-3d">
+                    <div class="cube-3d__face cube-3d__face--front"></div>
+                    <div class="cube-3d__face cube-3d__face--back"></div>
+                    <div class="cube-3d__face cube-3d__face--right"></div>
+                    <div class="cube-3d__face cube-3d__face--left"></div>
+                    <div class="cube-3d__face cube-3d__face--top"></div>
+                    <div class="cube-3d__face cube-3d__face--bottom"></div>
+                </div>
+            `;
+
+            // Add a secondary smaller cube for visual richness
+            const secondaryCube = document.createElement('div');
+            secondaryCube.className = 'cube-3d';
+            secondaryCube.style.width = '15px';
+            secondaryCube.style.height = '15px';
+            secondaryCube.style.position = 'absolute';
+            secondaryCube.style.right = '0';
+            secondaryCube.style.top = '0';
+            secondaryCube.style.animationDelay = '-3s';
+
+            secondaryCube.innerHTML = `
+                <div class="cube-3d__face cube-3d__face--front" style="transform: rotateY(0deg) translateZ(7.5px)"></div>
+                <div class="cube-3d__face cube-3d__face--back" style="transform: rotateY(180deg) translateZ(7.5px)"></div>
+                <div class="cube-3d__face cube-3d__face--right" style="transform: rotateY(90deg) translateZ(7.5px)"></div>
+                <div class="cube-3d__face cube-3d__face--left" style="transform: rotateY(-90deg) translateZ(7.5px)"></div>
+                <div class="cube-3d__face cube-3d__face--top" style="transform: rotateX(90deg) translateZ(7.5px)"></div>
+                <div class="cube-3d__face cube-3d__face--bottom" style="transform: rotateX(-90deg) translateZ(7.5px)"></div>
+            `;
+
+            container.appendChild(secondaryCube);
+        });
+    }
+
+    // Initialize all with high resilience
+    try { initVideoScreensAnimation(); } catch (e) { console.warn('Hero 3D failed:', e); }
+    try { initMiddleAnimation(); } catch (e) { console.warn('Middle 3D failed:', e); }
+    try { initFeaturesAnimation(); } catch (e) { console.warn('Features 3D failed:', e); }
+    try { initEndAnimation(); } catch (e) { console.warn('End 3D failed:', e); }
+    try { initGlobeAnimation(); } catch (e) { console.warn('Globe 3D/2D failed:', e); }
+    try { initCardTilt(); } catch (e) { console.warn('Card Tilt failed:', e); }
+    try { initCSS3DIcons(); } catch (e) { console.warn('CSS 3D Icons failed:', e); }
 });

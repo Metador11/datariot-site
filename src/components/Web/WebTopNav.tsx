@@ -16,13 +16,14 @@ export const WebTopNav = () => {
                 {/* Left: Logo */}
                 <View style={styles.left}>
                     <Pressable onPress={() => router.push('/')} style={{ flexDirection: 'row', alignItems: 'center' }}>
-                        <View style={[styles.logoIconPlaceholder, { borderColor: theme.colors.surface.border, backgroundColor: isDark ? '#1E293B' : '#F1F5F9' }]}>
+                        <View style={[styles.logoIconPlaceholder, { borderColor: theme.colors.surface.border, backgroundColor: isDark ? 'transparent' : 'rgba(0,0,0,0.03)', position: 'relative' }]}>
+                            <View style={{ position: 'absolute', width: 44, height: 44, backgroundColor: 'rgba(56, 189, 248, 0.15)', borderRadius: 22, left: -2, top: -2 }} />
                             <RNImage
                                 source={require('../../../assets/logo.jpg')}
                                 style={styles.logoImage}
                             />
                         </View>
-                        <Text style={[styles.logo, { color: theme.colors.text.primary, fontFamily: theme.typography.fontFamilies.bold }]}>DATARIOT</Text>
+                        <Text style={[styles.logo, { color: theme.colors.primary.DEFAULT, fontFamily: theme.typography.fontFamilies.brand, letterSpacing: 1 }]}>DATARIOT</Text>
                     </Pressable>
                 </View>
 

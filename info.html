@@ -33,11 +33,9 @@
         rel="stylesheet" />
     <link rel="stylesheet" href="style.css" />
     <script>
-        // Theme toggle — runs immediately, no dependencies
+        // Theme toggle — strictly defaults to light on load
         (function () {
-            var saved = 'light';
-            try { saved = localStorage.getItem('orvelis-theme') || 'light'; } catch (e) { }
-            document.documentElement.setAttribute('data-theme', saved);
+            document.documentElement.setAttribute('data-theme', 'light');
         })();
         function toggleTheme() {
             var html = document.documentElement;
@@ -785,9 +783,11 @@
                                     <input type="email" id="betaEmail" placeholder="your@email.com" required
                                         autocomplete="email" />
                                     <button type="submit" class="beta__submit-btn">
-                                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                        Get access
+                                        <svg width="16" height="16" viewBox="0 0 20 20" fill="none"
+                                            style="flex-shrink:0;">
                                             <path d="M4 10H16M16 10L11 5M16 10L11 15" stroke="currentColor"
-                                                stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                                                stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
                                         </svg>
                                     </button>
                                 </div>

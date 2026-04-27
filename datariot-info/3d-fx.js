@@ -261,9 +261,8 @@ window.addEventListener('load', () => {
         const container = document.getElementById('canvas-3d-hero');
         if (!container) return;
 
-        const scene = new THREE.Scene();
-        // Fog makes distant ones fade out
-        scene.fog = new THREE.Fog(0x020408, 5, 20);
+        const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+        scene.fog = new THREE.Fog(isLight ? 0xffffff : 0x020408, 5, 20);
 
         const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
         let renderer;
@@ -281,10 +280,10 @@ window.addEventListener('load', () => {
         camera.position.y = 2; // looking slightly down
 
         // Lighting
-        const ambient = new THREE.AmbientLight(0xffffff, 0.5);
+        const ambient = new THREE.AmbientLight(0xffffff, isLight ? 0.8 : 0.5);
         scene.add(ambient);
 
-        const pointLight = new THREE.PointLight(0x0EA5E9, 2, 50);
+        const pointLight = new THREE.PointLight(0x0EA5E9, isLight ? 1.5 : 2, 50);
         pointLight.position.set(0, 5, 5);
         scene.add(pointLight);
 
@@ -613,13 +612,14 @@ window.addEventListener('load', () => {
             container.appendChild(renderer.domElement);
 
             const scene = new THREE.Scene();
+            const isMobile = window.innerWidth < 768;
             const camera = new THREE.PerspectiveCamera(45, W / H, 0.1, 1000);
-            camera.position.z = 12;
+            camera.position.z = isMobile ? 10 : 12;
 
             const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
             const globeColor = isDark ? 0x0EA5E9 : 0x0284C7;
 
-            const radius = 5;
+            const radius = isMobile ? 3.2 : 4.5;
             const globe = new THREE.Points(
                 new THREE.SphereGeometry(radius, 48, 48),
                 new THREE.PointsMaterial({ color: globeColor, size: 0.08, transparent: true, opacity: 0.85 })
@@ -712,7 +712,8 @@ window.addEventListener('load', () => {
             const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
             const accentBase = isDark ? '14, 165, 233' : '2, 132, 199';
             const rotation = now * 0.0002;
-            const radius = Math.min(W, H) * 0.4;
+            const isMobile = window.innerWidth < 768;
+            const radius = Math.min(W, H) * (isMobile ? 0.45 : 0.55); // Slightly larger factors to match new layout
             const centerX = W / 2;
             const centerY = H / 2;
 

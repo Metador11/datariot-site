@@ -6,12 +6,13 @@
 export const colors = {
     // Primary - Neon Azure
     primary: {
-        DEFAULT: '#0EA5E9',
-        light: '#38BDF8',
-        dark: '#0284C7',
-        ultra: '#7DD3FC',
+        DEFAULT: '#38BDF8', // Restored Vivid Ice Blue
+        light: '#7DD3FC',
+        dark: '#0EA5E9',
+        ultra: '#E0F2FE',
+        brand: '#BDEBFF', // Core Pale Ice for Logo
         onPrimary: '#FFFFFF',
-        glow: 'rgba(14, 165, 233, 0.4)',
+        glow: 'rgba(56, 189, 248, 0.4)',
     },
 
     // Secondary - Cyan Glow
@@ -65,9 +66,12 @@ export const colors = {
 
 export const typography = {
     fontFamilies: {
-        regular: 'Oxanium_400Regular',
-        medium: 'Oxanium_500Medium',
+        regular: 'Inter_400Regular',
+        medium: 'Inter_500Medium',
         bold: 'Oxanium_700Bold',
+        tech: 'Oxanium_500Medium',
+        brand: 'Syncopate_700Bold', // Minimalist Wide Tech Font
+        mono: 'SpaceGrotesk_400Regular',
     },
 
     sizes: {

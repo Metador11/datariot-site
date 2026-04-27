@@ -42,7 +42,7 @@ export function SideMenu({ isOpen, onClose }: SideMenuProps) {
     const pathname = usePathname();
     const insets = useSafeAreaInsets();
     const { user, signOut } = useAuth();
-    const { mode, toggleTheme } = useTheme();
+    const { theme, mode, toggleTheme } = useTheme();
     const [likedVideos, setLikedVideos] = useState<any[]>([]);
 
     const fetchLikedVideos = React.useCallback(async () => {
@@ -150,11 +150,15 @@ export function SideMenu({ isOpen, onClose }: SideMenuProps) {
                     <Feather name="x" size={32} color="white" />
                 </Pressable>
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                    <RNImage
-                        source={require('../../../assets/logo.jpg')}
-                        style={{ width: 20, height: 20, marginRight: 8, borderRadius: 10 }}
-                    />
-                    <Text style={styles.logoText}>DATARIOT</Text>
+                    <View style={{ position: 'relative', width: 26, height: 26, alignItems: 'center', justifyContent: 'center', marginRight: 10 }}>
+                        {/* Blue 'Ice' Tone Overlay */}
+                        <View style={{ position: 'absolute', width: 28, height: 28, backgroundColor: 'rgba(56, 189, 248, 0.15)', borderRadius: 14 }} />
+                        <RNImage
+                            source={require('../../../assets/logo.jpg')}
+                            style={{ width: 22, height: 22, borderRadius: 11 }}
+                        />
+                    </View>
+                    <Text style={[styles.logoText, { color: theme.colors.primary.DEFAULT, fontFamily: theme.typography.fontFamilies.brand, letterSpacing: 1 }]}>DATARIOT</Text>
                 </View>
             </View>
 

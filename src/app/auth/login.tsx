@@ -44,11 +44,15 @@ export default function WelcomeScreen() {
                 <View style={styles.contentContainer}>
                     {/* App Name */}
                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                        <RNImage
-                            source={require('../../../assets/logo.jpg')}
-                            style={{ width: 32, height: 32, marginRight: 12, borderRadius: 16 }}
-                        />
-                        <Text style={[styles.appName, { color: theme.colors.text.primary }]}>Datariot</Text>
+                        <View style={{ marginRight: 12, position: 'relative', width: 34, height: 34, alignItems: 'center', justifyContent: 'center' }}>
+                            {/* Blue 'Ice' Tone Overlay */}
+                            <View style={{ position: 'absolute', width: 38, height: 38, backgroundColor: 'rgba(56, 189, 248, 0.15)', borderRadius: 19 }} />
+                            <RNImage
+                                source={require('../../../assets/logo.jpg')}
+                                style={{ width: 32, height: 32, borderRadius: 16 }}
+                            />
+                        </View>
+                        <Text style={[styles.appName, { color: theme.colors.primary.DEFAULT, fontFamily: theme.typography.fontFamilies.brand, letterSpacing: 2, fontSize: 28 }]}>Datariot</Text>
                     </View>
 
                     {/* Tagline */}

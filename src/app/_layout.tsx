@@ -13,6 +13,20 @@ import {
     Oxanium_600SemiBold,
     Oxanium_700Bold
 } from '@expo-google-fonts/oxanium';
+import {
+    Orbitron_400Regular,
+    Orbitron_500Medium,
+    Orbitron_600SemiBold,
+    Orbitron_700Bold,
+    Orbitron_900Black
+} from '@expo-google-fonts/orbitron';
+import {
+    Audiowide_400Regular
+} from '@expo-google-fonts/audiowide';
+import {
+    Syncopate_400Regular,
+    Syncopate_700Bold
+} from '@expo-google-fonts/syncopate';
 
 import { Feather, Ionicons, MaterialCommunityIcons, Entypo, SimpleLineIcons, AntDesign, FontAwesome5, MaterialIcons } from '@expo/vector-icons';
 
@@ -27,6 +41,14 @@ export default function RootLayout() {
         Oxanium_500Medium,
         Oxanium_600SemiBold,
         Oxanium_700Bold,
+        Orbitron_400Regular,
+        Orbitron_500Medium,
+        Orbitron_600SemiBold,
+        Orbitron_700Bold,
+        Orbitron_900Black,
+        Audiowide_400Regular,
+        Syncopate_400Regular,
+        Syncopate_700Bold,
         ...Feather.font,
         ...Ionicons.font,
         ...MaterialCommunityIcons.font,

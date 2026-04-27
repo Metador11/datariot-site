@@ -29,15 +29,13 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&family=Oxanium:wght@400;500;600;700;800&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&family=Inter:wght@400..900&family=Oxanium:wght@400..800&family=Michroma&family=Orbitron:wght@400..900&display=swap"
         rel="stylesheet" />
     <link rel="stylesheet" href="style.css" />
     <script>
-        // Theme toggle — runs immediately, no dependencies
+        // Theme toggle — strictly defaults to light on load
         (function () {
-            var saved = 'light';
-            try { saved = localStorage.getItem('orvelis-theme') || 'light'; } catch (e) { }
-            document.documentElement.setAttribute('data-theme', saved);
+            document.documentElement.setAttribute('data-theme', 'light');
         })();
         function toggleTheme() {
             var html = document.documentElement;
@@ -785,9 +783,11 @@
                                     <input type="email" id="betaEmail" placeholder="your@email.com" required
                                         autocomplete="email" />
                                     <button type="submit" class="beta__submit-btn">
-                                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                        Get access
+                                        <svg width="16" height="16" viewBox="0 0 20 20" fill="none"
+                                            style="flex-shrink:0;">
                                             <path d="M4 10H16M16 10L11 5M16 10L11 15" stroke="currentColor"
-                                                stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                                                stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
                                         </svg>
                                     </button>
                                 </div>
@@ -810,8 +810,10 @@
                 <div class="footer__top">
                     <div class="footer__brand">
                         <span class="footer__logo">
-                            <img src="assets/logo.png" alt=""
-                                style="width: 20px; height: 20px; border-radius: 50%; vertical-align: middle; margin-right: 8px;">
+                            <span class="footer__logo-icon-wrap">
+                                <img src="assets/logo.png" alt=""
+                                    style="width: 20px; height: 20px; border-radius: 50%; vertical-align: middle;">
+                            </span>
                             DATARIOT
                         </span>
                         <span class="footer__tagline">Create. Share. Debate.</span>
