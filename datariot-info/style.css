@@ -507,10 +507,10 @@ a {
     top: 24px;
     left: 24px;
     z-index: 30000;
-    width: 42px;
-    height: 42px;
-    background: var(--surface) !important;
-    border: 1px solid rgba(14, 165, 233, 0.15);
+    width: 44px;
+    height: 44px;
+    background: #ffffff !important;
+    border: 1.5px solid #38BDF8;
     border-radius: 50%;
     cursor: pointer;
     flex-direction: column;
@@ -518,7 +518,7 @@ a {
     justify-content: center;
     gap: 4px;
     padding: 0;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    box-shadow: none;
     transition: all 0.3s var(--ease-out-expo);
 }
 
@@ -536,8 +536,8 @@ a {
 }
 
 [data-theme="dark"] .mobile-nav-toggle {
-    background: var(--surface) !important;
-    border-color: var(--border);
+    background: #0f172a !important;
+    border-color: #38BDF8;
 }
 
 [data-theme="dark"] .mobile-nav-toggle span {
