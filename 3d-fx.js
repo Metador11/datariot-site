@@ -261,6 +261,7 @@ window.addEventListener('load', () => {
         const container = document.getElementById('canvas-3d-hero');
         if (!container) return;
 
+        const scene = new THREE.Scene();
         const isLight = document.documentElement.getAttribute('data-theme') === 'light';
         scene.fog = new THREE.Fog(isLight ? 0xffffff : 0x020408, 5, 20);
 
@@ -603,26 +604,32 @@ window.addEventListener('load', () => {
 
         // Try 3D
         try {
-            const W = container.clientWidth || 800;
-            const H = container.clientHeight || 500;
+            const W = container.clientWidth || container.offsetWidth || 340;
+            const H = container.clientHeight || container.offsetHeight || W;
 
-            const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, failIfMajorPerformanceCaveat: true });
+            const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
             renderer.setSize(W, H);
             renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
             container.appendChild(renderer.domElement);
 
             const scene = new THREE.Scene();
             const isMobile = window.innerWidth < 768;
+            const segments = isMobile ? 32 : 64; // Optimized segments
             const camera = new THREE.PerspectiveCamera(45, W / H, 0.1, 1000);
-            camera.position.z = isMobile ? 10 : 12;
+            camera.position.z = isMobile ? 11 : 12; // Adjust zoom on mobile
 
             const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
             const globeColor = isDark ? 0x0EA5E9 : 0x0284C7;
 
-            const radius = isMobile ? 3.2 : 4.5;
+            const radius = isMobile ? 2.8 : 4.5;
             const globe = new THREE.Points(
-                new THREE.SphereGeometry(radius, 48, 48),
-                new THREE.PointsMaterial({ color: globeColor, size: 0.08, transparent: true, opacity: 0.85 })
+                new THREE.SphereGeometry(radius, segments, segments),
+                new THREE.PointsMaterial({ 
+                    color: globeColor, 
+                    size: isMobile ? 0.12 : 0.08, // Larger dots on mobile for visibility
+                    transparent: true, 
+                    opacity: 0.9 
+                })
             );
             scene.add(globe);
 
@@ -711,9 +718,9 @@ window.addEventListener('load', () => {
 
             const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
             const accentBase = isDark ? '14, 165, 233' : '2, 132, 199';
-            const rotation = now * 0.0002;
+            const rotation = now * 0.0003; // Slightly faster rotation
             const isMobile = window.innerWidth < 768;
-            const radius = Math.min(W, H) * (isMobile ? 0.45 : 0.55); // Slightly larger factors to match new layout
+            const radius = Math.min(W, H) * (isMobile ? 0.48 : 0.55);
             const centerX = W / 2;
             const centerY = H / 2;
 
@@ -736,8 +743,8 @@ window.addEventListener('load', () => {
 
                     // Only draw points on the front side (z > 0)
                     if (z > 0) {
-                        const opacity = (z / radius) * 0.5;
-                        const size = (z / radius) * 1.5 + 0.5;
+                        const opacity = (z / radius) * (isDark ? 0.6 : 0.8); // Higher opacity in light mode
+                        const size = (z / radius) * (isMobile ? 2.2 : 1.5) + 0.5; // Larger points on mobile
 
                         // Simple "land" noise simulation
                         const land = Math.sin(phi * 6) * Math.cos(theta * 8) + Math.cos(phi * 4) * Math.sin(theta * 6);

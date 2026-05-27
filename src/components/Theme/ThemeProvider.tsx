@@ -34,28 +34,28 @@ const darkColors = { ...baseTheme.colors };
 const lightColors = {
     ...baseTheme.colors,
     background: {
-        primary: '#FFFFFF',
-        DEFAULT: '#FFFFFF',
-        secondary: '#F8FAFC',
-        tertiary: '#F1F5F9',
-        web: '#F8FAFC',
+        primary: '#FAF9F6', // Alabaster Warm Ivory
+        DEFAULT: '#FAF9F6',
+        secondary: '#F4F3EE',
+        tertiary: '#EAE9E2',
+        web: '#FAF9F6',
         webSecondary: '#FFFFFF',
     },
 
     surface: {
         ...baseTheme.colors.surface,
         DEFAULT: '#FFFFFF',
-        light: '#F8FAFC',
-        overlay: 'rgba(255, 255, 255, 0.9)',
+        light: '#FFFFFF',
+        overlay: 'rgba(250, 249, 246, 0.95)',
         card: '#FFFFFF',
-        border: 'rgba(15, 23, 42, 0.1)',
-        borderHover: 'rgba(15, 23, 42, 0.2)',
+        border: 'rgba(0, 0, 0, 0.06)',
+        borderHover: 'rgba(0, 0, 0, 0.12)',
     },
     text: {
-        primary: '#0F172A',
-        secondary: '#475569',
-        muted: '#94A3B8',
-        accent: '#0EA5E9',
+        primary: '#1A1A1E', // Velvet Charcoal
+        secondary: '#5C5C64',
+        muted: '#8E8E93',
+        accent: '#D9E4FF',
     },
 };
 

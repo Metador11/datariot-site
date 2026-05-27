@@ -257,9 +257,9 @@ export function CommentsModal({ visible, videoId, onClose }: CommentsModalProps)
                             ]}
                         >
                             {posting ? (
-                                <ActivityIndicator size="small" color="#fff" />
+                                <ActivityIndicator size="small" color="#000" />
                             ) : (
-                                <Ionicons name="arrow-up" size={18} color={text.trim() && user ? '#fff' : isDark ? 'rgba(255,255,255,0.3)' : 'rgba(0,0,0,0.3)'} />
+                                <Ionicons name="arrow-up" size={18} color={text.trim() && user ? '#000' : isDark ? 'rgba(255,255,255,0.3)' : 'rgba(0,0,0,0.3)'} />
                             )}
                         </Pressable>
                     </View>

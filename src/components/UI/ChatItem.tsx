@@ -1,8 +1,8 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
-import { theme } from '../../design-system/theme';
+import { theme as baseTheme } from '../../design-system/theme';
 import { useTheme } from '../Theme/ThemeProvider';
 
 interface ChatItemProps {
@@ -36,7 +36,7 @@ export function ChatItem({
                 isAi && [styles.aiAvatarContainer, { backgroundColor: '#FFFFFF' }]
             ]}>
                 {isAi ? (
-                    null // Temporary blank circle
+                    <MaterialCommunityIcons name="robot-excited" size={24} color="#0EA5E9" />
                 ) : (
                     <Text style={[styles.avatarText, { color: theme.colors.text.primary }]}>{name.charAt(0)}</Text>
                 )}
@@ -170,7 +170,7 @@ const styles = StyleSheet.create({
     },
     avatarText: {
         fontSize: 20,
-        fontFamily: theme.typography.fontFamilies.bold,
+        fontFamily: baseTheme.typography.fontFamilies.bold,
     },
     onlineBadge: {
         position: 'absolute',
@@ -193,7 +193,7 @@ const styles = StyleSheet.create({
     },
     name: {
         fontSize: 16,
-        fontFamily: theme.typography.fontFamilies.bold,
+        fontFamily: baseTheme.typography.fontFamilies.bold,
         letterSpacing: -0.3,
     },
     aiName: {
@@ -201,7 +201,7 @@ const styles = StyleSheet.create({
     },
     time: {
         fontSize: 12,
-        fontFamily: theme.typography.fontFamilies.medium,
+        fontFamily: baseTheme.typography.fontFamilies.medium,
     },
     footer: {
         flexDirection: 'row',
@@ -210,7 +210,7 @@ const styles = StyleSheet.create({
     },
     message: {
         fontSize: 14,
-        fontFamily: theme.typography.fontFamilies.regular,
+        fontFamily: baseTheme.typography.fontFamilies.regular,
         flex: 1,
         marginRight: 16,
         lineHeight: 20,
@@ -236,6 +236,6 @@ const styles = StyleSheet.create({
     badgeText: {
         color: '#FFF',
         fontSize: 10,
-        fontFamily: theme.typography.fontFamilies.bold,
+        fontFamily: baseTheme.typography.fontFamilies.bold,
     },
 });

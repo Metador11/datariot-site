@@ -65,9 +65,9 @@ export function DebateCard({ item, onPress, onDelete, isOwnPost }: DebateCardPro
                 </View>
 
                 {item.isAiAssisted && (
-                    <View style={styles.aiBadge}>
-                        <Ionicons name="sparkles" size={12} color="#000" />
-                        <Text style={styles.aiBadgeText}>LOGIC ORACLE</Text>
+                    <View style={[styles.aiBadge, { backgroundColor: theme.colors.primary.DEFAULT }]}>
+                        <Ionicons name="sparkles" size={12} color="#FFF" />
+                        <Text style={[styles.aiBadgeText, { color: '#FFF' }]}>LOGIC ORACLE</Text>
                     </View>
                 )}
 
@@ -90,8 +90,8 @@ export function DebateCard({ item, onPress, onDelete, isOwnPost }: DebateCardPro
             <View style={styles.body}>
                 <View style={styles.bodyContentRow}>
                     <View style={styles.textContent}>
-                        <View style={[styles.thesisBadge, { backgroundColor: isDark ? 'rgba(217, 228, 255, 0.15)' : 'rgba(217, 228, 255, 0.1)' }]}>
-                            <Text style={[styles.thesisBadgeText, { color: '#D9E4FF' }]}>THESIS</Text>
+                        <View style={[styles.thesisBadge, { backgroundColor: isDark ? 'rgba(0, 102, 255, 0.15)' : 'rgba(0, 102, 255, 0.1)' }]}>
+                            <Text style={[styles.thesisBadgeText, { color: theme.colors.primary.DEFAULT }]}>THESIS</Text>
                         </View>
                         <Text style={[styles.content, { color: theme.colors.text.primary }]} numberOfLines={3}>
                             {item.content}
@@ -141,8 +141,8 @@ export function DebateCard({ item, onPress, onDelete, isOwnPost }: DebateCardPro
                             />
                         </View>
                         <View style={styles.logicScores}>
-                            <Text style={styles.logicScoreText}>{item.logicStats.forScore}</Text>
-                            <Text style={[styles.logicScoreText, { textAlign: 'right' }]}>{item.logicStats.againstScore}</Text>
+                            <Text style={[styles.logicScoreText, { color: theme.colors.primary.DEFAULT }]}>{item.logicStats.forScore}</Text>
+                            <Text style={[styles.logicScoreText, { textAlign: 'right', color: theme.colors.primary.DEFAULT }]}>{item.logicStats.againstScore}</Text>
                         </View>
                     </View>
                 )}
@@ -150,7 +150,7 @@ export function DebateCard({ item, onPress, onDelete, isOwnPost }: DebateCardPro
 
             <View style={styles.footer}>
                 <View style={styles.statGroup}>
-                    <Ionicons name="bulb-outline" size={18} color="#D9E4FF" />
+                    <Ionicons name="bulb-outline" size={18} color={theme.colors.primary.DEFAULT} />
                     <Text style={[styles.statText, { color: theme.colors.text.secondary }]}>
                         <Text style={{ fontWeight: 'bold', color: theme.colors.text.primary }}>{threadWeight}</Text> Reputation
                     </Text>

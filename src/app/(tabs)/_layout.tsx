@@ -2,9 +2,10 @@ import React, { useEffect } from 'react';
 import { Tabs } from 'expo-router';
 import { setAudioModeAsync } from 'expo-audio';
 import { Feather, SimpleLineIcons, Ionicons, MaterialCommunityIcons, Entypo } from '@expo/vector-icons';
-import { View, Dimensions, Platform, useWindowDimensions } from 'react-native';
+import { View, Dimensions, Platform, useWindowDimensions, StyleSheet } from 'react-native';
 import { ResponsiveLayout } from '../../components/Layout/ResponsiveLayout';
 import { useTheme } from '../../components/Theme/ThemeProvider';
+import { BlurView } from 'expo-blur';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
@@ -33,23 +34,28 @@ const TabLayout = () => {
             <Tabs
                 screenOptions={{
                     headerShown: false,
-                    tabBarActiveTintColor: '#D9E4FF',
-                    tabBarInactiveTintColor: isDark ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0,0,0,0.5)',
+                    tabBarActiveTintColor: theme.colors.primary.DEFAULT,
+                    tabBarInactiveTintColor: isDark ? 'rgba(255, 255, 255, 0.45)' : 'rgba(0,0,0,0.4)',
                     tabBarStyle: {
-                        backgroundColor: 'transparent',
                         display: isDesktopWeb ? 'none' : 'flex',
                         position: 'absolute',
-                        bottom: Platform.OS === 'ios' ? 4 : 12,
+                        bottom: 0,
                         left: 0,
                         right: 0,
-                        width: '100%',
-                        elevation: 0,
+                        height: Platform.OS === 'ios' ? 88 : 64,
+                        backgroundColor: 'transparent',
+                        borderWidth: 0,
                         borderTopWidth: 0,
-                        height: 65,
-                        paddingBottom: 0,
-                        paddingHorizontal: 0,
-                        marginHorizontal: 0,
+                        borderTopColor: 'transparent',
+                        borderColor: 'transparent',
+                        elevation: 0,
+                        shadowOpacity: 0,
+                        shadowColor: 'transparent',
+                        shadowOffset: { width: 0, height: 0 },
+                        shadowRadius: 0,
+                        paddingBottom: Platform.OS === 'ios' ? 24 : 8,
                     },
+                    tabBarBackground: () => null,
                     tabBarLabelStyle: {
                         display: 'none',
                     },
@@ -95,16 +101,21 @@ const TabLayout = () => {
                         tabBarIcon: ({ focused }) => (
                             <View style={{
                                 width: 44,
-                                height: 30,
+                                height: 44,
+                                borderRadius: 22,
                                 alignItems: 'center',
                                 justifyContent: 'center',
-                                backgroundColor: theme.colors.text.primary,
-                                borderRadius: 8,
+                                backgroundColor: theme.colors.primary.DEFAULT,
+                                shadowColor: theme.colors.primary.DEFAULT,
+                                shadowOffset: { width: 0, height: 4 },
+                                shadowOpacity: 0.3,
+                                shadowRadius: 8,
+                                elevation: 4,
                             }}>
                                 <Feather
                                     name="plus"
-                                    size={20}
-                                    color={theme.colors.background.primary}
+                                    size={22}
+                                    color="#000000"
                                 />
                             </View>
                         ),

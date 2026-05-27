@@ -15,6 +15,7 @@ import Animated, { useAnimatedScrollHandler, useSharedValue, useAnimatedStyle, i
 import { LinearGradient } from 'expo-linear-gradient';
 import { useTheme } from '../../components/Theme/ThemeProvider';
 import { DebateCard } from '@components/Debate/DebateCard';
+import { AmbientGlow } from '../../components/UI/AmbientGlow';
 
 interface ProfileData {
     username: string;
@@ -155,7 +156,14 @@ const ProfileHeader = ({ profile, user, scrollY, headerImageUrl, activeTab, setA
                         </Text>
 
                         {/* Stats Row */}
-                        <View style={[styles.compactStatsContainer, { backgroundColor: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.03)' }]}>
+                        <View style={[
+                            styles.compactStatsContainer,
+                            {
+                                backgroundColor: isDark ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.015)',
+                                borderColor: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.05)',
+                                borderWidth: 1,
+                            }
+                        ]}>
                             <View style={styles.compactStatsRow}>
                                 <View style={styles.compactStatItem}>
                                     <Text style={[styles.compactStatValue, { color: theme.colors.text.primary }]}>{profile?.followers_count || 0}</Text>
@@ -177,10 +185,14 @@ const ProfileHeader = ({ profile, user, scrollY, headerImageUrl, activeTab, setA
                         {/* Creator DNA Button */}
                         <Pressable
                             onPress={onShowAchievements}
-                            style={[styles.achievementsBtn, { backgroundColor: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.03)' }]}
+                            style={[styles.achievementsBtn, {
+                                backgroundColor: isDark ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.02)',
+                                borderColor: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.05)',
+                                borderWidth: 1,
+                            }]}
                         >
                             <View style={styles.achievementsBtnLeft}>
-                                <Ionicons name="finger-print" size={18} color="#D9E4FF" />
+                                <Ionicons name="finger-print" size={18} color={theme.colors.primary.DEFAULT} style={{ marginRight: 8 }} />
                                 <Text style={[styles.achievementsBtnText, { color: theme.colors.text.primary }]}>Creator DNA</Text>
                             </View>
                             <Ionicons name="chevron-forward" size={16} color={theme.colors.text.secondary} />
@@ -195,41 +207,51 @@ const ProfileHeader = ({ profile, user, scrollY, headerImageUrl, activeTab, setA
                 </View>
             </View>
 
-            <View style={styles.tabsWrapper}>
-                <BlurView intensity={isDark ? 30 : 50} tint={isDark ? 'dark' : 'light'} style={styles.tabsBlur}>
+            <View style={[styles.tabsWrapper, { borderColor: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.05)', borderWidth: 1 }]}>
+                <BlurView intensity={isDark ? 40 : 60} tint={isDark ? 'dark' : 'light'} style={styles.tabsBlur}>
                     <View style={styles.tabsContainer}>
-
-
-                        {(['videos', 'posts', 'saved'] as const).map((tab) => (
-                            <Pressable
-                                key={tab}
-                                style={styles.tabItem}
-                                onPress={() => setActiveTab(tab)}
-                            >
-                                {tab === 'videos' ? (
-                                    <MaterialCommunityIcons
-                                        name={activeTab === tab ? 'play-box-multiple' : 'play-box-multiple-outline'}
-                                        size={22}
-                                        color={activeTab === tab ? '#D9E4FF' : theme.colors.text.secondary}
-                                    />
-                                ) : (
-                                    <Ionicons
-                                        name={
-                                            activeTab === tab
-                                                ? (tab === 'posts' ? 'infinite' : 'library')
-                                                : (tab === 'posts' ? 'infinite-outline' : 'library-outline')
+                        {(['videos', 'posts', 'saved'] as const).map((tab) => {
+                            const isActive = activeTab === tab;
+                            return (
+                                <Pressable
+                                    key={tab}
+                                    style={[
+                                        styles.tabItem,
+                                        isActive && {
+                                            backgroundColor: isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.03)',
+                                            borderColor: isDark ? 'rgba(0, 240, 255, 0.2)' : 'rgba(8, 145, 178, 0.2)',
+                                            borderWidth: 1,
+                                            borderRadius: 16,
+                                            margin: 2,
                                         }
-                                        size={22}
-                                        color={activeTab === tab ? '#D9E4FF' : theme.colors.text.secondary}
-                                    />
-                                )}
-                                {activeTab === tab && (
-                                    <Text style={[styles.activeTabText, { color: '#D9E4FF' }]}>
-                                        {tab === 'videos' ? 'Essence' : tab === 'posts' ? 'Theses' : 'Vault'}
-                                    </Text>
-                                )}
-                            </Pressable>
-                        ))}
+                                    ]}
+                                    onPress={() => setActiveTab(tab)}
+                                >
+                                    {tab === 'videos' ? (
+                                        <MaterialCommunityIcons
+                                            name={isActive ? 'play-box-multiple' : 'play-box-multiple-outline'}
+                                            size={20}
+                                            color={isActive ? theme.colors.primary.DEFAULT : theme.colors.text.secondary}
+                                        />
+                                    ) : (
+                                        <Ionicons
+                                            name={
+                                                isActive
+                                                    ? (tab === 'posts' ? 'infinite' : 'library')
+                                                    : (tab === 'posts' ? 'infinite-outline' : 'library-outline')
+                                            }
+                                            size={20}
+                                            color={isActive ? theme.colors.primary.DEFAULT : theme.colors.text.secondary}
+                                        />
+                                    )}
+                                    {isActive && (
+                                        <Text style={[styles.activeTabText, { color: theme.colors.primary.DEFAULT }]}>
+                                            {tab === 'videos' ? 'Essence' : tab === 'posts' ? 'Theses' : 'Vault'}
+                                        </Text>
+                                    )}
+                                </Pressable>
+                            );
+                        })}
                     </View>
                 </BlurView>
             </View>
@@ -691,6 +713,7 @@ export default function ProfileScreen() {
 
     return (
         <View style={[styles.container, { backgroundColor: theme.colors.background.primary }]}>
+            <AmbientGlow color={isDark ? "rgba(217, 228, 255, 0.08)" : "rgba(217, 228, 255, 0.04)"} size={400} opacity={0.6} duration={25000} delay={0} />
             <StatusBar barStyle={isDark ? "light-content" : "dark-content"} />
 
             {/* Sticky Header Overlay */}
@@ -737,7 +760,14 @@ export default function ProfileScreen() {
                 onRequestClose={() => setShowAchievements(false)}
             >
                 <Pressable style={styles.modalOverlay} onPress={() => setShowAchievements(false)}>
-                    <Pressable style={[styles.modalContent, { backgroundColor: isDark ? '#000000' : '#FFFFFF' }]}>
+                    <Pressable style={[
+                        styles.modalContent,
+                        {
+                            backgroundColor: isDark ? '#050508' : '#FAF9F6',
+                            borderColor: isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.06)',
+                            borderWidth: 1,
+                        }
+                    ]}>
                         {/* Handle */}
                         <View style={styles.modalHandle} />
 

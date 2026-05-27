@@ -27,7 +27,7 @@ const CATEGORY_COLORS: Record<string, string> = {
 
 
 export const CategoryPills = ({ categories, activeCategory, onCategoryPress }: CategoryPillsProps) => {
-    const { mode } = useTheme();
+    const { theme, mode } = useTheme();
     const isDark = mode === 'dark';
 
     return (
@@ -39,7 +39,7 @@ export const CategoryPills = ({ categories, activeCategory, onCategoryPress }: C
         >
             {categories.map((category) => {
                 const isActive = activeCategory === category;
-                const color = CATEGORY_COLORS[category] || '#D9E4FF';
+                const color = theme.colors.primary.DEFAULT;
 
                 return (
                     <Pressable
@@ -49,7 +49,7 @@ export const CategoryPills = ({ categories, activeCategory, onCategoryPress }: C
                             {
                                 borderColor: isActive
                                     ? color
-                                    : isDark ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.15)',
+                                    : isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)',
                                 borderWidth: 1,
                             }
                         ]}
@@ -74,9 +74,9 @@ export const CategoryPills = ({ categories, activeCategory, onCategoryPress }: C
                                 styles.text,
                                 {
                                     color: isActive
-                                        ? '#000000'
-                                        : isDark ? 'rgba(255,255,255,0.9)' : 'rgba(0,0,0,0.8)',
-                                    fontWeight: isActive ? '800' : '700',
+                                        ? '#020204'
+                                        : isDark ? 'rgba(255,255,255,0.75)' : 'rgba(0,0,0,0.7)',
+                                    fontWeight: isActive ? '800' : '600',
                                 }
                             ]}
                         >

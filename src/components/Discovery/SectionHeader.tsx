@@ -8,19 +8,21 @@ interface SectionHeaderProps {
     subtitle?: string;
     onPressShowAll?: () => void;
     rightImage?: ImageSourcePropType;
+    containerStyle?: any;
 }
 
 export const SectionHeader: React.FC<SectionHeaderProps> = ({
     title,
     subtitle,
     onPressShowAll,
-    rightImage
+    rightImage,
+    containerStyle
 }) => {
     const { theme, mode } = useTheme();
     const isDark = mode === 'dark';
 
     return (
-        <View style={styles.container}>
+        <View style={[styles.container, containerStyle]}>
             <View style={styles.textContainer}>
                 <Text style={[styles.title, { color: theme.colors.text.primary }]}>{title.toUpperCase()}</Text>
                 {subtitle && (

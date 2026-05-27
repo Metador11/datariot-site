@@ -1,10 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Dimensions, TextInput, KeyboardAvoidingView, Platform, FlatList, Modal, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { theme } from '@design-system/theme';
 import { Ionicons, Feather, MaterialCommunityIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
-import Animated, { FadeIn, FadeInDown, FadeInUp } from 'react-native-reanimated';
+import Animated, { FadeIn, FadeInDown, FadeInUp, useSharedValue, useAnimatedStyle, withRepeat, withTiming, withSequence, withDelay, Easing } from 'react-native-reanimated';
 import { BlurView } from 'expo-blur';
 import { useTheme } from '../../components/Theme/ThemeProvider';
 import { generateVideoAnalysis, chatWithAI, generateDailyInsight, VideoAnalysis, DailyInsight } from '../../lib/ai/client';
@@ -17,17 +16,94 @@ interface Message {
     id: string;
     role: 'user' | 'system' | 'assistant';
     content: string;
-    type?: 'text' | 'analysis' | 'insight'; // structured data
+    type?: 'text' | 'analysis' | 'insight';
     data?: any;
 }
 
+// Generate unique IDs
+let _msgIdCounter = 0;
+const uniqueId = () => `msg_${Date.now()}_${++_msgIdCounter}`;
+
 // Example prompts for first-time users
 const EXAMPLE_PROMPTS = [
-    { icon: '💡', text: 'Give me my daily insight', tool: 'insight' as ToolType },
-    { icon: '🔍', text: 'Analyze a video', tool: 'analyze' as ToolType },
-    { icon: '💬', text: 'What can you help me with?', tool: 'chat' as ToolType },
-    { icon: '✨', text: 'Tell me something interesting', tool: 'chat' as ToolType },
+    { icon: '⚡', text: 'Daily insight', tool: 'insight' as ToolType, desc: 'Focus reading' },
+    { icon: '🔬', text: 'Analyze content', tool: 'analyze' as ToolType, desc: 'Truth scan' },
+    { icon: '🧠', text: 'What can you do?', tool: 'chat' as ToolType, desc: 'Capabilities' },
+    { icon: '💡', text: 'Tell me something interesting', tool: 'chat' as ToolType, desc: 'Random insight' },
 ];
+
+// Animated typing dots component
+const TypingIndicator = () => {
+    const dot1 = useSharedValue(0.3);
+    const dot2 = useSharedValue(0.3);
+    const dot3 = useSharedValue(0.3);
+
+    useEffect(() => {
+        dot1.value = withRepeat(
+            withSequence(
+                withTiming(1, { duration: 400 }),
+                withTiming(0.3, { duration: 400 })
+            ), -1, false
+        );
+        dot2.value = withRepeat(
+            withSequence(
+                withDelay(150, withTiming(1, { duration: 400 })),
+                withTiming(0.3, { duration: 400 })
+            ), -1, false
+        );
+        dot3.value = withRepeat(
+            withSequence(
+                withDelay(300, withTiming(1, { duration: 400 })),
+                withTiming(0.3, { duration: 400 })
+            ), -1, false
+        );
+    }, []);
+
+    const style1 = useAnimatedStyle(() => ({ opacity: dot1.value, transform: [{ scale: 0.8 + dot1.value * 0.4 }] }));
+    const style2 = useAnimatedStyle(() => ({ opacity: dot2.value, transform: [{ scale: 0.8 + dot2.value * 0.4 }] }));
+    const style3 = useAnimatedStyle(() => ({ opacity: dot3.value, transform: [{ scale: 0.8 + dot3.value * 0.4 }] }));
+
+    return (
+        <View style={styles.typingContainer}>
+            <View style={styles.typingBubble}>
+                <MaterialCommunityIcons name="robot-excited-outline" size={14} color="rgba(255,255,255,0.4)" style={{ marginRight: 8 }} />
+                <Animated.View style={[styles.typingDot, style1]} />
+                <Animated.View style={[styles.typingDot, style2]} />
+                <Animated.View style={[styles.typingDot, style3]} />
+            </View>
+        </View>
+    );
+};
+
+// Glow pulse for the header icon
+const PulseGlow = () => {
+    const pulse = useSharedValue(0.4);
+
+    useEffect(() => {
+        pulse.value = withRepeat(
+            withSequence(
+                withTiming(1, { duration: 2000, easing: Easing.inOut(Easing.ease) }),
+                withTiming(0.4, { duration: 2000, easing: Easing.inOut(Easing.ease) })
+            ), -1, false
+        );
+    }, []);
+
+    const glowStyle = useAnimatedStyle(() => ({
+        opacity: pulse.value * 0.6,
+        transform: [{ scale: 0.9 + pulse.value * 0.2 }],
+    }));
+
+    return (
+        <Animated.View style={[styles.headerGlow, glowStyle]}>
+            <LinearGradient
+                colors={['rgba(217, 228, 255, 0.3)', 'rgba(217, 228, 255, 0.08)', 'transparent']}
+                style={StyleSheet.absoluteFill}
+                start={{ x: 0.5, y: 0 }}
+                end={{ x: 0.5, y: 1 }}
+            />
+        </Animated.View>
+    );
+};
 
 export default function AIScreen() {
     // Chat State
@@ -35,7 +111,7 @@ export default function AIScreen() {
         {
             id: 'init',
             role: 'assistant',
-            content: 'I am Orvelis. Select a tool below or just start talking.',
+            content: "I'm **Orvelis** — your thinking partner. Select a tool below or ask me anything.",
             type: 'text'
         }
     ]);
@@ -52,18 +128,35 @@ export default function AIScreen() {
     // Refs
     const flatListRef = useRef<FlatList>(null);
 
-    const scrollToBottom = () => {
+    const scrollToBottom = useCallback(() => {
         setTimeout(() => {
             flatListRef.current?.scrollToEnd({ animated: true });
-        }, 100);
-    };
+        }, 150);
+    }, []);
 
     const handleExamplePrompt = (prompt: typeof EXAMPLE_PROMPTS[0]) => {
         setShowSuggestions(false);
         setSelectedTool(prompt.tool);
 
         if (prompt.tool === 'chat') {
-            setInputText(prompt.text);
+            // Immediately send as a message
+            const userMsg: Message = { id: uniqueId(), role: 'user', content: prompt.text, type: 'text' };
+            setMessages(prev => [...prev, userMsg]);
+            setLoading(true);
+            scrollToBottom();
+
+            const history = messages.map(m => ({ role: m.role, content: m.content }));
+            chatWithAI(prompt.text, history).then(response => {
+                setMessages(prev => [...prev, {
+                    id: uniqueId(),
+                    role: 'assistant',
+                    content: response,
+                    type: 'text'
+                }]);
+            }).catch(console.error).finally(() => {
+                setLoading(false);
+                scrollToBottom();
+            });
         } else {
             handleToolSelect(prompt.tool);
         }
@@ -75,26 +168,31 @@ export default function AIScreen() {
         // Hide suggestions after first message
         setShowSuggestions(false);
 
-        const userMsg: Message = { id: Date.now().toString(), role: 'user', content: inputText, type: 'text' };
+        const userMsg: Message = { id: uniqueId(), role: 'user', content: inputText, type: 'text' };
         setMessages(prev => [...prev, userMsg]);
+        const textToSend = inputText;
         setInputText('');
         setLoading(true);
         scrollToBottom();
 
         try {
-            // Context mapping based on selected tool? 
-            // For now, simple chat updates. If specific tool logic is needed, we add it.
             const history = messages.map(m => ({ role: m.role, content: m.content }));
-            const response = await chatWithAI(userMsg.content, history);
+            const response = await chatWithAI(textToSend, history);
 
             setMessages(prev => [...prev, {
-                id: Date.now().toString(),
+                id: uniqueId(),
                 role: 'assistant',
                 content: response,
                 type: 'text'
             }]);
         } catch (e) {
             console.error(e);
+            setMessages(prev => [...prev, {
+                id: uniqueId(),
+                role: 'assistant',
+                content: "Connection disrupted. I'm operating in local mode — try again or ask me something I can handle offline.",
+                type: 'text'
+            }]);
         } finally {
             setLoading(false);
             scrollToBottom();
@@ -103,13 +201,15 @@ export default function AIScreen() {
 
     const handleToolSelect = async (tool: ToolType) => {
         setSelectedTool(tool);
+        setShowSuggestions(false);
 
         if (tool === 'insight') {
             setLoading(true);
+            scrollToBottom();
             try {
                 const insight = await generateDailyInsight();
                 setMessages(prev => [...prev, {
-                    id: Date.now().toString(),
+                    id: uniqueId(),
                     role: 'assistant',
                     content: 'Daily Insight Generated',
                     type: 'insight',
@@ -122,12 +222,12 @@ export default function AIScreen() {
                 scrollToBottom();
             }
         } else if (tool === 'analyze') {
-            // Mocking analysis trigger for current context
             setLoading(true);
+            scrollToBottom();
             try {
                 const analysis = await generateVideoAnalysis();
                 setMessages(prev => [...prev, {
-                    id: Date.now().toString(),
+                    id: uniqueId(),
                     role: 'assistant',
                     content: 'Analysis Complete',
                     type: 'analysis',
@@ -140,19 +240,36 @@ export default function AIScreen() {
                 scrollToBottom();
             }
         }
+        // For 'chat', just switch tool — don't trigger anything
     };
 
     const renderMessage = ({ item }: { item: Message }) => {
         if (item.type === 'insight') {
             const insight = item.data as DailyInsight;
             return (
-                <Animated.View entering={FadeInUp.springify()} style={[styles.messageBubble, styles.aiBubble, styles.cardBubble, { backgroundColor: isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0,0,0,0.02)', borderColor: isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)' }]}>
+                <Animated.View entering={FadeInUp.springify()} style={[styles.messageBubble, styles.aiBubble, styles.cardBubble, {
+                    backgroundColor: isDark ? 'rgba(255, 255, 255, 0.04)' : 'rgba(0,0,0,0.02)',
+                    borderColor: isDark ? 'rgba(56, 189, 248, 0.15)' : 'rgba(14, 165, 233, 0.15)'
+                }]}>
+                    {/* Subtle gradient overlay */}
+                    <LinearGradient
+                        colors={isDark ? ['rgba(56, 189, 248, 0.08)', 'transparent'] : ['rgba(14, 165, 233, 0.05)', 'transparent']}
+                        style={[StyleSheet.absoluteFill, { borderRadius: 20 }]}
+                    />
                     <View style={styles.cardHeader}>
-                        <MaterialCommunityIcons name="lightning-bolt" size={20} color={theme.colors.secondary.DEFAULT} />
+                        <View style={styles.cardHeaderIcon}>
+                            <MaterialCommunityIcons name="lightning-bolt" size={16} color={theme.colors.primary.DEFAULT} />
+                        </View>
                         <Text style={[styles.cardTitle, { color: theme.colors.text.primary }]}>DAILY INSIGHT</Text>
                     </View>
                     <Text style={[styles.insightScore, { color: theme.colors.text.primary }]}>{insight.score}</Text>
-                    <Text style={styles.insightStatus}>{insight.status}</Text>
+                    <View style={styles.insightStatusRow}>
+                        <Text style={[styles.insightStatus, { color: theme.colors.primary.DEFAULT }]}>{insight.status}</Text>
+                        <View style={[styles.trendBadge, { backgroundColor: isDark ? 'rgba(16, 185, 129, 0.15)' : 'rgba(16, 185, 129, 0.1)' }]}>
+                            <Ionicons name="trending-up" size={12} color="#10B981" />
+                            <Text style={styles.trendText}>{insight.trend}</Text>
+                        </View>
+                    </View>
                     <Text style={[styles.cardText, { color: theme.colors.text.secondary }]}>{insight.message}</Text>
                 </Animated.View>
             );
@@ -161,44 +278,95 @@ export default function AIScreen() {
         if (item.type === 'analysis') {
             const analysis = item.data as VideoAnalysis;
             return (
-                <Animated.View entering={FadeInUp.springify()} style={[styles.messageBubble, styles.aiBubble, styles.cardBubble, { backgroundColor: isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0,0,0,0.02)', borderColor: isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)' }]}>
+                <Animated.View entering={FadeInUp.springify()} style={[styles.messageBubble, styles.aiBubble, styles.cardBubble, {
+                    backgroundColor: isDark ? 'rgba(255, 255, 255, 0.04)' : 'rgba(0,0,0,0.02)',
+                    borderColor: isDark ? 'rgba(56, 189, 248, 0.15)' : 'rgba(14, 165, 233, 0.15)'
+                }]}>
+                    <LinearGradient
+                        colors={isDark ? ['rgba(139, 92, 246, 0.08)', 'transparent'] : ['rgba(139, 92, 246, 0.05)', 'transparent']}
+                        style={[StyleSheet.absoluteFill, { borderRadius: 20 }]}
+                    />
                     <View style={styles.cardHeader}>
-                        <Feather name="eye" size={20} color={theme.colors.primary.light} />
+                        <View style={[styles.cardHeaderIcon, { backgroundColor: isDark ? 'rgba(139, 92, 246, 0.2)' : 'rgba(139, 92, 246, 0.1)' }]}>
+                            <Feather name="eye" size={14} color="#8B5CF6" />
+                        </View>
                         <Text style={[styles.cardTitle, { color: theme.colors.text.primary }]}>TRUTH ANALYSIS</Text>
                     </View>
 
                     <View style={styles.analysisSection}>
-                        <Text style={styles.analysisLabel}>ESSENCE</Text>
+                        <View style={[styles.analysisLabelBadge, { backgroundColor: isDark ? 'rgba(16, 185, 129, 0.15)' : 'rgba(16, 185, 129, 0.1)' }]}>
+                            <Text style={[styles.analysisLabel, { color: '#10B981' }]}>ESSENCE</Text>
+                        </View>
                         <Text style={[styles.cardText, { color: theme.colors.text.secondary }]}>{analysis.essence}</Text>
                     </View>
                     <View style={styles.analysisSection}>
-                        <Text style={[styles.analysisLabel, { color: '#FFFFFF' }]}>MANIPULATION</Text>
+                        <View style={[styles.analysisLabelBadge, { backgroundColor: isDark ? 'rgba(239, 68, 68, 0.15)' : 'rgba(239, 68, 68, 0.1)' }]}>
+                            <Text style={[styles.analysisLabel, { color: '#EF4444' }]}>MANIPULATION</Text>
+                        </View>
                         <Text style={[styles.cardText, { color: theme.colors.text.secondary }]}>{analysis.manipulation}</Text>
                     </View>
                     <View style={styles.analysisSection}>
-                        <Text style={[styles.analysisLabel, { color: '#FFFFFF' }]}>REAL VALUE</Text>
+                        <View style={[styles.analysisLabelBadge, { backgroundColor: isDark ? 'rgba(56, 189, 248, 0.15)' : 'rgba(56, 189, 248, 0.1)' }]}>
+                            <Text style={[styles.analysisLabel, { color: '#38BDF8' }]}>REAL VALUE</Text>
+                        </View>
                         <Text style={[styles.cardText, { color: theme.colors.text.secondary }]}>{analysis.realValue}</Text>
                     </View>
                 </Animated.View>
             );
         }
 
+        // Regular text messages
+        const isUser = item.role === 'user';
         return (
-            <View style={[
-                styles.messageBubble,
-                item.role === 'user' ? [styles.userBubble, { backgroundColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)' }] : styles.aiBubble
-            ]}>
-                <Text style={[styles.messageText, { color: item.role === 'user' ? theme.colors.text.primary : theme.colors.text.secondary }]}>{item.content}</Text>
-            </View>
+            <Animated.View entering={FadeIn.duration(300)}>
+                <View style={[
+                    styles.messageBubble,
+                    isUser
+                        ? [styles.userBubble, { backgroundColor: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.05)' }]
+                        : styles.aiBubble
+                ]}>
+                    {!isUser && (
+                        <View style={styles.aiMessageHeader}>
+                            <View style={[styles.aiMessageDot, { backgroundColor: theme.colors.primary.DEFAULT }]} />
+                            <Text style={[styles.aiMessageLabel, { color: theme.colors.text.muted }]}>ORVELIS</Text>
+                        </View>
+                    )}
+                    <Text style={[
+                        styles.messageText,
+                        { color: isUser ? theme.colors.text.primary : theme.colors.text.secondary }
+                    ]}>{item.content}</Text>
+                </View>
+            </Animated.View>
         );
+    };
+
+    const getPlaceholder = () => {
+        switch (selectedTool) {
+            case 'insight': return "Ask about your insight...";
+            case 'analyze': return "Ask about the analysis...";
+            default: return "Ask Orvelis anything...";
+        }
     };
 
     return (
         <View style={[styles.container, { backgroundColor: theme.colors.background.primary }]}>
             <SafeAreaView style={styles.safeArea}>
+                {/* Premium Header */}
                 <View style={[styles.header, { backgroundColor: theme.colors.background.primary }]}>
-                    <Text style={styles.headerTitle}>Orvelis AI</Text>
-                    {/* Add more header controls if needed */}
+                    <PulseGlow />
+                    <View style={styles.headerContent}>
+                        <View style={[styles.headerIconContainer, {
+                            backgroundColor: isDark ? 'rgba(56, 189, 248, 0.1)' : 'rgba(14, 165, 233, 0.08)',
+                            borderColor: isDark ? 'rgba(56, 189, 248, 0.25)' : 'rgba(14, 165, 233, 0.2)'
+                        }]}>
+                            <MaterialCommunityIcons name="robot-excited" size={22} color={theme.colors.primary.DEFAULT} />
+                        </View>
+                        <View>
+                            <Text style={[styles.headerTitle, { color: theme.colors.text.primary }]}>Orvelis</Text>
+                            <Text style={[styles.headerSubtitle, { color: theme.colors.text.muted }]}>AI Core • Online</Text>
+                        </View>
+                    </View>
+                    <View style={[styles.headerStatusDot, { backgroundColor: '#10B981' }]} />
                 </View>
 
                 <FlatList
@@ -212,73 +380,104 @@ export default function AIScreen() {
 
                 <KeyboardAvoidingView
                     behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-                    keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0}
+                    keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}
                     style={[styles.keyboardArea, { backgroundColor: theme.colors.background.primary }]}
                 >
                     {/* Example Prompt Suggestions */}
                     {showSuggestions && messages.length <= 1 && (
                         <Animated.View entering={FadeInDown.delay(300).springify()} style={styles.suggestionsContainer}>
-                            <Text style={[styles.suggestionsTitle, { color: isDark ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.5)' }]}>Try asking:</Text>
-                            <ScrollView
-                                horizontal
-                                showsHorizontalScrollIndicator={false}
-                                contentContainerStyle={styles.suggestionsList}
-                            >
+                            <Text style={[styles.suggestionsTitle, { color: isDark ? 'rgba(255, 255, 255, 0.4)' : 'rgba(0, 0, 0, 0.4)' }]}>Quick Start</Text>
+                            <View style={styles.suggestionsGrid}>
                                 {EXAMPLE_PROMPTS.map((prompt, index) => (
                                     <TouchableOpacity
                                         key={index}
-                                        style={[styles.suggestionChip, { backgroundColor: isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0,0,0,0.05)', borderColor: isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0,0,0,0.1)' }]}
+                                        style={[styles.suggestionChip, {
+                                            backgroundColor: isDark ? 'rgba(255, 255, 255, 0.04)' : 'rgba(0,0,0,0.03)',
+                                            borderColor: isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0,0,0,0.08)'
+                                        }]}
                                         onPress={() => handleExamplePrompt(prompt)}
+                                        activeOpacity={0.7}
                                     >
                                         <Text style={styles.suggestionIcon}>{prompt.icon}</Text>
-                                        <Text style={[styles.suggestionText, { color: theme.colors.text.primary }]}>{prompt.text}</Text>
+                                        <View style={styles.suggestionTextWrap}>
+                                            <Text style={[styles.suggestionText, { color: theme.colors.text.primary }]}>{prompt.text}</Text>
+                                            <Text style={[styles.suggestionDesc, { color: theme.colors.text.muted }]}>{prompt.desc}</Text>
+                                        </View>
                                     </TouchableOpacity>
                                 ))}
-                            </ScrollView>
+                            </View>
                         </Animated.View>
                     )}
 
-                    {loading && <Text style={styles.typingIndicator}>Orvelis is thinking...</Text>}
+                    {loading && <TypingIndicator />}
 
                     {/* Tool Selector */}
                     <View style={styles.toolSelector}>
-                        <TouchableOpacity
-                            style={[styles.toolButton, selectedTool === 'chat' && styles.toolButtonActive]}
-                            onPress={() => handleToolSelect('chat')}
-                        >
-                            <Ionicons name="chatbubble-ellipses-outline" size={20} color={selectedTool === 'chat' ? theme.colors.text.primary : theme.colors.text.muted} />
-                            <Text style={[styles.toolText, selectedTool === 'chat' && [styles.toolTextActive, { color: theme.colors.text.primary }]]}>Chat</Text>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity
-                            style={[styles.toolButton, selectedTool === 'insight' && styles.toolButtonActive]}
-                            onPress={() => handleToolSelect('insight')}
-                        >
-                            <Ionicons name="bulb-outline" size={20} color={selectedTool === 'insight' ? theme.colors.text.primary : theme.colors.text.muted} />
-                            <Text style={[styles.toolText, selectedTool === 'insight' && [styles.toolTextActive, { color: theme.colors.text.primary }]]}>Insight</Text>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity
-                            style={[styles.toolButton, selectedTool === 'analyze' && styles.toolButtonActive]}
-                            onPress={() => handleToolSelect('analyze')}
-                        >
-                            <Ionicons name="scan-outline" size={20} color={selectedTool === 'analyze' ? theme.colors.text.primary : theme.colors.text.muted} />
-                            <Text style={[styles.toolText, selectedTool === 'analyze' && [styles.toolTextActive, { color: theme.colors.text.primary }]]}>Analyze</Text>
-                        </TouchableOpacity>
+                        {([
+                            { key: 'chat' as ToolType, icon: 'chatbubble-ellipses-outline', label: 'Chat' },
+                            { key: 'insight' as ToolType, icon: 'bulb-outline', label: 'Insight' },
+                            { key: 'analyze' as ToolType, icon: 'scan-outline', label: 'Analyze' },
+                        ] as const).map(tool => (
+                            <TouchableOpacity
+                                key={tool.key}
+                                style={[
+                                    styles.toolButton,
+                                    selectedTool === tool.key && [styles.toolButtonActive, {
+                                        backgroundColor: isDark ? 'rgba(56, 189, 248, 0.15)' : 'rgba(14, 165, 233, 0.1)',
+                                        borderColor: isDark ? 'rgba(56, 189, 248, 0.3)' : 'rgba(14, 165, 233, 0.2)'
+                                    }]
+                                ]}
+                                onPress={() => handleToolSelect(tool.key)}
+                                activeOpacity={0.7}
+                            >
+                                <Ionicons
+                                    name={tool.icon as any}
+                                    size={18}
+                                    color={selectedTool === tool.key ? theme.colors.primary.DEFAULT : theme.colors.text.muted}
+                                />
+                                <Text style={[
+                                    styles.toolText,
+                                    selectedTool === tool.key && { color: theme.colors.primary.DEFAULT }
+                                ]}>{tool.label}</Text>
+                            </TouchableOpacity>
+                        ))}
                     </View>
 
-                    {/* Input Area */}
-                    <View style={styles.inputContainer}>
-                        <TextInput
-                            style={[styles.input, { color: theme.colors.text.primary }]}
-                            placeholder={selectedTool === 'chat' ? "Ask anything..." : selectedTool === 'insight' ? "Generating insight..." : "Analyzing context..."}
-                            placeholderTextColor={theme.colors.text.muted}
-                            value={inputText}
-                            onChangeText={setInputText}
-                            editable={selectedTool === 'chat'}
-                        />
-                        <TouchableOpacity onPress={handleSendMessage} style={[styles.sendButton, !inputText.trim() && { opacity: 0.5 }, { backgroundColor: theme.colors.text.primary }]} disabled={!inputText.trim()}>
-                            <Ionicons name="arrow-up" size={24} color={theme.colors.background.primary} />
+                    {/* Input Area — always editable */}
+                    <View style={[styles.inputContainer, { borderTopColor: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)' }]}>
+                        <View style={[styles.inputWrapper, {
+                            backgroundColor: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.04)',
+                            borderColor: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)'
+                        }]}>
+                            <TextInput
+                                style={[styles.input, { color: theme.colors.text.primary }]}
+                                placeholder={getPlaceholder()}
+                                placeholderTextColor={theme.colors.text.muted}
+                                value={inputText}
+                                onChangeText={setInputText}
+                                onSubmitEditing={handleSendMessage}
+                                returnKeyType="send"
+                                multiline={false}
+                            />
+                        </View>
+                        <TouchableOpacity
+                            onPress={handleSendMessage}
+                            style={[
+                                styles.sendButton,
+                                {
+                                    backgroundColor: inputText.trim()
+                                        ? theme.colors.primary.DEFAULT
+                                        : (isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)'),
+                                }
+                            ]}
+                            disabled={!inputText.trim()}
+                            activeOpacity={0.7}
+                        >
+                            <Ionicons
+                                name="arrow-up"
+                                size={20}
+                                color={inputText.trim() ? '#FFFFFF' : theme.colors.text.muted}
+                            />
                         </TouchableOpacity>
                     </View>
                 </KeyboardAvoidingView>
@@ -294,221 +493,300 @@ const styles = StyleSheet.create({
     safeArea: {
         flex: 1,
     },
+    // ===== HEADER =====
     header: {
-        paddingHorizontal: 24,
-        paddingTop: Platform.OS === 'ios' ? 20 : 40,
-        paddingBottom: 24,
+        paddingHorizontal: 20,
+        paddingTop: Platform.OS === 'ios' ? 8 : 16,
+        paddingBottom: 16,
         flexDirection: 'row',
         alignItems: 'center',
-        borderBottomWidth: 1,
-        borderBottomColor: 'rgba(255,255,255,0.05)',
+        justifyContent: 'space-between',
+        borderBottomWidth: StyleSheet.hairlineWidth,
+        borderBottomColor: 'rgba(255,255,255,0.06)',
+        overflow: 'hidden',
+    },
+    headerGlow: {
+        position: 'absolute',
+        top: -40,
+        left: '30%',
+        width: 200,
+        height: 120,
+        borderRadius: 100,
+    },
+    headerContent: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 12,
     },
     headerIconContainer: {
-        width: 48,
-        height: 48,
-        borderRadius: 24,
-        backgroundColor: 'rgba(217, 228, 255, 0.1)',
+        width: 44,
+        height: 44,
+        borderRadius: 14,
         justifyContent: 'center',
         alignItems: 'center',
-        marginRight: 16,
         borderWidth: 1,
-        borderColor: 'rgba(217, 228, 255, 0.3)',
-        shadowColor: '#D9E4FF',
-        shadowOffset: { width: 0, height: 0 },
-        shadowOpacity: 0.3,
-        shadowRadius: 10,
     },
     headerTitle: {
-        color: '#D9E4FF', // Blue accent
-        fontSize: 20,
+        fontSize: 18,
         fontWeight: '700',
-        letterSpacing: 4, // Wide spacing for terminal look
-        marginBottom: 2,
-        fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
+        letterSpacing: 0.5,
+    },
+    headerSubtitle: {
+        fontSize: 11,
+        fontWeight: '600',
+        letterSpacing: 0.5,
+        marginTop: 1,
         textTransform: 'uppercase',
     },
+    headerStatusDot: {
+        width: 8,
+        height: 8,
+        borderRadius: 4,
+        marginRight: 4,
+    },
+    // ===== CHAT LIST =====
     chatList: {
-        paddingHorizontal: 20,
-        paddingBottom: 20,
-        paddingTop: 20,
+        paddingHorizontal: 16,
+        paddingBottom: 16,
+        paddingTop: 16,
     },
     messageBubble: {
-        padding: 16,
+        padding: 14,
         borderRadius: 20,
-        marginBottom: 16,
-        maxWidth: '85%',
+        marginBottom: 12,
+        maxWidth: '88%',
     },
     userBubble: {
-        backgroundColor: 'rgba(255,255,255,0.1)',
         alignSelf: 'flex-end',
-        borderBottomRightRadius: 4,
+        borderBottomRightRadius: 6,
     },
     aiBubble: {
         backgroundColor: 'transparent',
         alignSelf: 'flex-start',
-        borderBottomLeftRadius: 4,
+        borderBottomLeftRadius: 6,
+        paddingHorizontal: 4,
+    },
+    aiMessageHeader: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 6,
+        marginBottom: 6,
+    },
+    aiMessageDot: {
+        width: 6,
+        height: 6,
+        borderRadius: 3,
+    },
+    aiMessageLabel: {
+        fontSize: 10,
+        fontWeight: '700',
+        letterSpacing: 1.5,
+        textTransform: 'uppercase',
     },
     cardBubble: {
         width: '95%',
         maxWidth: '100%',
-        backgroundColor: 'rgba(255, 255, 255, 0.05)',
         borderWidth: 1,
-        borderColor: 'rgba(255, 255, 255, 0.1)',
-        borderRadius: 16,
+        borderRadius: 20,
+        padding: 20,
+        overflow: 'hidden',
     },
     messageText: {
-        color: '#FFFFFF',
-        fontSize: 16,
-        lineHeight: 24,
+        fontSize: 15,
+        lineHeight: 22,
     },
+    // ===== KEYBOARD AREA =====
     keyboardArea: {
         width: '100%',
-        backgroundColor: '#000', // Match container
-        // Removed borderTop for cleaner look
     },
-    typingIndicator: {
-        marginLeft: 24,
-        marginTop: 8,
-        color: 'rgba(255,255,255,0.3)',
-        fontSize: 12,
-        fontStyle: 'italic',
+    // ===== TYPING INDICATOR =====
+    typingContainer: {
+        paddingHorizontal: 20,
+        paddingVertical: 8,
     },
-    // Tool Selector
+    typingBubble: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        alignSelf: 'flex-start',
+        paddingHorizontal: 14,
+        paddingVertical: 10,
+        borderRadius: 20,
+        backgroundColor: 'rgba(255,255,255,0.04)',
+    },
+    typingDot: {
+        width: 7,
+        height: 7,
+        borderRadius: 3.5,
+        backgroundColor: 'rgba(56, 189, 248, 0.8)',
+        marginHorizontal: 2,
+    },
+    // ===== TOOL SELECTOR =====
     toolSelector: {
         flexDirection: 'row',
         paddingHorizontal: 16,
-        paddingVertical: 12,
+        paddingVertical: 8,
         gap: 8,
     },
     toolButton: {
         flexDirection: 'row',
         alignItems: 'center',
-        paddingVertical: 8,
-        paddingHorizontal: 16,
+        paddingVertical: 7,
+        paddingHorizontal: 14,
         borderRadius: 20,
-        backgroundColor: 'rgba(255,255,255,0.05)',
+        backgroundColor: 'rgba(255,255,255,0.04)',
         gap: 6,
+        borderWidth: 1,
+        borderColor: 'transparent',
     },
     toolButtonActive: {
-        backgroundColor: 'rgba(255,255,255,0.2)',
+        // Dynamic styles applied inline
     },
     toolText: {
-        color: 'rgba(255, 255, 255, 0.5)',
+        color: 'rgba(255, 255, 255, 0.45)',
         fontSize: 13,
         fontWeight: '600',
     },
-    toolTextActive: {
-        color: '#FFF',
-    },
-    // Input
+    // ===== INPUT =====
     inputContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        padding: 16,
-        paddingTop: 4,
-        // Slightly lower than before (was 95/85)
-        paddingBottom: Platform.OS === 'ios' ? 55 : 65,
+        padding: 12,
+        paddingBottom: Platform.OS === 'ios' ? 34 : 24,
+        gap: 8,
+        borderTopWidth: StyleSheet.hairlineWidth,
+    },
+    inputWrapper: {
+        flex: 1,
+        borderRadius: 24,
+        borderWidth: 1,
+        overflow: 'hidden',
     },
     input: {
-        flex: 1,
-        backgroundColor: 'rgba(255,255,255,0.05)',
-        borderRadius: 24,
-        paddingHorizontal: 20,
-        paddingVertical: 12,
-        color: '#FFF',
-        fontSize: 16,
-        marginRight: 12,
+        paddingHorizontal: 18,
+        paddingVertical: Platform.OS === 'ios' ? 12 : 10,
+        fontSize: 15,
     },
     sendButton: {
-        width: 44,
-        height: 44,
-        borderRadius: 22,
-        backgroundColor: '#FFF',
+        width: 40,
+        height: 40,
+        borderRadius: 20,
         justifyContent: 'center',
         alignItems: 'center',
     },
-    // Card Styles
+    // ===== CARD STYLES =====
     cardHeader: {
         flexDirection: 'row',
         alignItems: 'center',
-        gap: 8,
+        gap: 10,
         marginBottom: 16,
         paddingBottom: 12,
-        borderBottomWidth: 1,
-        borderBottomColor: 'rgba(255,255,255,0.1)',
+        borderBottomWidth: StyleSheet.hairlineWidth,
+        borderBottomColor: 'rgba(255,255,255,0.08)',
+    },
+    cardHeaderIcon: {
+        width: 28,
+        height: 28,
+        borderRadius: 8,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(56, 189, 248, 0.15)',
     },
     cardTitle: {
-        color: '#FFF',
-        fontSize: 12,
-        fontWeight: '700',
+        fontSize: 11,
+        fontWeight: '800',
         letterSpacing: 2,
     },
     insightScore: {
-        fontSize: 48,
+        fontSize: 56,
         fontWeight: '800',
-        color: '#FFF',
-        marginBottom: 4,
+        marginBottom: 2,
+        letterSpacing: -2,
+    },
+    insightStatusRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 10,
+        marginBottom: 12,
     },
     insightStatus: {
-        fontSize: 18,
-        color: theme.colors.secondary.DEFAULT,
-        fontWeight: '600',
-        marginBottom: 12,
+        fontSize: 16,
+        fontWeight: '700',
         textTransform: 'uppercase',
         letterSpacing: 1,
+    },
+    trendBadge: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 3,
+        paddingHorizontal: 8,
+        paddingVertical: 3,
+        borderRadius: 10,
+    },
+    trendText: {
+        color: '#10B981',
+        fontSize: 12,
+        fontWeight: '700',
     },
     cardText: {
-        color: 'rgba(255,255,255,0.8)',
-        fontSize: 15,
-        lineHeight: 22,
+        fontSize: 14,
+        lineHeight: 21,
     },
     analysisSection: {
-        marginBottom: 16,
+        marginBottom: 14,
+    },
+    analysisLabelBadge: {
+        alignSelf: 'flex-start',
+        paddingHorizontal: 8,
+        paddingVertical: 3,
+        borderRadius: 6,
+        marginBottom: 6,
     },
     analysisLabel: {
-        color: '#D9E4FF',
-        fontSize: 10,
-        fontWeight: '700',
+        fontSize: 9,
+        fontWeight: '800',
         letterSpacing: 1.5,
-        marginBottom: 4,
         textTransform: 'uppercase',
     },
-    // Suggestion Chips
+    // ===== SUGGESTION CHIPS =====
     suggestionsContainer: {
-        paddingHorizontal: 20,
-        paddingVertical: 16,
-        backgroundColor: 'transparent', // Make it transparent as per new design
-        // Removed borderTop as it's now inside the list
+        paddingHorizontal: 16,
+        paddingVertical: 12,
     },
     suggestionsTitle: {
-        fontSize: 12,
-        fontWeight: '600',
-        color: 'rgba(255, 255, 255, 0.5)',
-        marginBottom: 12,
-        letterSpacing: 1,
+        fontSize: 11,
+        fontWeight: '700',
+        marginBottom: 10,
+        letterSpacing: 1.5,
         textTransform: 'uppercase',
     },
-    suggestionsList: {
-        gap: 12,
-        paddingRight: 20,
+    suggestionsGrid: {
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        gap: 8,
     },
     suggestionChip: {
         flexDirection: 'row',
         alignItems: 'center',
-        paddingVertical: 12,
-        paddingHorizontal: 16,
-        backgroundColor: 'rgba(255, 255, 255, 0.05)',
-        borderRadius: 20,
+        paddingVertical: 10,
+        paddingHorizontal: 14,
+        borderRadius: 16,
         borderWidth: 1,
-        borderColor: 'rgba(255, 255, 255, 0.1)',
-        gap: 8,
+        gap: 10,
+        width: '48%',
     },
     suggestionIcon: {
         fontSize: 18,
     },
+    suggestionTextWrap: {
+        flex: 1,
+    },
     suggestionText: {
-        fontSize: 14,
-        color: '#FFFFFF',
+        fontSize: 13,
+        fontWeight: '600',
+    },
+    suggestionDesc: {
+        fontSize: 10,
         fontWeight: '500',
+        marginTop: 1,
     },
 });

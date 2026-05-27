@@ -2,12 +2,13 @@ import React, { useState, useCallback } from 'react';
 import { View, Text, TextInput, StyleSheet, ScrollView, Pressable, FlatList, useWindowDimensions, ActivityIndicator, Platform, RefreshControl } from 'react-native';
 import { BlurView } from 'expo-blur';
 import { SafeAreaView } from '@components/UI/SafeAreaView';
-import { theme } from '@design-system/theme';
+import { theme as baseTheme } from '@design-system/theme';
 import { useRecommendedUsers } from '@lib/supabase/hooks/useRecommendedUsers';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '../../components/Theme/ThemeProvider';
 import { usePosts } from '@lib/supabase/hooks/usePosts';
+import { AmbientGlow } from '../../components/UI/AmbientGlow';
 
 // Intelligence Hub Components
 import { SectionHeader } from '@components/Discovery/SectionHeader';
@@ -119,16 +120,17 @@ export default function DiscoverScreen() {
 
     return (
         <View style={[styles.container, { backgroundColor: theme.colors.background.primary }]}>
+            <AmbientGlow color={isDark ? "rgba(217, 228, 255, 0.08)" : "rgba(217, 228, 255, 0.04)"} size={380} opacity={0.6} duration={25000} delay={0} />
             <SafeAreaView style={styles.safeArea}>
 
                 {/* Search Bar */}
                 <View style={styles.searchContainer}>
-                    <BlurView intensity={20} tint={isDark ? "dark" : "light"} style={styles.searchBarBlur}>
+                    <BlurView intensity={50} tint={isDark ? "dark" : "light"} style={styles.searchBarBlur}>
                         <View style={[styles.searchBar, {
-                            backgroundColor: isDark ? 'rgba(0, 0, 0, 0.6)' : 'rgba(255, 255, 255, 0.6)',
-                            borderColor: isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)'
+                            backgroundColor: isDark ? 'rgba(255, 255, 255, 0.03)' : 'rgba(0, 0, 0, 0.03)',
+                            borderColor: isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.06)'
                         }]}>
-                            <Ionicons name="bulb-outline" size={20} color={theme.colors.primary.light} />
+                            <Ionicons name="search-outline" size={18} color={theme.colors.text.muted} />
                             <TextInput
                                 style={[styles.searchInput, { color: theme.colors.text.primary }]}
                                 placeholder="Search the Arena..."
@@ -182,7 +184,7 @@ const styles = StyleSheet.create({
         gap: 8,
     },
     searchContainer: {
-        paddingHorizontal: theme.spacing.lg,
+        paddingHorizontal: baseTheme.spacing.lg,
         paddingTop: 12,
         paddingBottom: 16,
     },
@@ -201,7 +203,7 @@ const styles = StyleSheet.create({
     searchInput: {
         flex: 1,
         fontSize: 15,
-        color: theme.colors.text.primary,
+        color: baseTheme.colors.text.primary,
         height: '100%',
     },
     sectionPadding: {

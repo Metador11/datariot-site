@@ -121,6 +121,7 @@ export default function VideoPlayerScreen() {
                 onSave={handleSave}
                 onMore={handleMore}
                 onFollow={toggleFollow}
+                onSelect={(id) => console.log('Selected:', id)}
                 initialScrollIndex={initialScrollIndex}
             />
 

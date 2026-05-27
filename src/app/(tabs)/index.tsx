@@ -3,7 +3,6 @@ import { View, StyleSheet, ActivityIndicator, Text, Pressable, StatusBar, useWin
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { CoubClassicFeed } from '@components/VideoFeed/CoubClassicFeed';
-import { useAuth } from '@lib/supabase/hooks/useAuth';
 import { useVideos, FeedType } from '@lib/supabase/hooks/useVideos';
 import { useRouter } from 'expo-router';
 import { Feather, Ionicons } from '@expo/vector-icons';
@@ -17,11 +16,13 @@ import { VIDEO_CATEGORIES } from '../../lib/constants/categories';
 import { PulseFeed } from '../../components/VideoFeed/PulseFeed/PulseFeed';
 import { MosaicFeed } from '../../components/VideoFeed/MosaicFeed/MosaicFeed';
 import { FullScreenVideoModal } from '../../components/VideoFeed/FullScreenVideoModal';
+import { DeepDiveModal } from '../../components/VideoFeed/DeepDiveModal';
+import { MoreOptionsModal } from '../../components/VideoFeed/MoreOptionsModal';
 
 type ViewMode = 'classic' | 'mosaic' | 'pulse';
 
 const HomeScreen = () => {
-    const { } = useAuth(); // or remove if not used at all
+    // Auth state managed by components that need it
     const router = useRouter();
     const isFocused = useIsFocused();
     const insets = useSafeAreaInsets();
@@ -51,6 +52,8 @@ const HomeScreen = () => {
 
     const [selectedVideoId, setSelectedVideoId] = useState<string | null>(null);
     const [commentsVideoId, setCommentsVideoId] = useState<string | null>(null);
+    const [deepDiveVideo, setDeepDiveVideo] = useState<any | null>(null);
+    const [moreOptionsVideo, setMoreOptionsVideo] = useState<any | null>(null);
 
     const handleSelectVideo = (videoId: string) => {
         setSelectedVideoId(videoId);
@@ -65,7 +68,10 @@ const HomeScreen = () => {
     };
 
     const handleMore = (videoId: string) => {
-        console.log('More options:', videoId);
+        const vid = videos.find(v => v.id === videoId);
+        if (vid) {
+            setMoreOptionsVideo(vid);
+        }
     };
 
     if (loading && videos.length === 0) {
@@ -76,7 +82,11 @@ const HomeScreen = () => {
         );
     }
 
-    const isFeedActive = isFocused && selectedVideoId === null && commentsVideoId === null;
+    const feedPaddingTop = isWeb
+        ? (activeTab === 'trending' ? 120 : 70)
+        : (activeTab === 'trending' ? insets.top + 120 : insets.top + 64);
+
+    const isFeedActive = isFocused && selectedVideoId === null && commentsVideoId === null && deepDiveVideo === null && moreOptionsVideo === null;
 
     return (
         <View style={[styles.container, { backgroundColor: theme.colors.background.primary }]}>
@@ -85,28 +95,32 @@ const HomeScreen = () => {
             {/* Top Navigation Tabs */}
             <View style={[styles.topNav, { paddingTop: isWeb ? 20 : insets.top + 10 }]} pointerEvents="box-none">
                 <View style={styles.topNavContent} pointerEvents="box-none">
-                    {/* Profile/Menu Button - Top Left */}
-                    <Pressable
-                        style={[
-                            styles.profileButton,
-                            {
-                                backgroundColor: isDark ? 'rgba(0, 0, 0, 0.6)' : 'rgba(255, 255, 255, 0.9)',
-                                borderColor: theme.colors.surface.border,
-                                borderWidth: 1,
-                            }
-                        ]}
-                        onPress={() => setIsMenuOpen(true)}
-                    >
-                        <BlurView intensity={60} tint={isDark ? 'dark' : 'light'} style={StyleSheet.absoluteFill} />
-                        <Feather name="menu" size={22} color={theme.colors.text.primary} />
-                    </Pressable>
+                    {/* Left Actions Container */}
+                    <View style={styles.leftActionsContainer}>
+                        <Pressable
+                            style={[
+                                styles.profileButton,
+                                {
+                                    backgroundColor: isDark ? 'rgba(0, 0, 0, 0.6)' : 'rgba(255, 255, 255, 0.9)',
+                                    borderColor: theme.colors.surface.border,
+                                    borderWidth: 1,
+                                }
+                            ]}
+                            onPress={() => setIsMenuOpen(true)}
+                        >
+                            <BlurView intensity={60} tint={isDark ? 'dark' : 'light'} style={StyleSheet.absoluteFill} />
+                            <Feather name="menu" size={22} color={theme.colors.text.primary} />
+                        </Pressable>
+                    </View>
 
+                    {/* Center Tabs Container */}
                     <View style={styles.pillContainer}>
                         <BlurView intensity={70} tint={isDark ? 'dark' : 'light'} style={[
                             styles.pillBlur,
                             {
                                 backgroundColor: isDark ? 'rgba(0, 0, 0, 0.4)' : 'rgba(255, 255, 255, 0.8)',
-                                borderColor: theme.colors.surface.border
+                                borderColor: theme.colors.surface.border,
+                                alignSelf: 'stretch',
                             }
                         ]}>
                             {isDark && (
@@ -115,43 +129,29 @@ const HomeScreen = () => {
 
                             <TabButton
                                 theme={theme}
-                                label="Arena (Beta)"
-                                icon="shield"
+                                label="ARENA (BETA)"
                                 isActive={activeTab === 'ai'}
                                 onPress={() => setActiveTab('ai')}
                             />
 
                             <TabButton
                                 theme={theme}
-                                label="Feed"
-                                icon="flame"
+                                label="FEED"
                                 isActive={activeTab === 'trending'}
                                 onPress={() => setActiveTab('trending')}
                             />
 
                             <TabButton
                                 theme={theme}
-                                label="My Circle"
-                                icon="users"
+                                label="MY CIRCLE"
                                 isActive={activeTab === 'following'}
                                 onPress={() => setActiveTab('following')}
                             />
                         </BlurView>
                     </View>
 
-                    {/* Category Filters */}
-                    {activeTab === 'trending' && (
-                        <View style={[styles.categoryFiltersContainer, { width, left: -16 }]}>
-                            <CategoryPills
-                                categories={['All', ...VIDEO_CATEGORIES]}
-                                activeCategory={activeCategory || 'All'}
-                                onCategoryPress={(cat) => setActiveCategory(cat === 'All' ? null : cat)}
-                            />
-                        </View>
-                    )}
-
-                    {/* Profile Button - Top Right */}
-                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    {/* Right Actions Container */}
+                    <View style={styles.rightActionsContainer}>
                         <Pressable
                             style={[
                                 styles.pulseToggle,
@@ -167,7 +167,7 @@ const HomeScreen = () => {
                             <Ionicons
                                 name={viewMode === 'mosaic' ? "grid" : "apps"}
                                 size={22}
-                                color={viewMode === 'mosaic' ? "#FFF" : theme.colors.text.primary}
+                                color={viewMode === 'mosaic' ? "#000" : theme.colors.text.primary}
                             />
                         </Pressable>
 
@@ -186,6 +186,17 @@ const HomeScreen = () => {
                             <Feather name="user" size={22} color={theme.colors.text.primary} />
                         </Pressable>
                     </View>
+
+                    {/* Category Filters */}
+                    {activeTab === 'trending' && (
+                        <View style={[styles.categoryFiltersContainer, { width, left: -16 }]}>
+                            <CategoryPills
+                                categories={['All', ...VIDEO_CATEGORIES]}
+                                activeCategory={activeCategory || 'All'}
+                                onCategoryPress={(cat) => setActiveCategory(cat === 'All' ? null : cat)}
+                            />
+                        </View>
+                    )}
                 </View>
             </View>
 
@@ -206,7 +217,7 @@ const HomeScreen = () => {
                             // I'll add handleSelectVideo to HomeScreen.
                             handleSelectVideo(id);
                         }}
-                        paddingTop={isWeb ? 130 : insets.top + 120}
+                        paddingTop={feedPaddingTop}
                     />
                 ) : viewMode === 'pulse' ? (
                     <PulseFeed
@@ -229,7 +240,7 @@ const HomeScreen = () => {
                         onMore={handleMore}
                         onFollow={toggleFollow}
                         onSelect={handleSelectVideo}
-                        paddingTop={isWeb ? 130 : insets.top + 120}
+                        paddingTop={feedPaddingTop}
                     />
                 )
             ) : !loading && (
@@ -285,6 +296,19 @@ const HomeScreen = () => {
                 onMore={handleMore}
                 onFollow={toggleFollow}
             />
+
+            <MoreOptionsModal
+                visible={moreOptionsVideo !== null}
+                onClose={() => setMoreOptionsVideo(null)}
+                onDeepDive={() => {
+                    setDeepDiveVideo(moreOptionsVideo);
+                }}
+            />
+            <DeepDiveModal
+                visible={deepDiveVideo !== null}
+                video={deepDiveVideo}
+                onClose={() => setDeepDiveVideo(null)}
+            />
         </View>
     );
 };
@@ -301,11 +325,18 @@ const styles = StyleSheet.create({
         zIndex: 10,
     },
     topNavContent: {
+        height: 44,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
         paddingHorizontal: 16,
-        paddingBottom: 10,
+    },
+    headerRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        height: 44,
+        marginBottom: 10,
     },
     profileButton: {
         width: 44,
@@ -314,6 +345,18 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         overflow: 'hidden',
+    },
+    leftActionsContainer: {
+        width: 44,
+        flexDirection: 'row',
+        justifyContent: 'flex-start',
+        alignItems: 'center',
+    },
+    rightActionsContainer: {
+        width: 96,
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
+        alignItems: 'center',
     },
     pulseToggle: {
         width: 44,
@@ -326,8 +369,7 @@ const styles = StyleSheet.create({
     },
     pillContainer: {
         flex: 1,
-        alignItems: 'center',
-        marginHorizontal: 8, // Increased range for buttons
+        marginHorizontal: 8,
     },
     categoryFiltersContainer: {
         position: 'absolute',
@@ -343,14 +385,15 @@ const styles = StyleSheet.create({
         overflow: 'hidden',
         borderWidth: 1,
         borderColor: 'rgba(255, 255, 255, 0.1)',
+        alignSelf: 'stretch',
     },
     tabButton: {
         flex: 1,
-        height: 40,
+        height: 36,
         justifyContent: 'center',
         alignItems: 'center',
-        paddingHorizontal: 16,
-        borderRadius: 20,
+        paddingHorizontal: 4,
+        borderRadius: 18,
         overflow: 'hidden',
     },
     tabButtonActive: {
@@ -362,7 +405,7 @@ const styles = StyleSheet.create({
         bottom: 2,
         left: 2,
         right: 2,
-        borderRadius: 18,
+        borderRadius: 16,
     },
     tabButtonInner: {
         flexDirection: 'row',
@@ -370,8 +413,8 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     tabText: {
-        fontSize: 13,
-        fontWeight: '600',
+        fontSize: 10,
+        fontWeight: '700',
         letterSpacing: 0.5,
     },
     tabTextActive: {
@@ -435,7 +478,7 @@ const styles = StyleSheet.create({
     },
 });
 
-const TabButton = ({ theme, label, icon, isActive, onPress }: any) => {
+const TabButton = ({ theme, label, isActive, onPress }: any) => {
     const isDark = theme.colors.background.primary === '#000814'; // Simple check for dark mode
 
     return (
@@ -449,17 +492,15 @@ const TabButton = ({ theme, label, icon, isActive, onPress }: any) => {
                 </View>
             )}
             <View style={styles.tabButtonInner}>
-                <Ionicons
-                    name={icon}
-                    size={14}
-                    color={isActive ? '#FFF' : theme.colors.text.secondary}
-                    style={{ marginRight: 4 }}
-                />
-                <Text style={[
-                    styles.tabText,
-                    { color: theme.colors.text.secondary },
-                    isActive && [styles.tabTextActive, { color: '#FFF' }]
-                ]}>
+                <Text 
+                    numberOfLines={1}
+                    ellipsizeMode="tail"
+                    style={[
+                        styles.tabText,
+                        { color: theme.colors.text.secondary },
+                        isActive && [styles.tabTextActive, { color: theme.colors.primary.onPrimary || '#000000' }]
+                    ]}
+                >
                     {label}
                 </Text>
             </View>

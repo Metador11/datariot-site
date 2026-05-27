@@ -34,8 +34,8 @@ function initializeScripts() {
 
     // Initialize Supabase
     try {
-        const supabaseUrl = 'YOUR_SUPABASE_URL';
-        const supabaseKey = 'YOUR_SUPABASE_ANON_KEY';
+        const supabaseUrl = 'https://uycrtobdewnscwazshcu.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV5Y3J0b2JkZXduc2N3YXpzaGN1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk2NzU1NjYsImV4cCI6MjA3NTI1MTU2Nn0.EsZQOIE879QwU_FKk0Agh-yJBdRJcLTmYi-DCMjYaxU';
         if (typeof window.supabase !== 'undefined') {
             supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
             console.log('Datariot Script: Supabase client created.');
@@ -541,10 +541,13 @@ if (document.readyState === 'loading') {
 window.addEventListener('load', () => {
     console.log('Datariot Script: Window load triggered. Starting heavy effects.');
 
+    // Heavy effects check
+    const isMobile = window.innerWidth < 1024;
+
     // Particle Canvas Animation
     (function () {
         const canvas = document.getElementById('particleCanvas');
-        if (!canvas) return;
+        if (!canvas || isMobile) return; // Skip on mobile
         const ctx = canvas.getContext('2d');
         let w, h;
         const particles = [];
@@ -615,46 +618,48 @@ window.addEventListener('load', () => {
     }
 
     // Spawn Floating 3D Video Cards to emphasize "Short Video Platform"
-    const targetSections = [document.querySelector('.section--screens'), document.querySelector('.section--beta')];
+    if (!isMobile) {
+        const targetSections = [document.querySelector('.section--screens'), document.querySelector('.section--beta')];
 
-    targetSections.forEach(sec => {
-        if (!sec) return;
+        targetSections.forEach(sec => {
+            if (!sec) return;
 
-        for (let i = 0; i < 4; i++) {
-            const card = document.createElement('div');
-            card.className = 'short-video-float';
+            for (let i = 0; i < 4; i++) {
+                const card = document.createElement('div');
+                card.className = 'short-video-float';
 
-            const gradient = document.createElement('div');
-            gradient.className = 'float-gradient';
-            card.appendChild(gradient);
+                const gradient = document.createElement('div');
+                gradient.className = 'float-gradient';
+                card.appendChild(gradient);
 
-            sec.appendChild(card);
+                sec.appendChild(card);
 
-            // Random initial placement
-            gsap.set(card, {
-                left: gsap.utils.random(10, 80) + "%",
-                top: gsap.utils.random(10, 80) + "%",
-                z: gsap.utils.random(-400, 100),
-                rotationX: gsap.utils.random(-25, 25),
-                rotationY: gsap.utils.random(-35, 35),
-                rotationZ: gsap.utils.random(-20, 20),
-                opacity: gsap.utils.random(0.3, 0.7)
-            });
+                // Random initial placement
+                gsap.set(card, {
+                    left: gsap.utils.random(10, 80) + "%",
+                    top: gsap.utils.random(10, 80) + "%",
+                    z: gsap.utils.random(-400, 100),
+                    rotationX: gsap.utils.random(-25, 25),
+                    rotationY: gsap.utils.random(-35, 35),
+                    rotationZ: gsap.utils.random(-20, 20),
+                    opacity: gsap.utils.random(0.3, 0.7)
+                });
 
-            // Continuous drifting and rotating
-            gsap.to(card, {
-                y: "-=200",
-                x: "+=random(-80, 80)",
-                rotationX: "+=random(-40, 40)",
-                rotationY: "+=random(-50, 50)",
-                rotationZ: "+=random(-15, 15)",
-                duration: gsap.utils.random(12, 22),
-                repeat: -1,
-                yoyo: true,
-                ease: "sine.inOut"
-            });
-        }
-    });
+                // Continuous drifting and rotating
+                gsap.to(card, {
+                    y: "-=200",
+                    x: "+=random(-80, 80)",
+                    rotationX: "+=random(-40, 40)",
+                    rotationY: "+=random(-50, 50)",
+                    rotationZ: "+=random(-15, 15)",
+                    duration: gsap.utils.random(12, 22),
+                    repeat: -1,
+                    yoyo: true,
+                    ease: "sine.inOut"
+                });
+            }
+        });
+    }
 
     // Global Activity Map logic moved to 3d-fx.js (Three.js 3D Globe)
 });

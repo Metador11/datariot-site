@@ -4,53 +4,53 @@
  */
 
 export const colors = {
-    // Primary - Neon Azure
+    // Primary - Vivid Ice Blue (Logo Accent)
     primary: {
-        DEFAULT: '#38BDF8', // Restored Vivid Ice Blue
-        light: '#7DD3FC',
-        dark: '#0EA5E9',
+        DEFAULT: '#D9E4FF', // Light Ice Blue
+        light: '#FFFFFF',
+        dark: '#BDEBFF',
         ultra: '#E0F2FE',
-        brand: '#BDEBFF', // Core Pale Ice for Logo
-        onPrimary: '#FFFFFF',
-        glow: 'rgba(56, 189, 248, 0.4)',
+        brand: '#D9E4FF',
+        onPrimary: '#000000',
+        glow: 'rgba(217, 228, 255, 0.4)',
     },
 
-    // Secondary - Cyan Glow
+    // Secondary
     secondary: {
-        DEFAULT: '#06B6D4',
-        dark: '#0891B2',
-        light: '#22D3EE',
-        onSecondary: '#FFFFFF',
-        glow: 'rgba(6, 182, 212, 0.3)',
+        DEFAULT: '#BDEBFF',
+        dark: '#A5C6FF',
+        light: '#FFFFFF',
+        onSecondary: '#000000',
+        glow: 'rgba(217, 228, 255, 0.25)',
     },
 
-    // Backgrounds - Obsidian
+    // Backgrounds - Pure Black / Dark Gray
     background: {
-        primary: '#000814',
-        DEFAULT: '#000814',
-        paper: '#020617',
-        secondary: '#0F172A',
-        tertiary: '#1E293B',
-        web: '#000814',
-        webSecondary: '#020617',
+        primary: '#000000', // Pure Black
+        DEFAULT: '#000000',
+        paper: '#0A0A0A',
+        secondary: '#121212',
+        tertiary: '#1A1A1A',
+        web: '#000000',
+        webSecondary: '#0A0A0A',
     },
 
     // Surfaces - Glassmorphic
     surface: {
-        DEFAULT: 'rgba(15, 23, 42, 0.8)',
-        light: 'rgba(30, 41, 59, 0.8)',
-        overlay: 'rgba(0, 8, 20, 0.85)',
-        card: 'rgba(15, 23, 42, 0.65)',
-        border: 'rgba(14, 165, 233, 0.2)',
-        borderHover: 'rgba(14, 165, 233, 0.5)',
+        DEFAULT: 'rgba(10, 10, 10, 0.75)',
+        light: 'rgba(20, 20, 20, 0.75)',
+        overlay: 'rgba(0, 0, 0, 0.9)',
+        card: 'rgba(10, 10, 10, 0.55)',
+        border: 'rgba(255, 255, 255, 0.08)',
+        borderHover: 'rgba(255, 255, 255, 0.15)',
     },
 
     // Text colors
     text: {
-        primary: '#FFFFFF',
-        secondary: 'rgba(255, 255, 255, 0.7)',
+        primary: '#FFFFFF', // White
+        secondary: 'rgba(255, 255, 255, 0.75)',
         muted: 'rgba(255, 255, 255, 0.45)',
-        accent: '#0EA5E9',
+        accent: '#D9E4FF',
     },
 
     // Semantic colors

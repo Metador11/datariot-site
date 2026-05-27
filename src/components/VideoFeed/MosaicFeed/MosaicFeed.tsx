@@ -67,10 +67,11 @@ export function MosaicFeed({
                 data={videos}
                 renderItem={renderItem}
                 ListHeaderComponent={
-                    <View style={{ marginTop: 20, marginBottom: 12 }}>
+                    <View style={{ marginTop: 12, marginBottom: 12 }}>
                         <SectionHeader
                             title="Datariot Daily Synergy"
                             subtitle="Curated based on your Creator DNA"
+                            containerStyle={{ paddingTop: 0 }}
                         />
                     </View>
                 }

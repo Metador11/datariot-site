@@ -184,7 +184,7 @@ export const CoubClassicItem = memo(({
 
                 {/* Glowing Progress Bar integrated into bottom edge of video */}
                 <View style={styles.progressBarContainer} pointerEvents="none">
-                    <View style={[styles.progressBarFill, { width: `${progress * 100}%`, backgroundColor: '#D9E4FF' }]} />
+                    <View style={[styles.progressBarFill, { width: `${progress * 100}%`, backgroundColor: theme.colors.primary.DEFAULT }]} />
                 </View>
 
 
@@ -195,7 +195,7 @@ export const CoubClassicItem = memo(({
                 <BlurView intensity={isDark ? 50 : 80} tint={isDark ? "dark" : "light"} style={styles.infoPanel}>
                     {isDark && (
                         <LinearGradient
-                            colors={['rgba(255,255,255,0.15)', 'rgba(255,255,255,0.02)']}
+                            colors={['rgba(255,255,255,0.08)', 'rgba(255,255,255,0.01)']}
                             start={{ x: 0, y: 0 }}
                             end={{ x: 0.5, y: 1 }}
                             style={[StyleSheet.absoluteFillObject, { opacity: 0.6 }]}
@@ -209,7 +209,7 @@ export const CoubClassicItem = memo(({
                         >
                             {/* Title & Tags */}
                             <Text
-                                style={[styles.title, { color: theme.colors.text.secondary }]}
+                                style={[styles.title, { color: theme.colors.text.primary }]}
                                 numberOfLines={isExpanded ? undefined : 2}
                             >
                                 {item.title}
@@ -218,7 +218,7 @@ export const CoubClassicItem = memo(({
                                 <Text style={[styles.hashtag, { color: theme.colors.primary.DEFAULT }]}>#{item.hashtag}</Text>
                             )}
                             {!isExpanded && item.title && item.title.length > 50 && (
-                                <Text style={styles.readMoreText}>more</Text>
+                                <Text style={[styles.readMoreText, { color: theme.colors.text.muted }]}>more</Text>
                             )}
 
                             {/* Logic Balance Bar (Who's Winning) */}
@@ -228,13 +228,13 @@ export const CoubClassicItem = memo(({
                                         <View
                                             style={[
                                                 styles.logicBalanceFill,
-                                                { width: `${item.logicStats.forPercentage}%`, backgroundColor: '#00C853' }
+                                                { width: `${item.logicStats.forPercentage}%`, backgroundColor: theme.colors.success || '#10B981' }
                                             ]}
                                         />
                                         <View
                                             style={[
                                                 styles.logicBalanceFill,
-                                                { width: `${100 - item.logicStats.forPercentage}%`, backgroundColor: '#D50000' }
+                                                { width: `${100 - item.logicStats.forPercentage}%`, backgroundColor: theme.colors.error || '#EF4444' }
                                             ]}
                                         />
                                     </View>
@@ -251,24 +251,28 @@ export const CoubClassicItem = memo(({
                             {/* Like */}
                             <Pressable style={styles.actionIconBtn} onPress={handleLike}>
                                 <Animated.View style={{ transform: [{ scale: likeScale }] }}>
-                                    <Text style={[styles.customIcon, { color: item.isLiked ? '#D9E4FF' : theme.colors.text.primary }]}>✦</Text>
+                                    <Ionicons
+                                        name={item.isLiked ? "star" : "star-outline"}
+                                        size={22}
+                                        color={item.isLiked ? theme.colors.primary.DEFAULT : theme.colors.text.primary}
+                                        style={styles.plainIcon}
+                                    />
                                 </Animated.View>
                                 <Text style={[styles.actionIconText, { color: theme.colors.text.secondary }]}>{formatNumber(item.likes)}</Text>
                             </Pressable>
 
-
                             {/* Comment */}
                             <Pressable style={styles.actionIconBtn} onPress={onComment}>
-                                <Ionicons name="chatbubble" size={24} color={theme.colors.text.primary} style={styles.plainIcon} />
+                                <Ionicons name="chatbubble-outline" size={21} color={theme.colors.text.primary} style={styles.plainIcon} />
                                 <Text style={[styles.actionIconText, { color: theme.colors.text.secondary }]}>{formatNumber(item.comments)}</Text>
                             </Pressable>
 
                             {/* Recoub / Share */}
                             <Pressable style={styles.actionIconBtn} onPress={onSave}>
                                 <Ionicons
-                                    name="bookmark"
-                                    size={24}
-                                    color={item.isSaved ? '#D9E4FF' : theme.colors.text.primary}
+                                    name={item.isSaved ? "bookmark" : "bookmark-outline"}
+                                    size={21}
+                                    color={item.isSaved ? theme.colors.primary.DEFAULT : theme.colors.text.primary}
                                     style={styles.plainIcon}
                                 />
                                 <Text style={[styles.actionIconText, { color: theme.colors.text.secondary }]}>{formatNumber(item.shares)}</Text>
@@ -278,7 +282,7 @@ export const CoubClassicItem = memo(({
 
                             {/* More */}
                             <Pressable style={styles.actionIconBtn} onPress={onMore}>
-                                <Ionicons name="ellipsis-horizontal" size={24} color={theme.colors.text.primary} style={styles.plainIcon} />
+                                <Ionicons name="ellipsis-horizontal-outline" size={21} color={theme.colors.text.primary} style={styles.plainIcon} />
                             </Pressable>
                         </View>
                     </View>
@@ -365,17 +369,19 @@ const styles = StyleSheet.create({
     },
     floatingAuthorBadge: {
         position: 'absolute',
-        top: 12, // Floating slightly inside the top-left of the video
-        left: 12,
+        top: 14,
+        left: 14,
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor: 'rgba(20,20,20,0.6)',
+        backgroundColor: 'rgba(10, 10, 15, 0.6)',
+        borderWidth: 1,
+        borderColor: 'rgba(255, 255, 255, 0.1)',
         overflow: 'hidden',
-        paddingRight: 10,
+        paddingRight: 12,
         paddingLeft: 4,
         paddingVertical: 4,
         borderRadius: 20,
-        zIndex: 20, // Ensure it sits above the video
+        zIndex: 20,
     },
     avatar: {
         width: 24,
@@ -390,18 +396,17 @@ const styles = StyleSheet.create({
     },
     title: {
         fontSize: 14,
-        fontWeight: '500',
+        fontWeight: '600',
         lineHeight: 20,
         marginBottom: 4,
     },
     hashtag: {
         fontSize: 13,
-        fontWeight: '600',
+        fontWeight: '700',
     },
     readMoreText: {
         fontSize: 13,
         fontWeight: '700',
-        color: 'rgba(255,255,255,0.5)',
         marginTop: 2,
     },
     actionIconBtn: {
@@ -458,19 +463,20 @@ const styles = StyleSheet.create({
     },
     // Logic Balance Styles for Feed
     logicBalanceWrapper: {
-        marginTop: 10,
-        backgroundColor: 'rgba(0,0,0,0.2)',
-        padding: 8,
-        borderRadius: 12,
+        marginTop: 12,
+        backgroundColor: 'rgba(0, 0, 0, 0.15)',
+        paddingVertical: 6,
+        paddingHorizontal: 10,
+        borderRadius: 8,
         borderWidth: 1,
-        borderColor: 'rgba(255,255,255,0.05)',
+        borderColor: 'rgba(255, 255, 255, 0.05)',
     },
     logicBalanceTrack: {
-        height: 4,
-        borderRadius: 2,
+        height: 3,
+        borderRadius: 1.5,
         flexDirection: 'row',
         overflow: 'hidden',
-        backgroundColor: 'rgba(255,255,255,0.1)',
+        backgroundColor: 'rgba(255, 255, 255, 0.08)',
     },
     logicBalanceFill: {
         height: '100%',
@@ -478,12 +484,12 @@ const styles = StyleSheet.create({
     logicScoreRow: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        marginTop: 4,
+        marginTop: 6,
     },
     logicScoreText: {
         fontSize: 9,
-        fontWeight: '900',
-        color: 'rgba(255,255,255,0.6)',
+        fontWeight: '700',
+        color: 'rgba(255, 255, 255, 0.5)',
         letterSpacing: 0.5,
     },
 });

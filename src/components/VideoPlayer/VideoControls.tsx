@@ -415,7 +415,7 @@ const styles = StyleSheet.create({
         flex: 1,
         height: 40,
         backgroundColor: 'rgba(255,255,255,0.1)',
-        borderRadius: 4, // Modular look
+        borderRadius: 20, // Rounded pill look
         borderWidth: 1,
         borderColor: 'rgba(255,255,255,0.1)',
         marginLeft: 16,
@@ -431,8 +431,8 @@ const styles = StyleSheet.create({
     sendIcon: {
         width: 24,
         height: 24,
-        borderRadius: 4,
-        backgroundColor: '#0EA5E9',
+        borderRadius: 12, // Circular button look
+        backgroundColor: '#D9E4FF',
         alignItems: 'center',
         justifyContent: 'center',
     },
@@ -470,9 +470,9 @@ const styles = StyleSheet.create({
         top: 14,
         left: 0,
         height: 2,
-        backgroundColor: '#0EA5E9',
+        backgroundColor: '#D9E4FF',
         zIndex: 1,
-        shadowColor: '#0EA5E9',
+        shadowColor: '#D9E4FF',
         shadowOffset: { width: 0, height: 0 },
         shadowOpacity: 0.8,
         shadowRadius: 4,

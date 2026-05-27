@@ -1,16 +1,36 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Switch, ScrollView, Pressable } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Switch, ScrollView, Pressable, Alert } from 'react-native';
 import { useRouter, Stack } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useTheme } from '../components/Theme/ThemeProvider';
+import { useAuth } from '../lib/supabase/hooks/useAuth';
 import { LinearGradient } from 'expo-linear-gradient';
 
 export default function SettingsScreen() {
     const router = useRouter();
     const { mode, toggleTheme, theme } = useTheme();
+    const { signOut } = useAuth();
 
     const isDark = mode === 'dark';
+
+    const handleSignOut = () => {
+        Alert.alert(
+            'Log Out',
+            'Are you sure you want to log out?',
+            [
+                { text: 'Cancel', style: 'cancel' },
+                {
+                    text: 'Log Out',
+                    style: 'destructive',
+                    onPress: async () => {
+                        await signOut();
+                        router.replace('/auth/login');
+                    }
+                }
+            ]
+        );
+    };
 
     return (
         <View style={[styles.container, { backgroundColor: theme.colors.background.primary }]}>
@@ -50,7 +70,7 @@ export default function SettingsScreen() {
 
                     <View style={[styles.section, { borderBottomColor: theme.colors.surface.overlay }]}>
                         <Text style={[styles.sectionTitle, { color: theme.colors.primary.DEFAULT }]}>ACCOUNT</Text>
-                        <TouchableOpacity style={[styles.row, { borderBottomColor: theme.colors.surface.overlay, backgroundColor: isDark ? 'rgba(255,255,255,0.02)' : 'rgba(0,0,0,0.02)' }]}>
+                        <TouchableOpacity style={[styles.row, { borderBottomColor: theme.colors.surface.overlay, backgroundColor: isDark ? 'rgba(255,255,255,0.02)' : 'rgba(0,0,0,0.02)' }]} onPress={() => router.push('/edit-profile')}>
                             <Text style={[styles.rowLabel, { color: theme.colors.text.primary }]}>Edit Profile</Text>
                             <Ionicons name="chevron-forward" size={20} color={theme.colors.text.muted} />
                         </TouchableOpacity>
@@ -92,7 +112,7 @@ export default function SettingsScreen() {
                         </TouchableOpacity>
                     </View>
 
-                    <TouchableOpacity style={[styles.row, { borderBottomWidth: 0, marginTop: 20, backgroundColor: 'transparent' }]}>
+                    <TouchableOpacity style={[styles.row, { borderBottomWidth: 0, marginTop: 20, backgroundColor: 'transparent' }]} onPress={handleSignOut}>
                         <Text style={[styles.rowLabel, { color: theme.colors.error }]}>Log Out</Text>
                     </TouchableOpacity>
 

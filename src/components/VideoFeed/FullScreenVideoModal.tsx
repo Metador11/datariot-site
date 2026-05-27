@@ -23,6 +23,8 @@ import { useRouter } from 'expo-router';
 import { encodeVideoUrl } from '../../lib/utils/url';
 import { VideoControls } from '../VideoPlayer/VideoControls';
 import { CommentsModal } from './CommentsModal';
+import { DeepDiveModal } from './DeepDiveModal';
+import { MoreOptionsModal } from './MoreOptionsModal';
 import { GestureDetector, Gesture } from 'react-native-gesture-handler';
 import Animated, {
     useSharedValue,
@@ -203,6 +205,8 @@ export function FullScreenVideoModal({
     }));
     const flatListRef = useRef<FlatList>(null);
     const [commentsVideoId, setCommentsVideoId] = useState<string | null>(null);
+    const [deepDiveVideo, setDeepDiveVideo] = useState<any | null>(null);
+    const [moreOptionsVideo, setMoreOptionsVideo] = useState<any | null>(null);
 
     const handleOpenComments = useCallback((id: string) => {
         setCommentsVideoId(id);
@@ -268,12 +272,23 @@ export function FullScreenVideoModal({
                         }}
                         style={styles.aiLogoContainer}
                     >
-                        <View style={styles.aiLogoWrapper}>
-                            <Image
-                                source={require('../../../assets/logo.jpg')}
-                                style={styles.aiLogo}
-                                resizeMode="contain"
-                            />
+                        <View style={[
+                            styles.aiLogoWrapper,
+                            {
+                                width: 38,
+                                height: 38,
+                                borderRadius: 19,
+                                borderWidth: 1,
+                                borderColor: 'rgba(217, 228, 255, 0.15)',
+                                backgroundColor: 'rgba(0, 8, 20, 0.5)',
+                                shadowColor: '#D9E4FF',
+                                shadowOffset: { width: 0, height: 0 },
+                                shadowOpacity: 0.3,
+                                shadowRadius: 6,
+                                elevation: 3,
+                            }
+                        ]}>
+                            <MaterialCommunityIcons name="robot-excited" size={18} color="#D9E4FF" />
                         </View>
                     </TouchableOpacity>
                 </View>
@@ -299,7 +314,7 @@ export function FullScreenVideoModal({
                             onLike={() => onLike(item.id)}
                             onComment={() => handleOpenComments(item.id)}
                             onSave={() => onSave(item.id)}
-                            onMore={() => onMore(item.id)}
+                            onMore={() => setMoreOptionsVideo(item)}
                             onFollow={() => onFollow(item.authorId)}
                         />
                     )}
@@ -309,6 +324,18 @@ export function FullScreenVideoModal({
                 visible={!!commentsVideoId}
                 videoId={commentsVideoId}
                 onClose={handleCloseComments}
+            />
+            <DeepDiveModal
+                visible={deepDiveVideo !== null}
+                video={deepDiveVideo}
+                onClose={() => setDeepDiveVideo(null)}
+            />
+            <MoreOptionsModal
+                visible={moreOptionsVideo !== null}
+                onClose={() => setMoreOptionsVideo(null)}
+                onDeepDive={() => {
+                    setDeepDiveVideo(moreOptionsVideo);
+                }}
             />
         </Modal>
     );
