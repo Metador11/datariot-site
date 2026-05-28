@@ -15,7 +15,7 @@
 
 ---
 
-## 👁️ Philosophy & Vision
+## Philosophy and Vision
 
 **Datariot** is a next-generation vertical video debate arena and cognitive feed platform. Designed as a high-fidelity alternative to mindless, dopamine-loop scrolling, Datariot shifts the focus to logic, structured discourse, and educational value. 
 
@@ -24,7 +24,7 @@
 
 ---
 
-## ⚡ Core Architectural Highlights
+## Core Architectural Highlights
 
 *   **Triple-View Feed Engine**: Fully integrated feeds including **Classic Loop Feed** (immersive vertical playback), **Mosaic Feed** (content discovery grids), and **Pulse Feed** (dynamic engagement cards) powered by high-performance Native components.
 *   **Cognitive Physics Engine**: Fully fluid gesture system powered by `react-native-gesture-handler` and `react-native-reanimated` delivering a premium 60 FPS scrolling experience.
@@ -34,7 +34,7 @@
 
 ---
 
-## 📂 Project Structure
+## Project Structure
 
 ```text
 datariot/
@@ -66,7 +66,7 @@ datariot/
 
 ---
 
-## 🛠️ Enterprise Tech Stack
+## Enterprise Tech Stack
 
 | Layer | Technology | Usage & Rationale |
 | :--- | :--- | :--- |
@@ -80,7 +80,7 @@ datariot/
 
 ---
 
-## 📊 Database Schema & Security (Supabase ERD)
+## Database Schema and Security (Supabase ERD)
 
 Our PostgreSQL schema is optimized for speed, integrity, and absolute client-side protection through Postgres Row Level Security (RLS).
 
@@ -126,7 +126,7 @@ erDiagram
     }
 ```
 
-### 🔒 Row Level Security (RLS) Rules
+### Row Level Security (RLS) Rules
 
 *   **`profiles`**: Public read access enabled. Update access restricted exclusively to the profile owner (`auth.uid() = id`).
 *   **`videos`**: Insert permissions open to authenticated users. Update/delete restricted to original creators.
@@ -134,7 +134,7 @@ erDiagram
 
 ---
 
-## 🎨 Design System: Obsidian Blue
+## Design System: Obsidian Blue
 
 Datariot relies on deep dark tones contrasting with neon azure accents, creating a spacious, high-fidelity experience optimized for OLED displays.
 
@@ -151,7 +151,7 @@ Datariot relies on deep dark tones contrasting with neon azure accents, creating
 
 ---
 
-## 🚀 Setup & Installation
+## Setup and Installation
 
 ### 1. Prerequisite Packages
 
@@ -195,21 +195,21 @@ npm run android
 
 ---
 
-## 📈 Strategic Roadmap
+## Strategic Roadmap
 
-### Phase 1: Core Experience 🟢
+### Phase 1: Core Experience
 *   [x] Immersive full-screen loops with multiple feeds (Classic & Mosaic).
 *   [x] Secure authentication, session persistence, and profile creation.
 *   [x] Basic interactions (likes, comments, profile follows).
 *   [x] Dynamic safe area handling covering camera notches and screen shapes.
 
-### Phase 2: Content Studio & Intelligence 🟡
+### Phase 2: Content Studio & Intelligence
 *   [ ] Local recording module with video editing and client-side compression.
 *   [ ] Real-time speech-to-text generating high-fidelity subtitles automatically.
 *   [ ] Comprehensive debate challenge engine (direct video responses and node linking).
 *   [ ] Offline-first cache manager (`expo-file-system`).
 
-### Phase 3: Global Scale & AI 🔴
+### Phase 3: Global Scale & AI
 *   [ ] Recommendation engine utilizing user behavior embedding matches.
 *   [ ] Creator monetization channels via integrated micro-payments.
 *   [ ] Premium Web app desktop experience optimized for monitors.
@@ -217,7 +217,7 @@ npm run android
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
 We welcome additions, fixes, and architectural proposals to Datariot:
 1. Fork this repository.
@@ -227,4 +227,4 @@ We welcome additions, fixes, and architectural proposals to Datariot:
 
 ---
 
-**Datariot** — Learn Deeply. Think Critically. Debate Fairly. 🧠💡
+**Datariot** — Learn Deeply. Think Critically. Debate Fairly.

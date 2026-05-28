@@ -1,10 +1,10 @@
-# <img src="./assets/logo.jpg" width="40" height="40" align="center" style="border-radius: 12px; margin-right: 10px;" /> Supabase Backend Provisioning for Datariot
+# Supabase Backend Provisioning for Datariot
 
 This guide outlines the step-by-step setup required to launch, configure, and connect your **Supabase** cloud instance to the Datariot mobile application.
 
 ---
 
-## 🌐 Step 1. Provision a New Project
+## Step 1. Provision a New Project
 
 1. Log into your [Supabase Console](https://supabase.com).
 2. Click **New Project** and select your organization.
@@ -17,7 +17,7 @@ This guide outlines the step-by-step setup required to launch, configure, and co
 
 ---
 
-## 🗄️ Step 2. Deploy the Database Schema
+## Step 2. Deploy the Database Schema
 
 1. From the left sidebar, navigate to the **SQL Editor**.
 2. Click **New query** to create a blank workspace.
@@ -30,7 +30,7 @@ This guide outlines the step-by-step setup required to launch, configure, and co
 
 ---
 
-## 🪣 Step 3. Configure the Storage Bucket
+## Step 3. Configure the Storage Bucket
 
 Videos uploaded by users require a dedicated, high-performance storage bucket with configured Row Level Security (RLS) policies.
 
@@ -50,7 +50,7 @@ Videos uploaded by users require a dedicated, high-performance storage bucket wi
 
 ---
 
-## 🔑 Step 4. Retrieve API Credentials
+## Step 4. Retrieve API Credentials
 
 1. Navigate to **Settings** (gear icon) -> **API**.
 2. Copy the following keys to use in your local configuration:
@@ -63,7 +63,7 @@ Videos uploaded by users require a dedicated, high-performance storage bucket wi
 
 ---
 
-## 📝 Step 5. Configure Local Environment Variables
+## Step 5. Configure Local Environment Variables
 
 Create or update the `.env` file in the root directory of your Datariot project. Populate it with your retrieved keys:
 
@@ -83,7 +83,7 @@ SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhY
 
 ---
 
-## 🔒 Step 6. Setup Auth Providers
+## Step 6. Setup Auth Providers
 
 1. Navigate to **Authentication** -> **Providers**.
 2. By default, **Email & Password** authentication is enabled.
@@ -91,4 +91,4 @@ SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhY
 
 ---
 
-Your Supabase backend is now configured and ready to connect to the Datariot application! Run your project locally to verify authentication and feed loaders. 🚀
+Your Supabase backend is now configured and ready to connect to the Datariot application! Run your project locally to verify authentication and feed loaders.
