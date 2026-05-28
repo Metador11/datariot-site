@@ -86,42 +86,42 @@ Our PostgreSQL schema is optimized for speed, integrity, and absolute client-sid
 
 ```mermaid
 erDiagram
-    profiles ||--o{ videos : "creates"
-    profiles ||--o{ likes : "gives"
-    profiles ||--o{ comments : "writes"
-    profiles ||--o{ followers : "follows"
-    videos ||--o{ likes : "receives"
-    videos ||--o{ comments : "has"
-    
+    profiles ||--o{ videos : creates
+    profiles ||--o{ likes : gives
+    profiles ||--o{ comments : writes
+    profiles ||--o{ followers : follows
+    videos ||--o{ likes : receives
+    videos ||--o{ comments : has
+
     profiles {
-        uuid id PK "Auth User ID"
-        string username "Unique Handle"
-        string full_name "Display Name"
-        string avatar_url "CDN Link"
-        text bio "Creator Profile Description"
+        uuid id
+        string username
+        string full_name
+        string avatar_url
+        text bio
         timestamp created_at
     }
     videos {
-        uuid id PK
-        uuid user_id FK "Creator Link"
-        string video_url "Storage Link"
-        string thumbnail_url "Image Link"
-        string title "Main Topic"
-        text description "Context"
-        int duration "Video duration in sec"
+        uuid id
+        uuid user_id
+        string video_url
+        string thumbnail_url
+        string title
+        text description
+        int duration
         timestamp created_at
     }
     likes {
-        uuid id PK
-        uuid user_id FK
-        uuid video_id FK
+        uuid id
+        uuid user_id
+        uuid video_id
         timestamp created_at
     }
     comments {
-        uuid id PK
-        uuid user_id FK
-        uuid video_id FK
-        text content "Comment Text"
+        uuid id
+        uuid user_id
+        uuid video_id
+        text content
         timestamp created_at
     }
 ```
