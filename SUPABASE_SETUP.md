@@ -1,95 +1,94 @@
-# <img src="./assets/logo.jpg" width="40" height="40" align="center" style="border-radius: 12px; margin-right: 10px;" /> Настройка Supabase Backend для Datariot
+# <img src="./assets/logo.jpg" width="40" height="40" align="center" style="border-radius: 12px; margin-right: 10px;" /> Supabase Backend Provisioning for Datariot
 
-В данном руководстве подробно описана процедура конфигурирования облачной инфраструктуры **Supabase** для обеспечения работы авторизации, базы данных и файлового хранилища приложения Datariot.
-
----
-
-## 🌐 Шаг 1. Создание Проекта в Supabase
-
-1. Перейдите на официальный портал [supabase.com](https://supabase.com) и авторизуйтесь в панели управления.
-2. Нажмите кнопку **New Project** и выберите вашу организацию.
-3. Заполните параметры проекта:
-   - **Name**: `datariot` (или любое другое предпочтительное имя)
-   - **Database Password**: Сгенерируйте сложный пароль, скопируйте его и сохраните в надежном месте.
-   - **Region**: Выберите регион с минимальной задержкой (например, *Central Europe* для пользователей из СНГ/Европы).
-   - **Pricing Tier**: Для разработки достаточно тарифа *Free Tier*.
-4. Нажмите **Create New Project** и подождите 2–3 минуты, пока инициализируется инстанс базы данных PostgreSQL.
+This guide outlines the step-by-step setup required to launch, configure, and connect your **Supabase** cloud instance to the Datariot mobile application.
 
 ---
 
-## 🗄️ Шаг 2. Развертывание Схемы Базы Данных
+## 🌐 Step 1. Provision a New Project
 
-1. В левом боковом меню выберите раздел **SQL Editor**.
-2. Создайте новый запрос, нажав **New query**.
-3. Импортируйте или скопируйте содержимое файла схемы базы данных (если у вас есть готовый файл, либо используйте структуру таблиц из документации).
-4. Нажмите кнопку **Run** в правом нижнем углу.
-5. Убедитесь, что в консоли вывода появилось сообщение `Success. No rows returned.`
+1. Log into your [Supabase Console](https://supabase.com).
+2. Click **New Project** and select your organization.
+3. Define the project details:
+   - **Name**: `datariot` (or your preferred project name)
+   - **Database Password**: Generate a secure password, copy it, and keep it safe.
+   - **Region**: Select the region closest to your target user base (e.g., *Central Europe*).
+   - **Pricing Tier**: Select *Free Tier* to begin development.
+4. Click **Create New Project** and allow 2-3 minutes for the database initialization to complete.
+
+---
+
+## 🗄️ Step 2. Deploy the Database Schema
+
+1. From the left sidebar, navigate to the **SQL Editor**.
+2. Click **New query** to create a blank workspace.
+3. Import or paste the SQL schema script (typically found in your SQL migrations or provided schema outputs).
+4. Click **Run** in the bottom-right corner of the editor.
+5. Ensure the console prints `Success. No rows returned.` without warning markers.
 
 > [!IMPORTANT]  
-> Убедитесь, что все системные триггеры для автоматического создания профилей при регистрации новых пользователей (`create_profile_on_signup`) создались без ошибок. Это критически важно для работы модуля авторизации.
+> Double-check that all automated triggers, such as `create_profile_on_signup`, are successfully registered. These triggers automatically provision a record in the `profiles` table when a new user registers.
 
 ---
 
-## 🪣 Шаг 3. Конфигурация Хранилища (Storage Bucket)
+## 🪣 Step 3. Configure the Storage Bucket
 
-Для хранения видеоконтента требуется создать публичный бакет с оптимизированными политиками доступа.
+Videos uploaded by users require a dedicated, high-performance storage bucket with configured Row Level Security (RLS) policies.
 
-1. Перейдите в меню **Storage** через левую панель.
-2. Нажмите **New Bucket** и задайте следующие параметры:
+1. Navigate to the **Storage** section from the sidebar.
+2. Click **New Bucket** and configure the fields:
    - **Bucket Name**: `videos`
-   - **Allowed MIME Types**: `video/*` (ограничение загрузки только видеофайлами для безопасности)
-   - **Public Bucket**: ✅ *Enabled* (необходимо для прямого стриминга видео через CDN)
-3. Перейдите во вкладку **Policies** для настройки правил доступа (RLS) бакета `videos`:
+   - **Allowed MIME Types**: `video/*` (restricts uploads to video content for safety)
+   - **Public Bucket**: ✅ *Enabled* (allows public content streaming via Supabase CDN)
+3. Under the bucket settings, go to the **Policies** tab and set the security guidelines:
    
-   | Операция | Разрешено для | Условие (SQL Policy Expression) |
+   | Operation | Allowed Roles | SQL Policy Expression |
    | :--- | :--- | :--- |
-   | **SELECT (Read)** | Public (Все пользователи) | Доступно без ограничений |
+   | **SELECT (Read)** | Public (All users) | Allow read access to all objects |
    | **INSERT (Upload)** | Authenticated Users | `auth.role() = 'authenticated'` |
-   | **UPDATE (Edit)** | Owner (Владелец файла) | `auth.uid() = owner_id` |
-   | **DELETE (Remove)** | Owner (Владелец файла) | `auth.uid() = owner_id` |
+   | **UPDATE (Edit)** | Owner (File Creator) | `auth.uid() = owner_id` |
+   | **DELETE (Remove)** | Owner (File Creator) | `auth.uid() = owner_id` |
 
 ---
 
-## 🔑 Шаг 4. Получение Ключей Доступа API
+## 🔑 Step 4. Retrieve API Credentials
 
-1. Перейдите в раздел **Settings** (иконка шестеренки) -> **API**.
-2. Скопируйте следующие значения для настройки окружения:
-   *   `Project URL` (Адрес вашего API-сервера)
-   *   `anon public` (Публичный API-ключ для клиентского приложения)
-   *   `service_role` (Секретный ключ суперпользователя с обходом политик RLS)
+1. Navigate to **Settings** (gear icon) -> **API**.
+2. Copy the following keys to use in your local configuration:
+   *   `Project URL` (Your API endpoint)
+   *   `anon public` (Public client key, safe to bundle in frontend builds)
+   *   `service_role` (Secret admin key, bypasses all RLS filters)
 
 > [!WARNING]  
-> Ключ `service_role` обладает абсолютными правами доступа к вашей БД. Никогда не передавайте его на клиентскую сторону приложения и не публикуйте в открытых репозиториях. Использовать его разрешено исключительно во внутренних скриптах администрирования или серверных edge-функциях.
+> The `service_role` key has full read/write bypass permissions to the entire database. Never expose it inside frontend source files or commit it to public code repositories. It should only be used in trusted backend environments, cloud functions, or migration scripts.
 
 ---
 
-## 📝 Шаг 5. Настройка Локальных Переменных Окружения
+## 📝 Step 5. Configure Local Environment Variables
 
-В корневой директории вашего проекта Datariot найдите или создайте файл `.env`. Внесите в него полученные учетные данные:
+Create or update the `.env` file in the root directory of your Datariot project. Populate it with your retrieved keys:
 
 ```env
-# URL-адрес вашего проекта Supabase
+# Supabase project API endpoint URL
 EXPO_PUBLIC_SUPABASE_URL=https://your-project-id.supabase.co
 
-# Публичный anon-ключ для запросов с клиента (безопасен для бандла)
+# Public anon key (exposed to client builds safely)
 EXPO_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV5Y3J0b2JkZXduc2N3YXpzaGN1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTY4ODk5MTUsImV4cCI6MjAzMjQ2NTkxNX0.your_anon_key
 
-# Секретный ключ роли администратора (только для скриптов/сервера)
+# Admin service role key (restricted to backend/scripts)
 SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV5Y3J0b2JkZXduc2N3YXpzaGN1Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTcxNjg4OTkxNSwiZXhwIjoyMDc1MjUxNTY2fQ.your_service_role_key
 ```
 
 > [!TIP]  
-> Переменные с префиксом `EXPO_PUBLIC_` автоматически внедряются сборщиком Expo в клиентский JavaScript-код, тогда как переменные без этого префикса остаются доступны только в серверном окружении Node.js.
+> In Expo projects, prefixing variables with `EXPO_PUBLIC_` automatically exposes them to the compiled bundle. Variables without this prefix remain completely hidden from the client runtime.
 
 ---
 
-## 🔒 Шаг 6. Настройка Провайдеров Авторизации
+## 🔒 Step 6. Setup Auth Providers
 
-По умолчанию в Supabase активна авторизация по паре Email/Password. Вы можете включить дополнительные беспарольные входы:
-1. Перейдите в раздел **Authentication** -> **Providers**.
-2. Включите необходимые интеграции (например, **Google**, **Apple**).
-3. Укажите Client ID и Redirect URI согласно инструкциям для соответствующих платформ разработчика.
+1. Navigate to **Authentication** -> **Providers**.
+2. By default, **Email & Password** authentication is enabled.
+3. *(Optional)* Turn on social logins (e.g., **Google**, **Apple**) by entering your Client ID and Redirect credentials from the Google or Apple developer portals.
 
 ---
 
-Теперь ваш бэкенд Supabase полностью подготовлен к работе с мобильным приложением Datariot! Вы можете запускать проект локально и приступать к разработке. 🚀
+Your Supabase backend is now configured and ready to connect to the Datariot application! Run your project locally to verify authentication and feed loaders. 🚀
