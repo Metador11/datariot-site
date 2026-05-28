@@ -1,6 +1,6 @@
-# <img src="./assets/logo.jpg" width="40" height="40" align="center" style="border-radius: 12px; margin-right: 10px;" /> Настройка Supabase Backend для Orvelis
+# <img src="./assets/logo.jpg" width="40" height="40" align="center" style="border-radius: 12px; margin-right: 10px;" /> Настройка Supabase Backend для Datariot
 
-В данном руководстве подробно описана процедура конфигурирования облачной инфраструктуры **Supabase** для обеспечения работы авторизации, базы данных и файлового хранилища приложения Orvelis.
+В данном руководстве подробно описана процедура конфигурирования облачной инфраструктуры **Supabase** для обеспечения работы авторизации, базы данных и файлового хранилища приложения Datariot.
 
 ---
 
@@ -9,7 +9,7 @@
 1. Перейдите на официальный портал [supabase.com](https://supabase.com) и авторизуйтесь в панели управления.
 2. Нажмите кнопку **New Project** и выберите вашу организацию.
 3. Заполните параметры проекта:
-   - **Name**: `orvelis` (или любое другое предпочтительное имя)
+   - **Name**: `datariot` (или любое другое предпочтительное имя)
    - **Database Password**: Сгенерируйте сложный пароль, скопируйте его и сохраните в надежном месте.
    - **Region**: Выберите регион с минимальной задержкой (например, *Central Europe* для пользователей из СНГ/Европы).
    - **Pricing Tier**: Для разработки достаточно тарифа *Free Tier*.
@@ -65,7 +65,7 @@
 
 ## 📝 Шаг 5. Настройка Локальных Переменных Окружения
 
-В корневой директории вашего проекта Orvelis найдите или создайте файл `.env`. Внесите в него полученные учетные данные:
+В корневой директории вашего проекта Datariot найдите или создайте файл `.env`. Внесите в него полученные учетные данные:
 
 ```env
 # URL-адрес вашего проекта Supabase
@@ -75,7 +75,7 @@ EXPO_PUBLIC_SUPABASE_URL=https://your-project-id.supabase.co
 EXPO_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV5Y3J0b2JkZXduc2N3YXpzaGN1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTY4ODk5MTUsImV4cCI6MjAzMjQ2NTkxNX0.your_anon_key
 
 # Секретный ключ роли администратора (только для скриптов/сервера)
-SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV5Y3J0b2JkZXduc2N3YXpzaGN1Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTcxNjg4OTkxNSwiZXhwIjoyMDMyNDY1OTE1fQ.your_service_role_key
+SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV5Y3J0b2JkZXduc2N3YXpzaGN1Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTcxNjg4OTkxNSwiZXhwIjoyMDc1MjUxNTY2fQ.your_service_role_key
 ```
 
 > [!TIP]  
@@ -92,4 +92,4 @@ SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhY
 
 ---
 
-Теперь ваш бэкенд Supabase полностью подготовлен к работе с мобильным приложением Orvelis! Вы можете запускать проект локально и приступать к разработке. 🚀
+Теперь ваш бэкенд Supabase полностью подготовлен к работе с мобильным приложением Datariot! Вы можете запускать проект локально и приступать к разработке. 🚀
