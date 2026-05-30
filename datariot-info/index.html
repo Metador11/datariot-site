@@ -13,12 +13,12 @@
     <!-- Twitter Card data -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:site" content="@datariot_xyz">
-    <meta name="twitter:title" content="Datariot — Content with gravity.">
+    <meta name="twitter:title" content="Datariot - Content with gravity.">
     <meta name="twitter:description" content="On camera. Unlimited time. Logic wins, not likes.">
     <meta name="twitter:image" content="https://info.datariot.xyz/assets/twitter-card-v100.png">
 
     <!-- Open Graph data -->
-    <meta property="og:title" content="Datariot — Content with gravity.">
+    <meta property="og:title" content="Datariot - Content with gravity.">
     <meta property="og:description" content="On camera. Unlimited time. Logic wins, not likes.">
     <meta property="og:image" content="https://info.datariot.xyz/assets/twitter-card-v100.png">
     <meta property="og:url" content="https://info.datariot.xyz/">
@@ -27,9 +27,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&family=Oxanium:wght@400;500;600;700;800&family=Syncopate:wght@400;700&family=Playfair+Display:ital,wght@0,400..700;1,400..700&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&family=Oxanium:wght@400;500;600;700;800&family=Syncopate:wght@400;700&family=Playfair+Display:ital,wght@0,400..700;1,400..700&family=JetBrains+Mono:wght@400;500;700;800&display=swap"
         rel="stylesheet" />
-    <link rel="stylesheet" href="style.css?v=2.0.3" />
+    <link rel="stylesheet" href="style.css?v=3.1.0" />
     <!-- Cache-Bust-Hash: 49294f77-8f99-4c6e-bc63-4e1b887698df -->
     <style>
         :root {
@@ -354,6 +354,10 @@
                     <span class="sidebar__link-dot"></span>
                     <span class="sidebar__link-text">Arena</span>
                 </a></li>
+            <li><a href="#ai-core" class="sidebar__link" data-section="ai-core">
+                    <span class="sidebar__link-dot"></span>
+                    <span class="sidebar__link-text">AI Core</span>
+                </a></li>
             <li><a href="#beta" class="sidebar__link" data-section="beta">
                     <span class="sidebar__link-dot"></span>
                     <span class="sidebar__link-text">Join</span>
@@ -438,14 +442,10 @@
 
     <!-- Main Content -->
     <main class="main">
-        <!-- Top Branding removed as requested/not needed -->
-
-        <!-- Top Header Navigation (Right) -->
-        <header class="top-nav"
-            style="display: flex; align-items: center; gap: 20px; top: 28px; right: 48px; position: fixed; z-index: 2500;">
+        <!-- Top Header Navigation -->
+        <header class="top-nav">
             <div class="header__links" style="pointer-events: auto;">
-                <a href="#beta" class="header__link header__link--cta"
-                    style="padding: 10px 22px; border-radius: 12px;">Join Waitlist</a>
+                <a href="#beta" class="header__link header__link--cta">Join Waitlist</a>
             </div>
         </header>
 
@@ -549,7 +549,6 @@
             </div>
         </section>
 
-
         <!-- MANIFESTO SECTION -->
         <section class="section section--manifesto manifesto-v2" id="manifesto">
             <!-- Decorative floating elements -->
@@ -564,100 +563,199 @@
             <div class="manifesto-v2__inner">
                 <!-- Section label -->
                 <div class="manifesto-v2__label-row">
-                    <span class="manifesto-v2__label">01 — Manifesto</span>
+                    <span class="manifesto-v2__label">[ 01 — THE ARENA ]</span>
                     <div class="manifesto-v2__label-line"></div>
-                </div>
-
-                <!-- Big cinematic headline -->
-                <h2 class="manifesto-v2__headline">
-                    Social media turned debate into <span class="manifesto-v2__highlight">noise</span>.
-                </h2>
-                <p class="manifesto-v2__subheadline">
-                    Algorithms reward outrage. There's no winner — just shouting.
-                </p>
-
-                <!-- Quote block -->
-                <div class="manifesto-v2__quote-block">
-                    <span class="manifesto-v2__quote-mark">“</span>
-                    <blockquote class="manifesto-v2__quote">
-                        Datariot fixes this. You argue on camera.
-                        Others respond. The community votes on <em>logic</em>, not vibes.
-                    </blockquote>
-                    <div class="manifesto-v2__signature">
-                        <div class="manifesto-v2__sig-avatar">DF</div>
-                        <div class="manifesto-v2__sig-meta">
-                            <span class="manifesto-v2__sig-name">The Datariot Founder</span>
-                            <span class="manifesto-v2__sig-title">Building the Arena</span>
-                        </div>
-                    </div>
                 </div>
 
                 <!-- Value cards row -->
                 <div class="manifesto-v2__cards">
-                    <!-- CARD 1 -->
-                    <div class="manifesto-v2__card manifesto-v2__card--1">
-                        <div class="manifesto-v2__card-inner">
-                            <span class="manifesto-v2__card-tag">[ VALUE 01 // NOISE FILTER ]</span>
-                            <div class="manifesto-v2__card-graphic-box">
-                                <svg class="manifesto-graphic" width="100%" height="50" viewBox="0 0 200 50" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path class="wave-noise" d="M10,25 L20,10 L30,40 L40,5 L50,45 L60,15 L70,35 L80,20 L90,30 L100,25" stroke="rgba(14, 165, 233, 0.25)" stroke-width="1.5" stroke-linejoin="round"/>
-                                    <line x1="105" y1="5" x2="105" y2="45" stroke="rgba(14, 165, 233, 0.4)" stroke-width="1.5" stroke-dasharray="2, 2"/>
-                                    <path class="wave-clean" d="M110,25 Q122.5,10 135,25 T160,25 T185,25" stroke="#0ea5e9" stroke-width="2" stroke-linecap="round"/>
-                                    <circle cx="185" cy="25" r="3" fill="#0ea5e9"/>
-                                </svg>
-                            </div>
-                            <h4 class="manifesto-v2__card-title">Logic over noise</h4>
-                            <p class="manifesto-v2__card-desc">Arguments scored on reasoning quality, not shock value or follower count.</p>
-                            <div class="manifesto-v2__card-stat">
-                                <span class="manifesto-v2__card-stat-label">consensus score</span>
-                                <span class="manifesto-v2__card-stat-num">9.4 AVG</span>
-                            </div>
-                        </div>
-                    </div>
+                    <!-- DEBATE TREE FULL-WIDTH CARD (STYLING MAKES CONTAINER SEAMLESS & BORDERLESS) -->
+                    <div class="manifesto-v2__card manifesto-v2__card--full" id="manifestoCardFull">
+                        <div class="manifesto-v2__card-inner manifesto-v2__card-inner--full">
+                            <div class="manifesto-v2__card-content">
+                                <span class="manifesto-v2__card-tag">[ ACTIVE ARENA // DEBATE ON CAMERA ]</span>
+                                <h2 class="manifesto-v2__headline" style="margin-top: 10px; margin-bottom: 24px;">
+                                    DATARIOT FIXES THIS. <span class="manifesto-v2__highlight">YOU ARGUE ON CAMERA.</span>
+                                </h2>
+                                <p class="manifesto-v2__subheadline" style="margin-bottom: 40px;">
+                                    Others respond. The community votes on logic, not vibes.
+                                </p>
 
-                    <!-- CARD 2 -->
-                    <div class="manifesto-v2__card manifesto-v2__card--2">
-                        <div class="manifesto-v2__card-inner">
-                            <span class="manifesto-v2__card-tag">[ VALUE 02 // STRUCTURE ]</span>
-                            <div class="manifesto-v2__card-graphic-box">
-                                <svg class="manifesto-graphic" width="100%" height="50" viewBox="0 0 200 50" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <line x1="20" y1="25" x2="180" y2="25" stroke="rgba(255, 255, 255, 0.05)" stroke-width="1"/>
-                                    <path class="debate-tree" d="M30,25 L60,25 L60,10 L100,10 L100,40 L140,40 L140,25 L170,25" stroke="#6366f1" stroke-width="1.5" stroke-dasharray="2, 2"/>
-                                    <circle cx="30" cy="25" r="3.5" fill="#6366f1" stroke="#fff" stroke-width="1"/>
-                                    <circle class="pulse-node" cx="60" cy="10" r="3" fill="#8b5cf6"/>
-                                    <circle class="pulse-node" cx="100" cy="40" r="3" fill="#8b5cf6"/>
-                                    <circle cx="170" cy="25" r="3.5" fill="#6366f1" stroke="#fff" stroke-width="1"/>
-                                </svg>
+                                <div class="manifesto-v2__card-stats-row">
+                                    <div class="manifesto-v2__card-stat">
+                                        <span class="manifesto-v2__card-stat-num">[ UNLIMITED ]</span>
+                                        <span class="manifesto-v2__card-stat-label">SPEECH DURATION</span>
+                                    </div>
+                                    <div class="manifesto-v2__card-stat">
+                                        <span class="manifesto-v2__card-stat-num">[ 100% VERIFIED ]</span>
+                                        <span class="manifesto-v2__card-stat-label">IDENTITY CHECK</span>
+                                    </div>
+                                    <div class="manifesto-v2__card-stat">
+                                        <span class="manifesto-v2__card-stat-num">[ ORVELIS AI ]</span>
+                                        <span class="manifesto-v2__card-stat-label">CONSENSUS SCANNER</span>
+                                    </div>
+                                </div>
                             </div>
-                            <h4 class="manifesto-v2__card-title">Structured debate</h4>
-                            <p class="manifesto-v2__card-desc">Engage in meaningful conversations, not toxic comment wars or rage bait.</p>
-                            <div class="manifesto-v2__card-stat">
-                                <span class="manifesto-v2__card-stat-label">speech duration</span>
-                                <span class="manifesto-v2__card-stat-num">UNLIMITED</span>
-                            </div>
-                        </div>
-                    </div>
 
-                    <!-- CARD 3 -->
-                    <div class="manifesto-v2__card manifesto-v2__card--3">
-                        <div class="manifesto-v2__card-inner">
-                            <span class="manifesto-v2__card-tag">[ VALUE 03 // VERIFICATION ]</span>
-                            <div class="manifesto-v2__card-graphic-box">
-                                <svg class="manifesto-graphic" width="100%" height="50" viewBox="0 0 200 50" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M78,12 L72,12 L72,18" stroke="#10b981" stroke-width="1.5"/>
-                                    <path d="M122,12 L128,12 L128,18" stroke="#10b981" stroke-width="1.5"/>
-                                    <path d="M78,38 L72,38 L72,32" stroke="#10b981" stroke-width="1.5"/>
-                                    <path d="M122,38 L128,38 L128,32" stroke="#10b981" stroke-width="1.5"/>
-                                    <line class="camera-scan" x1="74" y1="25" x2="126" y2="25" stroke="rgba(16, 185, 129, 0.4)" stroke-width="1"/>
-                                    <circle cx="100" cy="21" r="5" stroke="#10b981" stroke-width="1.5"/>
-                                    <path d="M92,34 C92,29 95,28 100,28 C105,28 108,29 108,34" stroke="#10b981" stroke-width="1.5" stroke-linecap="round"/>
-                                </svg>
-                            </div>
-                            <h4 class="manifesto-v2__card-title">Face first, always</h4>
-                            <p class="manifesto-v2__card-desc">Camera-on debates. No hiding behind anonymous avatars or fake personas.</p>
-                            <div class="manifesto-v2__card-stat">
-                                <span class="manifesto-v2__card-stat-label">identity check</span>
-                                <span class="manifesto-v2__card-stat-num">100% VERIFIED</span>
+                            <div class="manifesto-v2__card-visual-wrapper">
+                                <div class="manifesto-v2__card-graphic-box manifesto-v2__card-graphic-box--full">
+                                    <div class="debate-arena-graphic">
+                                        <!-- Inline SVG representing the debate arena -->
+                                        <svg viewBox="0 0 800 500" class="debate-svg" xmlns="http://www.w3.org/2000/svg">
+                                            <defs>
+                                                <!-- Spotlight Gradients (Ice Blue) -->
+                                                <linearGradient id="spotlightLGrad" x1="0.5" y1="0" x2="0.5" y2="1">
+                                                    <stop offset="0%" stop-color="#D9E4FF" stop-opacity="0.35"/>
+                                                    <stop offset="60%" stop-color="#3B82F6" stop-opacity="0.08"/>
+                                                    <stop offset="100%" stop-color="#08090D" stop-opacity="0.0"/>
+                                                </linearGradient>
+                                                <linearGradient id="spotlightRGrad" x1="0.5" y1="0" x2="0.5" y2="1">
+                                                    <stop offset="0%" stop-color="#D9E4FF" stop-opacity="0.35"/>
+                                                    <stop offset="60%" stop-color="#8B5CF6" stop-opacity="0.08"/>
+                                                    <stop offset="100%" stop-color="#08090D" stop-opacity="0.0"/>
+                                                </linearGradient>
+                                                
+                                                <!-- Luminous Gradient Accents -->
+                                                <linearGradient id="cyberBlue" x1="0" y1="0" x2="1" y2="0">
+                                                    <stop offset="0%" stop-color="#2563EB"/>
+                                                    <stop offset="50%" stop-color="#38BDF8"/>
+                                                    <stop offset="100%" stop-color="#1E3A8A"/>
+                                                </linearGradient>
+                                                <linearGradient id="cyberViolet" x1="0" y1="0" x2="1" y2="0">
+                                                    <stop offset="0%" stop-color="#7C3AED"/>
+                                                    <stop offset="50%" stop-color="#C084FC"/>
+                                                    <stop offset="100%" stop-color="#4C1D95"/>
+                                                </linearGradient>
+                                                
+                                                <!-- Hologram Podiums Glass -->
+                                                <linearGradient id="podiumGlass" x1="0" y1="0" x2="0" y2="1">
+                                                    <stop offset="0%" stop-color="rgba(217, 228, 255, 0.12)"/>
+                                                    <stop offset="100%" stop-color="rgba(217, 228, 255, 0.01)"/>
+                                                </linearGradient>
+                                                
+                                                <!-- Core Reactor Glow -->
+                                                <radialGradient id="reactorGlow" cx="50%" cy="50%" r="50%">
+                                                    <stop offset="0%" stop-color="#38BDF8" stop-opacity="0.35"/>
+                                                    <stop offset="60%" stop-color="#8B5CF6" stop-opacity="0.15"/>
+                                                    <stop offset="100%" stop-color="#08090D" stop-opacity="0"/>
+                                                </radialGradient>
+
+                                                <!-- Laptop Screen Glow -->
+                                                <radialGradient id="screenGlow" cx="0.5" cy="0.5" r="0.5">
+                                                    <stop offset="0%" stop-color="#38BDF8" stop-opacity="0.6"/>
+                                                    <stop offset="100%" stop-color="#38BDF8" stop-opacity="0"/>
+                                                </radialGradient>
+                                            </defs>
+ 
+                                            <!-- Perspective Tech Floor Grid -->
+                                            <g class="debate-grid-lines" stroke="rgba(217, 228, 255, 0.05)" stroke-width="1">
+                                                <line x1="0" y1="460" x2="800" y2="460" stroke-width="1.5" stroke="rgba(217, 228, 255, 0.08)"/>
+                                                <line x1="0" y1="420" x2="800" y2="420"/>
+                                                <line x1="0" y1="390" x2="800" y2="390"/>
+                                                <line x1="0" y1="360" x2="800" y2="360"/>
+                                                
+                                                <line x1="400" y1="330" x2="-200" y2="500" stroke-width="1.5" />
+                                                <line x1="400" y1="330" x2="100" y2="500"/>
+                                                <line x1="400" y1="330" x2="250" y2="500"/>
+                                                <line x1="400" y1="330" x2="550" y2="500"/>
+                                                <line x1="400" y1="330" x2="700" y2="500"/>
+                                                <line x1="400" y1="330" x2="1000" y2="500" stroke-width="1.5" />
+                                            </g>
+ 
+                                            <!-- Spotlight Beams -->
+                                            <polygon points="180,30 100,480 260,480" fill="url(#spotlightLGrad)" class="spotlight-beam spotlight-beam--left"/>
+                                            <polygon points="620,30 540,480 700,480" fill="url(#spotlightRGrad)" class="spotlight-beam spotlight-beam--right"/>
+
+                                            <!-- Spotlight Rising Code Particles -->
+                                            <circle cx="160" cy="300" r="2" fill="#D9E4FF" opacity="0.3">
+                                                <animate attributeName="cy" from="420" to="80" dur="6s" repeatCount="indefinite" />
+                                                <animate attributeName="opacity" values="0;0.6;0" dur="6s" repeatCount="indefinite" />
+                                            </circle>
+                                            <circle cx="210" cy="250" r="1.5" fill="#D9E4FF" opacity="0.2">
+                                                <animate attributeName="cy" from="380" to="60" dur="4s" repeatCount="indefinite" />
+                                                <animate attributeName="opacity" values="0;0.5;0" dur="4s" repeatCount="indefinite" />
+                                            </circle>
+                                            <circle cx="590" cy="280" r="2" fill="#D9E4FF" opacity="0.3">
+                                                <animate attributeName="cy" from="420" to="80" dur="5.5s" repeatCount="indefinite" />
+                                                <animate attributeName="opacity" values="0;0.6;0" dur="5.5s" repeatCount="indefinite" />
+                                            </circle>
+                                            <circle cx="630" cy="220" r="1.5" fill="#D9E4FF" opacity="0.2">
+                                                <animate attributeName="cy" from="370" to="50" dur="4.5s" repeatCount="indefinite" />
+                                                <animate attributeName="opacity" values="0;0.5;0" dur="4.5s" repeatCount="indefinite" />
+                                            </circle>
+ 
+                                            <!-- Connecting Speech Logic Buses -->
+                                            <g class="speech-waves">
+                                                <!-- Left flow -->
+                                                <path d="M 205,275 Q 302,225 368,240" fill="none" stroke="rgba(56, 189, 248, 0.15)" stroke-width="2" stroke-dasharray="4 4" />
+                                                <path class="flow-path-left" d="M 205,275 Q 302,225 368,240" fill="none" stroke="#38BDF8" stroke-width="2" stroke-dasharray="10 120" />
+                                                
+                                                <!-- Right flow -->
+                                                <path d="M 595,275 Q 498,225 432,240" fill="none" stroke="rgba(139, 92, 246, 0.15)" stroke-width="2" stroke-dasharray="4 4" />
+                                                <path class="flow-path-right" d="M 595,275 Q 498,225 432,240" fill="none" stroke="#C084FC" stroke-width="2" stroke-dasharray="10 120" />
+                                            </g>
+ 
+                                            <!-- Central VS Reactor Node -->
+                                            <g class="vs-node-group">
+                                                <circle cx="400" cy="240" r="70" fill="url(#reactorGlow)"/>
+                                                <!-- Dial ring -->
+                                                <circle cx="400" cy="240" r="45" fill="none" stroke="rgba(217, 228, 255, 0.1)" stroke-width="1"/>
+                                                <circle class="vs-dial-spin" cx="400" cy="240" r="45" fill="none" stroke="#38BDF8" stroke-width="1.5" stroke-dasharray="25 60 15 40" style="transform-origin: 400px 240px; animation: reticleSpin 25s linear infinite;" />
+                                                
+                                                <circle cx="400" cy="240" r="32" fill="#08090d" stroke="rgba(217, 228, 255, 0.25)" stroke-width="2" class="vs-circle"/>
+                                                <text x="400" y="246" text-anchor="middle" font-family="'Syncopate', sans-serif" font-size="13" font-weight="700" fill="#EEEEF0" class="vs-text" letter-spacing="1">VS</text>
+                                            </g>
+ 
+                                            <!-- Left Speaker (PRO Avatar) -->
+                                            <g class="speaker-group speaker-group--left">
+                                                <!-- Platform Holographic Podium -->
+                                                <polygon points="135,460 225,460 210,330 150,330" fill="url(#podiumGlass)" stroke="rgba(56, 189, 248, 0.25)" stroke-width="1.5" />
+                                                <!-- Horizon grid rings on podium -->
+                                                <line x1="147" y1="360" x2="213" y2="360" stroke="rgba(56, 189, 248, 0.4)" stroke-width="1.5" />
+                                                <line x1="142" y1="400" x2="218" y2="400" stroke="rgba(56, 189, 248, 0.4)" stroke-width="1.5" />
+                                                
+                                                <!-- Avatar Body (Cyber outline) -->
+                                                <path d="M 155,330 L 155,275 C 155,260 205,260 205,275 L 205,330 Z" fill="rgba(37, 99, 235, 0.12)" stroke="url(#cyberBlue)" stroke-width="1.5"/>
+                                                <line x1="180" y1="260" x2="180" y2="320" stroke="rgba(56, 189, 248, 0.25)" stroke-width="1.5" stroke-dasharray="4 2"/>
+                                                
+                                                <!-- Avatar Neck & Head -->
+                                                <line x1="180" y1="241" x2="180" y2="255" stroke="#38BDF8" stroke-width="2" />
+                                                <circle cx="180" cy="225" r="15" fill="#08090d" stroke="#38BDF8" stroke-width="2"/>
+                                                <circle cx="180" cy="225" r="5" fill="#38BDF8" />
+                                                <circle cx="180" cy="225" r="20" fill="none" stroke="rgba(56, 189, 248, 0.2)" stroke-width="1" stroke-dasharray="3 3"/>
+ 
+                                                <!-- Laptop (Hologram Screen) -->
+                                                <polygon points="188,330 218,330 224,315 194,315" fill="#1e293b" stroke="rgba(56, 189, 248, 0.3)" stroke-width="1"/>
+                                                <polygon points="194,315 224,315 221,300 191,300" fill="#0f172a" stroke="rgba(56, 189, 248, 0.3)" stroke-width="1"/>
+                                                <polygon points="195,313 223,313 220,301 192,301" fill="url(#screenGlow)" opacity="0.8"/>
+                                            </g>
+ 
+                                            <!-- Right Speaker (CON Avatar) -->
+                                            <g class="speaker-group speaker-group--right">
+                                                <!-- Platform Holographic Podium -->
+                                                <polygon points="575,460 665,460 650,330 590,330" fill="url(#podiumGlass)" stroke="rgba(139, 92, 246, 0.25)" stroke-width="1.5" />
+                                                <!-- Horizon grid rings on podium -->
+                                                <line x1="587" y1="360" x2="653" y2="360" stroke="rgba(139, 92, 246, 0.4)" stroke-width="1.5" />
+                                                <line x1="582" y1="400" x2="658" y2="400" stroke="rgba(139, 92, 246, 0.4)" stroke-width="1.5" />
+                                                
+                                                <!-- Avatar Body (Cyber outline) -->
+                                                <path d="M 595,330 L 595,275 C 595,260 645,260 645,275 L 645,330 Z" fill="rgba(139, 92, 246, 0.12)" stroke="url(#cyberViolet)" stroke-width="1.5"/>
+                                                <line x1="620" y1="260" x2="620" y2="320" stroke="rgba(139, 92, 246, 0.25)" stroke-width="1.5" stroke-dasharray="4 2"/>
+                                                
+                                                <!-- Avatar Neck & Head -->
+                                                <line x1="620" y1="241" x2="620" y2="255" stroke="#8B5CF6" stroke-width="2" />
+                                                <circle cx="620" cy="225" r="15" fill="#08090d" stroke="#8B5CF6" stroke-width="2"/>
+                                                <circle cx="620" cy="225" r="5" fill="#8B5CF6" />
+                                                <circle cx="620" cy="225" r="20" fill="none" stroke="rgba(139, 92, 246, 0.2)" stroke-width="1" stroke-dasharray="3 3"/>
+ 
+                                                <!-- Laptop (Hologram Screen) -->
+                                                <polygon points="582,330 612,330 606,315 576,315" fill="#1e293b" stroke="rgba(139, 92, 246, 0.3)" stroke-width="1"/>
+                                                <polygon points="576,315 606,315 609,300 579,300" fill="#0f172a" stroke="rgba(139, 92, 246, 0.3)" stroke-width="1"/>
+                                                <polygon points="577,313 605,313 608,301 580,301" fill="url(#screenGlow)" opacity="0.8"/>
+                                            </g>
+                                        </svg>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -671,10 +769,10 @@
             <div class="feature-section-glow"></div>
             <div class="section__container">
                 <div class="section__header section__header--stack">
-                    <span class="section__label">02 — How It Works</span>
+                    <span class="section__label">[ 02 — HOW IT WORKS ]</span>
                     <h2 class="section__title feature__title--3d">
-                        <span class="text-layer">Simple rules.</span>
-                        <span class="text-layer text-layer--accent">Real stakes.</span>
+                        <span class="text-layer">SIMPLE RULES.</span>
+                        <span class="text-layer text-layer--accent">REAL STAKES.</span>
                     </h2>
                 </div>
                 <div class="features__fragments">
@@ -682,36 +780,79 @@
                     <div class="feature-fragment feature-fragment--argue">
                         <div class="fragment-glow glow--argue"></div>
                         <div class="fragment-visual">
-                            <div class="visual-argue">
-                                <div class="camera-grid"></div>
-                                <div class="rec-indicator">
-                                    <span class="rec-dot"></span>
-                                    <span class="rec-text">REC</span>
-                                    <span class="rec-timer">00:14</span>
-                                </div>
-                                <div class="telemetry-top-right">1080P 60FPS</div>
-                                <div class="focus-box">
-                                    <div class="bracket br--tl"></div>
-                                    <div class="bracket br--tr"></div>
-                                    <div class="bracket br--bl"></div>
-                                    <div class="bracket br--br"></div>
-                                    <div class="audio-waves">
-                                        <div class="wave-bar wb--1"></div>
-                                        <div class="wave-bar wb--2"></div>
-                                        <div class="wave-bar wb--3"></div>
-                                        <div class="wave-bar wb--4"></div>
-                                        <div class="wave-bar wb--5"></div>
-                                        <div class="wave-bar wb--6"></div>
-                                        <div class="wave-bar wb--7"></div>
-                                    </div>
-                                </div>
-                                <div class="telemetry-bottom">INPUT: CAM_01_ACTIVE</div>
+                            <!-- Premium SVG Hud Visual -->
+                            <div class="visual-argue-premium" style="width: 100%; height: 100%;">
+                                <svg class="argue-hud-svg" viewBox="0 0 320 160" style="width:100%; height:100%; display:block;">
+                                    <!-- Background grid -->
+                                    <defs>
+                                        <pattern id="argue-grid-1" width="16" height="16" patternUnits="userSpaceOnUse">
+                                            <path d="M 16 0 L 0 0 0 16" fill="none" stroke="rgba(217, 228, 255, 0.05)" stroke-width="1"/>
+                                        </pattern>
+                                        <linearGradient id="wave-grad-1" x1="0" y1="0" x2="0" y2="1">
+                                            <stop offset="0%" stop-color="#ef4444" />
+                                            <stop offset="100%" stop-color="#ec4899" />
+                                        </linearGradient>
+                                    </defs>
+                                    <rect width="100%" height="100%" fill="url(#argue-grid-1)" opacity="0.6" />
+                                    
+                                    <!-- Corner brackets -->
+                                    <path d="M 12,20 L 12,12 L 20,12" stroke="#ef4444" stroke-width="1.5" fill="none" opacity="0.8" />
+                                    <path d="M 308,20 L 308,12 L 300,12" stroke="#ef4444" stroke-width="1.5" fill="none" opacity="0.8" />
+                                    <path d="M 12,140 L 12,148 L 20,148" stroke="#ef4444" stroke-width="1.5" fill="none" opacity="0.8" />
+                                    <path d="M 308,140 L 308,148 L 300,148" stroke="#ef4444" stroke-width="1.5" fill="none" opacity="0.8" />
+                                    
+                                    <!-- Reticle translated to center -->
+                                    <g transform="translate(160, 80)">
+                                        <g class="focus-reticle">
+                                            <circle r="22" stroke="rgba(217, 228, 255, 0.15)" stroke-width="1.5" fill="none" stroke-dasharray="6 3" />
+                                            <circle r="12" stroke="rgba(239, 68, 68, 0.4)" stroke-width="1" fill="none" />
+                                            <line x1="-30" y1="0" x2="-18" y2="0" stroke="rgba(217, 228, 255, 0.3)" stroke-width="1" />
+                                            <line x1="18" y1="0" x2="30" y2="0" stroke="rgba(217, 228, 255, 0.3)" stroke-width="1" />
+                                            <line x1="0" y1="-30" x2="0" y2="-18" stroke="rgba(217, 228, 255, 0.3)" stroke-width="1" />
+                                            <line x1="0" y1="18" x2="0" y2="30" stroke="rgba(217, 228, 255, 0.3)" stroke-width="1" />
+                                        </g>
+                                    </g>
+                                    
+                                    <!-- REC indicator -->
+                                    <g transform="translate(20, 26)">
+                                        <circle class="rec-dot-blink" cx="6" cy="6" r="4" fill="#ef4444" />
+                                        <text x="16" y="9" fill="#ef4444" font-family="'Oxanium', monospace" font-size="8" font-weight="800">REC [00:14:29]</text>
+                                    </g>
+                                    
+                                    <!-- Telemetry -->
+                                    <text x="300" y="32" fill="rgba(217, 228, 255, 0.5)" font-family="'Oxanium', monospace" font-size="8" text-anchor="end">1080P 60FPS</text>
+                                    <text x="300" y="42" fill="rgba(217, 228, 255, 0.5)" font-family="'Oxanium', monospace" font-size="8" text-anchor="end">ISO 400 | f/2.8</text>
+                                    <text x="20" y="142" fill="rgba(217, 228, 255, 0.3)" font-family="'Oxanium', monospace" font-size="7">CAM_01_ACTIVE // RAW_STREAM</text>
+                                    <text x="300" y="142" fill="rgba(217, 228, 255, 0.3)" font-family="'Oxanium', monospace" font-size="7" text-anchor="end">AUDIO_CH1: [OK]</text>
+                                    
+                                    <!-- Waveform bars -->
+                                    <g class="voice-waveform-group" transform="translate(62, 64)">
+                                        <rect class="wave-bar-anim wba-1" x="10" y="10" width="2.5" height="15" rx="1" fill="#ef4444" opacity="0.8"/>
+                                        <rect class="wave-bar-anim wba-2" x="18" y="5" width="2.5" height="25" rx="1" fill="#ef4444" opacity="0.85"/>
+                                        <rect class="wave-bar-anim wba-3" x="26" y="8" width="2.5" height="20" rx="1" fill="url(#wave-grad-1)" />
+                                        <rect class="wave-bar-anim wba-4" x="34" y="2" width="2.5" height="32" rx="1" fill="url(#wave-grad-1)" />
+                                        <rect class="wave-bar-anim wba-5" x="42" y="12" width="2.5" height="12" rx="1" fill="url(#wave-grad-1)" />
+                                        <rect class="wave-bar-anim wba-6" x="50" y="7" width="2.5" height="22" rx="1" fill="url(#wave-grad-1)" />
+                                        <rect class="wave-bar-anim wba-7" x="58" y="1" width="2.5" height="34" rx="1" fill="url(#wave-grad-1)" />
+                                        <rect class="wave-bar-anim wba-8" x="66" y="9" width="2.5" height="18" rx="1" fill="url(#wave-grad-1)" />
+                                        
+                                        <rect class="wave-bar-anim wba-9" x="126" y="9" width="2.5" height="18" rx="1" fill="url(#wave-grad-1)" />
+                                        <rect class="wave-bar-anim wba-10" x="134" y="1" width="2.5" height="34" rx="1" fill="url(#wave-grad-1)" />
+                                        <rect class="wave-bar-anim wba-11" x="142" y="7" width="2.5" height="22" rx="1" fill="url(#wave-grad-1)" />
+                                        <rect class="wave-bar-anim wba-12" x="150" y="12" width="2.5" height="12" rx="1" fill="url(#wave-grad-1)" />
+                                        <rect class="wave-bar-anim wba-13" x="158" y="2" width="2.5" height="32" rx="1" fill="url(#wave-grad-1)" />
+                                        <rect class="wave-bar-anim wba-14" x="166" y="8" width="2.5" height="20" rx="1" fill="url(#wave-grad-1)" />
+                                        <rect class="wave-bar-anim wba-15" x="174" y="5" width="2.5" height="25" rx="1" fill="#ef4444" opacity="0.85"/>
+                                        <rect class="wave-bar-anim wba-16" x="182" y="10" width="2.5" height="15" rx="1" fill="#ef4444" opacity="0.8"/>
+                                    </g>
+                                </svg>
                             </div>
                         </div>
                         <div class="fragment-content">
                             <span class="fragment-tag tag--argue">[ 01 // ARGUE ]</span>
                             <h3>Make your case</h3>
-                            <p>Record your argument on camera. Unlimited time. Say exactly what you mean without interruptions.</p>
+                            <p>Record your argument on camera. Unlimited time. Say exactly what you mean without
+                                interruptions.</p>
                         </div>
                     </div>
 
@@ -719,72 +860,146 @@
                     <div class="feature-fragment feature-fragment--respond">
                         <div class="fragment-glow glow--respond"></div>
                         <div class="fragment-visual">
-                            <div class="visual-respond">
-                                <div class="debate-bg-grid"></div>
-                                <div class="debate-avatar avatar--pro">
-                                    <div class="avatar-ring-outer"></div>
-                                    <div class="avatar-ring-inner"></div>
-                                    <div class="avatar-initials">PRO</div>
-                                </div>
-                                <div class="debate-bridge">
-                                    <svg class="bridge-svg" viewBox="0 0 100 20" preserveAspectRatio="none">
-                                        <path class="bridge-path" d="M 0,10 Q 25,0 50,10 T 100,10" fill="none" stroke="url(#bridge-grad)" stroke-width="2"/>
-                                        <defs>
-                                            <linearGradient id="bridge-grad" x1="0%" y1="0%" x2="100%" y2="0%">
-                                                <stop offset="0%" stop-color="#0ea5e9"/>
-                                                <stop offset="100%" stop-color="#8b5cf6"/>
-                                            </linearGradient>
-                                        </defs>
-                                    </svg>
-                                    <div class="bridge-pulse"></div>
-                                </div>
-                                <div class="debate-avatar avatar--con">
-                                    <div class="avatar-ring-outer"></div>
-                                    <div class="avatar-ring-inner"></div>
-                                    <div class="avatar-initials">CON</div>
-                                </div>
-                                <div class="challenge-alert">+1 CHALLENGE</div>
+                            <!-- Premium SVG Branch Tree Visual -->
+                            <div class="visual-respond-premium" style="width: 100%; height: 100%;">
+                                <svg class="respond-tree-svg" viewBox="0 0 320 160" style="width:100%; height:100%; display:block;">
+                                    <defs>
+                                        <pattern id="respond-grid-1" width="16" height="16" patternUnits="userSpaceOnUse">
+                                            <circle cx="2" cy="2" r="0.7" fill="rgba(217, 228, 255, 0.08)" />
+                                        </pattern>
+                                    </defs>
+                                    <rect width="100%" height="100%" fill="url(#respond-grid-1)" />
+                                    
+                                    <!-- Branches -->
+                                    <g class="branch-connections" stroke-width="1.5" fill="none">
+                                        <path d="M 160,80 Q 110,40 60,40" stroke="#0ea5e9" stroke-dasharray="3 3" />
+                                        <path d="M 160,80 Q 210,40 260,40" stroke="#8b5cf6" stroke-dasharray="3 3" />
+                                        <path d="M 160,80 Q 160,110 160,126" stroke="rgba(217, 228, 255, 0.2)" />
+                                    </g>
+                                    
+                                    <!-- Animated flowing packets -->
+                                    <circle r="2.5" fill="#38bdf8">
+                                        <animateMotion dur="2s" repeatCount="indefinite" path="M 160,80 Q 110,40 60,40" />
+                                    </circle>
+                                    <circle r="2.5" fill="#a78bfa">
+                                        <animateMotion dur="2.5s" repeatCount="indefinite" path="M 160,80 Q 210,40 260,40" />
+                                    </circle>
+                                    
+                                    <!-- Root Node (Original Claim) translated center -->
+                                    <g transform="translate(160, 80)">
+                                        <g class="ping-ring-group">
+                                            <circle r="14" fill="#08090d" stroke="#a5c6ff" stroke-width="1.5" />
+                                            <circle r="7" fill="rgba(165, 198, 255, 0.35)" />
+                                            <circle class="ping-ring" cx="0" cy="0" r="14" fill="none" stroke="#a5c6ff" stroke-width="1" opacity="0.8" />
+                                        </g>
+                                    </g>
+                                    
+                                    <!-- PRO Node (Left) translated -->
+                                    <g transform="translate(60, 40)">
+                                        <g class="pro-node-group">
+                                            <circle r="12" fill="#08090d" stroke="#0ea5e9" stroke-width="1.5" />
+                                            <text x="0" y="3" fill="#0ea5e9" font-family="'Oxanium', monospace" font-size="7" font-weight="800" text-anchor="middle">PRO</text>
+                                            <circle class="ping-ring-slow" cx="0" cy="0" r="12" fill="none" stroke="#0ea5e9" stroke-width="1" opacity="0.6" />
+                                        </g>
+                                    </g>
+                                    
+                                    <!-- CON Node (Right) translated -->
+                                    <g transform="translate(260, 40)">
+                                        <g class="con-node-group">
+                                            <circle r="12" fill="#08090d" stroke="#8b5cf6" stroke-width="1.5" />
+                                            <text x="0" y="3" fill="#8b5cf6" font-family="'Oxanium', monospace" font-size="7" font-weight="800" text-anchor="middle">CON</text>
+                                            <circle class="ping-ring-slow" cx="0" cy="0" r="12" fill="none" stroke="#8b5cf6" stroke-width="1" opacity="0.6" />
+                                        </g>
+                                    </g>
+                                    
+                                    <!-- CHALLENGE Badge overlay -->
+                                    <g transform="translate(160, 130)">
+                                        <rect x="-38" y="-8" width="76" height="16" rx="5" fill="rgba(139, 92, 246, 0.12)" stroke="rgba(139, 92, 246, 0.3)" stroke-width="1" />
+                                        <text x="0" y="3" fill="#a78bfa" font-family="'Oxanium', monospace" font-size="7" font-weight="800" text-anchor="middle">+1 CHALLENGE</text>
+                                    </g>
+                                </svg>
                             </div>
                         </div>
                         <div class="fragment-content">
                             <span class="fragment-tag tag--respond">[ 02 // RESPOND ]</span>
-                            <h3>Get challenged</h3>
-                            <p>Others respond directly on camera. A structured face-first exchange, not a toxic comment war.</p>
+                            <h3>Dispute & branch</h3>
+                            <p>Respond directly to any point on camera. Challenge assertions, support reasoning, and
+                                shape structured debate trees rather than chaotic comment walls.</p>
                         </div>
                     </div>
 
-                    <!-- CARD 3: VOTE -->
+                    <!-- CARD 3: ORVELIS AI -->
                     <div class="feature-fragment feature-fragment--vote">
                         <div class="fragment-glow glow--vote"></div>
                         <div class="fragment-visual">
-                            <div class="visual-vote">
-                                <div class="vote-bg-grid"></div>
-                                <div class="logic-meter">
-                                    <svg class="meter-svg" viewBox="0 0 100 100">
-                                        <defs>
-                                            <linearGradient id="meter-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-                                                <stop offset="0%" stop-color="#10b981" />
-                                                <stop offset="100%" stop-color="#06b6d4" />
-                                            </linearGradient>
-                                        </defs>
-                                        <circle class="meter-track" cx="50" cy="50" r="40" />
-                                        <circle class="meter-fill" cx="50" cy="50" r="40" stroke="url(#meter-grad)" />
-                                    </svg>
-                                    <div class="logic-score">
-                                        <span class="score-num">9.8</span>
-                                        <span class="score-label">LOGIC INDEX</span>
-                                    </div>
-                                </div>
-                                <div class="vote-badge">
-                                    <span class="badge-dot"></span>
-                                    VERDICT: VALID
-                                </div>
+                            <!-- Premium SVG Radar Scanner Visual -->
+                            <div class="visual-vote-premium" style="width: 100%; height: 100%;">
+                                <svg class="vote-radar-svg" viewBox="0 0 320 160" style="width:100%; height:100%; display:block;">
+                                    <defs>
+                                        <pattern id="radar-grid-1" width="16" height="16" patternUnits="userSpaceOnUse">
+                                            <path d="M 16 0 L 0 0 0 16" fill="none" stroke="rgba(16, 185, 129, 0.03)" stroke-width="1"/>
+                                        </pattern>
+                                    </defs>
+                                    <rect width="100%" height="100%" fill="url(#radar-grid-1)" />
+                                    
+                                    <!-- Concentric Scanner Rings -->
+                                    <g transform="translate(160, 80)">
+                                        <circle r="60" fill="none" stroke="rgba(16, 185, 129, 0.05)" stroke-width="1" />
+                                        <circle r="50" fill="none" stroke="rgba(16, 185, 129, 0.08)" stroke-width="1" />
+                                        <circle r="40" fill="none" stroke="rgba(16, 185, 129, 0.12)" stroke-width="1" stroke-dasharray="4 4" />
+                                        <circle r="28" fill="none" stroke="rgba(16, 185, 129, 0.15)" stroke-width="1.5" />
+                                        
+                                        <!-- Radar Hand / Beam -->
+                                        <g class="radar-hand-group">
+                                            <line class="radar-hand" x1="0" y1="0" x2="35" y2="35" stroke="rgba(16, 185, 129, 0.8)" stroke-width="1.5" />
+                                            <circle class="radar-beam" r="3" fill="#10b981" cx="35" cy="35" />
+                                        </g>
+                                    </g>
+                                    
+                                    <!-- Compass ticks -->
+                                    <path d="M 160,12 L 160,18 M 160,148 L 160,142 M 92,80 L 98,80 M 228,80 L 222,80" stroke="rgba(16, 185, 129, 0.25)" stroke-width="1" />
+                                    
+                                    <!-- Mini Telemetry Dashboard readouts -->
+                                    <g transform="translate(20, 38)">
+                                        <text x="0" y="0" fill="rgba(16, 185, 129, 0.4)" font-family="'Oxanium', monospace" font-size="7">BIAS INDEX</text>
+                                        <text x="0" y="9" fill="#10b981" font-family="'Oxanium', monospace" font-size="8" font-weight="800">0.0% COGNITIVE</text>
+                                    </g>
+                                    
+                                    <g transform="translate(20, 126)">
+                                        <text x="0" y="0" fill="rgba(16, 185, 129, 0.4)" font-family="'Oxanium', monospace" font-size="7">LOGIC FLOW</text>
+                                        <text x="0" y="9" fill="#10b981" font-family="'Oxanium', monospace" font-size="8" font-weight="800">99.8% FIDELITY</text>
+                                    </g>
+                                    
+                                    <g transform="translate(245, 38)">
+                                        <text x="0" y="0" fill="rgba(16, 185, 129, 0.4)" font-family="'Oxanium', monospace" font-size="7">MODEL INPUT</text>
+                                        <text x="0" y="9" fill="#10b981" font-family="'Oxanium', monospace" font-size="8" font-weight="800">ORVELIS v3.0</text>
+                                    </g>
+                                    
+                                    <g transform="translate(245, 126)">
+                                        <text x="0" y="0" fill="rgba(16, 185, 129, 0.4)" font-family="'Oxanium', monospace" font-size="7">STATUS CHECK</text>
+                                        <text x="0" y="9" fill="#10b981" font-family="'Oxanium', monospace" font-size="8" font-weight="800">SECURE [OK]</text>
+                                    </g>
+                                    
+                                    <!-- Central Score box -->
+                                    <g transform="translate(160, 80)">
+                                        <rect x="-22" y="-16" width="44" height="32" rx="5" fill="#08090d" stroke="rgba(16, 185, 129, 0.3)" stroke-width="1.5" />
+                                        <text x="0" y="3" fill="#10b981" font-family="'Oxanium', monospace" font-size="14" font-weight="800" text-anchor="middle">9.8</text>
+                                        <text x="0" y="11" fill="rgba(16, 185, 129, 0.6)" font-family="'Inter', sans-serif" font-size="5" font-weight="800" text-anchor="middle">SCORE</text>
+                                    </g>
+                                    
+                                    <!-- Verdict -->
+                                    <g transform="translate(160, 146)">
+                                        <text x="0" y="0" fill="#10b981" font-family="'Oxanium', monospace" font-size="7" font-weight="800" text-anchor="middle" letter-spacing="1.5">ORVELIS VERDICT: VALID</text>
+                                    </g>
+                                </svg>
                             </div>
                         </div>
                         <div class="fragment-content">
-                            <span class="fragment-tag tag--vote">[ 03 // VOTE ]</span>
-                            <h3>Community decides</h3>
-                            <p>The audience scores the exchange based on reasoning and evidence. Logic wins, not vibes.</p>
+                            <span class="fragment-tag tag--vote">[ 03 // ORVELIS AI ]</span>
+                            <h3>Orvelis AI decides</h3>
+                            <p>Our proprietary cognitive neural core conducts high-fidelity forensic scans of the
+                                argument structure. Orvelis stress-tests logical parameters, flags cognitive bias, and
+                                analyzes factual alignment to deliver an objective Logic Index score.</p>
                         </div>
                     </div>
                 </div>
@@ -795,8 +1010,8 @@
         <section class="section section--interface" id="interface">
             <div class="section__container">
                 <div class="section__header section__header--center">
-                    <span class="section__label">03 — The Interface</span>
-                    <h2 class="section__title">Elegance in every interaction.</h2>
+                    <span class="section__label">[ 03 — THE INTERFACE ]</span>
+                    <h2 class="section__title">ELEGANCE IN EVERY INTERACTION.</h2>
                 </div>
                 <div class="interface__triple-screens">
                     <div class="interface__screen-card">
@@ -820,8 +1035,8 @@
             <div id="canvas-3d-end"></div>
             <div class="section__container">
                 <div class="section__header">
-                    <span class="section__label">04 — The Arena</span>
-                    <h2 class="section__title">Conflict in real-time.</h2>
+                    <span class="section__label">[ 04 — THE ARENA ]</span>
+                    <h2 class="section__title">CONFLICT IN REAL-TIME.</h2>
                 </div>
 
                 <div class="arena-showcase">
@@ -852,9 +1067,13 @@
                                     <span class="terminal-window__title">rebuttal_engine.sh</span>
                                 </div>
                                 <div class="panel-terminal">
-                                    <div class="terminal-line"><span class="term-prompt">&gt;</span> <span class="term-keyword">Analyzing</span> counter-argument...</div>
-                                    <div class="terminal-line"><span class="term-prompt">&gt;</span> Logic score: <span class="term-success">9.4/10</span></div>
-                                    <div class="terminal-line"><span class="term-prompt">&gt;</span> <span class="term-keyword">Synthesizing</span> rebuttal <span class="term-accent">[88%]</span></div>
+                                    <div class="terminal-line"><span class="term-prompt">&gt;</span> <span
+                                            class="term-keyword">Analyzing</span> counter-argument...</div>
+                                    <div class="terminal-line"><span class="term-prompt">&gt;</span> Logic score: <span
+                                            class="term-success">9.4/10</span></div>
+                                    <div class="terminal-line"><span class="term-prompt">&gt;</span> <span
+                                            class="term-keyword">Synthesizing</span> rebuttal <span
+                                            class="term-accent">[88%]</span></div>
                                     <div class="terminal-cursor"></div>
                                 </div>
                             </div>
@@ -886,9 +1105,13 @@
                                     <span class="terminal-window__title">fallacy_detector.py</span>
                                 </div>
                                 <div class="panel-terminal">
-                                    <div class="terminal-line"><span class="term-prompt">&gt;</span> <span class="term-keyword term-keyword--warn">detecting</span> logical fallacy...</div>
-                                    <div class="terminal-line"><span class="term-prompt">&gt;</span> Confidence: <span class="term-warn">42%</span></div>
-                                    <div class="terminal-line"><span class="term-prompt">&gt;</span> Waiting for input<span class="term-blink">_</span></div>
+                                    <div class="terminal-line"><span class="term-prompt">&gt;</span> <span
+                                            class="term-keyword term-keyword--warn">detecting</span> logical fallacy...
+                                    </div>
+                                    <div class="terminal-line"><span class="term-prompt">&gt;</span> Confidence: <span
+                                            class="term-warn">42%</span></div>
+                                    <div class="terminal-line"><span class="term-prompt">&gt;</span> Waiting for
+                                        input<span class="term-blink">_</span></div>
                                     <div class="terminal-cursor terminal-cursor--against"></div>
                                 </div>
                             </div>
@@ -903,7 +1126,8 @@
 
                     <div class="arena-topic-alt">
                         <div class="topic-meta">[ MOTION // DEBATE ]</div>
-                        <p class="topic-content">"Decentralized governance is the only viable path for global consensus."</p>
+                        <p class="topic-content">"Decentralized governance is the only viable path for global
+                            consensus."</p>
                     </div>
 
                     <div class="arena-cta">
@@ -914,13 +1138,103 @@
             </div>
         </section>
 
+        <!-- ORVELIS AI CORE SECTION -->
+        <section class="section section--ai" id="ai-core">
+            <div class="section__container">
+                <div class="ai-core-layout">
+                    <div class="ai-showcase__visual">
+                        <div class="orvelis-card-container">
+                            <div class="orvelis-header">
+                                <div class="orvelis-icon-wrapper">
+                                    <svg class="orvelis-robot-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#38BDF8" stroke-width="1.5">
+                                        <rect x="3" y="11" width="18" height="10" rx="2" />
+                                        <path d="M12 2v3M9 5h6M8 15h.01M16 15h.01M12 18H8" stroke-linecap="round" />
+                                    </svg>
+                                </div>
+                                <div class="orvelis-title-wrap">
+                                    <h3 class="orvelis-title">Orvelis</h3>
+                                    <div class="orvelis-status-row">
+                                        <span class="orvelis-subtitle">AI CORE</span>
+                                        <span class="orvelis-dot-sep">·</span>
+                                        <div class="orvelis-status-badge">
+                                            <span class="orvelis-status-dot"></span>
+                                            <div class="orvelis-status-pulse"></div>
+                                            <span class="orvelis-status-text">ONLINE</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="orvelis-subcard orvelis-subcard--insight">
+                                <div class="orvelis-subcard-header">
+                                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#38BDF8" stroke-width="1.5" style="margin-right: 6px; opacity: 0.7;">
+                                        <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                    <span class="orvelis-subcard-label">DAILY INSIGHT</span>
+                                </div>
+                                <div class="orvelis-score-row">
+                                    <span class="orvelis-score-num">92<span class="score-unit">LQI</span></span>
+                                    <div class="orvelis-trend-badge">
+                                        <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="#10B981" stroke-width="2.5" style="margin-right: 2px;">
+                                            <path d="M23 6l-9.5 9.5-5-5L1 18" stroke-linecap="round" stroke-linejoin="round"/>
+                                            <path d="M17 6h6v6" stroke-linecap="round" stroke-linejoin="round"/>
+                                        </svg>
+                                        <span class="orvelis-trend-text">+15%</span>
+                                    </div>
+                                </div>
+                                <span class="orvelis-score-status">DEEP FOCUS</span>
+                                <p class="orvelis-subcard-desc">Your logical cognitive pathways are primed for high-complexity analysis today. Ready for debate.</p>
+                            </div>
+
+                            <div class="orvelis-subcard orvelis-subcard--analysis">
+                                <div class="orvelis-subcard-header">
+                                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#8B5CF6" stroke-width="1.5" style="margin-right: 6px; opacity: 0.7;">
+                                        <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" stroke-linecap="round"/>
+                                        <path d="M12 6v6l4 2" stroke-linecap="round"/>
+                                    </svg>
+                                    <span class="orvelis-subcard-label">TRUTH ANALYSIS</span>
+                                </div>
+                                <div class="analysis-tag-box">
+                                    <span class="analysis-tag analysis-tag--essence">// ESSENCE</span>
+                                    <p class="orvelis-subcard-desc" style="margin-top: 4px;">Advocating for structural transparency in governance models, emphasizing empirical evidence over rhetoric.</p>
+                                </div>
+                                <div class="analysis-tag-box">
+                                    <span class="analysis-tag analysis-tag--manipulation">// MANIPULATION</span>
+                                    <p class="orvelis-subcard-desc" style="margin-top: 4px;">Detected slight false dichotomy fallacy (4.2% weight) on decentralized vs centralized efficiency metrics.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ai-showcase__content">
+                        <span class="section__label">[ 05 — COGNITIVE LAYER ]</span>
+                        <h2 class="section__title" style="margin-bottom: 24px;">COGNITIVE POWER.<br><span class="text-gradient">EMPIRICALLY VERIFIED.</span></h2>
+                        <p class="manifesto-v2__card-desc">
+                            Meet <strong>Orvelis</strong> — the neural backbone of the Arena. Operating at sub-second speeds, it evaluates every camera debate for logical flow, structural bias, and fallacious statements.
+                        </p>
+                        <div class="cluster-boxes">
+                            <div class="cluster-box cluster-box--blue">
+                                <span class="cluster-box__tag cluster-box__tag--blue">[ ENGINE // TRUTH_DETECTOR ]</span>
+                                <h4>Logic & Fallacy Detection</h4>
+                                <p>Flags logical fallacies, emotional manipulation, and rhetorical traps automatically as the debate progresses on camera.</p>
+                            </div>
+                            <div class="cluster-box cluster-box--violet">
+                                <span class="cluster-box__tag cluster-box__tag--violet">[ BIO_ANALYTICS // INSIGHTS ]</span>
+                                <h4>Cognitive Flow Insights</h4>
+                                <p>Receive a personalized daily logical index showing your reasoning strengths, debate speed, and intellectual growth metrics.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
 
         <!-- GLOBAL NETWORK SECTION (Restored to main flow) -->
         <section class="section section--global" id="global">
             <div class="section__container">
                 <div class="section__header">
-                    <span class="section__label">05 — Global Network</span>
-                    <h2 class="section__title">Logic has no borders.<br />Connecting the world.</h2>
+                    <span class="section__label">[ 06 — GLOBAL NETWORK ]</span>
+                    <h2 class="section__title">LOGIC HAS NO BORDERS.<br />CONNECTING THE WORLD.</h2>
                 </div>
                 <div class="global__layout">
                     <div class="global__visual">
@@ -1080,8 +1394,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js"></script>
     <script defer src="3d-fx.js?v=2"></script>
 
-    <script defer src="script.js"></script>
+    <script defer src="script.js?v=3.1.0"></script>
 </body>
 
 </html>
-
