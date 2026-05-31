@@ -9745,9 +9745,16 @@ html.lenis body {
     .interface__triple-screens {
         flex-direction: column !important;
         gap: 16px !important;
+        align-items: center !important;
     }
-    .interface__screen-card {
-        max-width: 100% !important;
+    .interface__screen-card,
+    .interface__screen-card:nth-child(1),
+    .interface__screen-card:nth-child(2),
+    .interface__screen-card:nth-child(3) {
+        max-width: 340px !important;
+        width: 100% !important;
+        transform: none !important;
+        flex: none !important;
         border-radius: 16px !important;
     }
 

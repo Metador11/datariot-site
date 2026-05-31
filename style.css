@@ -9655,6 +9655,15 @@ html.lenis body {
         gap: 20px !important;
         align-items: center !important;
     }
+    .interface__screen-card,
+    .interface__screen-card:nth-child(1),
+    .interface__screen-card:nth-child(2),
+    .interface__screen-card:nth-child(3) {
+        max-width: 340px !important;
+        width: 100% !important;
+        transform: none !important;
+        flex: none !important;
+    }
 
     .arena-grid {
         grid-template-columns: 1fr !important;
