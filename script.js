@@ -607,42 +607,68 @@ function initializeScripts() {
     const orvelisCard = document.querySelector('.orvelis-card-container');
     if (orvelisCard) {
         orvelisCard.style.transformStyle = 'preserve-3d';
+        const glare = orvelisCard.querySelector('.orvelis-card-glare');
+
         orvelisCard.addEventListener('mousemove', (e) => {
             const rect = orvelisCard.getBoundingClientRect();
             const x = (e.clientX - rect.left) / rect.width;
             const y = (e.clientY - rect.top) / rect.height;
 
+            // Share mouse position globally for Three.js scene
+            window.orvelisMouseX = x;
+            window.orvelisMouseY = y;
+
             const tiltX = (y - 0.5) * 15; // 3D tilt angles
             const tiltY = (x - 0.5) * -15;
 
             // Apply tilt and responsive fast transition
-            orvelisCard.style.transition = 'transform 0.05s ease-out';
+            orvelisCard.style.transition = 'transform 0.1s ease-out';
             orvelisCard.style.transform = `perspective(2000px) rotateX(${tiltX}deg) rotateY(${tiltY}deg)`;
 
-            // Parallax translations for child elements
+            // Glare highlight tracking
+            if (glare) {
+                const px = x * 100;
+                const py = y * 100;
+                const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+                glare.style.opacity = '1';
+                glare.style.background = isDark 
+                    ? `radial-gradient(circle at ${px}% ${py}%, rgba(56, 189, 248, 0.18) 0%, rgba(139, 92, 246, 0.05) 45%, rgba(0,0,0,0) 70%)`
+                    : `radial-gradient(circle at ${px}% ${py}%, rgba(14, 165, 233, 0.12) 0%, rgba(255,255,255,0) 70%)`;
+            }
+
+            // Parallax translations for child elements (slightly increased depth)
             const header = orvelisCard.querySelector('.orvelis-header');
             const subcards = orvelisCard.querySelectorAll('.orvelis-subcard');
 
             if (header) {
-                header.style.transition = 'transform 0.05s ease-out';
-                header.style.transform = `translateZ(40px) translateX(${(x - 0.5) * 12}px) translateY(${(y - 0.5) * 12}px)`;
+                header.style.transition = 'transform 0.1s ease-out';
+                header.style.transform = `translateZ(50px) translateX(${(x - 0.5) * 15}px) translateY(${(y - 0.5) * 15}px)`;
             }
             subcards.forEach((sub, index) => {
-                const zDepth = 60 + index * 20;
-                const shift = 15 + index * 10;
-                sub.style.transition = 'transform 0.05s ease-out';
+                const zDepth = 75 + index * 25;
+                const shift = 20 + index * 12;
+                sub.style.transition = 'transform 0.1s ease-out';
                 sub.style.transform = `translateZ(${zDepth}px) translateX(${(x - 0.5) * shift}px) translateY(${(y - 0.5) * shift}px)`;
             });
         });
 
         orvelisCard.addEventListener('mouseleave', () => {
+            // Reset global mouse coords
+            window.orvelisMouseX = 0.5;
+            window.orvelisMouseY = 0.5;
+
             // Smooth reset on mouse leave
             orvelisCard.style.transition = 'transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)';
             orvelisCard.style.transform = '';
-            
+
+            if (glare) {
+                glare.style.transition = 'opacity 0.6s ease';
+                glare.style.opacity = '0';
+            }
+
             const header = orvelisCard.querySelector('.orvelis-header');
             const subcards = orvelisCard.querySelectorAll('.orvelis-subcard');
-            
+
             if (header) {
                 header.style.transition = 'transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)';
                 header.style.transform = '';

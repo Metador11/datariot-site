@@ -589,6 +589,171 @@ window.addEventListener('load', () => {
     }
 
     /* =========================================================
+       ANIMATION 4.5: ORVELIS AI HOLOGRAM CORE
+       ========================================================= */
+    function initOrvelisAnimation() {
+        const container = document.getElementById('canvas-3d-orvelis');
+        if (!container) return;
+
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(50, container.clientWidth / container.clientHeight, 0.1, 1000);
+        camera.position.z = 8;
+
+        let renderer;
+        try {
+            renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+            renderer.setSize(container.clientWidth, container.clientHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            container.appendChild(renderer.domElement);
+        } catch (e) {
+            console.warn('initOrvelisAnimation: Renderer creation failed.', e);
+            return;
+        }
+
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
+        scene.add(ambientLight);
+
+        const pointLight1 = new THREE.PointLight(0x0ea5e9, 2, 50);
+        pointLight1.position.set(5, 5, 5);
+        scene.add(pointLight1);
+
+        const pointLight2 = new THREE.PointLight(0x8b5cf6, 2, 50);
+        pointLight2.position.set(-5, -5, 5);
+        scene.add(pointLight2);
+
+        const mainGroup = new THREE.Group();
+        scene.add(mainGroup);
+
+        // Core Icosahedron wireframe
+        const coreGeometry = new THREE.IcosahedronGeometry(1.6, 2);
+        const coreMaterial = new THREE.MeshPhongMaterial({
+            color: 0x38bdf8,
+            emissive: 0x0369a1,
+            wireframe: true,
+            transparent: true,
+            opacity: 0.35,
+            flatShading: true
+        });
+        const coreMesh = new THREE.Mesh(coreGeometry, coreMaterial);
+        mainGroup.add(coreMesh);
+
+        // Outer wireframe shell
+        const outerGeometry = new THREE.IcosahedronGeometry(2.0, 1);
+        const outerMaterial = new THREE.MeshBasicMaterial({
+            color: 0x8b5cf6,
+            wireframe: true,
+            transparent: true,
+            opacity: 0.2
+        });
+        const outerMesh = new THREE.Mesh(outerGeometry, outerMaterial);
+        mainGroup.add(outerMesh);
+
+        // Concentric Orbital Rings
+        const rings = [];
+        const ringCount = 3;
+        for (let i = 0; i < ringCount; i++) {
+            const radius = 2.4 + i * 0.4;
+            const ringGeo = new THREE.TorusGeometry(radius, 0.015, 8, 64);
+            const ringMat = new THREE.MeshBasicMaterial({
+                color: i % 2 === 0 ? 0x38bdf8 : 0x8b5cf6,
+                transparent: true,
+                opacity: 0.3
+            });
+            const ringMesh = new THREE.Mesh(ringGeo, ringMat);
+            ringMesh.rotation.x = Math.random() * Math.PI;
+            ringMesh.rotation.y = Math.random() * Math.PI;
+            mainGroup.add(ringMesh);
+            rings.push(ringMesh);
+        }
+
+        // Particle cloud (neural nodes)
+        const particleCount = 80;
+        const particlesGeometry = new THREE.BufferGeometry();
+        const positions = new Float32Array(particleCount * 3);
+        for (let i = 0; i < particleCount * 3; i += 3) {
+            const phi = Math.random() * Math.PI * 2;
+            const theta = Math.acos(Math.random() * 2 - 1);
+            const distance = 2.2 + Math.random() * 1.8;
+            positions[i] = distance * Math.sin(theta) * Math.cos(phi);
+            positions[i+1] = distance * Math.sin(theta) * Math.sin(phi);
+            positions[i+2] = distance * Math.cos(theta);
+        }
+        particlesGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        const particlesMaterial = new THREE.PointsMaterial({
+            size: 0.08,
+            color: 0x38bdf8,
+            transparent: true,
+            opacity: 0.7
+        });
+        const particleSystem = new THREE.Points(particlesGeometry, particlesMaterial);
+        mainGroup.add(particleSystem);
+
+        let mouseX = 0, mouseY = 0;
+        let lastTheme = null;
+        const clock = new THREE.Clock();
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            const elapsed = clock.getElapsedTime();
+
+            // Rotate core and shell
+            coreMesh.rotation.y += 0.003;
+            coreMesh.rotation.x += 0.001;
+            outerMesh.rotation.y -= 0.002;
+            outerMesh.rotation.z += 0.001;
+
+            // Pulse nucleus
+            const scale = 1.0 + Math.sin(elapsed * 2.5) * 0.05;
+            coreMesh.scale.setScalar(scale);
+
+            // Rotate rings
+            rings.forEach((ring, idx) => {
+                const speed = 0.008 * (idx + 1);
+                ring.rotation.z += speed;
+                ring.rotation.y += speed * 0.3;
+            });
+
+            // Sync mouse drift from global variables (set in script.js)
+            const targetMouseX = window.orvelisMouseX !== undefined ? (window.orvelisMouseX - 0.5) * 2 : 0;
+            const targetMouseY = window.orvelisMouseY !== undefined ? (window.orvelisMouseY - 0.5) * 2 : 0;
+
+            mouseX += (targetMouseX - mouseX) * 0.1;
+            mouseY += (targetMouseY - mouseY) * 0.1;
+
+            mainGroup.rotation.y = mouseX * 0.5;
+            mainGroup.rotation.x = -mouseY * 0.5;
+
+            // Theme reactive colors
+            const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+            if (currentTheme !== lastTheme) {
+                lastTheme = currentTheme;
+                const isDark = currentTheme === 'dark';
+                const targetBlue = isDark ? 0x38bdf8 : 0x0284c7;
+                const targetPurple = isDark ? 0x8b5cf6 : 0x6d28d9;
+
+                coreMaterial.color.setHex(targetBlue);
+                coreMaterial.emissive.setHex(isDark ? 0x0369a1 : 0x0ea5e9);
+                outerMaterial.color.setHex(targetPurple);
+                particlesMaterial.color.setHex(targetBlue);
+                rings.forEach((ring, idx) => {
+                    ring.material.color.setHex(idx % 2 === 0 ? targetBlue : targetPurple);
+                });
+            }
+
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        window.addEventListener('resize', () => {
+            if (!container) return;
+            camera.aspect = container.clientWidth / container.clientHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(container.clientWidth, container.clientHeight);
+        });
+    }
+
+    /* =========================================================
        ANIMATION 5: THE GLOBAL GLOBE (Global Platform Section)
        ========================================================= */
     function initGlobeAnimation() {
@@ -1256,6 +1421,7 @@ window.addEventListener('load', () => {
 
     // Initialize all with high resilience
     try { initVideoScreensAnimation(); } catch (e) { console.warn('Hero 3D failed:', e); }
+    try { initOrvelisAnimation(); } catch (e) { console.warn('Orvelis 3D failed:', e); }
     try { initMiddleAnimation(); } catch (e) { console.warn('Middle 3D failed:', e); }
     try { initFeaturesAnimation(); } catch (e) { console.warn('Features 3D failed:', e); }
     try { initEndAnimation(); } catch (e) { console.warn('End 3D failed:', e); }
