@@ -8788,11 +8788,11 @@ html.lenis body {
 }
 
 .interface__screen-card:nth-child(2) {
-    flex: 1.1 !important;
-    box-shadow: 0 40px 100px rgba(0, 0, 0, 0.6) !important;
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    flex: 1 !important;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4) !important;
+    border: 1px solid rgba(255, 255, 255, 0.05) !important;
     z-index: 10 !important;
-    transform: scale(1.05) !important;
+    transform: none !important;
 }
 
 .interface__screen-card:nth-child(3) {
@@ -9257,70 +9257,122 @@ html.lenis body {
    ORVELIS AI CORE SECTION STYLES
    ============================== */
 .section--ai {
+    background: transparent;
     position: relative;
-    background: radial-gradient(circle at 10% 20%, rgba(14, 165, 233, 0.04) 0%, transparent 50%),
-                radial-gradient(circle at 90% 80%, rgba(139, 92, 246, 0.02) 0%, transparent 50%);
 }
 
 .ai-core-layout {
     display: grid;
-    grid-template-columns: 1.1fr 0.9fr;
+    grid-template-columns: 1fr 1fr;
     gap: 80px;
     align-items: center;
 }
 
-/* --- CARD CONTAINER (borderless, deep logo-blue glass) --- */
+/* --- CARD CONTAINER (subtle translucent glass, borderless, no glowing shadows) --- */
 .orvelis-card-container {
     position: relative;
-    background: linear-gradient(165deg, rgba(14, 165, 233, 0.12) 0%, rgba(10, 15, 30, 0.8) 50%, rgba(5, 8, 18, 0.95) 100%);
-    backdrop-filter: blur(40px);
-    -webkit-backdrop-filter: blur(40px);
-    border: none;
+    background: transparent !important;
+    border: none !important;
     border-radius: 28px;
     padding: 36px;
-    box-shadow:
-        inset 0 0 30px rgba(14, 165, 233, 0.08),
-        0 0 50px rgba(14, 165, 233, 0.15),
-        0 25px 60px rgba(0, 0, 0, 0.4);
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
     display: flex;
     flex-direction: column;
-    gap: 20px;
-    transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-    overflow: hidden;
+    gap: 0;
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    transform-style: preserve-3d;
+    overflow: visible !important;
 }
 
 .orvelis-card-container::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 40px;
-    right: 40px;
-    height: 1px;
-    background: linear-gradient(90deg,
-        transparent,
-        rgba(14, 165, 233, 0.15) 40%,
-        rgba(14, 165, 233, 0.15) 60%,
-        transparent);
+    display: none;
 }
 
 .orvelis-card-container::after {
-    content: '';
-    position: absolute;
-    top: -80px;
-    right: -60px;
-    width: 240px;
-    height: 240px;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(14, 165, 233, 0.06) 0%, transparent 70%);
-    pointer-events: none;
+    display: none;
 }
 
 .orvelis-card-container:hover {
-    box-shadow:
-        inset 0 0 35px rgba(14, 165, 233, 0.16),
-        0 0 70px rgba(14, 165, 233, 0.25),
-        0 30px 80px rgba(0, 0, 0, 0.5);
-    transform: translateY(-4px);
+    background: transparent !important;
+    box-shadow: none !important;
+    transform: none;
+}
+
+/* Theme-dependent overrides for Orvelis Card contrast */
+[data-theme="light"] .orvelis-title {
+    color: #111827 !important;
+}
+[data-theme="light"] .orvelis-subtitle {
+    color: rgba(17, 24, 39, 0.6) !important;
+}
+[data-theme="light"] .orvelis-score-num {
+    color: #111827 !important;
+}
+[data-theme="light"] .orvelis-subcard-desc {
+    color: rgba(17, 24, 39, 0.65) !important;
+}
+[data-theme="light"] .orvelis-subcard-label {
+    color: rgba(17, 24, 39, 0.7) !important;
+}
+[data-theme="light"] .orvelis-score-status {
+    color: #0284c7 !important;
+}
+[data-theme="light"] .orvelis-subcard {
+    border-top: 1px solid rgba(0, 0, 0, 0.08) !important;
+}
+[data-theme="light"] .analysis-tag--essence {
+    color: #0284c7 !important;
+    background: rgba(14, 165, 233, 0.08) !important;
+}
+[data-theme="light"] .analysis-tag--manipulation {
+    color: #dc2626 !important;
+    background: rgba(220, 38, 38, 0.08) !important;
+}
+[data-theme="light"] .orvelis-icon-wrapper {
+    background: rgba(14, 165, 233, 0.06) !important;
+    border: 1px solid rgba(14, 165, 233, 0.1) !important;
+}
+[data-theme="light"] .orvelis-robot-icon {
+    stroke: #0284c7 !important;
+}
+
+[data-theme="dark"] .orvelis-title {
+    color: #EEEEF0 !important;
+}
+[data-theme="dark"] .orvelis-subtitle {
+    color: rgba(148, 163, 184, 0.65) !important;
+}
+[data-theme="dark"] .orvelis-score-num {
+    color: #EEEEF0 !important;
+}
+[data-theme="dark"] .orvelis-subcard-desc {
+    color: rgba(148, 163, 184, 0.6) !important;
+}
+[data-theme="dark"] .orvelis-subcard-label {
+    color: rgba(148, 163, 184, 0.7) !important;
+}
+[data-theme="dark"] .orvelis-score-status {
+    color: #38BDF8 !important;
+}
+[data-theme="dark"] .orvelis-subcard {
+    border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+[data-theme="dark"] .analysis-tag--essence {
+    color: #38BDF8 !important;
+    background: rgba(56, 189, 248, 0.08) !important;
+}
+[data-theme="dark"] .analysis-tag--manipulation {
+    color: #F87171 !important;
+    background: rgba(248, 113, 113, 0.08) !important;
+}
+[data-theme="dark"] .orvelis-icon-wrapper {
+    background: rgba(56, 189, 248, 0.05) !important;
+    border: 1px solid rgba(56, 189, 248, 0.1) !important;
+}
+[data-theme="dark"] .orvelis-robot-icon {
+    stroke: #38bdf8 !important;
 }
 
 /* --- HEADER --- */
@@ -9334,16 +9386,15 @@ html.lenis body {
     width: 44px;
     height: 44px;
     border-radius: 12px;
-    background: rgba(14, 165, 233, 0.06);
+    background: rgba(56, 189, 248, 0.03);
     border: none;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: inset 0 0 10px rgba(14, 165, 233, 0.1);
 }
 
 .orvelis-robot-icon {
-    stroke: rgba(14, 165, 233, 0.8) !important;
+    stroke: rgba(56, 189, 248, 0.6) !important;
 }
 
 .orvelis-title-wrap {
@@ -9423,16 +9474,18 @@ html.lenis body {
     letter-spacing: 1px;
 }
 
-/* --- SUBCARDS (borderless, soft brand-blue background) --- */
+/* --- SUBCARDS (clean text sections with thin dividers, no box backgrounds or borders) --- */
 .orvelis-subcard {
-    background: rgba(14, 165, 233, 0.02);
+    background: transparent;
     border: none;
-    border-radius: 16px;
-    padding: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 0;
+    padding: 24px 0 0 0;
+    margin-top: 24px;
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    transition: background 0.4s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    gap: 12px;
+    transition: all 0.4s ease;
 }
 
 .orvelis-subcard::before {
@@ -9440,9 +9493,10 @@ html.lenis body {
 }
 
 .orvelis-subcard:hover {
-    background: rgba(14, 165, 233, 0.04);
-    transform: translateY(-2px);
+    background: transparent;
     border: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.09);
+    transform: none;
     box-shadow: none;
 }
 
@@ -9480,24 +9534,14 @@ html.lenis body {
     background-clip: unset;
 }
 
-.orvelis-score-num .score-unit {
-    font-family: var(--font-tech);
-    font-size: 11px;
-    font-weight: 700;
-    color: rgba(14, 165, 233, 0.7);
-    margin-left: 6px;
-    letter-spacing: 1px;
-    vertical-align: super;
-}
-
 .orvelis-trend-badge {
     display: inline-flex;
     align-items: center;
     padding: 3px 7px;
     border-radius: 5px;
-    background: rgba(16, 185, 129, 0.06);
+    background: transparent;
     border: none;
-    color: rgba(16, 185, 129, 0.85);
+    color: rgba(16, 185, 129, 0.8);
     font-family: var(--font-tech);
     font-size: 10px;
     font-weight: 600;
@@ -9511,7 +9555,7 @@ html.lenis body {
     font-family: var(--font-tech);
     font-size: 10px;
     font-weight: 700;
-    color: rgba(14, 165, 233, 0.8);
+    color: rgba(56, 189, 248, 0.75);
     letter-spacing: 1.8px;
     text-transform: uppercase;
 }
@@ -9523,7 +9567,7 @@ html.lenis body {
     margin: 0;
 }
 
-/* --- ANALYSIS TAGS --- */
+/* --- ANALYSIS TAGS (borderless, subtle tint only) --- */
 .analysis-tag-box {
     display: flex;
     flex-direction: column;
@@ -9542,7 +9586,7 @@ html.lenis body {
 
 .analysis-tag--essence {
     color: #38BDF8;
-    background: rgba(14, 165, 233, 0.08);
+    background: rgba(56, 189, 248, 0.08);
     border: none;
 }
 
@@ -9550,113 +9594,6 @@ html.lenis body {
     color: #F87171;
     background: rgba(248, 113, 113, 0.08);
     border: none;
-}
-
-/* --- PREMIUM PLATFORM-STYLE RIGHT SIDE FEATURE LIST (Borderless) --- */
-.section--ai .section__label {
-    margin-bottom: 24px;
-}
-
-.section--ai .section__title {
-    margin-bottom: 28px;
-    font-size: clamp(32px, 4.5vw, 48px);
-    text-transform: uppercase;
-    line-height: 1.15;
-}
-
-.section--ai .section__title .text-gradient {
-    background: linear-gradient(135deg, #38BDF8 0%, #a5f3fc 50%, #8B5CF6 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    display: inline-block;
-}
-
-.section--ai .manifesto-v2__card-desc {
-    font-size: 16px;
-    line-height: 1.7;
-    color: var(--text-secondary);
-    margin-bottom: 36px;
-    max-width: 95%;
-}
-
-.section--ai .cluster-boxes {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-}
-
-.section--ai .cluster-box {
-    background: rgba(14, 165, 233, 0.02);
-    border: none !important;
-    border-radius: 20px;
-    padding: 24px 28px;
-    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-    position: relative;
-    overflow: hidden;
-}
-
-.section--ai .cluster-box::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 3px;
-    height: 40%;
-    border-radius: 0 4px 4px 0;
-    transition: height 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.section--ai .cluster-box--blue::before {
-    background: #0EA5E9;
-    box-shadow: 0 0 10px rgba(14, 165, 233, 0.5);
-}
-
-.section--ai .cluster-box--violet::before {
-    background: #8B5CF6;
-    box-shadow: 0 0 10px rgba(139, 92, 246, 0.5);
-}
-
-.section--ai .cluster-box:hover {
-    background: rgba(14, 165, 233, 0.04);
-    transform: translateX(6px);
-}
-
-.section--ai .cluster-box:hover::before {
-    height: 70%;
-}
-
-.section--ai .cluster-box__tag {
-    font-family: var(--font-tech);
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    margin-bottom: 10px;
-    display: inline-block;
-}
-
-.section--ai .cluster-box__tag--blue {
-    color: #0EA5E9;
-}
-
-.section--ai .cluster-box__tag--violet {
-    color: #8B5CF6;
-}
-
-.section--ai .cluster-box h4 {
-    font-size: 17px;
-    font-weight: 700;
-    color: var(--text-primary);
-    margin: 0 0 6px 0 !important;
-    letter-spacing: -0.01em;
-}
-
-.section--ai .cluster-box p {
-    font-size: 13.5px;
-    line-height: 1.6;
-    color: var(--text-secondary);
-    margin: 0 !important;
 }
 
 /* ==========================================================
@@ -9701,12 +9638,20 @@ html.lenis body {
 
     /* Interface triple screens */
     .interface__triple-screens {
-        flex-direction: column !important;
+        flex-direction: row !important;
         gap: 20px !important;
         align-items: center !important;
+        max-width: 100% !important;
     }
     .interface__screen-card {
-        max-width: 340px !important;
+        flex: 1 !important;
+        max-width: none !important;
+    }
+    .interface__screen-card:nth-child(1) {
+        transform: none !important;
+    }
+    .interface__screen-card:nth-child(3) {
+        transform: none !important;
     }
 
     /* Arena grid */
@@ -9809,12 +9754,23 @@ html.lenis body {
 
     /* Interface */
     .interface__triple-screens {
-        flex-direction: column !important;
+        flex-direction: row !important;
         gap: 16px !important;
+        max-width: 100% !important;
     }
     .interface__screen-card {
-        max-width: 100% !important;
+        flex: 1 !important;
+        max-width: none !important;
         border-radius: 16px !important;
+    }
+    .interface__screen-card:nth-child(1) {
+        transform: none !important;
+    }
+    .interface__screen-card:nth-child(2) {
+        transform: none !important;
+    }
+    .interface__screen-card:nth-child(3) {
+        transform: none !important;
     }
 
     /* Arena */
@@ -9855,7 +9811,9 @@ html.lenis body {
         border-radius: 22px !important;
     }
     .orvelis-subcard {
-        padding: 16px !important;
+        padding: 16px 0 !important;
+        margin-top: 16px !important;
+        border-radius: 0 !important;
     }
     .orvelis-score-num {
         font-size: 40px !important;
@@ -10009,8 +9967,9 @@ html.lenis body {
         font-size: 36px !important;
     }
     .orvelis-subcard {
-        padding: 14px !important;
-        border-radius: 14px !important;
+        padding: 12px 0 !important;
+        margin-top: 12px !important;
+        border-radius: 0 !important;
     }
 
     /* Beta */

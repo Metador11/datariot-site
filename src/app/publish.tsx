@@ -1,21 +1,32 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, StyleSheet, Image, KeyboardAvoidingView, Platform, TouchableOpacity, ScrollView, Alert, ActivityIndicator } from 'react-native';
 import { useLocalSearchParams, useRouter, Stack } from 'expo-router';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView } from '../components/UI/SafeAreaView';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { useVideoPlayer, VideoView } from 'expo-video';
 import { useAudioRecorder, useAudioPlayer, requestRecordingPermissionsAsync, RecordingPresets, useAudioPlayerStatus } from 'expo-audio';
 import * as ImagePicker from 'expo-image-picker';
-import { useAuth } from '@lib/supabase/hooks/useAuth';
-import { VIDEO_CATEGORIES, CATEGORY_DISPLAY_NAMES, VideoCategory } from '@lib/constants/categories';
-import { supabase } from '@lib/supabase/client';
-import { generateDebateSeed, generateVideoAnalysis, DebateSeed } from '@lib/ai/client';
+import { useAuth } from '../lib/supabase/hooks/useAuth';
+import { VIDEO_CATEGORIES, CATEGORY_DISPLAY_NAMES, VideoCategory } from '../lib/constants/categories';
+import { supabase } from '../lib/supabase/client';
+import { generateDebateSeed, generateVideoAnalysis, DebateSeed } from '../lib/ai/client';
+import { useTheme } from '../components/Theme/ThemeProvider';
+
+const showAlert = (title: string, message: string) => {
+    if (Platform.OS === 'web') {
+        alert(`${title}\n\n${message}`);
+    } else {
+        Alert.alert(title, message);
+    }
+};
 
 export default function PublishScreen() {
     const router = useRouter();
     const params = useLocalSearchParams();
     const { videoUri, trimStart, trimEnd, debateId, side } = params;
     const { user } = useAuth();
+    const { theme, mode } = useTheme();
+    const isDark = mode === 'dark';
 
     const [caption, setCaption] = useState('');
     const [selectedCategory, setSelectedCategory] = useState<VideoCategory | null>(null);
@@ -42,7 +53,7 @@ export default function PublishScreen() {
     const pickImage = async () => {
         const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
         if (status !== 'granted') {
-            Alert.alert('Permission needed', 'Please allow access to your photos.');
+            showAlert('Permission needed', 'Please allow access to your photos.');
             return;
         }
 
@@ -71,7 +82,7 @@ export default function PublishScreen() {
                 setImageUri(null);
                 setAudioUri(null);
             } else {
-                Alert.alert('Permission needed', 'Microphone access is required.');
+                showAlert('Permission needed', 'Microphone access is required.');
             }
         } catch (err) {
             console.error('Failed to start recording', err);
@@ -102,32 +113,44 @@ export default function PublishScreen() {
     const handlePost = async () => {
         const hasMedia = videoUri || imageUri || audioUri;
         if (!caption.trim() && !hasMedia) {
-            Alert.alert('Empty Post', 'Please write something or attach media.');
+            showAlert('Empty Post', 'Please write something or attach media.');
             return;
         }
 
         if (!user) {
-            Alert.alert('Error', 'You must be logged in.');
+            showAlert('Error', 'You must be logged in.');
             return;
         }
 
         setUploading(true);
 
         const uploadFile = async (uri: string, bucket: string, path: string) => {
-            const formData = new FormData();
+            let body: any;
             const filename = uri.split('/').pop() || 'file';
             const exc = filename.split('.').pop() || '';
             const type = bucket === 'videos' ? 'video/mp4' : (bucket === 'images' ? 'image/jpeg' : 'audio/mpeg');
 
-            formData.append('file', {
-                uri,
-                name: filename,
-                type: type,
-            } as any);
+            if (Platform.OS === 'web') {
+                try {
+                    const response = await fetch(uri);
+                    body = await response.blob();
+                } catch (fetchErr) {
+                    console.error("Failed to fetch blob URL:", fetchErr);
+                    throw new Error("Could not read local file. Please try again.");
+                }
+            } else {
+                const formData = new FormData();
+                formData.append('file', {
+                    uri,
+                    name: filename,
+                    type: type,
+                } as any);
+                body = formData;
+            }
 
             const { data, error } = await supabase.storage
                 .from(bucket)
-                .upload(path, formData, {
+                .upload(path, body, {
                     contentType: type,
                     upsert: true
                 });
@@ -154,8 +177,7 @@ export default function PublishScreen() {
                             user_id: user.id,
                             title: `Response to ${debateId}`,
                             url: uploadedVideoUrl,
-                            duration: Math.round((Number(trimEnd || 0) - Number(trimStart || 0)) / 1000) || 600,
-                            is_published: true
+                            duration: Math.round((Number(trimEnd || 0) - Number(trimStart || 0)) / 1000) || 600
                         })
                         .select('id')
                         .single();
@@ -188,8 +210,7 @@ export default function PublishScreen() {
                             description: caption,
                             url: uploadedVideoUrl,
                             category: selectedCategory,
-                            duration: Math.round((Number(trimEnd || 0) - Number(trimStart || 0)) / 1000) || 600,
-                            is_published: true
+                            duration: Math.round((Number(trimEnd || 0) - Number(trimStart || 0)) / 1000) || 600
                         });
                     if (videoError) throw videoError;
                 } else if (imageUri) {
@@ -231,11 +252,11 @@ export default function PublishScreen() {
             // Wait a sec for propagation
             await new Promise(resolve => setTimeout(resolve, 500));
 
-            Alert.alert('Success', 'Published!');
+            showAlert('Success', 'Published!');
             router.replace('/(tabs)/profile'); // Or back to feed
         } catch (error: any) {
             console.error(error);
-            Alert.alert('Error', 'Failed to publish: ' + (error.message || 'Unknown error'));
+            showAlert('Error', 'Failed to publish: ' + (error.message || 'Unknown error'));
         } finally {
             setUploading(false);
         }
@@ -284,7 +305,7 @@ export default function PublishScreen() {
             }
         } catch (error) {
             console.error("AI Suggestion error:", error);
-            Alert.alert("Error", "AI is currently resting. Try again soon!");
+            showAlert("Error", "AI is currently resting. Try again soon!");
         } finally {
             setSuggesting(false);
         }
@@ -293,26 +314,35 @@ export default function PublishScreen() {
     const isVideoSelection = !!videoUri;
 
     return (
-        <SafeAreaView style={styles.container} edges={['top']}>
+        <SafeAreaView style={[styles.container, { backgroundColor: theme.colors.background.primary }]} edges={['top']}>
             <Stack.Screen options={{ headerShown: false }} />
 
             {/* Header */}
-            <View style={styles.header}>
+            <View style={[styles.header, { borderBottomColor: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.05)' }]}>
                 <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-                    <Text style={styles.cancelText}>Cancel</Text>
+                    <Text style={[styles.cancelText, { color: theme.colors.text.secondary, fontFamily: theme.typography.fontFamilies.medium }]}>Cancel</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                     onPress={handlePost}
                     disabled={uploading || isVerifying || (isVideoSelection && verificationStatus !== 'verified')}
                     style={[
                         styles.postButton,
+                        {
+                            backgroundColor: isDark ? '#D9E4FF' : '#4C6EF5',
+                        },
                         (uploading || isVerifying || (isVideoSelection && verificationStatus !== 'verified')) && styles.disabledButton
                     ]}
                 >
                     {uploading ? (
-                        <ActivityIndicator color="#fff" size="small" />
+                        <ActivityIndicator color={isDark ? '#000000' : '#ffffff'} size="small" />
                     ) : (
-                        <Text style={styles.postButtonText}>Post</Text>
+                        <Text style={[
+                            styles.postButtonText,
+                            {
+                                color: isDark ? '#000000' : '#ffffff',
+                                fontFamily: theme.typography.fontFamilies.bold
+                            }
+                        ]}>Post</Text>
                     )}
                 </TouchableOpacity>
             </View>
@@ -324,17 +354,33 @@ export default function PublishScreen() {
                 <ScrollView style={styles.content} contentContainerStyle={{ paddingBottom: 100 }}>
                     {/* User Info (Optional) */}
                     <View style={styles.userInfo}>
-                        <View style={styles.avatarPlaceholder}>
-                            <Text style={styles.avatarText}>{user?.email?.charAt(0).toUpperCase() || 'U'}</Text>
+                        <View style={[
+                            styles.avatarPlaceholder,
+                            { backgroundColor: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.05)' }
+                        ]}>
+                            <Text style={[styles.avatarText, { color: theme.colors.text.primary, fontFamily: theme.typography.fontFamilies.bold }]}>
+                                {user?.email?.charAt(0).toUpperCase() || 'U'}
+                            </Text>
                         </View>
-                        <Text style={styles.username}>@{user?.email?.split('@')[0] || 'username'}</Text>
+                        <Text style={[styles.username, { color: theme.colors.text.primary, fontFamily: theme.typography.fontFamilies.semibold }]}>
+                            @{user?.email?.split('@')[0] || 'username'}
+                        </Text>
                     </View>
 
                     {/* Text Input */}
                     <TextInput
-                        style={styles.textInput}
+                        style={[
+                            styles.textInput,
+                            {
+                                color: theme.colors.text.primary,
+                                fontFamily: theme.typography.fontFamilies.regular,
+                                // @ts-ignore - Web outline reset
+                                outlineStyle: 'none',
+                                outlineWidth: 0,
+                            }
+                        ]}
                         placeholder={isVideoSelection ? "Write a caption..." : "State your thesis..."}
-                        placeholderTextColor="#666"
+                        placeholderTextColor={theme.colors.text.muted}
                         multiline
                         value={caption}
                         onChangeText={setCaption}
@@ -343,23 +389,43 @@ export default function PublishScreen() {
 
                     {/* AI Suggestion Button */}
                     <TouchableOpacity
-                        style={[styles.aiSuggestBtn, suggesting && { opacity: 0.7 }]}
+                        style={[
+                            styles.aiSuggestBtn,
+                            {
+                                backgroundColor: isDark ? 'rgba(217, 228, 255, 0.08)' : 'rgba(76, 110, 245, 0.06)',
+                                borderColor: isDark ? 'rgba(217, 228, 255, 0.15)' : 'rgba(76, 110, 245, 0.12)',
+                                borderWidth: 1,
+                            },
+                            suggesting && { opacity: 0.7 }
+                        ]}
                         onPress={handleAISuggest}
                         disabled={suggesting}
                     >
                         {suggesting ? (
-                            <ActivityIndicator size="small" color="#000" />
+                            <ActivityIndicator size="small" color={isDark ? '#D9E4FF' : '#4C6EF5'} />
                         ) : (
                             <>
-                                <Ionicons name="sparkles" size={16} color="#000" />
-                                <Text style={styles.aiSuggestText}>AI Logic Oracle: Extract Thesis</Text>
+                                <Ionicons name="sparkles" size={16} color={isDark ? '#D9E4FF' : '#4C6EF5'} />
+                                <Text style={[
+                                    styles.aiSuggestText,
+                                    { color: isDark ? '#D9E4FF' : '#4C6EF5', fontFamily: theme.typography.fontFamilies.bold }
+                                ]}>
+                                    AI Logic Oracle: Extract Thesis
+                                </Text>
                             </>
                         )}
                     </TouchableOpacity>
 
                     {/* PREVIEWS */}
                     {isVideoSelection && (
-                        <View style={styles.mediaPreview}>
+                        <View style={[
+                            styles.mediaPreview,
+                            {
+                                backgroundColor: isDark ? '#000000' : 'rgba(0,0,0,0.02)',
+                                borderColor: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.05)',
+                                borderWidth: 1,
+                            }
+                        ]}>
                             <VideoView
                                 player={videoPlayer}
                                 style={styles.video}
@@ -370,8 +436,8 @@ export default function PublishScreen() {
                             {/* Verification Overlay */}
                             {isVerifying && (
                                 <View style={styles.verificationOverlay}>
-                                    <ActivityIndicator size="large" color="#D9E4FF" />
-                                    <Text style={styles.verificationText}>Verifying AI Content...</Text>
+                                    <ActivityIndicator size="large" color={isDark ? '#D9E4FF' : '#4C6EF5'} />
+                                    <Text style={[styles.verificationText, { fontFamily: theme.typography.fontFamilies.medium }]}>Verifying AI Content...</Text>
                                 </View>
                             )}
 
@@ -379,15 +445,15 @@ export default function PublishScreen() {
                             {!isVerifying && verificationStatus === 'verified' && (
                                 <View style={[styles.videoBadge, { backgroundColor: 'rgba(34, 197, 94, 0.9)' }]}>
                                     <Ionicons name="checkmark-circle" size={14} color="white" />
-                                    <Text style={styles.videoBadgeText}>AI Verified</Text>
+                                    <Text style={[styles.videoBadgeText, { fontFamily: theme.typography.fontFamilies.bold }]}>AI Verified</Text>
                                 </View>
                             )}
 
                             {!isVerifying && verificationStatus === 'rejected' && (
                                 <View style={styles.errorOverlay}>
                                     <Ionicons name="alert-circle" size={48} color="#ef4444" />
-                                    <Text style={styles.errorTitle}>Verification Failed</Text>
-                                    <Text style={styles.errorText}>
+                                    <Text style={[styles.errorTitle, { fontFamily: theme.typography.fontFamilies.bold }]}>Verification Failed</Text>
+                                    <Text style={[styles.errorText, { fontFamily: theme.typography.fontFamilies.regular }]}>
                                         This video does not appear to be high-quality content.
                                         Please upload engaging short videos only.
                                     </Text>
@@ -397,7 +463,13 @@ export default function PublishScreen() {
                     )}
 
                     {imageUri && (
-                        <View style={styles.imagePreviewContainer}>
+                        <View style={[
+                            styles.imagePreviewContainer,
+                            {
+                                borderColor: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.05)',
+                                borderWidth: 1,
+                            }
+                        ]}>
                             <Image source={{ uri: imageUri }} style={styles.imagePreview} />
                             <TouchableOpacity style={styles.removeMedia} onPress={() => setImageUri(null)}>
                                 <Ionicons name="close" size={20} color="#FFF" />
@@ -406,16 +478,29 @@ export default function PublishScreen() {
                     )}
 
                     {audioUri && (
-                        <View style={styles.audioPreviewContainer}>
-                            <TouchableOpacity onPress={isPlaying ? stopSound : playSound} style={styles.playButton}>
-                                <Ionicons name={isPlaying ? "pause" : "play"} size={24} color="#000" />
+                        <View style={[
+                            styles.audioPreviewContainer,
+                            {
+                                backgroundColor: isDark ? 'rgba(255,255,255,0.03)' : '#FFFFFF',
+                                borderColor: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)',
+                                borderWidth: 1,
+                            }
+                        ]}>
+                            <TouchableOpacity
+                                onPress={isPlaying ? stopSound : playSound}
+                                style={[
+                                    styles.playButton,
+                                    { backgroundColor: isDark ? '#D9E4FF' : '#4C6EF5' }
+                                ]}
+                            >
+                                <Ionicons name={isPlaying ? "pause" : "play"} size={24} color={isDark ? '#000000' : '#ffffff'} />
                             </TouchableOpacity>
                             <View style={styles.audioWaveform}>
-                                <View style={[styles.bar, { height: 12 }]} />
-                                <View style={[styles.bar, { height: 20 }]} />
-                                <View style={[styles.bar, { height: 16 }]} />
-                                <View style={[styles.bar, { height: 24 }]} />
-                                <View style={[styles.bar, { height: 10 }]} />
+                                <View style={[styles.bar, { height: 12, backgroundColor: isDark ? '#D9E4FF' : '#4C6EF5' }]} />
+                                <View style={[styles.bar, { height: 20, backgroundColor: isDark ? '#D9E4FF' : '#4C6EF5' }]} />
+                                <View style={[styles.bar, { height: 16, backgroundColor: isDark ? '#D9E4FF' : '#4C6EF5' }]} />
+                                <View style={[styles.bar, { height: 24, backgroundColor: isDark ? '#D9E4FF' : '#4C6EF5' }]} />
+                                <View style={[styles.bar, { height: 10, backgroundColor: isDark ? '#D9E4FF' : '#4C6EF5' }]} />
                             </View>
                             <TouchableOpacity style={styles.deleteAudio} onPress={() => {
                                 setAudioUri(null);
@@ -428,7 +513,7 @@ export default function PublishScreen() {
                     {/* Category Selection */}
                     {isVideoSelection && (
                         <View style={styles.categorySection}>
-                            <Text style={styles.sectionTitle}>Select Category</Text>
+                            <Text style={[styles.sectionTitle, { color: theme.colors.text.secondary, fontFamily: theme.typography.fontFamilies.bold }]}>Select Category</Text>
                             <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.categoryList}>
                                 {VIDEO_CATEGORIES.map((cat) => (
                                     <TouchableOpacity
@@ -436,12 +521,27 @@ export default function PublishScreen() {
                                         onPress={() => setSelectedCategory(cat)}
                                         style={[
                                             styles.categoryChip,
-                                            selectedCategory === cat && styles.categoryChipActive
+                                            {
+                                                backgroundColor: isDark ? 'rgba(255,255,255,0.02)' : 'rgba(0,0,0,0.02)',
+                                                borderColor: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.05)',
+                                                borderWidth: 1,
+                                            },
+                                            selectedCategory === cat && {
+                                                backgroundColor: isDark ? '#D9E4FF' : '#4C6EF5',
+                                                borderColor: isDark ? '#D9E4FF' : '#4C6EF5',
+                                            }
                                         ]}
                                     >
                                         <Text style={[
                                             styles.categoryChipText,
-                                            selectedCategory === cat && styles.categoryChipTextActive
+                                            {
+                                                color: theme.colors.text.secondary,
+                                                fontFamily: theme.typography.fontFamilies.medium
+                                            },
+                                            selectedCategory === cat && {
+                                                color: isDark ? '#000000' : '#FFFFFF',
+                                                fontFamily: theme.typography.fontFamilies.bold
+                                            }
                                         ]}>
                                             {CATEGORY_DISPLAY_NAMES[cat]}
                                         </Text>
@@ -455,14 +555,18 @@ export default function PublishScreen() {
 
                 {/* TOOLBAR */}
                 {!isVideoSelection && (
-                    <View style={styles.toolbar}>
-                        <TouchableOpacity style={styles.toolbarButton} onPress={pickImage}>
-                            <Ionicons name="image-outline" size={24} color="#D9E4FF" />
+                    <View style={[styles.toolbar, { backgroundColor: theme.colors.background.primary, borderTopColor: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.05)' }]}>
+                        <TouchableOpacity
+                            style={[styles.toolbarButton, { backgroundColor: isDark ? 'rgba(255, 255, 255, 0.04)' : 'rgba(0, 0, 0, 0.03)' }]}
+                            onPress={pickImage}
+                        >
+                            <Ionicons name="image-outline" size={24} color={isDark ? '#D9E4FF' : '#4C6EF5'} />
                         </TouchableOpacity>
 
                         <TouchableOpacity
                             style={[
                                 styles.toolbarButton,
+                                { backgroundColor: isDark ? 'rgba(255, 255, 255, 0.04)' : 'rgba(0, 0, 0, 0.03)' },
                                 isRecording && styles.recordingButton
                             ]}
                             onPressIn={startRecording}
@@ -471,16 +575,16 @@ export default function PublishScreen() {
                             <MaterialIcons
                                 name="mic"
                                 size={24}
-                                color={isRecording ? "#FFF" : "#D9E4FF"}
+                                color={isRecording ? "#FFF" : (isDark ? '#D9E4FF' : '#4C6EF5')}
                             />
                         </TouchableOpacity>
 
-                        <TouchableOpacity style={styles.toolbarButton}>
-                            <MaterialIcons name="poll" size={24} color="#D9E4FF" />
+                        <TouchableOpacity style={[styles.toolbarButton, { backgroundColor: isDark ? 'rgba(255, 255, 255, 0.04)' : 'rgba(0, 0, 0, 0.03)' }]}>
+                            <MaterialIcons name="poll" size={24} color={isDark ? '#D9E4FF' : '#4C6EF5'} />
                         </TouchableOpacity>
 
-                        <TouchableOpacity style={styles.toolbarButton}>
-                            <Ionicons name="location-outline" size={24} color="#D9E4FF" />
+                        <TouchableOpacity style={[styles.toolbarButton, { backgroundColor: isDark ? 'rgba(255, 255, 255, 0.04)' : 'rgba(0, 0, 0, 0.03)' }]}>
+                            <Ionicons name="location-outline" size={24} color={isDark ? '#D9E4FF' : '#4C6EF5'} />
                         </TouchableOpacity>
 
                         {isRecording && (
@@ -496,7 +600,6 @@ export default function PublishScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#000',
     },
     header: {
         flexDirection: 'row',
@@ -505,22 +608,18 @@ const styles = StyleSheet.create({
         paddingHorizontal: 16,
         paddingVertical: 12,
         borderBottomWidth: 1,
-        borderBottomColor: 'rgba(255,255,255,0.1)',
     },
     cancelText: {
-        color: '#FFF',
         fontSize: 16,
     },
     headerTitle: {
         fontSize: 16,
         fontWeight: 'bold',
-        color: '#FFF',
     },
     backButton: {
         padding: 8,
     },
     postButton: {
-        backgroundColor: '#D9E4FF',
         paddingHorizontal: 20,
         paddingVertical: 8,
         borderRadius: 20,
@@ -529,7 +628,6 @@ const styles = StyleSheet.create({
         opacity: 0.5,
     },
     postButtonText: {
-        color: '#000',
         fontWeight: 'bold',
         fontSize: 14,
     },
@@ -546,25 +644,19 @@ const styles = StyleSheet.create({
         width: 40,
         height: 40,
         borderRadius: 20,
-        backgroundColor: '#333',
         justifyContent: 'center',
         alignItems: 'center',
         marginRight: 12,
     },
     avatarText: {
-        color: '#FFF',
-        fontWeight: 'bold',
         fontSize: 16,
     },
     username: {
-        color: '#FFF',
-        fontWeight: '600',
         fontSize: 16,
     },
     textInput: {
         fontSize: 18,
-        color: '#FFF',
-        minHeight: 100,
+        minHeight: 120,
         textAlignVertical: 'top',
         paddingHorizontal: 20,
         paddingTop: 16,
@@ -576,7 +668,6 @@ const styles = StyleSheet.create({
         height: 250,
         borderRadius: 16,
         overflow: 'hidden',
-        backgroundColor: '#111',
         position: 'relative',
         marginTop: 10,
     },
@@ -585,9 +676,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
     },
     sectionTitle: {
-        color: '#FFF',
         fontSize: 14,
-        fontWeight: 'bold',
         marginBottom: 12,
         opacity: 0.8,
     },
@@ -599,22 +688,9 @@ const styles = StyleSheet.create({
         paddingHorizontal: 16,
         paddingVertical: 8,
         borderRadius: 20,
-        backgroundColor: 'rgba(255,255,255,0.05)',
-        borderWidth: 1,
-        borderColor: 'rgba(255,255,255,0.1)',
-    },
-    categoryChipActive: {
-        backgroundColor: '#D9E4FF',
-        borderColor: '#D9E4FF',
     },
     categoryChipText: {
-        color: '#AAA',
         fontSize: 14,
-        fontWeight: '500',
-    },
-    categoryChipTextActive: {
-        color: '#000',
-        fontWeight: 'bold',
     },
     video: {
         width: '100%',
@@ -624,7 +700,6 @@ const styles = StyleSheet.create({
         position: 'absolute',
         top: 10,
         right: 10,
-        backgroundColor: 'rgba(0,0,0,0.6)',
         paddingHorizontal: 8,
         paddingVertical: 4,
         borderRadius: 4,
@@ -665,7 +740,6 @@ const styles = StyleSheet.create({
     audioPreviewContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor: '#1e293b',
         marginHorizontal: 20,
         marginTop: 20,
         padding: 12,
@@ -675,7 +749,6 @@ const styles = StyleSheet.create({
         width: 40,
         height: 40,
         borderRadius: 20,
-        backgroundColor: '#D9E4FF',
         alignItems: 'center',
         justifyContent: 'center',
         marginRight: 12,
@@ -689,7 +762,6 @@ const styles = StyleSheet.create({
     },
     bar: {
         width: 4,
-        backgroundColor: '#D9E4FF',
         borderRadius: 2,
     },
     deleteAudio: {
@@ -703,8 +775,6 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
         paddingVertical: 12,
         borderTopWidth: 1,
-        borderTopColor: 'rgba(255,255,255,0.1)',
-        backgroundColor: '#000',
     },
     toolbarButton: {
         width: 44,
@@ -713,11 +783,9 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         marginRight: 8,
-        backgroundColor: 'rgba(217, 228, 255, 0.1)',
     },
     recordingButton: {
         backgroundColor: '#ef4444',
-        transform: [{ scale: 1.1 }],
     },
     recordingText: {
         color: '#ef4444',
@@ -761,7 +829,6 @@ const styles = StyleSheet.create({
     aiSuggestBtn: {
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor: '#D9E4FF',
         paddingHorizontal: 16,
         paddingVertical: 10,
         borderRadius: 12,
@@ -771,8 +838,6 @@ const styles = StyleSheet.create({
         alignSelf: 'flex-start',
     },
     aiSuggestText: {
-        color: '#000',
         fontSize: 13,
-        fontWeight: '700',
     },
 });

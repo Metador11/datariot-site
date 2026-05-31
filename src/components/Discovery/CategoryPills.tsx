@@ -1,30 +1,14 @@
 import React from 'react';
-import { ScrollView, Text, StyleSheet, Pressable, View } from 'react-native';
-import { BlurView } from 'expo-blur';
+import { ScrollView, Text, StyleSheet, Pressable, View, Platform } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
+import { theme as baseTheme } from '../../design-system/theme';
 import { useTheme } from '../Theme/ThemeProvider';
-import { theme } from '@design-system/theme';
 
 interface CategoryPillsProps {
     categories: string[];
     activeCategory: string | null;
     onCategoryPress: (category: string) => void;
 }
-
-// Unique colors per category
-const CATEGORY_COLORS: Record<string, string> = {
-    'Viral': '#D9E4FF',
-    'Comedy': '#D9E4FF',
-    'Tech': '#D9E4FF',
-    'Music': '#D9E4FF',
-    'Dance': '#D9E4FF',
-    'Education': '#D9E4FF',
-    'Lifestyle': '#D9E4FF',
-    'Gaming': '#D9E4FF',
-    'Sport': '#D9E4FF',
-    'E-sports': '#D9E4FF',
-    'All': '#D9E4FF',
-};
-
 
 export const CategoryPills = ({ categories, activeCategory, onCategoryPress }: CategoryPillsProps) => {
     const { theme, mode } = useTheme();
@@ -39,53 +23,84 @@ export const CategoryPills = ({ categories, activeCategory, onCategoryPress }: C
         >
             {categories.map((category) => {
                 const isActive = activeCategory === category;
-                const color = theme.colors.primary.DEFAULT;
 
                 return (
-                    <Pressable
+                    <PillButton
                         key={category}
-                        style={[
-                            styles.pill,
-                            {
-                                borderColor: isActive
-                                    ? color
-                                    : isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)',
-                                borderWidth: 1,
-                            }
-                        ]}
+                        category={category}
+                        isActive={isActive}
+                        isDark={isDark}
+                        theme={theme}
                         onPress={() => onCategoryPress(category)}
-                    >
-                        {isActive && (
-                            <View style={[
-                                styles.activeIndicator,
-                                { backgroundColor: color }
-                            ]} />
-                        )}
-                        {!isActive && (
-                            <BlurView
-                                intensity={isDark ? 30 : 50}
-                                tint={isDark ? "dark" : "light"}
-                                style={[StyleSheet.absoluteFill, { borderRadius: 100 }]}
-                            />
-                        )}
-                        <Text
-                            allowFontScaling={false}
-                            style={[
-                                styles.text,
-                                {
-                                    color: isActive
-                                        ? '#020204'
-                                        : isDark ? 'rgba(255,255,255,0.75)' : 'rgba(0,0,0,0.7)',
-                                    fontWeight: isActive ? '800' : '600',
-                                }
-                            ]}
-                        >
-                            #{category.toUpperCase()}
-                        </Text>
-                    </Pressable>
+                    />
                 );
             })}
         </ScrollView>
+    );
+};
+
+const PillButton = ({ category, isActive, isDark, theme, onPress }: { category: string, isActive: boolean, isDark: boolean, theme: any, onPress: () => void }) => {
+    const [isHovered, setIsHovered] = React.useState(false);
+
+    return (
+        <Pressable
+            onHoverIn={() => setIsHovered(true)}
+            onHoverOut={() => setIsHovered(false)}
+            style={[
+                styles.pill,
+                {
+                    borderColor: isActive
+                        ? 'transparent'
+                        : isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)',
+                    borderWidth: 1,
+                    backgroundColor: isActive 
+                        ? 'transparent' 
+                        : (isDark ? 'rgba(255, 255, 255, 0.02)' : 'rgba(255, 255, 255, 0.65)'),
+                },
+                isActive && isDark && {
+                    shadowColor: '#D9E4FF',
+                    shadowOffset: { width: 0, height: 2 },
+                    shadowOpacity: 0.25,
+                    shadowRadius: 8,
+                },
+                isActive && !isDark && {
+                    shadowColor: '#6B7FCC',
+                    shadowOffset: { width: 0, height: 2 },
+                    shadowOpacity: 0.12,
+                    shadowRadius: 8,
+                },
+                isHovered && !isActive && {
+                    backgroundColor: isDark ? 'rgba(255, 255, 255, 0.06)' : 'rgba(255, 255, 255, 0.95)',
+                    borderColor: isDark ? 'rgba(217, 228, 255, 0.25)' : 'rgba(107, 127, 204, 0.25)',
+                    transform: [{ scale: 1.03 }],
+                }
+            ]}
+            onPress={onPress}
+        >
+            {isActive && (
+                <LinearGradient
+                    colors={isDark ? ['#D9E4FF', '#A5C6FF'] : ['#6B7FCC', '#99B4FF']}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 0 }}
+                    style={styles.activeGradient}
+                />
+            )}
+            <Text
+                allowFontScaling={false}
+                style={[
+                    styles.text,
+                    {
+                        color: isActive
+                            ? (isDark ? '#000000' : '#FFFFFF')
+                            : (isDark ? '#38BDF8' : '#4C6EF5'),
+                        fontWeight: isActive ? '800' : '700',
+                        fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
+                    }
+                ]}
+            >
+                {`[ ${category.toUpperCase()} ]`}
+            </Text>
+        </Pressable>
     );
 };
 
@@ -95,27 +110,29 @@ const styles = StyleSheet.create({
         width: '100%',
     },
     container: {
-        paddingHorizontal: theme.spacing.md,
+        paddingHorizontal: baseTheme.spacing.md,
         gap: 10,
         paddingTop: 8,
         paddingBottom: 8,
         flexDirection: 'row',
     },
     pill: {
-        height: 32,
-        paddingHorizontal: 16,
+        height: 34,
+        paddingHorizontal: 18,
         borderRadius: 100,
         overflow: 'hidden',
         borderWidth: 1,
         justifyContent: 'center',
         alignItems: 'center',
+        // @ts-ignore
+        transition: 'all 0.2s cubic-bezier(0.22, 1, 0.36, 1)',
     },
-    activeIndicator: {
+    activeGradient: {
         position: 'absolute',
-        top: 2,
-        bottom: 2,
-        left: 2,
-        right: 2,
+        top: 0,
+        bottom: 0,
+        left: 0,
+        right: 0,
         borderRadius: 100,
     },
     text: {
@@ -125,5 +142,4 @@ const styles = StyleSheet.create({
         includeFontPadding: false,
         textAlignVertical: 'center',
     },
-
 });

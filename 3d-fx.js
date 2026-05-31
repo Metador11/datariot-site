@@ -447,9 +447,9 @@ window.addEventListener('load', () => {
         geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
         geometry.computeBoundingSphere();
 
-        // White/Cyan glowing points
+        // White/Cyan glowing points (Ice Blue for platform theme)
         const material = new THREE.PointsMaterial({
-            color: 0x38BDF8,
+            color: 0xD9E4FF,
             size: 0.15,
             transparent: true,
             opacity: 0.8
@@ -458,9 +458,9 @@ window.addEventListener('load', () => {
         const particles = new THREE.Points(geometry, material);
         group.add(particles);
 
-        // Lines connecting proximal nodes
+        // Lines connecting proximal nodes (Luminous translucent secondary accent)
         const lineMaterial = new THREE.LineBasicMaterial({
-            color: 0x0EA5E9,
+            color: 0xA5C6FF,
             transparent: true,
             opacity: 0.15
         });
@@ -950,6 +950,310 @@ window.addEventListener('load', () => {
         });
     }
 
+    /* =========================================================
+       ANIMATION 6: THE DEBATE CONNECTION (Manifesto Section)
+       ========================================================= */
+    function initManifestoConnectionAnimation() {
+        const container = document.getElementById('canvas-3d-manifesto');
+        if (!container) return;
+
+        // Scene Setup
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(60, container.clientWidth / container.clientHeight, 0.1, 1000);
+        camera.position.z = 10;
+
+        let renderer;
+        try {
+            renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+            renderer.setSize(container.clientWidth, container.clientHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            container.appendChild(renderer.domElement);
+        } catch (e) {
+            console.warn('initManifestoConnectionAnimation: Renderer creation failed.', e);
+            return;
+        }
+
+        // Ambient lights & point lights
+        const ambient = new THREE.AmbientLight(0xffffff, 0.45);
+        scene.add(ambient);
+
+        const proLight = new THREE.PointLight(0xD9E4FF, 3.5, 15);
+        proLight.position.set(-3, 0, 2);
+        scene.add(proLight);
+
+        const conLight = new THREE.PointLight(0x8B5CF6, 3.5, 15);
+        conLight.position.set(3, 0, 2);
+        scene.add(conLight);
+
+        const connectionGroup = new THREE.Group();
+        scene.add(connectionGroup);
+
+        // Cyber Grid Background
+        const gridHelper = new THREE.GridHelper(30, 24, 0x1E293B, 0x111318);
+        gridHelper.position.y = -3.8;
+        gridHelper.position.z = -1;
+        gridHelper.rotation.x = Math.PI / 10;
+        gridHelper.material.opacity = 0.45;
+        gridHelper.material.transparent = true;
+        connectionGroup.add(gridHelper);
+
+        // Pro Node Group (Ice Blue Gyro Hologram)
+        const proGroup = new THREE.Group();
+        proGroup.position.set(-3, 0, 0);
+        connectionGroup.add(proGroup);
+
+        const proCoreGeo = new THREE.SphereGeometry(0.18, 16, 16);
+        const proCoreMat = new THREE.MeshBasicMaterial({ color: 0xD9E4FF });
+        const proCore = new THREE.Mesh(proCoreGeo, proCoreMat);
+        proGroup.add(proCore);
+
+        const proInnerGeo = new THREE.IcosahedronGeometry(0.55, 1);
+        const proInnerMat = new THREE.MeshBasicMaterial({
+            color: 0x38BDF8,
+            wireframe: true,
+            transparent: true,
+            opacity: 0.8
+        });
+        const proInner = new THREE.Mesh(proInnerGeo, proInnerMat);
+        proGroup.add(proInner);
+
+        const proOuterGeo = new THREE.DodecahedronGeometry(0.8, 0);
+        const proOuterMat = new THREE.MeshBasicMaterial({
+            color: 0xD9E4FF,
+            wireframe: true,
+            transparent: true,
+            opacity: 0.35
+        });
+        const proOuter = new THREE.Mesh(proOuterGeo, proOuterMat);
+        proGroup.add(proOuter);
+
+        const proRingGeo1 = new THREE.RingGeometry(1.05, 1.07, 64);
+        const proRingMat1 = new THREE.MeshBasicMaterial({ color: 0x38BDF8, side: THREE.DoubleSide, transparent: true, opacity: 0.4 });
+        const proRing1 = new THREE.Mesh(proRingGeo1, proRingMat1);
+        proGroup.add(proRing1);
+
+        const proRingGeo2 = new THREE.RingGeometry(1.15, 1.17, 64);
+        const proRingMat2 = new THREE.MeshBasicMaterial({ color: 0xD9E4FF, side: THREE.DoubleSide, transparent: true, opacity: 0.2 });
+        const proRing2 = new THREE.Mesh(proRingGeo2, proRingMat2);
+        proRing2.rotation.x = Math.PI / 4;
+        proRing2.rotation.y = Math.PI / 4;
+        proGroup.add(proRing2);
+
+        // Con Node Group (Violet/Indigo Gyro Hologram)
+        const conGroup = new THREE.Group();
+        conGroup.position.set(3, 0, 0);
+        connectionGroup.add(conGroup);
+
+        const conCoreGeo = new THREE.SphereGeometry(0.18, 16, 16);
+        const conCoreMat = new THREE.MeshBasicMaterial({ color: 0x8B5CF6 });
+        const conCore = new THREE.Mesh(conCoreGeo, conCoreMat);
+        conGroup.add(conCore);
+
+        const conInnerGeo = new THREE.IcosahedronGeometry(0.55, 1);
+        const conInnerMat = new THREE.MeshBasicMaterial({
+            color: 0x8B5CF6,
+            wireframe: true,
+            transparent: true,
+            opacity: 0.8
+        });
+        const conInner = new THREE.Mesh(conInnerGeo, conInnerMat);
+        conGroup.add(conInner);
+
+        const conOuterGeo = new THREE.DodecahedronGeometry(0.8, 0);
+        const conOuterMat = new THREE.MeshBasicMaterial({
+            color: 0x6366F1,
+            wireframe: true,
+            transparent: true,
+            opacity: 0.35
+        });
+        const conOuter = new THREE.Mesh(conOuterGeo, conOuterMat);
+        conGroup.add(conOuter);
+
+        const conRingGeo1 = new THREE.RingGeometry(1.05, 1.07, 64);
+        const conRingMat1 = new THREE.MeshBasicMaterial({ color: 0x8B5CF6, side: THREE.DoubleSide, transparent: true, opacity: 0.4 });
+        const conRing1 = new THREE.Mesh(conRingGeo1, conRingMat1);
+        conGroup.add(conRing1);
+
+        const conRingGeo2 = new THREE.RingGeometry(1.15, 1.17, 64);
+        const conRingMat2 = new THREE.MeshBasicMaterial({ color: 0x6366F1, side: THREE.DoubleSide, transparent: true, opacity: 0.2 });
+        const conRing2 = new THREE.Mesh(conRingGeo2, conRingMat2);
+        conRing2.rotation.x = -Math.PI / 4;
+        conRing2.rotation.y = Math.PI / 4;
+        conGroup.add(conRing2);
+
+        // Connections curves (Multi-threaded Neural Connection)
+        const curves = [];
+        const curvePoints = 60;
+        const curveOffsets = [
+            new THREE.Vector3(0, 1.6, 0.4),
+            new THREE.Vector3(0, -1.6, -0.4),
+            new THREE.Vector3(0, 0.3, 1.0),
+            new THREE.Vector3(0, -0.3, 0.8)
+        ];
+
+        curveOffsets.forEach((offset, idx) => {
+            const start = new THREE.Vector3(-3, 0, 0);
+            const end = new THREE.Vector3(3, 0, 0);
+            const mid = new THREE.Vector3(0, 0, 0).add(offset);
+            
+            const curve = new THREE.QuadraticBezierCurve3(start, mid, end);
+            curves.push(curve);
+
+            // Main line
+            const points = curve.getPoints(curvePoints);
+            const lineGeo = new THREE.BufferGeometry().setFromPoints(points);
+            
+            const lineMat = new THREE.LineBasicMaterial({
+                color: idx % 2 === 0 ? 0x38BDF8 : 0x8B5CF6,
+                transparent: true,
+                opacity: 0.35
+            });
+            const line = new THREE.Line(lineGeo, lineMat);
+            connectionGroup.add(line);
+
+            // Dynamic offset fiber lines
+            const offsetPoints = points.map(p => new THREE.Vector3(p.x, p.y + (Math.sin(p.x * 2) * 0.05), p.z + (Math.cos(p.x * 2) * 0.05)));
+            const offsetGeo = new THREE.BufferGeometry().setFromPoints(offsetPoints);
+            const offsetMat = new THREE.LineBasicMaterial({
+                color: idx % 2 === 0 ? 0xD9E4FF : 0x6366F1,
+                transparent: true,
+                opacity: 0.15
+            });
+            const offsetLine = new THREE.Line(offsetGeo, offsetMat);
+            connectionGroup.add(offsetLine);
+        });
+
+        // Flowing data packets (Luminous pulses)
+        const packets = [];
+        const packetCount = 12;
+        const packetGeo = new THREE.SphereGeometry(0.09, 16, 16);
+
+        for (let i = 0; i < packetCount; i++) {
+            const curveIdx = i % curves.length;
+            const color = curveIdx % 2 === 0 ? 0xD9E4FF : 0x8B5CF6;
+            
+            const packetMat = new THREE.MeshBasicMaterial({
+                color: color,
+                transparent: true,
+                opacity: 0.95
+            });
+
+            const packet = new THREE.Mesh(packetGeo, packetMat);
+            
+            const t = Math.random();
+            const pos = curves[curveIdx].getPointAt(t);
+            packet.position.copy(pos);
+
+            packet.userData = {
+                t: t,
+                speed: 0.003 + Math.random() * 0.005,
+                curveIdx: curveIdx,
+                pulseSpeed: 3 + Math.random() * 5
+            };
+
+            connectionGroup.add(packet);
+            packets.push(packet);
+        }
+
+        // Ambient background stars/data nodes
+        const starCount = 100;
+        const starGeo = new THREE.BufferGeometry();
+        const starPos = new Float32Array(starCount * 3);
+
+        for (let i = 0; i < starCount * 3; i += 3) {
+            starPos[i] = (Math.random() - 0.5) * 16;
+            starPos[i+1] = (Math.random() - 0.5) * 10;
+            starPos[i+2] = (Math.random() - 0.5) * 8;
+        }
+
+        starGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
+        const starMat = new THREE.PointsMaterial({
+            size: 0.05,
+            color: 0xD9E4FF,
+            transparent: true,
+            opacity: 0.5
+        });
+        const starPoints = new THREE.Points(starGeo, starMat);
+        scene.add(starPoints);
+
+        // Mouse move listener for tilt effect
+        let mouseX = 0;
+        let mouseY = 0;
+        const windowHalfX = window.innerWidth / 2;
+        const windowHalfY = window.innerHeight / 2;
+
+        document.addEventListener('mousemove', (event) => {
+            mouseX = (event.clientX - windowHalfX) * 0.0003;
+            mouseY = (event.clientY - windowHalfY) * 0.0003;
+        });
+
+        // Animation Loop
+        const clock = new THREE.Clock();
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            const elapsed = clock.getElapsedTime();
+
+            // Rotate inner and outer shells of Pro Node
+            proInner.rotation.y += 0.02;
+            proInner.rotation.x += 0.01;
+            proOuter.rotation.y -= 0.01;
+            proOuter.rotation.z += 0.01;
+            proRing1.rotation.z = elapsed * 0.5;
+            proRing2.rotation.z = -elapsed * 0.5;
+
+            // Rotate inner and outer shells of Con Node
+            conInner.rotation.y -= 0.02;
+            conInner.rotation.x += 0.01;
+            conOuter.rotation.y += 0.01;
+            conOuter.rotation.z -= 0.01;
+            conRing1.rotation.z = -elapsed * 0.5;
+            conRing2.rotation.z = elapsed * 0.5;
+
+            // Subtle pulsing size for main core nodes
+            const pulse = 1 + Math.sin(elapsed * 4) * 0.15;
+            proCore.scale.setScalar(pulse);
+            conCore.scale.setScalar(pulse);
+
+            // Animate packets along curves
+            packets.forEach(packet => {
+                packet.userData.t += packet.userData.speed;
+                if (packet.userData.t > 1.0) {
+                    packet.userData.t = 0.0;
+                    packet.userData.speed = 0.003 + Math.random() * 0.005;
+                }
+                const pos = curves[packet.userData.curveIdx].getPointAt(packet.userData.t);
+                packet.position.copy(pos);
+
+                // Scale pulse
+                const packetScale = 1 + Math.sin(elapsed * packet.userData.pulseSpeed) * 0.25;
+                packet.scale.setScalar(packetScale);
+            });
+
+            // Drifting stars
+            starPoints.rotation.y = elapsed * 0.01;
+
+            // Tilt connection group based on mouse position
+            connectionGroup.rotation.y += 0.05 * (mouseX * 5 - connectionGroup.rotation.y);
+            connectionGroup.rotation.x += 0.05 * (mouseY * 5 - connectionGroup.rotation.x);
+
+            renderer.render(scene, camera);
+        }
+
+        animate();
+
+        // Handle Resize
+        window.addEventListener('resize', () => {
+            if (!container) return;
+            const w = container.clientWidth;
+            const h = container.clientHeight;
+            camera.aspect = w / h;
+            camera.updateProjectionMatrix();
+            renderer.setSize(w, h);
+        });
+    }
+
     // Initialize all with high resilience
     try { initVideoScreensAnimation(); } catch (e) { console.warn('Hero 3D failed:', e); }
     try { initMiddleAnimation(); } catch (e) { console.warn('Middle 3D failed:', e); }
@@ -958,4 +1262,5 @@ window.addEventListener('load', () => {
     try { initGlobeAnimation(); } catch (e) { console.warn('Globe 3D/2D failed:', e); }
     try { initCardTilt(); } catch (e) { console.warn('Card Tilt failed:', e); }
     try { initCSS3DIcons(); } catch (e) { console.warn('CSS 3D Icons failed:', e); }
+    try { initManifestoConnectionAnimation(); } catch (e) { console.warn('Manifesto connection failed:', e); }
 });

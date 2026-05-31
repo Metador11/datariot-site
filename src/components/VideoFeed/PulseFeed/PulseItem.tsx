@@ -13,6 +13,7 @@ import { BlurView } from 'expo-blur';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '../../Theme/ThemeProvider';
+import { theme } from '@design-system/theme';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const FOCUS_WIDTH = SCREEN_WIDTH * 0.85;
@@ -186,6 +187,7 @@ export const PulseItem = memo(({
         </Animated.View>
     );
 });
+PulseItem.displayName = 'PulseItem';
 
 const styles = StyleSheet.create({
     container: {
@@ -247,6 +249,7 @@ const styles = StyleSheet.create({
         fontSize: 12,
         fontWeight: '700',
         paddingRight: 8,
+        fontFamily: theme.typography.fontFamilies.bold,
     },
     footer: {
         gap: 8,
@@ -258,6 +261,7 @@ const styles = StyleSheet.create({
         textShadowColor: 'rgba(0,0,0,0.5)',
         textShadowOffset: { width: 0, height: 1 },
         textShadowRadius: 2,
+        fontFamily: theme.typography.fontFamilies.medium,
     },
     statsRow: {
         flexDirection: 'row',
@@ -272,6 +276,7 @@ const styles = StyleSheet.create({
         color: '#FFF',
         fontSize: 12,
         fontWeight: '600',
+        fontFamily: theme.typography.fontFamilies.tech,
     },
     mutedIcon: {
         position: 'absolute',

@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, Pressable, Image, ImageSourcePropType } from 'react-native';
+import { View, Text, StyleSheet, Pressable, Image, ImageSourcePropType, Platform } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { useTheme } from '../Theme/ThemeProvider';
 
@@ -24,9 +24,9 @@ export const SectionHeader: React.FC<SectionHeaderProps> = ({
     return (
         <View style={[styles.container, containerStyle]}>
             <View style={styles.textContainer}>
-                <Text style={[styles.title, { color: theme.colors.text.primary }]}>{title.toUpperCase()}</Text>
+                <Text style={[styles.title, { color: theme.colors.text.primary, fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace' }]}>{`[ ${title.toUpperCase()} ]`}</Text>
                 {subtitle && (
-                    <Text style={[styles.subtitle, { color: theme.colors.text.secondary }]}>{subtitle}</Text>
+                    <Text style={[styles.subtitle, { color: theme.colors.text.secondary, fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace' }]}>{subtitle.toUpperCase()}</Text>
                 )}
             </View>
 
@@ -40,7 +40,7 @@ export const SectionHeader: React.FC<SectionHeaderProps> = ({
 
             {onPressShowAll && (
                 <Pressable onPress={onPressShowAll} style={styles.showAllButton}>
-                    <Text style={[styles.showAllText, { color: theme.colors.primary.DEFAULT }]}>Show All</Text>
+                    <Text style={[styles.showAllText, { color: theme.colors.primary.DEFAULT, fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace' }]}>[ SEE.ALL ]</Text>
                     <Feather name="chevron-right" size={16} color={theme.colors.primary.DEFAULT} />
                 </Pressable>
             )}

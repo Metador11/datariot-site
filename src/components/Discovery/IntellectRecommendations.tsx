@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image, Pressable } from 'react-native';
+import { View, Text, StyleSheet, Image, Pressable, Platform } from 'react-native';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useTheme } from '../../components/Theme/ThemeProvider';
 
@@ -24,8 +24,8 @@ export const IntellectRecommendations: React.FC<IntellectRecommendationsProps> =
     return (
         <View style={styles.container}>
             <View style={styles.header}>
-                <Ionicons name="people-outline" size={18} color={theme.colors.text.muted} />
-                <Text style={[styles.headerText, { color: theme.colors.text.muted }]}>RECOMMENDED ACCOUNTS</Text>
+                <Ionicons name="people-outline" size={18} color="#38BDF8" />
+                <Text style={[styles.headerText, { color: '#38BDF8', fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace' }]}>[ RECOMMENDED.MINDS ]</Text>
             </View>
 
             <View style={styles.list}>
@@ -41,11 +41,11 @@ export const IntellectRecommendations: React.FC<IntellectRecommendationsProps> =
                         <Image source={{ uri: intellect.avatarUrl }} style={styles.avatar} />
 
                         <View style={styles.info}>
-                            <Text style={[styles.username, { color: theme.colors.text.primary }]}>@{intellect.username}</Text>
-                            <Text style={[styles.activity, { color: theme.colors.text.muted }]} numberOfLines={1}>{intellect.activity}</Text>
+                            <Text style={[styles.username, { color: theme.colors.text.primary, fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace' }]}>{`> @${intellect.username.toUpperCase()}`}</Text>
+                            <Text style={[styles.activity, { color: theme.colors.text.muted, fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace' }]} numberOfLines={1}>{intellect.activity.toUpperCase()}</Text>
                             <View style={styles.logicRow}>
                                 <MaterialCommunityIcons name="molecule" size={12} color={theme.colors.primary.DEFAULT} />
-                                <Text style={[styles.logicText, { color: theme.colors.primary.DEFAULT }]}>Reputation: {intellect.logicScore.toLocaleString()}</Text>
+                                <Text style={[styles.logicText, { color: theme.colors.primary.DEFAULT, fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace' }]}>REPUTATION: {intellect.logicScore.toLocaleString()}</Text>
                             </View>
                         </View>
 
@@ -56,7 +56,7 @@ export const IntellectRecommendations: React.FC<IntellectRecommendationsProps> =
                             }]}
                             onPress={() => onFollow(intellect.id)}
                         >
-                            <Text style={[styles.followText, { color: theme.colors.text.primary }]}>FOLLOW</Text>
+                            <Text style={[styles.followText, { color: theme.colors.text.primary, fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace' }]}>[ FOLLOW ]</Text>
                         </Pressable>
                     </Pressable>
                 ))}

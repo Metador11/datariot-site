@@ -5,6 +5,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { BlurView } from 'expo-blur';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useTheme } from '../Theme/ThemeProvider';
+import { theme } from '../../design-system/theme';
 import { useRouter } from 'expo-router';
 import { useIsFocused } from '@react-navigation/native';
 import { encodeVideoUrl } from '../../lib/utils/url';
@@ -91,13 +92,13 @@ export const CoubClassicItem = memo(({
 
     const isWeb = Platform.OS === 'web';
     const isMobileWeb = isWeb && windowWidth <= 768;
+    const isDark = mode === 'dark';
 
     const cardMargin = isWeb ? (isMobileWeb ? 0 : 0) : 16; // Maintain 0 for web to fill column
     const cardWidth = isWeb ? '100%' as any : windowWidth - (cardMargin * 2);
     const videoHeight = isWeb ? (isMobileWeb ? (windowWidth * 9 / 16) : 380) : (windowWidth - 32) * (9 / 16);
 
     const router = useRouter();
-    const isDark = mode === 'dark';
     const isFocused = useIsFocused();
 
     // Animation for like button
@@ -133,21 +134,49 @@ export const CoubClassicItem = memo(({
     };
 
     return (
-        <View style={[styles.card, { width: isWeb ? '100%' : windowWidth, paddingHorizontal: isWeb ? 16 : cardMargin }]}>
-            {/* Main Video Container (16:9) */}
-            <Pressable style={[styles.videoContainer, { width: cardWidth, height: videoHeight }]} onPress={togglePlayback}>
+        <View style={[
+            styles.card,
+            {
+                width: isWeb ? '100%' : windowWidth,
+                paddingHorizontal: isWeb ? 16 : cardMargin,
+            },
+            isWeb && !isMobileWeb && {
+                // @ts-ignore — web only: center card
+                alignSelf: 'center',
+                maxWidth: 700,
+            }
+        ]}>
+            {/* Main Video Container with premium glow shadow */}
+            <Pressable style={[
+                styles.videoContainer,
+                { width: cardWidth, height: videoHeight },
+                isDark ? {
+                    shadowColor: '#D9E4FF',
+                    shadowOffset: { width: 0, height: 8 },
+                    shadowOpacity: 0.08,
+                    shadowRadius: 32,
+                } : {
+                    shadowColor: '#6B7FCC',
+                    shadowOffset: { width: 0, height: 8 },
+                    shadowOpacity: 0.06,
+                    shadowRadius: 24,
+                },
+                isWeb && !isMobileWeb && isDark && {
+                    // @ts-ignore — web only: side bloom glow
+                    boxShadow: '-40px 0 80px rgba(165,198,255,0.10), 40px 0 80px rgba(217,228,255,0.10), 0 12px 40px rgba(0,0,0,0.5)',
+                },
+                isWeb && !isMobileWeb && !isDark && {
+                    // @ts-ignore — web only: side bloom glow light mode
+                    boxShadow: '-32px 0 60px rgba(107,127,204,0.08), 32px 0 60px rgba(107,127,204,0.08), 0 8px 32px rgba(107,127,204,0.12)',
+                },
+            ]} onPress={togglePlayback}>
 
-                {/* Floating Avatar Badge overlapping the video */}
-                <Pressable onPress={handleNavigateProfile} style={styles.floatingAuthorBadge}>
-                    <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
-                    <Image
-                        source={{ uri: item.avatarUrl || 'https://i.pravatar.cc/100' }}
-                        style={styles.avatar}
-                        // @ts-ignore
-                        crossOrigin="anonymous"
-                    />
-                    <Text style={[styles.authorNameBadge, { textShadowColor: 'rgba(0,0,0,0.5)', textShadowOffset: { width: 0, height: 1 }, textShadowRadius: 2 }]}>{item.author}</Text>
-                </Pressable>
+                {/* Cyberpunk Category Badge */}
+                <View style={styles.cyberBadge}>
+                    <Text style={styles.cyberBadgeText}>
+                        {`[ SYSTEM.${(item.category || 'TRENDING').toUpperCase()} ]`}
+                    </Text>
+                </View>
 
                 {/* Background Blurred Layer (fills everything) */}
                 {item.videoUrl ? (
@@ -160,8 +189,8 @@ export const CoubClassicItem = memo(({
                         onTimeUpdate={(current, duration) => setProgress(current / duration)}
                     />
                 ) : (
-                    <View style={[StyleSheet.absoluteFillObject, { backgroundColor: '#020408', justifyContent: 'center', alignItems: 'center' }]}>
-                        <Ionicons name="videocam-off" size={48} color="rgba(255,255,255,0.1)" />
+                    <View style={[StyleSheet.absoluteFillObject, { backgroundColor: '#06070A', justifyContent: 'center', alignItems: 'center' }]}>
+                        <Ionicons name="videocam-off" size={48} color="rgba(255,255,255,0.06)" />
                     </View>
                 )}
 
@@ -171,80 +200,131 @@ export const CoubClassicItem = memo(({
                 {/* Unmute Icon */}
                 {isMuted && (
                     <View style={styles.mutedOverlay}>
-                        <Ionicons name="volume-mute" size={20} color="#FFF" />
+                        <Ionicons name="volume-mute" size={18} color="rgba(255,255,255,0.7)" />
                     </View>
                 )}
 
                 {/* Center Pause Icon */}
                 {isPaused && (
                     <View style={styles.pauseOverlay}>
-                        <Ionicons name="pause" size={48} color="white" />
+                        <View style={styles.pauseIconContainer}>
+                            <Ionicons name="pause" size={36} color="white" />
+                        </View>
                     </View>
                 )}
 
-                {/* Glowing Progress Bar integrated into bottom edge of video */}
+                {/* Premium Gradient Progress Bar */}
                 <View style={styles.progressBarContainer} pointerEvents="none">
-                    <View style={[styles.progressBarFill, { width: `${progress * 100}%`, backgroundColor: theme.colors.primary.DEFAULT }]} />
+                    <LinearGradient
+                        colors={['#D9E4FF', '#A5C6FF']}
+                        start={{ x: 0, y: 0 }}
+                        end={{ x: 1, y: 0 }}
+                        style={[styles.progressBarFill, { width: `${progress * 100}%` }]}
+                    />
+                    {/* Glow dot at progress tip */}
+                    {progress > 0 && (
+                        <View style={[styles.progressGlowDot, { left: `${progress * 100}%` }]} />
+                    )}
                 </View>
 
 
             </Pressable>
 
             {/* Overlapping Glass Panel for Info & Actions */}
-            <View style={[styles.infoPanelWrapper, { width: isWeb ? '92%' : cardWidth - 32 }]}>
-                <BlurView intensity={isDark ? 50 : 80} tint={isDark ? "dark" : "light"} style={styles.infoPanel}>
+            <View style={[styles.infoPanelWrapper, { width: isWeb ? (isMobileWeb ? '92%' : '88%') : cardWidth - 32, alignSelf: 'center' }]}>
+                <View style={[
+                    styles.infoPanel,
+                    {
+                        backgroundColor: isDark ? 'rgba(14, 16, 23, 0.8)' : 'rgba(255, 255, 255, 0.75)',
+                        borderColor: isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(107, 127, 204, 0.12)',
+                    },
+                    isDark ? {
+                        shadowColor: '#000',
+                        shadowOpacity: 0.25,
+                        shadowRadius: 12,
+                    } : {
+                        shadowColor: '#6B7FCC',
+                        shadowOffset: { width: 0, height: 4 },
+                        shadowOpacity: 0.04,
+                        shadowRadius: 10,
+                    }
+                ]}>
+                    {/* Subtle gradient shine overlay */}
                     {isDark && (
                         <LinearGradient
-                            colors={['rgba(255,255,255,0.08)', 'rgba(255,255,255,0.01)']}
+                            colors={['rgba(255,255,255,0.04)', 'rgba(255,255,255,0.00)']}
                             start={{ x: 0, y: 0 }}
                             end={{ x: 0.5, y: 1 }}
-                            style={[StyleSheet.absoluteFillObject, { opacity: 0.6 }]}
+                            style={[StyleSheet.absoluteFillObject, { borderRadius: 22 }]}
                         />
                     )}
                     <View style={[styles.infoPanelContent, isExpanded && styles.infoPanelContentExpanded]}>
                         {/* Left Side: Info */}
-                        <Pressable
-                            style={[styles.infoSection, isExpanded && styles.infoSectionExpanded]}
-                            onPress={() => setIsExpanded(!isExpanded)}
-                        >
-                            {/* Title & Tags */}
-                            <Text
-                                style={[styles.title, { color: theme.colors.text.primary }]}
-                                numberOfLines={isExpanded ? undefined : 2}
-                            >
-                                {item.title}
-                            </Text>
+                        <View style={[styles.infoSection, isExpanded && styles.infoSectionExpanded]}>
+                            {/* Author Handle Link */}
+                            <Pressable onPress={handleNavigateProfile} style={styles.authorContainer}>
+                                <Text style={styles.authorHandleText}>
+                                    {`> @${(item.author || 'unknown').toUpperCase()}`}
+                                </Text>
+                            </Pressable>
+
+                            {/* Title */}
+                            <Pressable onPress={() => setIsExpanded(!isExpanded)}>
+                                <Text
+                                    style={[styles.title, { color: theme.colors.text.primary }]}
+                                    numberOfLines={isExpanded ? undefined : 2}
+                                >
+                                    {item.title ? item.title.toUpperCase() : ''}
+                                </Text>
+                            </Pressable>
+
+                            {/* Hashtag */}
                             {item.hashtag && (
-                                <Text style={[styles.hashtag, { color: theme.colors.primary.DEFAULT }]}>#{item.hashtag}</Text>
+                                <Text style={styles.hashtag}>
+                                    {`[ #${item.hashtag.toUpperCase()} ]`}
+                                </Text>
                             )}
+
+                            {/* Cyber Stats */}
+                            <Text style={styles.cyberStatsText}>
+                                {`VIEWS: ${formatNumber(item.views || 0)}    LIKES: ${formatNumber(item.likes || 0)}`}
+                            </Text>
+
                             {!isExpanded && item.title && item.title.length > 50 && (
-                                <Text style={[styles.readMoreText, { color: theme.colors.text.muted }]}>more</Text>
+                                <Pressable onPress={() => setIsExpanded(!isExpanded)}>
+                                    <Text style={styles.readMoreText}>more</Text>
+                                </Pressable>
                             )}
 
                             {/* Logic Balance Bar (Who's Winning) */}
                             {item.logicStats && (
-                                <View style={styles.logicBalanceWrapper}>
-                                    <View style={styles.logicBalanceTrack}>
+                                <View style={[styles.logicBalanceWrapper, {
+                                    backgroundColor: isDark ? 'rgba(0, 0, 0, 0.2)' : 'rgba(0, 0, 0, 0.05)',
+                                    borderColor: isDark ? 'rgba(255, 255, 255, 0.03)' : 'rgba(0, 0, 0, 0.04)',
+                                }]}>
+                                    <View style={[styles.logicBalanceTrack, {
+                                        backgroundColor: isDark ? 'rgba(255, 255, 255, 0.06)' : 'rgba(0, 0, 0, 0.06)',
+                                    }]}>
                                         <View
                                             style={[
                                                 styles.logicBalanceFill,
-                                                { width: `${item.logicStats.forPercentage}%`, backgroundColor: theme.colors.success || '#10B981' }
+                                                { width: `${item.logicStats.forPercentage}%`, backgroundColor: theme.colors.success || '#34D399' }
                                             ]}
                                         />
                                         <View
                                             style={[
                                                 styles.logicBalanceFill,
-                                                { width: `${100 - item.logicStats.forPercentage}%`, backgroundColor: theme.colors.error || '#EF4444' }
+                                                { width: `${100 - item.logicStats.forPercentage}%`, backgroundColor: theme.colors.error || '#F87171' }
                                             ]}
                                         />
                                     </View>
                                     <View style={styles.logicScoreRow}>
-                                        <Text style={styles.logicScoreText}>{item.logicStats.forScore} FOR</Text>
-                                        <Text style={styles.logicScoreText}>{item.logicStats.againstScore} AGAINST</Text>
+                                        <Text style={[styles.logicScoreText, { color: isDark ? 'rgba(255, 255, 255, 0.45)' : 'rgba(0, 0, 0, 0.4)' }]}>{item.logicStats.forScore} FOR</Text>
+                                        <Text style={[styles.logicScoreText, { color: isDark ? 'rgba(255, 255, 255, 0.45)' : 'rgba(0, 0, 0, 0.4)' }]}>{item.logicStats.againstScore} AGAINST</Text>
                                     </View>
                                 </View>
                             )}
-                        </Pressable>
+                        </View>
 
                         {/* Right Side: Action Row */}
                         <View style={styles.actionRow}>
@@ -254,39 +334,39 @@ export const CoubClassicItem = memo(({
                                     <Ionicons
                                         name={item.isLiked ? "star" : "star-outline"}
                                         size={22}
-                                        color={item.isLiked ? theme.colors.primary.DEFAULT : theme.colors.text.primary}
+                                        color={item.isLiked ? theme.colors.primary.DEFAULT : theme.colors.text.secondary}
                                         style={styles.plainIcon}
                                     />
                                 </Animated.View>
-                                <Text style={[styles.actionIconText, { color: theme.colors.text.secondary }]}>{formatNumber(item.likes)}</Text>
+                                <Text style={[styles.actionIconText, { color: theme.colors.text.muted }]}>{formatNumber(item.likes)}</Text>
                             </Pressable>
 
                             {/* Comment */}
                             <Pressable style={styles.actionIconBtn} onPress={onComment}>
-                                <Ionicons name="chatbubble-outline" size={21} color={theme.colors.text.primary} style={styles.plainIcon} />
-                                <Text style={[styles.actionIconText, { color: theme.colors.text.secondary }]}>{formatNumber(item.comments)}</Text>
+                                <Ionicons name="chatbubble-outline" size={20} color={theme.colors.text.secondary} style={styles.plainIcon} />
+                                <Text style={[styles.actionIconText, { color: theme.colors.text.muted }]}>{formatNumber(item.comments)}</Text>
                             </Pressable>
 
                             {/* Recoub / Share */}
                             <Pressable style={styles.actionIconBtn} onPress={onSave}>
                                 <Ionicons
                                     name={item.isSaved ? "bookmark" : "bookmark-outline"}
-                                    size={21}
-                                    color={item.isSaved ? theme.colors.primary.DEFAULT : theme.colors.text.primary}
+                                    size={20}
+                                    color={item.isSaved ? theme.colors.primary.DEFAULT : theme.colors.text.secondary}
                                     style={styles.plainIcon}
                                 />
-                                <Text style={[styles.actionIconText, { color: theme.colors.text.secondary }]}>{formatNumber(item.shares)}</Text>
+                                <Text style={[styles.actionIconText, { color: theme.colors.text.muted }]}>{formatNumber(item.shares)}</Text>
                             </Pressable>
 
 
 
                             {/* More */}
                             <Pressable style={styles.actionIconBtn} onPress={onMore}>
-                                <Ionicons name="ellipsis-horizontal-outline" size={21} color={theme.colors.text.primary} style={styles.plainIcon} />
+                                <Ionicons name="ellipsis-horizontal-outline" size={20} color={theme.colors.text.secondary} style={styles.plainIcon} />
                             </Pressable>
                         </View>
                     </View>
-                </BlurView>
+                </View>
             </View>
 
         </View>
@@ -306,19 +386,19 @@ CoubClassicItem.displayName = 'CoubClassicItem';
 
 const styles = StyleSheet.create({
     card: {
-        marginBottom: isWeb ? 24 : 32,
+        marginBottom: isWeb ? 28 : 36,
         alignItems: 'center',
     },
     videoContainer: {
-        backgroundColor: '#020408',
-        borderRadius: 32,
+        backgroundColor: '#06070A',
+        borderRadius: 28,
         overflow: 'hidden',
         position: 'relative',
         shadowColor: '#000',
-        shadowOffset: { width: 0, height: 10 },
-        shadowOpacity: 0.6,
-        shadowRadius: 20,
-        elevation: 10,
+        shadowOffset: { width: 0, height: 12 },
+        shadowOpacity: 0.5,
+        shadowRadius: 24,
+        elevation: 12,
     },
 
     overlayGradient: {
@@ -327,21 +407,21 @@ const styles = StyleSheet.create({
     },
 
     infoPanelWrapper: {
-        marginTop: -12, // Overlap just a little bit
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.5,
-        shadowRadius: 8,
-        elevation: 8,
+        marginTop: -14,
         zIndex: 10,
     },
     infoPanel: {
-        borderRadius: 24,
+        borderRadius: 22,
         paddingHorizontal: 20,
         paddingVertical: 16,
         overflow: 'hidden',
         borderWidth: 1,
-        borderColor: 'rgba(255,255,255,0.08)',
+        // Premium glass shadow
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 6 },
+        shadowOpacity: 0.25,
+        shadowRadius: 12,
+        elevation: 8,
     },
     infoPanelContent: {
         flexDirection: 'row',
@@ -365,49 +445,71 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'flex-end',
-        gap: 22, // Tightly packed icons
+        gap: 24,
     },
-    floatingAuthorBadge: {
+    cyberBadge: {
         position: 'absolute',
         top: 14,
         left: 14,
-        flexDirection: 'row',
-        alignItems: 'center',
-        backgroundColor: 'rgba(10, 10, 15, 0.6)',
+        backgroundColor: 'rgba(8, 9, 13, 0.6)',
         borderWidth: 1,
-        borderColor: 'rgba(255, 255, 255, 0.1)',
-        overflow: 'hidden',
-        paddingRight: 12,
-        paddingLeft: 4,
-        paddingVertical: 4,
-        borderRadius: 20,
+        borderColor: '#38BDF8',
+        paddingHorizontal: 10,
+        paddingVertical: 6,
+        borderRadius: 4,
         zIndex: 20,
     },
-    avatar: {
-        width: 24,
-        height: 24,
-        borderRadius: 12,
-        marginRight: 6,
-    },
-    authorNameBadge: {
-        fontSize: 13,
+    cyberBadgeText: {
+        fontSize: 11,
+        color: '#38BDF8',
         fontWeight: '700',
-        color: '#FFF',
+        letterSpacing: 1,
+        fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
+    },
+    authorContainer: {
+        marginBottom: 6,
+    },
+    authorHandleText: {
+        fontSize: 13,
+        color: '#38BDF8',
+        fontWeight: '700',
+        letterSpacing: 0.5,
+        fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
     },
     title: {
-        fontSize: 14,
-        fontWeight: '600',
-        lineHeight: 20,
-        marginBottom: 4,
+        fontSize: 18,
+        fontWeight: '800',
+        lineHeight: 24,
+        marginBottom: 6,
+        color: '#FFF',
+        textTransform: 'uppercase',
+        fontFamily: theme.typography.fontFamilies.bold,
+        letterSpacing: 0.2,
     },
     hashtag: {
-        fontSize: 13,
+        fontSize: 12,
+        color: '#38BDF8',
         fontWeight: '700',
+        fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
+        marginBottom: 8,
+        letterSpacing: 0.5,
+    },
+    cyberStatsText: {
+        fontSize: 11,
+        color: 'rgba(255, 255, 255, 0.55)',
+        fontWeight: '600',
+        letterSpacing: 0.8,
+        fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
+        marginTop: 4,
+        marginBottom: 4,
     },
     readMoreText: {
-        fontSize: 13,
+        fontSize: 11,
         fontWeight: '700',
+        color: 'rgba(255, 255, 255, 0.4)',
         marginTop: 2,
+        fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
+        letterSpacing: 0.5,
     },
     actionIconBtn: {
         alignItems: 'center',
@@ -419,29 +521,47 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     plainIcon: {
-        marginBottom: 2, // Tiny adjustment to align with the text star
+        marginBottom: 2,
     },
     actionIconText: {
-        fontSize: 11,
+        fontSize: 10,
         fontWeight: '600',
         marginTop: 4,
+        letterSpacing: 0.2,
+        fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
     },
     mutedOverlay: {
         position: 'absolute',
-        top: 12,
-        right: 12,
-        width: 36,
-        height: 36,
-        borderRadius: 18,
-        backgroundColor: 'rgba(0,0,0,0.5)',
+        top: 14,
+        right: 14,
+        width: 34,
+        height: 34,
+        borderRadius: 17,
+        backgroundColor: 'rgba(0,0,0,0.4)',
+        borderWidth: 1,
+        borderColor: 'rgba(255,255,255,0.06)',
         justifyContent: 'center',
         alignItems: 'center',
+        // @ts-ignore
+        backdropFilter: 'blur(8px)',
     },
     pauseOverlay: {
         ...StyleSheet.absoluteFillObject,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: 'rgba(0,0,0,0.2)',
+        backgroundColor: 'rgba(0,0,0,0.15)',
+    },
+    pauseIconContainer: {
+        width: 64,
+        height: 64,
+        borderRadius: 32,
+        backgroundColor: 'rgba(0,0,0,0.35)',
+        borderWidth: 1,
+        borderColor: 'rgba(255,255,255,0.1)',
+        justifyContent: 'center',
+        alignItems: 'center',
+        // @ts-ignore
+        backdropFilter: 'blur(8px)',
     },
 
     progressBarContainer: {
@@ -450,33 +570,39 @@ const styles = StyleSheet.create({
         left: 0,
         right: 0,
         height: 3,
-        backgroundColor: 'rgba(255,255,255,0.1)',
+        backgroundColor: 'rgba(255,255,255,0.06)',
     },
     progressBarFill: {
         height: '100%',
-        shadowColor: '#fff',
-        shadowOffset: { width: 0, height: 0 },
-        shadowOpacity: 0.8,
-        shadowRadius: 4,
         borderTopRightRadius: 3,
         borderBottomRightRadius: 3,
+    },
+    progressGlowDot: {
+        position: 'absolute',
+        top: -3,
+        width: 8,
+        height: 8,
+        borderRadius: 4,
+        backgroundColor: '#D9E4FF',
+        marginLeft: -4,
+        shadowColor: '#D9E4FF',
+        shadowOffset: { width: 0, height: 0 },
+        shadowOpacity: 0.8,
+        shadowRadius: 6,
     },
     // Logic Balance Styles for Feed
     logicBalanceWrapper: {
         marginTop: 12,
-        backgroundColor: 'rgba(0, 0, 0, 0.15)',
-        paddingVertical: 6,
-        paddingHorizontal: 10,
-        borderRadius: 8,
+        paddingVertical: 8,
+        paddingHorizontal: 12,
+        borderRadius: 10,
         borderWidth: 1,
-        borderColor: 'rgba(255, 255, 255, 0.05)',
     },
     logicBalanceTrack: {
         height: 3,
         borderRadius: 1.5,
         flexDirection: 'row',
         overflow: 'hidden',
-        backgroundColor: 'rgba(255, 255, 255, 0.08)',
     },
     logicBalanceFill: {
         height: '100%',
@@ -489,7 +615,7 @@ const styles = StyleSheet.create({
     logicScoreText: {
         fontSize: 9,
         fontWeight: '700',
-        color: 'rgba(255, 255, 255, 0.5)',
-        letterSpacing: 0.5,
+        letterSpacing: 0.8,
+        fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
     },
 });

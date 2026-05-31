@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, Pressable } from 'react-native';
+import { View, Text, StyleSheet, Pressable, Platform } from 'react-native';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useTheme } from '../../components/Theme/ThemeProvider';
 
@@ -26,8 +26,8 @@ export const TrendingBullets: React.FC<TrendingBulletsProps> = ({ onItemPress })
     return (
         <View style={styles.container}>
             <View style={styles.header}>
-                <Ionicons name="flash-outline" size={16} color={theme.colors.text.muted} />
-                <Text style={[styles.headerText, { color: theme.colors.text.muted }]}>TRENDING NOW</Text>
+                <Ionicons name="flash-outline" size={16} color="#38BDF8" />
+                <Text style={[styles.headerText, { color: '#38BDF8', fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace' }]}>[ TRENDING.NOW ]</Text>
             </View>
 
             <View style={styles.list}>
@@ -45,11 +45,11 @@ export const TrendingBullets: React.FC<TrendingBulletsProps> = ({ onItemPress })
                                 color={theme.colors.text.muted}
                                 style={styles.icon}
                             />
-                            <Text style={[styles.label, { color: theme.colors.text.secondary }]}>{item.label}</Text>
+                            <Text style={[styles.label, { color: theme.colors.text.secondary, fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace' }]}>{item.label.toUpperCase()}</Text>
                         </View>
 
                         <View style={styles.trendRow}>
-                            <Text style={[styles.score, { color: theme.colors.primary.DEFAULT }]}>{item.trendScore}% PULSE</Text>
+                            <Text style={[styles.score, { color: theme.colors.primary.DEFAULT, fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace' }]}>{item.trendScore}% PULSE</Text>
                         </View>
                     </Pressable>
                 ))}

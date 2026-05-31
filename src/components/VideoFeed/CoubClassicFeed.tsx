@@ -176,6 +176,10 @@ export function CoubClassicFeed({
                 }}
                 contentContainerStyle={{
                     paddingBottom: paddingBottom + 80,
+                    alignSelf: 'center',
+                    width: '100%',
+                    maxWidth: 720,
+                    paddingHorizontal: 0,
                 }}
             />
         </View>

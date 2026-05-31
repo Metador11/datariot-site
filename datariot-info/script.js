@@ -6,9 +6,14 @@ console.log('Datariot Script: Initiating...');
 // Initialize Supabase (Global)
 let supabase = null;
 
-// Immediate Theme Initialization to prevent flash — strictly light by default
+// Immediate Theme Initialization to prevent flash — checks localStorage
 (function () {
-    document.documentElement.setAttribute('data-theme', 'light');
+    var savedTheme = localStorage.getItem('orvelis-theme');
+    if (savedTheme === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'dark');
+    } else {
+        document.documentElement.setAttribute('data-theme', 'light');
+    }
 })();
 
 // Global Toggle Function (Bulletproof)
@@ -132,7 +137,7 @@ function initializeScripts() {
     }
 
     // === Reveal Animations ===
-    const revealElements = document.querySelectorAll('.reveal, .section__header, .value-card, .feature-card, .live-card');
+    const revealElements = document.querySelectorAll('.reveal, .section__header, .value-card, .feature-card, .live-card, [data-animate]');
     if (revealElements.length > 0) {
         const revealObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
@@ -181,6 +186,48 @@ function initializeScripts() {
             if (glow) glow.style.transform = '';
         });
     });
+
+    // === Manifesto Full-Width Card 3D Interaction ===
+    const manifestoCard = document.querySelector('.manifesto-v2__card--full');
+    if (manifestoCard) {
+        manifestoCard.addEventListener('mousemove', (e) => {
+            const rect = manifestoCard.getBoundingClientRect();
+            const x = (e.clientX - rect.left) / rect.width;
+            const y = (e.clientY - rect.top) / rect.height;
+
+            const tiltX = (y - 0.5) * 12;
+            const tiltY = (x - 0.5) * -12;
+
+            manifestoCard.style.transform = `perspective(2000px) rotateX(${tiltX}deg) rotateY(${tiltY}deg) scale(1.01)`;
+
+            // Premium dynamic spotlight reflection following cursor
+            const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+            if (isDark) {
+                manifestoCard.style.background = `radial-gradient(circle at ${x * rect.width}px ${y * rect.height}px, rgba(139, 92, 246, 0.12) 0%, rgba(10, 15, 30, 0.65) 75%)`;
+            } else {
+                manifestoCard.style.background = `radial-gradient(circle at ${x * rect.width}px ${y * rect.height}px, rgba(99, 102, 241, 0.12) 0%, rgba(255, 255, 255, 0.85) 75%)`;
+            }
+
+            const content = manifestoCard.querySelector('.manifesto-v2__card-content');
+            const visual = manifestoCard.querySelector('.manifesto-v2__card-visual-wrapper');
+
+            if (content) {
+                content.style.transform = `translateZ(40px) translateX(${(x - 0.5) * 15}px) translateY(${(y - 0.5) * 15}px)`;
+            }
+            if (visual) {
+                visual.style.transform = `translateZ(70px) translateX(${(x - 0.5) * -15}px) translateY(${(y - 0.5) * -15}px)`;
+            }
+        });
+
+        manifestoCard.addEventListener('mouseleave', () => {
+            manifestoCard.style.transform = '';
+            manifestoCard.style.background = '';
+            const content = manifestoCard.querySelector('.manifesto-v2__card-content');
+            const visual = manifestoCard.querySelector('.manifesto-v2__card-visual-wrapper');
+            if (content) content.style.transform = '';
+            if (visual) visual.style.transform = '';
+        });
+    }
 
     // Section-wide Z-Parallax on Scroll
     if (typeof ScrollTrigger !== 'undefined' && typeof gsap !== 'undefined') {
@@ -525,6 +572,86 @@ function initializeScripts() {
                 });
             });
         }
+    }
+
+    // === Debate Arena Interactive Spotlight Tilt ===
+    const debateGraphic = document.querySelector('.debate-arena-graphic');
+    if (debateGraphic) {
+        const leftBeam = debateGraphic.querySelector('.spotlight-beam--left');
+        const rightBeam = debateGraphic.querySelector('.spotlight-beam--right');
+
+        debateGraphic.addEventListener('mousemove', (e) => {
+            const rect = debateGraphic.getBoundingClientRect();
+            const x = (e.clientX - rect.left) / rect.width;
+            const dx = (x - 0.5) * 55; // Swing spotlight bottom points based on cursor
+
+            if (leftBeam) {
+                leftBeam.setAttribute('points', `180,30 ${100 + dx},480 ${260 + dx},480`);
+            }
+            if (rightBeam) {
+                rightBeam.setAttribute('points', `620,30 ${540 + dx},480 ${700 + dx},480`);
+            }
+        });
+
+        debateGraphic.addEventListener('mouseleave', () => {
+            if (leftBeam) {
+                leftBeam.setAttribute('points', '180,30 100,480 260,480');
+            }
+            if (rightBeam) {
+                rightBeam.setAttribute('points', '620,30 540,480 700,480');
+            }
+        });
+    }
+
+    // === Orvelis AI Card 3D Interaction ===
+    const orvelisCard = document.querySelector('.orvelis-card-container');
+    if (orvelisCard) {
+        orvelisCard.style.transformStyle = 'preserve-3d';
+        orvelisCard.addEventListener('mousemove', (e) => {
+            const rect = orvelisCard.getBoundingClientRect();
+            const x = (e.clientX - rect.left) / rect.width;
+            const y = (e.clientY - rect.top) / rect.height;
+
+            const tiltX = (y - 0.5) * 15; // 3D tilt angles
+            const tiltY = (x - 0.5) * -15;
+
+            // Apply tilt and responsive fast transition
+            orvelisCard.style.transition = 'transform 0.05s ease-out';
+            orvelisCard.style.transform = `perspective(2000px) rotateX(${tiltX}deg) rotateY(${tiltY}deg)`;
+
+            // Parallax translations for child elements
+            const header = orvelisCard.querySelector('.orvelis-header');
+            const subcards = orvelisCard.querySelectorAll('.orvelis-subcard');
+
+            if (header) {
+                header.style.transition = 'transform 0.05s ease-out';
+                header.style.transform = `translateZ(40px) translateX(${(x - 0.5) * 12}px) translateY(${(y - 0.5) * 12}px)`;
+            }
+            subcards.forEach((sub, index) => {
+                const zDepth = 60 + index * 20;
+                const shift = 15 + index * 10;
+                sub.style.transition = 'transform 0.05s ease-out';
+                sub.style.transform = `translateZ(${zDepth}px) translateX(${(x - 0.5) * shift}px) translateY(${(y - 0.5) * shift}px)`;
+            });
+        });
+
+        orvelisCard.addEventListener('mouseleave', () => {
+            // Smooth reset on mouse leave
+            orvelisCard.style.transition = 'transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)';
+            orvelisCard.style.transform = '';
+            
+            const header = orvelisCard.querySelector('.orvelis-header');
+            const subcards = orvelisCard.querySelectorAll('.orvelis-subcard');
+            
+            if (header) {
+                header.style.transition = 'transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)';
+                header.style.transform = '';
+            }
+            subcards.forEach(sub => {
+                sub.style.transition = 'transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)';
+                sub.style.transform = '';
+            });
+        });
     }
 }
 

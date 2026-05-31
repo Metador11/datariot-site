@@ -38,22 +38,27 @@
             --accent: #0ea5e9;
         }
 
+        [data-theme="dark"] {
+            --bg-main: #08090D;
+            --text-primary: #EEEEF0;
+        }
+
         html,
         body,
         .main,
         .section,
         #hero {
-            background-color: #ffffff !important;
-            background: #ffffff !important;
-            color: #050505 !important;
+            background-color: var(--bg-main) !important;
+            background: var(--bg-main) !important;
+            color: var(--text-primary) !important;
             margin: 0;
             padding: 0;
         }
 
         /* Let manifesto-v2 override white background */
         .manifesto-v2 {
-            background: #ffffff !important;
-            color: #0f172a !important;
+            background: var(--bg-main) !important;
+            color: var(--text-primary) !important;
         }
 
         /* HARD CLEANUP: Remove all old background elements and wireframes */
@@ -140,6 +145,12 @@
             position: relative;
             overflow: hidden;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+        }
+
+        [data-theme="dark"] .hero__phone-frame {
+            background: #0C0D12 !important;
+            border-color: #1f2937 !important;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
         }
 
         .phone__screen {
@@ -276,10 +287,14 @@
         }
     </style>
     <script>
-        // Force light theme
+        // Load saved theme or default to light
         (function () {
-            document.documentElement.setAttribute('data-theme', 'light');
-            localStorage.setItem('orvelis-theme', 'light');
+            var savedTheme = localStorage.getItem('orvelis-theme');
+            if (savedTheme === 'dark') {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            } else {
+                document.documentElement.setAttribute('data-theme', 'light');
+            }
         })();
         function toggleTheme() {
             var html = document.documentElement;

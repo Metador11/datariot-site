@@ -34,8 +34,7 @@ export const DiscoveryCarousel: React.FC<DiscoveryCarouselProps> = ({
 
             {/* Synergy Badge */}
             <View style={styles.synergyBadge}>
-                <BlurView intensity={60} tint="dark" style={StyleSheet.absoluteFill} />
-                <Text style={styles.synergyText}>{item.dnaMatch || 90}% MATCH</Text>
+                <Text style={styles.synergyText}>[ {item.dnaMatch || 90}% MATCH ]</Text>
             </View>
 
             {/* AI Rationale Tooltip */}
@@ -47,8 +46,12 @@ export const DiscoveryCarousel: React.FC<DiscoveryCarouselProps> = ({
             </View>
 
             <View style={styles.info}>
-                <Text style={styles.author}>{item.author}</Text>
-                <Text style={styles.title} numberOfLines={1}>{item.title}</Text>
+                <Text style={styles.author}>
+                    {item.author ? `> @${item.author.toUpperCase()}` : ''}
+                </Text>
+                <Text style={styles.title} numberOfLines={1}>
+                    {item.title ? item.title.toUpperCase() : ''}
+                </Text>
             </View>
         </Pressable>
     );
@@ -99,19 +102,20 @@ const styles = StyleSheet.create({
         position: 'absolute',
         top: 12,
         left: 12,
-        flexDirection: 'row',
-        alignItems: 'center',
+        backgroundColor: 'rgba(8, 9, 13, 0.65)',
+        borderWidth: 1,
+        borderColor: '#38BDF8',
         paddingHorizontal: 10,
         paddingVertical: 6,
-        borderRadius: 20,
-        overflow: 'hidden',
-        borderWidth: 1,
-        borderColor: 'rgba(255,255,255,0.2)',
+        borderRadius: 4,
+        zIndex: 20,
     },
     synergyText: {
-        color: '#FFFFFF',
+        color: '#38BDF8',
         fontSize: 10,
         fontWeight: '900',
+        fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
+        letterSpacing: 0.5,
     },
     rationaleBox: {
         position: 'absolute',
@@ -126,10 +130,11 @@ const styles = StyleSheet.create({
         borderColor: 'rgba(217, 228, 255, 0.2)',
     },
     rationaleText: {
-        color: '#FFF',
+        color: 'rgba(255, 255, 255, 0.75)',
         fontSize: 10,
         fontWeight: '500',
         lineHeight: 14,
+        fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
     },
     info: {
         position: 'absolute',
@@ -138,14 +143,18 @@ const styles = StyleSheet.create({
         right: 16,
     },
     author: {
-        color: '#D9E4FF',
-        fontSize: 12,
-        fontWeight: '800',
-        marginBottom: 2,
+        color: '#38BDF8',
+        fontSize: 11,
+        fontWeight: '700',
+        marginBottom: 4,
+        fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
+        letterSpacing: 0.5,
     },
     title: {
         color: '#FFF',
-        fontSize: 16,
-        fontWeight: '700',
+        fontSize: 14,
+        fontWeight: '800',
+        textTransform: 'uppercase',
+        letterSpacing: 0.2,
     },
 });

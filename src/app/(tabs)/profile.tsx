@@ -151,8 +151,8 @@ const ProfileHeader = ({ profile, user, scrollY, headerImageUrl, activeTab, setA
                                 <Ionicons name="create-outline" size={18} color={isDark ? theme.colors.primary.DEFAULT : theme.colors.text.primary} />
                             </Pressable>
                         </View>
-                        <Text style={[styles.username, { color: theme.colors.text.secondary }]}>
-                            @{profile?.username || user.email?.split('@')[0]}
+                        <Text style={[styles.username, { color: theme.colors.text.secondary, fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace' }]}>
+                            &gt; @{profile?.username || user.email?.split('@')[0]}
                         </Text>
 
                         {/* Stats Row */}
@@ -166,18 +166,18 @@ const ProfileHeader = ({ profile, user, scrollY, headerImageUrl, activeTab, setA
                         ]}>
                             <View style={styles.compactStatsRow}>
                                 <View style={styles.compactStatItem}>
-                                    <Text style={[styles.compactStatValue, { color: theme.colors.text.primary }]}>{profile?.followers_count || 0}</Text>
-                                    <Text style={[styles.compactStatLabel, { color: theme.colors.text.secondary }]}>Followers</Text>
+                                    <Text style={[styles.compactStatValue, { color: theme.colors.text.primary, fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace' }]}>{profile?.followers_count || 0}</Text>
+                                    <Text style={[styles.compactStatLabel, { color: theme.colors.text.secondary, fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace' }]}>FOLLOWERS</Text>
                                 </View>
                                 <View style={[styles.compactStatDivider, { backgroundColor: isDark ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.1)' }]} />
                                 <View style={styles.compactStatItem}>
-                                    <Text style={[styles.compactStatValue, { color: theme.colors.text.primary }]}>{profile?.following_count || 0}</Text>
-                                    <Text style={[styles.compactStatLabel, { color: theme.colors.text.secondary }]}>Following</Text>
+                                    <Text style={[styles.compactStatValue, { color: theme.colors.text.primary, fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace' }]}>{profile?.following_count || 0}</Text>
+                                    <Text style={[styles.compactStatLabel, { color: theme.colors.text.secondary, fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace' }]}>FOLLOWING</Text>
                                 </View>
                                 <View style={[styles.compactStatDivider, { backgroundColor: isDark ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.1)' }]} />
                                 <View style={styles.compactStatItem}>
-                                    <Text style={[styles.compactStatValue, { color: theme.colors.text.primary }]}>{profile?.arguments_count || 0}</Text>
-                                    <Text style={[styles.compactStatLabel, { color: theme.colors.text.secondary }]}>Arguments</Text>
+                                    <Text style={[styles.compactStatValue, { color: theme.colors.text.primary, fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace' }]}>{profile?.arguments_count || 0}</Text>
+                                    <Text style={[styles.compactStatLabel, { color: theme.colors.text.secondary, fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace' }]}>ARGUMENTS</Text>
                                 </View>
                             </View>
                         </View>
@@ -193,7 +193,7 @@ const ProfileHeader = ({ profile, user, scrollY, headerImageUrl, activeTab, setA
                         >
                             <View style={styles.achievementsBtnLeft}>
                                 <Ionicons name="finger-print" size={18} color={theme.colors.primary.DEFAULT} style={{ marginRight: 8 }} />
-                                <Text style={[styles.achievementsBtnText, { color: theme.colors.text.primary }]}>Creator DNA</Text>
+                                <Text style={[styles.achievementsBtnText, { color: theme.colors.text.primary, fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace' }]}>[ CREATOR DNA ]</Text>
                             </View>
                             <Ionicons name="chevron-forward" size={16} color={theme.colors.text.secondary} />
                         </Pressable>
@@ -245,8 +245,8 @@ const ProfileHeader = ({ profile, user, scrollY, headerImageUrl, activeTab, setA
                                         />
                                     )}
                                     {isActive && (
-                                        <Text style={[styles.activeTabText, { color: theme.colors.primary.DEFAULT }]}>
-                                            {tab === 'videos' ? 'Essence' : tab === 'posts' ? 'Theses' : 'Vault'}
+                                        <Text style={[styles.activeTabText, { color: theme.colors.primary.DEFAULT, fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace' }]}>
+                                            [ {tab === 'videos' ? 'ESSENCE' : tab === 'posts' ? 'THESES' : 'VAULT'} ]
                                         </Text>
                                     )}
                                 </Pressable>

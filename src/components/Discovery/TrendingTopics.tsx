@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, Pressable } from 'react-native';
+import { View, Text, StyleSheet, Pressable, Platform } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useTheme } from '../../components/Theme/ThemeProvider';
 
@@ -42,7 +42,7 @@ export const TrendingTopics: React.FC<TrendingTopicsProps> = ({ onItemPress }) =
     return (
         <View style={styles.container}>
             <View style={styles.header}>
-                <Text style={[styles.headerText, { color: theme.colors.text.primary }]}>TRENDING TOPICS</Text>
+                <Text style={[styles.headerText, { color: theme.colors.text.primary, fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace' }]}>[ TRENDING.TOPICS ]</Text>
             </View>
 
             <View style={styles.list}>
@@ -63,8 +63,8 @@ export const TrendingTopics: React.FC<TrendingTopicsProps> = ({ onItemPress }) =
                             />
                         </View>
                         <View style={styles.content}>
-                            <Text style={[styles.label, { color: theme.colors.text.primary }]}>{topic.label}</Text>
-                            <Text style={[styles.description, { color: theme.colors.text.muted }]}>{topic.description}</Text>
+                            <Text style={[styles.label, { color: theme.colors.text.primary, fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace' }]}>{topic.label.toUpperCase()}</Text>
+                            <Text style={[styles.description, { color: theme.colors.text.muted, fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace' }]}>{topic.description.toUpperCase()}</Text>
                         </View>
                         <MaterialCommunityIcons
                             name="chevron-right"

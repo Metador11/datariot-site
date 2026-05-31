@@ -41,17 +41,39 @@ const FeaturedVideoPlayer = ({ videoUrl, isCurrent }: { videoUrl: string, isCurr
 
 export const FeaturedHero = ({ featuredVideos, onVideoPress }: FeaturedHeroProps) => {
     const { width: screenWidth } = useWindowDimensions();
-    const itemWidth = screenWidth;
+    const isWeb = Platform.OS === 'web' && screenWidth > 768;
+    const containerWidth = isWeb ? Math.min(900, screenWidth - 620) : screenWidth;
+    const visibleWidth = isWeb ? containerWidth - 32 : containerWidth;
+    const cardWidth = isWeb ? (visibleWidth - 32) / 3 : containerWidth;
+    const scrollInterval = isWeb ? cardWidth + 16 : cardWidth;
 
     const [currentIndex, setCurrentIndex] = useState(0);
 
     const renderFeaturedItem = (item: FeaturedVideo, index: number) => {
         const isCurrent = index === currentIndex;
 
+        // Scale down fonts and padding for smaller web cards
+        const cardPadding = isWeb ? 12 : 24;
+        const titleSize = isWeb ? 14 : 24;
+        const titleLineHeight = isWeb ? 18 : 30;
+        const authorSize = isWeb ? 11 : 14;
+        const badgeTopLeft = isWeb ? 10 : 20;
+        const badgePadX = isWeb ? 8 : 10;
+        const badgePadY = isWeb ? 4 : 6;
+        const badgeFontSize = isWeb ? 8 : 9;
+        const vsSize = isWeb ? 36 : 60;
+
         return (
             <Pressable
                 onPress={() => onVideoPress(item.id)}
-                style={[styles.heroContainer, { width: itemWidth }]}
+                style={[
+                    styles.heroContainer,
+                    {
+                        width: cardWidth,
+                        height: cardWidth,
+                        marginRight: isWeb ? 16 : 0,
+                    }
+                ]}
             >
                 <View style={styles.videoContainer}>
                     <Image
@@ -61,7 +83,6 @@ export const FeaturedHero = ({ featuredVideos, onVideoPress }: FeaturedHeroProps
                         // @ts-ignore
                         crossOrigin="anonymous"
                     />
-
 
                     {item.videoUrl ? (
                         <FeaturedVideoPlayer videoUrl={item.videoUrl} isCurrent={isCurrent} />
@@ -76,36 +97,56 @@ export const FeaturedHero = ({ featuredVideos, onVideoPress }: FeaturedHeroProps
                         />
 
                         {/* Info Card */}
-                        <View style={styles.infoCard}>
+                        <View style={[styles.infoCard, { padding: cardPadding }]}>
                             <View style={styles.infoContent}>
-                                <Text style={styles.authorName}>@{item.author || 'USER'}</Text>
-                                <Text style={styles.title} numberOfLines={2}>{item.title}</Text>
+                                <Text style={[styles.authorName, { fontSize: authorSize }]}>
+                                    {item.author ? `> @${item.author.toUpperCase()}` : ''}
+                                </Text>
+                                <Text style={[styles.title, { fontSize: titleSize, lineHeight: titleLineHeight }]} numberOfLines={2}>
+                                    {item.title ? item.title.toUpperCase() : ''}
+                                </Text>
 
-                                <View style={styles.statsRow}>
+                                <View style={[styles.statsRow, isWeb && { gap: 6 }]}>
                                     <View style={styles.statItem}>
-                                        <Text style={styles.statLabel}>SPECTATORS</Text>
-                                        <Text style={styles.statText}>{formatNumber(item.views)}</Text>
+                                        <Text style={[styles.statLabel, isWeb && { fontSize: 8 }]}>SPECTATORS</Text>
+                                        <Text style={[styles.statText, isWeb && { fontSize: 10 }]}>{formatNumber(item.views)}</Text>
                                     </View>
                                     <View style={styles.statItem}>
-                                        <Text style={styles.statLabel}>VOTES</Text>
-                                        <Text style={styles.statText}>{formatNumber(item.likes)}</Text>
+                                        <Text style={[styles.statLabel, isWeb && { fontSize: 8 }]}>VOTES</Text>
+                                        <Text style={[styles.statText, isWeb && { fontSize: 10 }]}>{formatNumber(item.likes)}</Text>
                                     </View>
                                 </View>
                             </View>
 
                             {item.title.toLowerCase().includes('vs') && (
-                                <View style={styles.vsContainer}>
+                                <View style={[
+                                    styles.vsContainer,
+                                    isWeb && {
+                                        width: vsSize,
+                                        height: vsSize,
+                                        borderRadius: vsSize / 2,
+                                        marginLeft: -vsSize / 2,
+                                        top: '40%',
+                                    }
+                                ]}>
                                     <BlurView intensity={30} tint="light" style={StyleSheet.absoluteFill} />
-                                    <Text style={styles.vsText}>VS</Text>
+                                    <Text style={[styles.vsText, isWeb && { fontSize: 12 }]}>VS</Text>
                                 </View>
                             )}
 
                         </View>
 
                         {/* Popular Badge */}
-                        <View style={styles.trendingBadge}>
-                            <BlurView intensity={60} tint="dark" style={StyleSheet.absoluteFill} />
-                            <Text style={styles.badgeText}>LIVE_DEBATE</Text>
+                        <View style={[
+                            styles.trendingBadge,
+                            isWeb && {
+                                top: badgeTopLeft,
+                                left: badgeTopLeft,
+                                paddingHorizontal: badgePadX,
+                                paddingVertical: badgePadY,
+                            }
+                        ]}>
+                            <Text style={[styles.badgeText, isWeb && { fontSize: badgeFontSize }]}>[ LIVE_DEBATE ]</Text>
                         </View>
                     </View>
                 </View>
@@ -115,22 +156,22 @@ export const FeaturedHero = ({ featuredVideos, onVideoPress }: FeaturedHeroProps
 
     const handleScrollEnd = React.useCallback((e: any) => {
         const xOffset = e.nativeEvent.contentOffset.x;
-        const index = Math.round(xOffset / itemWidth);
+        const index = Math.round(xOffset / scrollInterval);
         if (index !== currentIndex) {
             setCurrentIndex(index);
         }
-    }, [itemWidth, currentIndex]);
+    }, [scrollInterval, currentIndex]);
 
     return (
-        <View style={styles.container}>
+        <View style={[styles.container, { paddingHorizontal: isWeb ? 16 : 0 }]}>
             <ScrollView
                 horizontal
-                pagingEnabled
+                pagingEnabled={!isWeb}
                 showsHorizontalScrollIndicator={false}
                 nestedScrollEnabled={true}
                 onMomentumScrollEnd={handleScrollEnd}
                 scrollEventThrottle={16}
-                snapToInterval={itemWidth}
+                snapToInterval={scrollInterval}
                 snapToAlignment="start"
                 decelerationRate="fast"
             >
@@ -142,7 +183,7 @@ export const FeaturedHero = ({ featuredVideos, onVideoPress }: FeaturedHeroProps
             </ScrollView>
 
             {/* Pagination Dots - Square */}
-            {featuredVideos.length > 1 && (
+            {!isWeb && featuredVideos.length > 1 && (
                 <View style={styles.pagination}>
                     {featuredVideos.map((_, index) => (
                         <View
@@ -204,8 +245,9 @@ const styles = StyleSheet.create({
     authorName: {
         fontSize: 14,
         fontWeight: '700',
-        color: theme.colors.primary.light,
+        color: '#38BDF8',
         letterSpacing: 0.5,
+        fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
     },
     title: {
         fontSize: 24,
@@ -213,6 +255,7 @@ const styles = StyleSheet.create({
         color: '#FFF',
         lineHeight: 30,
         letterSpacing: -0.5,
+        textTransform: 'uppercase',
     },
     statsRow: {
         flexDirection: 'row',
@@ -229,30 +272,32 @@ const styles = StyleSheet.create({
         color: 'rgba(255,255,255,0.6)',
         fontWeight: '600',
         letterSpacing: 0.5,
+        fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
     },
     statText: {
         fontSize: 12,
         color: '#FFF',
         fontWeight: '700',
+        fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
     },
     trendingBadge: {
         position: 'absolute',
         top: 20,
         left: 20,
-        flexDirection: 'row',
-        alignItems: 'center',
+        backgroundColor: 'rgba(8, 9, 13, 0.65)',
+        borderWidth: 1,
+        borderColor: '#38BDF8',
         paddingHorizontal: 10,
         paddingVertical: 6,
-        borderRadius: 20,
-        overflow: 'hidden',
-        borderWidth: 1,
-        borderColor: 'rgba(255,255,255,0.2)',
+        borderRadius: 4,
+        zIndex: 20,
     },
     badgeText: {
         fontSize: 9,
         fontWeight: '900',
-        color: '#FFFFFF',
-        letterSpacing: 2,
+        color: '#38BDF8',
+        letterSpacing: 1,
+        fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
     },
     pagination: {
         flexDirection: 'row',

@@ -17,7 +17,7 @@ const THEME_STORAGE_KEY = '@orvelis_theme_mode';
 
 // Default values for context creation
 const defaultContext: ThemeContextType = {
-    mode: 'light', // App is light by default (Pure Light)
+    mode: 'dark', // App is dark by default (Obsidian Premium)
     toggleTheme: () => { },
     setThemeMode: () => { },
     theme: baseTheme,
@@ -33,29 +33,44 @@ const darkColors = { ...baseTheme.colors };
 
 const lightColors = {
     ...baseTheme.colors,
-    background: {
-        primary: '#FAF9F6', // Alabaster Warm Ivory
-        DEFAULT: '#FAF9F6',
-        secondary: '#F4F3EE',
-        tertiary: '#EAE9E2',
-        web: '#FAF9F6',
-        webSecondary: '#FFFFFF',
+    primary: {
+        DEFAULT: '#4C6EF5', // Premium high-contrast Royal Blue
+        light: '#EDF2FF',
+        dark: '#364FC7',
+        ultra: '#DBE4FF',
+        brand: '#4C6EF5',
+        onPrimary: '#FFFFFF',
+        glow: 'rgba(76, 110, 245, 0.12)',
+        glowStrong: 'rgba(76, 110, 245, 0.25)',
+        glowSubtle: 'rgba(76, 110, 245, 0.05)',
     },
-
+    background: {
+        primary: '#F8F8FA',
+        DEFAULT: '#F8F8FA',
+        secondary: '#F0F0F4',
+        tertiary: '#E8E8EE',
+        web: '#F8F8FA',
+        webSecondary: '#FFFFFF',
+        paper: '#FFFFFF',
+    },
     surface: {
         ...baseTheme.colors.surface,
         DEFAULT: '#FFFFFF',
         light: '#FFFFFF',
-        overlay: 'rgba(250, 249, 246, 0.95)',
+        elevated: '#FFFFFF',
+        overlay: 'rgba(248, 248, 250, 0.95)',
         card: '#FFFFFF',
-        border: 'rgba(0, 0, 0, 0.06)',
-        borderHover: 'rgba(0, 0, 0, 0.12)',
+        glass: 'rgba(255, 255, 255, 0.7)',
+        glassHover: 'rgba(255, 255, 255, 0.85)',
+        border: 'rgba(0, 0, 0, 0.05)',
+        borderHover: 'rgba(0, 0, 0, 0.1)',
+        borderActive: 'rgba(76, 110, 245, 0.2)',
     },
     text: {
-        primary: '#1A1A1E', // Velvet Charcoal
-        secondary: '#5C5C64',
-        muted: '#8E8E93',
-        accent: '#D9E4FF',
+        primary: '#111118',
+        secondary: '#52526A',
+        muted: '#8E8E9E',
+        accent: '#4C6EF5',
     },
 };
 
@@ -65,7 +80,7 @@ interface ThemeProviderProps {
 }
 
 export const ThemeProvider = ({ children }: ThemeProviderProps) => {
-    const [mode, setModeState] = useState<ThemeMode>('light');
+    const [mode, setModeState] = useState<ThemeMode>('dark');
     const [isLoaded, setIsLoaded] = useState(false);
 
     useEffect(() => {

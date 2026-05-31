@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, StyleSheet, ActivityIndicator, Text, Pressable, StatusBar, useWindowDimensions, Platform } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
+// Premium style upgrade — gradient tabs, glass nav
 import { CoubClassicFeed } from '@components/VideoFeed/CoubClassicFeed';
 import { useVideos, FeedType } from '@lib/supabase/hooks/useVideos';
 import { useRouter } from 'expo-router';
@@ -31,7 +32,7 @@ const HomeScreen = () => {
     const [activeIndex, setActiveIndex] = useState(0);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [viewMode, setViewMode] = useState<ViewMode>(Platform.OS === 'web' ? 'classic' : 'mosaic');
-    const { theme, mode } = useTheme();
+    const { theme, mode, toggleTheme } = useTheme();
     const isDark = mode === 'dark';
 
     const { width, height } = useWindowDimensions();
@@ -97,20 +98,22 @@ const HomeScreen = () => {
                 <View style={styles.topNavContent} pointerEvents="box-none">
                     {/* Left Actions Container */}
                     <View style={styles.leftActionsContainer}>
-                        <Pressable
-                            style={[
-                                styles.profileButton,
-                                {
-                                    backgroundColor: isDark ? 'rgba(0, 0, 0, 0.6)' : 'rgba(255, 255, 255, 0.9)',
-                                    borderColor: theme.colors.surface.border,
-                                    borderWidth: 1,
-                                }
-                            ]}
-                            onPress={() => setIsMenuOpen(true)}
-                        >
-                            <BlurView intensity={60} tint={isDark ? 'dark' : 'light'} style={StyleSheet.absoluteFill} />
-                            <Feather name="menu" size={22} color={theme.colors.text.primary} />
-                        </Pressable>
+                        {!isWeb && (
+                            <Pressable
+                                style={[
+                                    styles.profileButton,
+                                    {
+                                        backgroundColor: isDark ? 'rgba(8, 9, 13, 0.65)' : 'rgba(255, 255, 255, 0.9)',
+                                        borderColor: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)',
+                                        borderWidth: 1,
+                                    }
+                                ]}
+                                onPress={() => setIsMenuOpen(true)}
+                            >
+                                <BlurView intensity={60} tint={isDark ? 'dark' : 'light'} style={StyleSheet.absoluteFill} />
+                                <Feather name="menu" size={22} color={theme.colors.text.primary} />
+                            </Pressable>
+                        )}
                     </View>
 
                     {/* Center Tabs Container */}
@@ -118,13 +121,13 @@ const HomeScreen = () => {
                         <BlurView intensity={70} tint={isDark ? 'dark' : 'light'} style={[
                             styles.pillBlur,
                             {
-                                backgroundColor: isDark ? 'rgba(0, 0, 0, 0.4)' : 'rgba(255, 255, 255, 0.8)',
-                                borderColor: theme.colors.surface.border,
+                                backgroundColor: isDark ? 'rgba(8, 9, 13, 0.5)' : 'rgba(255, 255, 255, 0.8)',
+                                borderColor: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.06)',
                                 alignSelf: 'stretch',
                             }
                         ]}>
                             {isDark && (
-                                <View style={[StyleSheet.absoluteFill, { backgroundColor: 'rgba(0,0,0,0.05)' }]} />
+                                <View style={[StyleSheet.absoluteFill, { backgroundColor: 'rgba(0,0,0,0.03)' }]} />
                             )}
 
                             <TabButton
@@ -132,6 +135,7 @@ const HomeScreen = () => {
                                 label="ARENA (BETA)"
                                 isActive={activeTab === 'ai'}
                                 onPress={() => setActiveTab('ai')}
+                                isDark={isDark}
                             />
 
                             <TabButton
@@ -139,6 +143,7 @@ const HomeScreen = () => {
                                 label="FEED"
                                 isActive={activeTab === 'trending'}
                                 onPress={() => setActiveTab('trending')}
+                                isDark={isDark}
                             />
 
                             <TabButton
@@ -146,20 +151,28 @@ const HomeScreen = () => {
                                 label="MY CIRCLE"
                                 isActive={activeTab === 'following'}
                                 onPress={() => setActiveTab('following')}
+                                isDark={isDark}
                             />
                         </BlurView>
                     </View>
 
+
                     {/* Right Actions Container */}
-                    <View style={styles.rightActionsContainer}>
+                    <View style={[styles.rightActionsContainer, { width: isWeb ? 96 : 148 }]}>
                         <Pressable
                             style={[
                                 styles.pulseToggle,
                                 {
-                                    backgroundColor: viewMode === 'mosaic' ? theme.colors.primary.DEFAULT : (isDark ? 'rgba(0, 0, 0, 0.6)' : 'rgba(255, 255, 255, 0.9)'),
-                                    borderColor: theme.colors.surface.border,
+                                    backgroundColor: viewMode === 'mosaic' ? theme.colors.primary.DEFAULT : (isDark ? 'rgba(8, 9, 13, 0.65)' : 'rgba(255, 255, 255, 0.9)'),
+                                    borderColor: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)',
                                     borderWidth: 1,
-                                }
+                                },
+                                viewMode === 'mosaic' && isDark && {
+                                    shadowColor: '#D9E4FF',
+                                    shadowOffset: { width: 0, height: 0 },
+                                    shadowOpacity: 0.2,
+                                    shadowRadius: 10,
+                                },
                             ]}
                             onPress={() => setViewMode(viewMode === 'mosaic' ? 'classic' : 'mosaic')}
                         >
@@ -173,18 +186,35 @@ const HomeScreen = () => {
 
                         <Pressable
                             style={[
-                                styles.profileButton,
+                                styles.pulseToggle,
                                 {
-                                    backgroundColor: isDark ? 'rgba(0, 0, 0, 0.6)' : 'rgba(255, 255, 255, 0.9)',
-                                    borderColor: theme.colors.surface.border,
+                                    backgroundColor: isDark ? 'rgba(8, 9, 13, 0.65)' : 'rgba(255, 255, 255, 0.9)',
+                                    borderColor: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)',
                                     borderWidth: 1,
                                 }
                             ]}
-                            onPress={() => router.push('/profile')}
+                            onPress={toggleTheme}
                         >
                             <BlurView intensity={60} tint={isDark ? 'dark' : 'light'} style={StyleSheet.absoluteFill} />
-                            <Feather name="user" size={22} color={theme.colors.text.primary} />
+                            <Feather name={isDark ? "sun" : "moon"} size={22} color={theme.colors.text.primary} />
                         </Pressable>
+
+                        {!isWeb && (
+                            <Pressable
+                                style={[
+                                    styles.profileButton,
+                                    {
+                                        backgroundColor: isDark ? 'rgba(8, 9, 13, 0.65)' : 'rgba(255, 255, 255, 0.9)',
+                                        borderColor: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)',
+                                        borderWidth: 1,
+                                    }
+                                ]}
+                                onPress={() => router.push('/profile')}
+                            >
+                                <BlurView intensity={60} tint={isDark ? 'dark' : 'light'} style={StyleSheet.absoluteFill} />
+                                <Feather name="user" size={22} color={theme.colors.text.primary} />
+                            </Pressable>
+                        )}
                     </View>
 
                     {/* Category Filters */}
@@ -255,12 +285,12 @@ const HomeScreen = () => {
                         <View style={[styles.emptyIconContainer, { backgroundColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)' }]}>
                             <Feather name="video-off" size={36} color={isDark ? '#fff' : '#000'} />
                         </View>
-                        <Text style={[styles.emptyTitle, { color: theme.colors.text.primary }]}>No Videos Found</Text>
-                        <Text style={[styles.emptySubtitle, { color: theme.colors.text.secondary }]}>
+                        <Text style={[styles.emptyTitle, { color: theme.colors.text.primary, fontFamily: theme.typography.fontFamilies.bold }]}>No Videos Found</Text>
+                        <Text style={[styles.emptySubtitle, { color: theme.colors.text.secondary, fontFamily: theme.typography.fontFamilies.regular }]}>
                             There doesn&apos;t seem to be anything here right now. Check back later or clear your filters.
                         </Text>
                         <Pressable style={[styles.retryButtonModern, { backgroundColor: theme.colors.primary.DEFAULT }]} onPress={loadMore}>
-                            <Text style={styles.retryTextModern}>Refresh Feed</Text>
+                            <Text style={[styles.retryTextModern, { fontFamily: theme.typography.fontFamilies.bold }]}>Refresh Feed</Text>
                         </Pressable>
                     </BlurView>
                 </View>
@@ -353,7 +383,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     rightActionsContainer: {
-        width: 96,
+        width: 148,
         flexDirection: 'row',
         justifyContent: 'flex-end',
         alignItems: 'center',
@@ -379,12 +409,12 @@ const styles = StyleSheet.create({
     pillBlur: {
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor: 'rgba(0, 0, 0, 0.4)',
+        backgroundColor: 'rgba(8, 9, 13, 0.5)',
         borderRadius: 30,
         padding: 4,
         overflow: 'hidden',
         borderWidth: 1,
-        borderColor: 'rgba(255, 255, 255, 0.1)',
+        borderColor: 'rgba(255, 255, 255, 0.05)',
         alignSelf: 'stretch',
     },
     tabButton: {
@@ -478,27 +508,50 @@ const styles = StyleSheet.create({
     },
 });
 
-const TabButton = ({ theme, label, isActive, onPress }: any) => {
-    const isDark = theme.colors.background.primary === '#000814'; // Simple check for dark mode
-
+const TabButton = ({ theme, label, isActive, onPress, isDark }: any) => {
+    const [isHovered, setIsHovered] = React.useState(false);
     return (
         <Pressable
             onPress={onPress}
-            style={[styles.tabButton, isActive && styles.tabButtonActive]}
+            onHoverIn={() => setIsHovered(true)}
+            onHoverOut={() => setIsHovered(false)}
+            style={[
+                styles.tabButton,
+                isActive && styles.tabButtonActive,
+                isHovered && !isActive && {
+                    backgroundColor: isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.03)',
+                }
+            ]}
         >
             {isActive && (
                 <View style={[StyleSheet.absoluteFill, { padding: 2 }]}>
-                    <View style={[styles.tabIndicatorBackground, { backgroundColor: theme.colors.primary.DEFAULT }]} />
+                    <LinearGradient
+                        colors={isDark ? ['#D9E4FF', '#A5C6FF'] : ['#6B7FCC', '#99B4FF']}
+                        start={{ x: 0, y: 0 }}
+                        end={{ x: 1, y: 0 }}
+                        style={[styles.tabIndicatorBackground, isDark && {
+                            shadowColor: '#D9E4FF',
+                            shadowOffset: { width: 0, height: 2 },
+                            shadowOpacity: 0.25,
+                            shadowRadius: 8,
+                        }]}
+                    />
                 </View>
             )}
             <View style={styles.tabButtonInner}>
-                <Text 
+                <Text
                     numberOfLines={1}
                     ellipsizeMode="tail"
                     style={[
                         styles.tabText,
-                        { color: theme.colors.text.secondary },
-                        isActive && [styles.tabTextActive, { color: theme.colors.primary.onPrimary || '#000000' }]
+                        { color: theme.colors.text.secondary, fontFamily: theme.typography.fontFamilies.medium },
+                        isActive && [
+                            styles.tabTextActive,
+                            {
+                                color: isDark ? '#000000' : '#FFFFFF',
+                                fontFamily: theme.typography.fontFamilies.bold
+                            }
+                        ]
                     ]}
                 >
                     {label}

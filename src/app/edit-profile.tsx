@@ -258,13 +258,15 @@ export default function Page() {
         }
     };
 
+    const monoFont = { fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace' };
+
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.header}>
                 <Pressable onPress={() => router.back()} style={styles.cancelButton}>
-                    <Text style={styles.cancelText}>Cancel</Text>
+                    <Text style={[styles.cancelText, monoFont]}>[ CANCEL ]</Text>
                 </Pressable>
-                <Text style={styles.headerTitle}>Edit Profile</Text>
+                <Text style={[styles.headerTitle, monoFont]}>[ EDIT PROFILE ]</Text>
                 <Pressable
                     onPress={updateProfile}
                     style={[styles.saveButton, loading && styles.disabledButton]}
@@ -273,7 +275,7 @@ export default function Page() {
                     {(loading || uploadingAvatar || uploadingHeader) ? (
                         <ActivityIndicator color="white" size="small" />
                     ) : (
-                        <Text style={styles.saveText}>Save</Text>
+                        <Text style={[styles.saveText, monoFont]}>[ SAVE ]</Text>
                     )}
                 </Pressable>
             </View>
@@ -314,7 +316,7 @@ export default function Page() {
                                     <Image source={{ uri: avatarPreview }} style={styles.avatar} />
                                 ) : (
                                     <View style={[styles.avatar, styles.placeholderAvatar]}>
-                                        <Text style={styles.avatarPlaceholderText}>
+                                        <Text style={[styles.avatarPlaceholderText, monoFont]}>
                                             {displayName?.[0]?.toUpperCase() || user?.email?.[0]?.toUpperCase() || 'U'}
                                         </Text>
                                     </View>
@@ -334,9 +336,9 @@ export default function Page() {
                     {/* Form Fields */}
                     <View style={styles.form}>
                         <View style={styles.inputGroup}>
-                            <Text style={styles.label}>Display Name</Text>
+                            <Text style={[styles.label, monoFont]}>&gt; DISPLAY NAME</Text>
                             <TextInput
-                                style={styles.input}
+                                style={[styles.input, monoFont]}
                                 value={displayName}
                                 onChangeText={setDisplayName}
                                 placeholder="Enter display name"
@@ -345,9 +347,9 @@ export default function Page() {
                         </View>
 
                         <View style={styles.inputGroup}>
-                            <Text style={styles.label}>Username</Text>
+                            <Text style={[styles.label, monoFont]}>&gt; USERNAME</Text>
                             <TextInput
-                                style={styles.input}
+                                style={[styles.input, monoFont]}
                                 value={username}
                                 onChangeText={setUsername}
                                 placeholder="Enter username"
@@ -357,9 +359,9 @@ export default function Page() {
                         </View>
 
                         <View style={styles.inputGroup}>
-                            <Text style={styles.label}>Bio</Text>
+                            <Text style={[styles.label, monoFont]}>&gt; BIO</Text>
                             <TextInput
-                                style={[styles.input, styles.textArea]}
+                                style={[styles.input, styles.textArea, monoFont]}
                                 value={bio}
                                 onChangeText={setBio}
                                 placeholder="Write something about yourself..."

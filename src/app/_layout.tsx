@@ -27,6 +27,25 @@ import {
     Syncopate_400Regular,
     Syncopate_700Bold
 } from '@expo-google-fonts/syncopate';
+import {
+    Inter_400Regular,
+    Inter_500Medium,
+    Inter_600SemiBold
+} from '@expo-google-fonts/inter';
+import {
+    Outfit_300Light,
+    Outfit_400Regular,
+    Outfit_500Medium,
+    Outfit_600SemiBold,
+    Outfit_700Bold,
+    Outfit_800ExtraBold,
+    Outfit_900Black
+} from '@expo-google-fonts/outfit';
+import {
+    SpaceGrotesk_400Regular,
+    SpaceGrotesk_500Medium,
+    SpaceGrotesk_700Bold
+} from '@expo-google-fonts/space-grotesk';
 
 import { Feather, Ionicons, MaterialCommunityIcons, Entypo, SimpleLineIcons, AntDesign, FontAwesome5, MaterialIcons } from '@expo/vector-icons';
 
@@ -49,6 +68,19 @@ export default function RootLayout() {
         Audiowide_400Regular,
         Syncopate_400Regular,
         Syncopate_700Bold,
+        Inter_400Regular,
+        Inter_500Medium,
+        Inter_600SemiBold,
+        Outfit_300Light,
+        Outfit_400Regular,
+        Outfit_500Medium,
+        Outfit_600SemiBold,
+        Outfit_700Bold,
+        Outfit_800ExtraBold,
+        Outfit_900Black,
+        SpaceGrotesk_400Regular,
+        SpaceGrotesk_500Medium,
+        SpaceGrotesk_700Bold,
         ...Feather.font,
         ...Ionicons.font,
         ...MaterialCommunityIcons.font,

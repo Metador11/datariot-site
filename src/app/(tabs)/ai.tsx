@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Dimensions, TextInput, KeyboardAvoidingView, Platform, FlatList, Modal, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Dimensions, TextInput, KeyboardAvoidingView, Platform, FlatList, Modal, ScrollView, Pressable } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons, Feather, MaterialCommunityIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -26,10 +26,10 @@ const uniqueId = () => `msg_${Date.now()}_${++_msgIdCounter}`;
 
 // Example prompts for first-time users
 const EXAMPLE_PROMPTS = [
-    { icon: '⚡', text: 'Daily insight', tool: 'insight' as ToolType, desc: 'Focus reading' },
-    { icon: '🔬', text: 'Analyze content', tool: 'analyze' as ToolType, desc: 'Truth scan' },
-    { icon: '🧠', text: 'What can you do?', tool: 'chat' as ToolType, desc: 'Capabilities' },
-    { icon: '💡', text: 'Tell me something interesting', tool: 'chat' as ToolType, desc: 'Random insight' },
+    { iconType: 'material', iconName: 'lightning-bolt', color: '#A5C6FF', text: 'Daily insight', tool: 'insight' as ToolType, desc: 'Focus reading' },
+    { iconType: 'material', iconName: 'microscope', color: '#10B981', text: 'Analyze content', tool: 'analyze' as ToolType, desc: 'Truth scan' },
+    { iconType: 'material', iconName: 'brain', color: '#8B5CF6', text: 'What can you do?', tool: 'chat' as ToolType, desc: 'Capabilities' },
+    { iconType: 'feather', iconName: 'lightbulb', color: '#EC4899', text: 'Tell me something interesting', tool: 'chat' as ToolType, desc: 'Random insight' },
 ];
 
 // Animated typing dots component
@@ -105,13 +105,136 @@ const PulseGlow = () => {
     );
 };
 
+const SuggestionChip = ({ prompt, isDark, theme, onPress }: { prompt: any, isDark: boolean, theme: any, onPress: () => void }) => {
+    const [isHovered, setIsHovered] = useState(false);
+
+    return (
+        <Pressable
+            style={({ pressed }: any) => [
+                styles.suggestionChip,
+                {
+                    backgroundColor: isDark ? 'rgba(255, 255, 255, 0.02)' : 'rgba(255, 255, 255, 0.65)',
+                    borderColor: isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)',
+                },
+                isHovered && {
+                    backgroundColor: isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(255, 255, 255, 0.95)',
+                    borderColor: prompt.color,
+                    transform: [{ scale: 1.02 }],
+                    shadowColor: prompt.color,
+                    shadowOffset: { width: 0, height: 4 },
+                    shadowOpacity: isDark ? 0.2 : 0.08,
+                    shadowRadius: 12,
+                },
+                pressed && {
+                    opacity: 0.7,
+                }
+            ]}
+            onPress={onPress}
+            onHoverIn={() => setIsHovered(true)}
+            onHoverOut={() => setIsHovered(false)}
+        >
+            <View style={[
+                styles.suggestionIconContainer,
+                {
+                    backgroundColor: isDark ? 'rgba(255, 255, 255, 0.04)' : 'rgba(0, 0, 0, 0.03)',
+                    borderColor: isDark ? 'rgba(255, 255, 255, 0.06)' : 'rgba(0, 0, 0, 0.06)',
+                },
+                isHovered && {
+                    backgroundColor: `${prompt.color}15`,
+                    borderColor: `${prompt.color}35`,
+                }
+            ]}>
+                {prompt.iconType === 'feather' ? (
+                    <Feather name={prompt.iconName as any} size={15} color={prompt.color} />
+                ) : prompt.iconType === 'ionicon' ? (
+                    <Ionicons name={prompt.iconName as any} size={15} color={prompt.color} />
+                ) : (
+                    <MaterialCommunityIcons name={prompt.iconName as any} size={17} color={prompt.color} />
+                )}
+            </View>
+            <View style={styles.suggestionTextWrap}>
+                <Text style={[styles.suggestionText, { color: theme.colors.text.primary, fontFamily: theme.typography.fontFamilies.bold }]}>{prompt.text}</Text>
+                <Text style={[styles.suggestionDesc, { color: theme.colors.text.muted, fontFamily: theme.typography.fontFamilies.regular }]}>{prompt.desc}</Text>
+            </View>
+        </Pressable>
+    );
+};
+
+const AIIntroCard = ({ theme, isDark }: { theme: any, isDark: boolean }) => {
+    return (
+        <Animated.View 
+            entering={FadeInDown.duration(400).springify()}
+            style={[
+                styles.introCard,
+                {
+                    backgroundColor: isDark ? 'rgba(14, 16, 23, 0.4)' : 'rgba(255, 255, 255, 0.45)',
+                    borderColor: isDark ? 'rgba(217, 228, 255, 0.08)' : 'rgba(107, 127, 204, 0.12)',
+                }
+            ]}
+        >
+            {/* Ambient subtle flare background */}
+            <LinearGradient
+                colors={isDark ? ['rgba(217, 228, 255, 0.01)', 'transparent'] : ['rgba(107, 127, 204, 0.01)', 'transparent']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={StyleSheet.absoluteFillObject}
+            />
+
+            <View style={styles.introHeader}>
+                <View style={[
+                    styles.introIconContainer,
+                    {
+                        backgroundColor: isDark ? 'rgba(217, 228, 255, 0.01)' : 'rgba(107, 127, 204, 0.02)',
+                        borderColor: isDark ? 'rgba(217, 228, 255, 0.05)' : 'rgba(107, 127, 204, 0.08)',
+                    }
+                ]}>
+                    <MaterialCommunityIcons name="brain" size={22} color={theme.colors.primary.DEFAULT} />
+                </View>
+                <View style={styles.introHeaderText}>
+                    <Text style={[styles.introTitle, { color: theme.colors.text.primary, fontFamily: theme.typography.fontFamilies.bold }]}>
+                        ORVELIS COGNITIVE CORE
+                    </Text>
+                    <Text style={[styles.introSubtitle, { color: theme.colors.text.muted, fontFamily: theme.typography.fontFamilies.tech }]}>
+                        SECURE SYNAPSE NODE // V1.0.0
+                    </Text>
+                </View>
+            </View>
+
+            <Text style={[styles.introDesc, { color: theme.colors.text.secondary, fontFamily: theme.typography.fontFamilies.regular }]}>
+                Engineered at the intersection of media forensics and high-fidelity intelligence synthesis. Orvelis is designed to stress-test concepts through strategic dialogue, analyze narrative parameters, and generate deep cognitive focus insight readings in real-time.
+            </Text>
+
+            <View style={[styles.introDivider, { backgroundColor: isDark ? 'rgba(255, 255, 255, 0.06)' : 'rgba(0, 0, 0, 0.06)' }]} />
+
+            <View style={styles.introMetaRow}>
+                <View style={styles.introMetaCol}>
+                    <Text style={[styles.introMetaLabel, { color: theme.colors.text.muted, fontFamily: theme.typography.fontFamilies.tech }]}>
+                        STRATEGIC DEPTH
+                    </Text>
+                    <Text style={[styles.introMetaVal, { color: theme.colors.text.primary, fontFamily: theme.typography.fontFamilies.semibold }]}>
+                        SYNTHETIC COGNITION
+                    </Text>
+                </View>
+                <View style={styles.introMetaCol}>
+                    <Text style={[styles.introMetaLabel, { color: theme.colors.text.muted, fontFamily: theme.typography.fontFamilies.tech }]}>
+                        SYNC STATUS
+                    </Text>
+                    <Text style={[styles.introMetaVal, { color: theme.colors.text.primary, fontFamily: theme.typography.fontFamilies.semibold }]}>
+                        ⚡ REAL-TIME LATENCY
+                    </Text>
+                </View>
+            </View>
+        </Animated.View>
+    );
+};
+
 export default function AIScreen() {
     // Chat State
     const [messages, setMessages] = useState<Message[]>([
         {
             id: 'init',
             role: 'assistant',
-            content: "I'm **Orvelis** — your thinking partner. Select a tool below or ask me anything.",
+            content: "Welcome to the synapse. Select an analysis module below or introduce a query to initiate dialogue.",
             type: 'text'
         }
     ]);
@@ -248,12 +371,12 @@ export default function AIScreen() {
             const insight = item.data as DailyInsight;
             return (
                 <Animated.View entering={FadeInUp.springify()} style={[styles.messageBubble, styles.aiBubble, styles.cardBubble, {
-                    backgroundColor: isDark ? 'rgba(255, 255, 255, 0.04)' : 'rgba(0,0,0,0.02)',
-                    borderColor: isDark ? 'rgba(56, 189, 248, 0.15)' : 'rgba(14, 165, 233, 0.15)'
+                    backgroundColor: isDark ? 'rgba(255, 255, 255, 0.01)' : 'rgba(0,0,0,0.005)',
+                    borderColor: isDark ? 'rgba(56, 189, 248, 0.05)' : 'rgba(14, 165, 233, 0.05)'
                 }]}>
                     {/* Subtle gradient overlay */}
                     <LinearGradient
-                        colors={isDark ? ['rgba(56, 189, 248, 0.08)', 'transparent'] : ['rgba(14, 165, 233, 0.05)', 'transparent']}
+                        colors={isDark ? ['rgba(56, 189, 248, 0.02)', 'transparent'] : ['rgba(14, 165, 233, 0.01)', 'transparent']}
                         style={[StyleSheet.absoluteFill, { borderRadius: 20 }]}
                     />
                     <View style={styles.cardHeader}>
@@ -279,34 +402,34 @@ export default function AIScreen() {
             const analysis = item.data as VideoAnalysis;
             return (
                 <Animated.View entering={FadeInUp.springify()} style={[styles.messageBubble, styles.aiBubble, styles.cardBubble, {
-                    backgroundColor: isDark ? 'rgba(255, 255, 255, 0.04)' : 'rgba(0,0,0,0.02)',
-                    borderColor: isDark ? 'rgba(56, 189, 248, 0.15)' : 'rgba(14, 165, 233, 0.15)'
+                    backgroundColor: isDark ? 'rgba(255, 255, 255, 0.01)' : 'rgba(0,0,0,0.005)',
+                    borderColor: isDark ? 'rgba(56, 189, 248, 0.05)' : 'rgba(14, 165, 233, 0.05)'
                 }]}>
                     <LinearGradient
-                        colors={isDark ? ['rgba(139, 92, 246, 0.08)', 'transparent'] : ['rgba(139, 92, 246, 0.05)', 'transparent']}
+                        colors={isDark ? ['rgba(139, 92, 246, 0.02)', 'transparent'] : ['rgba(139, 92, 246, 0.01)', 'transparent']}
                         style={[StyleSheet.absoluteFill, { borderRadius: 20 }]}
                     />
                     <View style={styles.cardHeader}>
-                        <View style={[styles.cardHeaderIcon, { backgroundColor: isDark ? 'rgba(139, 92, 246, 0.2)' : 'rgba(139, 92, 246, 0.1)' }]}>
+                        <View style={[styles.cardHeaderIcon, { backgroundColor: isDark ? 'rgba(139, 92, 246, 0.05)' : 'rgba(139, 92, 246, 0.02)' }]}>
                             <Feather name="eye" size={14} color="#8B5CF6" />
                         </View>
                         <Text style={[styles.cardTitle, { color: theme.colors.text.primary }]}>TRUTH ANALYSIS</Text>
                     </View>
 
                     <View style={styles.analysisSection}>
-                        <View style={[styles.analysisLabelBadge, { backgroundColor: isDark ? 'rgba(16, 185, 129, 0.15)' : 'rgba(16, 185, 129, 0.1)' }]}>
+                        <View style={[styles.analysisLabelBadge, { backgroundColor: isDark ? 'rgba(16, 185, 129, 0.05)' : 'rgba(16, 185, 129, 0.02)' }]}>
                             <Text style={[styles.analysisLabel, { color: '#10B981' }]}>ESSENCE</Text>
                         </View>
                         <Text style={[styles.cardText, { color: theme.colors.text.secondary }]}>{analysis.essence}</Text>
                     </View>
                     <View style={styles.analysisSection}>
-                        <View style={[styles.analysisLabelBadge, { backgroundColor: isDark ? 'rgba(239, 68, 68, 0.15)' : 'rgba(239, 68, 68, 0.1)' }]}>
+                        <View style={[styles.analysisLabelBadge, { backgroundColor: isDark ? 'rgba(239, 68, 68, 0.05)' : 'rgba(239, 68, 68, 0.02)' }]}>
                             <Text style={[styles.analysisLabel, { color: '#EF4444' }]}>MANIPULATION</Text>
                         </View>
                         <Text style={[styles.cardText, { color: theme.colors.text.secondary }]}>{analysis.manipulation}</Text>
                     </View>
                     <View style={styles.analysisSection}>
-                        <View style={[styles.analysisLabelBadge, { backgroundColor: isDark ? 'rgba(56, 189, 248, 0.15)' : 'rgba(56, 189, 248, 0.1)' }]}>
+                        <View style={[styles.analysisLabelBadge, { backgroundColor: isDark ? 'rgba(56, 189, 248, 0.05)' : 'rgba(56, 189, 248, 0.02)' }]}>
                             <Text style={[styles.analysisLabel, { color: '#38BDF8' }]}>REAL VALUE</Text>
                         </View>
                         <Text style={[styles.cardText, { color: theme.colors.text.secondary }]}>{analysis.realValue}</Text>
@@ -366,7 +489,20 @@ export default function AIScreen() {
                             <Text style={[styles.headerSubtitle, { color: theme.colors.text.muted }]}>AI Core • Online</Text>
                         </View>
                     </View>
-                    <View style={[styles.headerStatusDot, { backgroundColor: '#10B981' }]} />
+                    <View style={styles.headerStatusWrapper}>
+                        <View style={[styles.headerStatusDot, { backgroundColor: '#10B981' }]} />
+                        {Platform.OS === 'web' ? (
+                            // @ts-ignore
+                            <div className="status-pulse-anim" style={{
+                                position: 'absolute',
+                                width: 14,
+                                height: 14,
+                                borderRadius: 7,
+                                backgroundColor: isDark ? 'rgba(16, 185, 129, 0.4)' : 'rgba(16, 185, 129, 0.25)',
+                                zIndex: 1,
+                            }} />
+                        ) : null}
+                    </View>
                 </View>
 
                 <FlatList
@@ -374,6 +510,7 @@ export default function AIScreen() {
                     data={messages}
                     keyExtractor={item => item.id}
                     contentContainerStyle={styles.chatList}
+                    ListHeaderComponent={<AIIntroCard theme={theme} isDark={isDark} />}
                     renderItem={renderMessage}
                     showsVerticalScrollIndicator={false}
                 />
@@ -389,21 +526,13 @@ export default function AIScreen() {
                             <Text style={[styles.suggestionsTitle, { color: isDark ? 'rgba(255, 255, 255, 0.4)' : 'rgba(0, 0, 0, 0.4)' }]}>Quick Start</Text>
                             <View style={styles.suggestionsGrid}>
                                 {EXAMPLE_PROMPTS.map((prompt, index) => (
-                                    <TouchableOpacity
+                                    <SuggestionChip
                                         key={index}
-                                        style={[styles.suggestionChip, {
-                                            backgroundColor: isDark ? 'rgba(255, 255, 255, 0.04)' : 'rgba(0,0,0,0.03)',
-                                            borderColor: isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0,0,0,0.08)'
-                                        }]}
+                                        prompt={prompt}
+                                        isDark={isDark}
+                                        theme={theme}
                                         onPress={() => handleExamplePrompt(prompt)}
-                                        activeOpacity={0.7}
-                                    >
-                                        <Text style={styles.suggestionIcon}>{prompt.icon}</Text>
-                                        <View style={styles.suggestionTextWrap}>
-                                            <Text style={[styles.suggestionText, { color: theme.colors.text.primary }]}>{prompt.text}</Text>
-                                            <Text style={[styles.suggestionDesc, { color: theme.colors.text.muted }]}>{prompt.desc}</Text>
-                                        </View>
-                                    </TouchableOpacity>
+                                    />
                                 ))}
                             </View>
                         </Animated.View>
@@ -538,11 +667,80 @@ const styles = StyleSheet.create({
         marginTop: 1,
         textTransform: 'uppercase',
     },
+    headerStatusWrapper: {
+        width: 14,
+        height: 14,
+        alignItems: 'center',
+        justifyContent: 'center',
+        position: 'relative',
+        marginRight: 4,
+    },
     headerStatusDot: {
         width: 8,
         height: 8,
         borderRadius: 4,
-        marginRight: 4,
+        zIndex: 2,
+    },
+    // ===== INTRO CARD =====
+    introCard: {
+        borderRadius: 24,
+        borderWidth: 1,
+        padding: 24,
+        marginBottom: 28,
+        position: 'relative',
+        overflow: 'hidden',
+    },
+    introHeader: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 16,
+        marginBottom: 16,
+    },
+    introIconContainer: {
+        width: 44,
+        height: 44,
+        borderRadius: 14,
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderWidth: 1,
+    },
+    introHeaderText: {
+        flex: 1,
+    },
+    introTitle: {
+        fontSize: 12,
+        letterSpacing: 2,
+    },
+    introSubtitle: {
+        fontSize: 8,
+        letterSpacing: 1.5,
+        marginTop: 3,
+    },
+    introDesc: {
+        fontSize: 13,
+        lineHeight: 20,
+        letterSpacing: 0.2,
+    },
+    introDivider: {
+        height: 1,
+        marginVertical: 18,
+    },
+    introMetaRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        gap: 16,
+    },
+    introMetaCol: {
+        flex: 1,
+    },
+    introMetaLabel: {
+        fontSize: 8,
+        letterSpacing: 1.5,
+        marginBottom: 4,
+    },
+    introMetaVal: {
+        fontSize: 10,
+        letterSpacing: 0.5,
     },
     // ===== CHAT LIST =====
     chatList: {
@@ -762,27 +960,36 @@ const styles = StyleSheet.create({
     suggestionsGrid: {
         flexDirection: 'row',
         flexWrap: 'wrap',
-        gap: 8,
+        gap: 12,
     },
     suggestionChip: {
         flexDirection: 'row',
         alignItems: 'center',
-        paddingVertical: 10,
-        paddingHorizontal: 14,
-        borderRadius: 16,
+        paddingVertical: 12,
+        paddingHorizontal: 16,
+        borderRadius: 18,
         borderWidth: 1,
-        gap: 10,
+        gap: 12,
         width: '48%',
+        // @ts-ignore
+        transition: 'all 0.2s cubic-bezier(0.22, 1, 0.36, 1)',
     },
-    suggestionIcon: {
-        fontSize: 18,
+    suggestionIconContainer: {
+        width: 32,
+        height: 32,
+        borderRadius: 10,
+        borderWidth: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        // @ts-ignore
+        transition: 'all 0.2s ease',
     },
     suggestionTextWrap: {
         flex: 1,
     },
     suggestionText: {
         fontSize: 13,
-        fontWeight: '600',
+        fontWeight: '700',
     },
     suggestionDesc: {
         fontSize: 10,

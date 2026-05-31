@@ -1,62 +1,69 @@
 /**
- * Datariot Theme
- * Cyber-Elite Style: Obsidian (#000814), Neon Azure (#0EA5E9), White (#FFFFFF)
+ * Datariot Theme — Ultra Premium
+ * Deep Obsidian base with Ice Blue (#D9E4FF) luminous accents
+ * Layered depth system with glass morphism & colored glow
  */
 
 export const colors = {
-    // Primary - Vivid Ice Blue (Logo Accent)
+    // Primary - Vivid Ice Blue (Logo Accent) — KEPT ORIGINAL
     primary: {
-        DEFAULT: '#D9E4FF', // Light Ice Blue
-        light: '#FFFFFF',
+        DEFAULT: '#D9E4FF',
+        light: '#EAF0FF',
         dark: '#BDEBFF',
         ultra: '#E0F2FE',
         brand: '#D9E4FF',
         onPrimary: '#000000',
-        glow: 'rgba(217, 228, 255, 0.4)',
+        glow: 'rgba(217, 228, 255, 0.25)',
+        glowStrong: 'rgba(217, 228, 255, 0.45)',
+        glowSubtle: 'rgba(217, 228, 255, 0.08)',
     },
 
-    // Secondary
+    // Secondary — KEPT ORIGINAL + enhanced
     secondary: {
         DEFAULT: '#BDEBFF',
         dark: '#A5C6FF',
         light: '#FFFFFF',
         onSecondary: '#000000',
-        glow: 'rgba(217, 228, 255, 0.25)',
+        glow: 'rgba(189, 235, 255, 0.2)',
     },
 
-    // Backgrounds - Pure Black / Dark Gray
+    // Backgrounds — Ultra Deep Obsidian Layers
     background: {
-        primary: '#000000', // Pure Black
-        DEFAULT: '#000000',
-        paper: '#0A0A0A',
-        secondary: '#121212',
-        tertiary: '#1A1A1A',
-        web: '#000000',
-        webSecondary: '#0A0A0A',
+        primary: '#08090D',
+        DEFAULT: '#08090D',
+        paper: '#0C0D12',
+        secondary: '#0E1017',
+        tertiary: '#13151D',
+        web: '#08090D',
+        webSecondary: '#0C0D12',
     },
 
-    // Surfaces - Glassmorphic
+    // Surfaces — Glass Morphism System
     surface: {
-        DEFAULT: 'rgba(10, 10, 10, 0.75)',
-        light: 'rgba(20, 20, 20, 0.75)',
-        overlay: 'rgba(0, 0, 0, 0.9)',
-        card: 'rgba(10, 10, 10, 0.55)',
-        border: 'rgba(255, 255, 255, 0.08)',
-        borderHover: 'rgba(255, 255, 255, 0.15)',
+        DEFAULT: '#0E1017',
+        light: '#13151D',
+        elevated: '#181B25',
+        overlay: 'rgba(0, 0, 0, 0.85)',
+        card: '#111318',
+        glass: 'rgba(255, 255, 255, 0.03)',
+        glassHover: 'rgba(255, 255, 255, 0.06)',
+        border: 'rgba(255, 255, 255, 0.05)',
+        borderHover: 'rgba(255, 255, 255, 0.10)',
+        borderActive: 'rgba(217, 228, 255, 0.20)',
     },
 
-    // Text colors
+    // Text colors — Premium Hierarchy
     text: {
-        primary: '#FFFFFF', // White
-        secondary: 'rgba(255, 255, 255, 0.75)',
-        muted: 'rgba(255, 255, 255, 0.45)',
+        primary: '#EEEEF0',
+        secondary: '#8E90A0',
+        muted: '#55576A',
         accent: '#D9E4FF',
     },
 
     // Semantic colors
-    success: '#10B981',
-    warning: '#F59E0B',
-    error: '#EF4444',
+    success: '#34D399',
+    warning: '#FBBF24',
+    error: '#F87171',
 
     // Special
     white: '#FFFFFF',
@@ -64,21 +71,38 @@ export const colors = {
     transparent: 'transparent',
 } as const;
 
+// Premium Gradient Pairs
+export const gradients = {
+    primary: ['#D9E4FF', '#A5C6FF', '#7AA2FF'] as const,
+    primarySoft: ['rgba(217, 228, 255, 0.20)', 'rgba(217, 228, 255, 0.02)'] as const,
+    ambient: ['rgba(217, 228, 255, 0.08)', 'rgba(217, 228, 255, 0.01)', 'transparent'] as const,
+    surface: ['rgba(255, 255, 255, 0.06)', 'rgba(255, 255, 255, 0.01)'] as const,
+    surfaceHover: ['rgba(255, 255, 255, 0.10)', 'rgba(255, 255, 255, 0.03)'] as const,
+    aurora: ['#D9E4FF', '#BDEBFF', '#E0F2FE'] as const,
+    auroraAmbient: ['rgba(217, 228, 255, 0.12)', 'rgba(189, 235, 255, 0.05)', 'transparent'] as const,
+    cardShine: ['rgba(255, 255, 255, 0.08)', 'rgba(255, 255, 255, 0.02)', 'rgba(255, 255, 255, 0.00)'] as const,
+    darkFade: ['rgba(8, 9, 13, 0)', 'rgba(8, 9, 13, 0.8)', '#08090D'] as const,
+} as const;
+
 export const typography = {
     fontFamilies: {
-        regular: 'Inter_400Regular',
-        medium: 'Inter_500Medium',
-        bold: 'Oxanium_700Bold',
-        tech: 'Oxanium_500Medium',
-        brand: 'Syncopate_700Bold', // Minimalist Wide Tech Font
+        light: 'Outfit_300Light',
+        regular: 'Outfit_400Regular',
+        medium: 'Outfit_500Medium',
+        semibold: 'Outfit_600SemiBold',
+        bold: 'Outfit_700Bold',
+        extrabold: 'Outfit_800ExtraBold',
+        black: 'Outfit_900Black',
+        tech: 'SpaceGrotesk_500Medium',
+        brand: 'Syncopate_700Bold',
         mono: 'SpaceGrotesk_400Regular',
     },
 
     sizes: {
-        xs: 12,
-        sm: 14,
-        base: 16,
-        lg: 18,
+        xs: 11,
+        sm: 13,
+        base: 15,
+        lg: 17,
         xl: 20,
         '2xl': 24,
         '3xl': 30,
@@ -105,52 +129,71 @@ export const spacing = {
 
 export const borderRadius = {
     none: 0,
-    sm: 4,
-    md: 8,
-    lg: 12,
-    xl: 16,
+    sm: 6,
+    md: 10,
+    lg: 14,
+    xl: 18,
     '2xl': 24,
+    '3xl': 32,
     full: 9999,
 } as const;
 
 export const shadows = {
     sm: {
-        shadowColor: '#0EA5E9',
+        shadowColor: '#000000',
         shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
+        shadowOpacity: 0.15,
         shadowRadius: 4,
         elevation: 2,
     },
     md: {
-        shadowColor: '#0EA5E9',
+        shadowColor: '#000000',
         shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.2,
+        shadowOpacity: 0.25,
         shadowRadius: 8,
         elevation: 4,
     },
     lg: {
-        shadowColor: '#0EA5E9',
+        shadowColor: '#000000',
         shadowOffset: { width: 0, height: 8 },
-        shadowOpacity: 0.3,
+        shadowOpacity: 0.35,
         shadowRadius: 16,
         elevation: 8,
+    },
+    glow: {
+        shadowColor: '#D9E4FF',
+        shadowOffset: { width: 0, height: 0 },
+        shadowOpacity: 0.3,
+        shadowRadius: 20,
+        elevation: 10,
+    },
+    glowSubtle: {
+        shadowColor: '#D9E4FF',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.15,
+        shadowRadius: 12,
+        elevation: 6,
     },
 } as const;
 
 export const animation = {
     duration: {
-        fast: 150,
-        normal: 250,
+        fast: 120,
+        normal: 220,
         slow: 350,
+        dramatic: 500,
     },
     easing: {
         default: 'ease-in-out',
         elastic: 'cubic-bezier(0.68, -0.55, 0.265, 1.55)',
+        smooth: 'cubic-bezier(0.4, 0, 0.2, 1)',
+        premium: 'cubic-bezier(0.22, 1, 0.36, 1)',
     },
 } as const;
 
 export const theme = {
     colors,
+    gradients,
     typography,
     spacing,
     borderRadius,

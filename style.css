@@ -9157,70 +9157,122 @@ html.lenis body {
    ORVELIS AI CORE SECTION STYLES
    ============================== */
 .section--ai {
+    background: transparent;
     position: relative;
-    background: radial-gradient(circle at 10% 20%, rgba(14, 165, 233, 0.04) 0%, transparent 50%),
-                radial-gradient(circle at 90% 80%, rgba(139, 92, 246, 0.02) 0%, transparent 50%);
 }
 
 .ai-core-layout {
     display: grid;
-    grid-template-columns: 1.1fr 0.9fr;
+    grid-template-columns: 1fr 1fr;
     gap: 80px;
     align-items: center;
 }
 
-/* --- CARD CONTAINER (borderless, deep logo-blue glass) --- */
+/* --- CARD CONTAINER (subtle translucent glass, borderless, no glowing shadows) --- */
 .orvelis-card-container {
     position: relative;
-    background: linear-gradient(165deg, rgba(14, 165, 233, 0.12) 0%, rgba(10, 15, 30, 0.8) 50%, rgba(5, 8, 18, 0.95) 100%);
-    backdrop-filter: blur(40px);
-    -webkit-backdrop-filter: blur(40px);
-    border: none;
+    background: transparent !important;
+    border: none !important;
     border-radius: 28px;
     padding: 36px;
-    box-shadow:
-        inset 0 0 30px rgba(14, 165, 233, 0.08),
-        0 0 50px rgba(14, 165, 233, 0.15),
-        0 25px 60px rgba(0, 0, 0, 0.4);
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
     display: flex;
     flex-direction: column;
-    gap: 20px;
-    transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-    overflow: hidden;
+    gap: 0;
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    transform-style: preserve-3d;
+    overflow: visible !important;
 }
 
 .orvelis-card-container::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 40px;
-    right: 40px;
-    height: 1px;
-    background: linear-gradient(90deg,
-        transparent,
-        rgba(14, 165, 233, 0.15) 40%,
-        rgba(14, 165, 233, 0.15) 60%,
-        transparent);
+    display: none;
 }
 
 .orvelis-card-container::after {
-    content: '';
-    position: absolute;
-    top: -80px;
-    right: -60px;
-    width: 240px;
-    height: 240px;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(14, 165, 233, 0.06) 0%, transparent 70%);
-    pointer-events: none;
+    display: none;
 }
 
 .orvelis-card-container:hover {
-    box-shadow:
-        inset 0 0 35px rgba(14, 165, 233, 0.16),
-        0 0 70px rgba(14, 165, 233, 0.25),
-        0 30px 80px rgba(0, 0, 0, 0.5);
-    transform: translateY(-4px);
+    background: transparent !important;
+    box-shadow: none !important;
+    transform: none;
+}
+
+/* Theme-dependent overrides for Orvelis Card contrast */
+[data-theme="light"] .orvelis-title {
+    color: #111827 !important;
+}
+[data-theme="light"] .orvelis-subtitle {
+    color: rgba(17, 24, 39, 0.6) !important;
+}
+[data-theme="light"] .orvelis-score-num {
+    color: #111827 !important;
+}
+[data-theme="light"] .orvelis-subcard-desc {
+    color: rgba(17, 24, 39, 0.65) !important;
+}
+[data-theme="light"] .orvelis-subcard-label {
+    color: rgba(17, 24, 39, 0.7) !important;
+}
+[data-theme="light"] .orvelis-score-status {
+    color: #0284c7 !important;
+}
+[data-theme="light"] .orvelis-subcard {
+    border-top: 1px solid rgba(0, 0, 0, 0.08) !important;
+}
+[data-theme="light"] .analysis-tag--essence {
+    color: #0284c7 !important;
+    background: rgba(14, 165, 233, 0.08) !important;
+}
+[data-theme="light"] .analysis-tag--manipulation {
+    color: #dc2626 !important;
+    background: rgba(220, 38, 38, 0.08) !important;
+}
+[data-theme="light"] .orvelis-icon-wrapper {
+    background: rgba(14, 165, 233, 0.06) !important;
+    border: 1px solid rgba(14, 165, 233, 0.1) !important;
+}
+[data-theme="light"] .orvelis-robot-icon {
+    stroke: #0284c7 !important;
+}
+
+[data-theme="dark"] .orvelis-title {
+    color: #EEEEF0 !important;
+}
+[data-theme="dark"] .orvelis-subtitle {
+    color: rgba(148, 163, 184, 0.65) !important;
+}
+[data-theme="dark"] .orvelis-score-num {
+    color: #EEEEF0 !important;
+}
+[data-theme="dark"] .orvelis-subcard-desc {
+    color: rgba(148, 163, 184, 0.6) !important;
+}
+[data-theme="dark"] .orvelis-subcard-label {
+    color: rgba(148, 163, 184, 0.7) !important;
+}
+[data-theme="dark"] .orvelis-score-status {
+    color: #38BDF8 !important;
+}
+[data-theme="dark"] .orvelis-subcard {
+    border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+[data-theme="dark"] .analysis-tag--essence {
+    color: #38BDF8 !important;
+    background: rgba(56, 189, 248, 0.08) !important;
+}
+[data-theme="dark"] .analysis-tag--manipulation {
+    color: #F87171 !important;
+    background: rgba(248, 113, 113, 0.08) !important;
+}
+[data-theme="dark"] .orvelis-icon-wrapper {
+    background: rgba(56, 189, 248, 0.05) !important;
+    border: 1px solid rgba(56, 189, 248, 0.1) !important;
+}
+[data-theme="dark"] .orvelis-robot-icon {
+    stroke: #38bdf8 !important;
 }
 
 /* --- HEADER --- */
@@ -9323,16 +9375,18 @@ html.lenis body {
     letter-spacing: 1px;
 }
 
-/* --- SUBCARDS (borderless, soft brand-blue background) --- */
+/* --- SUBCARDS (clean text sections with thin dividers, no box backgrounds or borders) --- */
 .orvelis-subcard {
-    background: rgba(14, 165, 233, 0.02);
+    background: transparent;
     border: none;
-    border-radius: 16px;
-    padding: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 0;
+    padding: 24px 0 0 0;
+    margin-top: 24px;
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    transition: background 0.4s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    gap: 12px;
+    transition: all 0.4s ease;
 }
 
 .orvelis-subcard::before {
@@ -9340,9 +9394,10 @@ html.lenis body {
 }
 
 .orvelis-subcard:hover {
-    background: rgba(14, 165, 233, 0.04);
-    transform: translateY(-2px);
+    background: transparent;
     border: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.09);
+    transform: none;
     box-shadow: none;
 }
 
@@ -9673,6 +9728,11 @@ html.lenis body {
     .orvelis-card-container {
         padding: 24px !important;
     }
+    .orvelis-subcard {
+        padding: 16px 0 !important;
+        margin-top: 16px !important;
+        border-radius: 0 !important;
+    }
     .orvelis-score-num {
         font-size: 40px !important;
     }
@@ -9720,6 +9780,11 @@ html.lenis body {
     .orvelis-card-container {
         padding: 18px !important;
         border-radius: 18px !important;
+    }
+    .orvelis-subcard {
+        padding: 12px 0 !important;
+        margin-top: 12px !important;
+        border-radius: 0 !important;
     }
     .orvelis-score-num {
         font-size: 36px !important;

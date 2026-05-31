@@ -52,6 +52,46 @@
             "destination": "/xyz.html"
         },
         {
+            "source": "/_expo/:path*",
+            "has": [
+                {
+                    "type": "host",
+                    "value": "datariot.xyz"
+                }
+            ],
+            "destination": "/datariot-xyz/_expo/:path*"
+        },
+        {
+            "source": "/assets/:path*",
+            "has": [
+                {
+                    "type": "host",
+                    "value": "datariot.xyz"
+                }
+            ],
+            "destination": "/datariot-xyz/assets/:path*"
+        },
+        {
+            "source": "/favicon.ico",
+            "has": [
+                {
+                    "type": "host",
+                    "value": "datariot.xyz"
+                }
+            ],
+            "destination": "/datariot-xyz/favicon.ico"
+        },
+        {
+            "source": "/metadata.json",
+            "has": [
+                {
+                    "type": "host",
+                    "value": "datariot.xyz"
+                }
+            ],
+            "destination": "/datariot-xyz/metadata.json"
+        },
+        {
             "source": "/:path*",
             "has": [
                 {
@@ -59,7 +99,7 @@
                     "value": "datariot.xyz"
                 }
             ],
-            "destination": "/datariot-xyz/:path*"
+            "destination": "/xyz.html"
         }
     ]
 }

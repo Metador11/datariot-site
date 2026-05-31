@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Switch, ScrollView, Pressable, Alert } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Switch, ScrollView, Pressable, Alert, Platform } from 'react-native';
 import { useRouter, Stack } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
@@ -32,6 +32,8 @@ export default function SettingsScreen() {
         );
     };
 
+    const monoFont = { fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace' };
+
     return (
         <View style={[styles.container, { backgroundColor: theme.colors.background.primary }]}>
             <Stack.Screen options={{ headerShown: false }} />
@@ -41,7 +43,7 @@ export default function SettingsScreen() {
                     <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
                         <Ionicons name="chevron-back" size={24} color={theme.colors.text.primary} />
                     </TouchableOpacity>
-                    <Text style={[styles.headerTitle, { color: theme.colors.text.primary }]}>Settings</Text>
+                    <Text style={[styles.headerTitle, { color: theme.colors.text.primary }, monoFont]}>[ SETTINGS ]</Text>
                     <View style={{ width: 40 }} />
                 </View>
 
@@ -60,8 +62,8 @@ export default function SettingsScreen() {
                             <View style={styles.promoteLeft}>
                                 <MaterialCommunityIcons name="rocket-launch-outline" size={22} color="#fff" />
                                 <View>
-                                    <Text style={styles.promoteTitle}>Promote Business</Text>
-                                    <Text style={styles.promoteSubtitle}>Advertising and Promotion</Text>
+                                    <Text style={[styles.promoteTitle, monoFont]}>[ PROMOTE BUSINESS ]</Text>
+                                    <Text style={[styles.promoteSubtitle, monoFont]}>[ ADVERTISING.AND.PROMOTION ]</Text>
                                 </View>
                             </View>
                             <Ionicons name="chevron-forward" size={20} color="rgba(255,255,255,0.7)" />
@@ -69,25 +71,25 @@ export default function SettingsScreen() {
                     </Pressable>
 
                     <View style={[styles.section, { borderBottomColor: theme.colors.surface.overlay }]}>
-                        <Text style={[styles.sectionTitle, { color: theme.colors.primary.DEFAULT }]}>ACCOUNT</Text>
+                        <Text style={[styles.sectionTitle, { color: theme.colors.primary.DEFAULT }, monoFont]}>[ ACCOUNT ]</Text>
                         <TouchableOpacity style={[styles.row, { borderBottomColor: theme.colors.surface.overlay, backgroundColor: isDark ? 'rgba(255,255,255,0.02)' : 'rgba(0,0,0,0.02)' }]} onPress={() => router.push('/edit-profile')}>
-                            <Text style={[styles.rowLabel, { color: theme.colors.text.primary }]}>Edit Profile</Text>
+                            <Text style={[styles.rowLabel, { color: theme.colors.text.primary }, monoFont]}>&gt; EDIT PROFILE</Text>
                             <Ionicons name="chevron-forward" size={20} color={theme.colors.text.muted} />
                         </TouchableOpacity>
                         <TouchableOpacity style={[styles.row, { borderBottomColor: theme.colors.surface.overlay, backgroundColor: isDark ? 'rgba(255,255,255,0.02)' : 'rgba(0,0,0,0.02)' }]}>
-                            <Text style={[styles.rowLabel, { color: theme.colors.text.primary }]}>Privacy & Security</Text>
+                            <Text style={[styles.rowLabel, { color: theme.colors.text.primary }, monoFont]}>&gt; PRIVACY & SECURITY</Text>
                             <Ionicons name="chevron-forward" size={20} color={theme.colors.text.muted} />
                         </TouchableOpacity>
                         <TouchableOpacity style={[styles.row, { borderBottomColor: theme.colors.surface.overlay, backgroundColor: isDark ? 'rgba(255,255,255,0.02)' : 'rgba(0,0,0,0.02)' }]}>
-                            <Text style={[styles.rowLabel, { color: theme.colors.text.primary }]}>Notifications</Text>
+                            <Text style={[styles.rowLabel, { color: theme.colors.text.primary }, monoFont]}>&gt; NOTIFICATIONS</Text>
                             <Ionicons name="chevron-forward" size={20} color={theme.colors.text.muted} />
                         </TouchableOpacity>
                     </View>
 
                     <View style={[styles.section, { borderBottomColor: theme.colors.surface.overlay }]}>
-                        <Text style={[styles.sectionTitle, { color: theme.colors.primary.DEFAULT }]}>PREFERENCES</Text>
+                        <Text style={[styles.sectionTitle, { color: theme.colors.primary.DEFAULT }, monoFont]}>[ PREFERENCES ]</Text>
                         <View style={[styles.row, { borderBottomColor: theme.colors.surface.overlay, backgroundColor: isDark ? 'rgba(255,255,255,0.02)' : 'rgba(0,0,0,0.02)' }]}>
-                            <Text style={[styles.rowLabel, { color: theme.colors.text.primary }]}>Dark Mode</Text>
+                            <Text style={[styles.rowLabel, { color: theme.colors.text.primary }, monoFont]}>&gt; DARK MODE</Text>
                             <Switch
                                 value={isDark}
                                 onValueChange={toggleTheme}
@@ -95,28 +97,28 @@ export default function SettingsScreen() {
                             />
                         </View>
                         <View style={[styles.row, { borderBottomColor: theme.colors.surface.overlay, backgroundColor: isDark ? 'rgba(255,255,255,0.02)' : 'rgba(0,0,0,0.02)' }]}>
-                            <Text style={[styles.rowLabel, { color: theme.colors.text.primary }]}>Autoplay Videos</Text>
+                            <Text style={[styles.rowLabel, { color: theme.colors.text.primary }, monoFont]}>&gt; AUTOPLAY VIDEOS</Text>
                             <Switch value={true} trackColor={{ false: theme.colors.surface.light, true: theme.colors.primary.DEFAULT }} />
                         </View>
                     </View>
 
                     <View style={[styles.section, { borderBottomColor: theme.colors.surface.overlay }]}>
-                        <Text style={[styles.sectionTitle, { color: theme.colors.primary.DEFAULT }]}>SUPPORT</Text>
+                        <Text style={[styles.sectionTitle, { color: theme.colors.primary.DEFAULT }, monoFont]}>[ SUPPORT ]</Text>
                         <TouchableOpacity style={[styles.row, { borderBottomColor: theme.colors.surface.overlay, backgroundColor: isDark ? 'rgba(255,255,255,0.02)' : 'rgba(0,0,0,0.02)' }]}>
-                            <Text style={[styles.rowLabel, { color: theme.colors.text.primary }]}>Help Center</Text>
+                            <Text style={[styles.rowLabel, { color: theme.colors.text.primary }, monoFont]}>&gt; HELP CENTER</Text>
                             <Ionicons name="chevron-forward" size={20} color={theme.colors.text.muted} />
                         </TouchableOpacity>
                         <TouchableOpacity style={[styles.row, { borderBottomColor: theme.colors.surface.overlay, backgroundColor: isDark ? 'rgba(255,255,255,0.02)' : 'rgba(0,0,0,0.02)' }]}>
-                            <Text style={[styles.rowLabel, { color: theme.colors.text.primary }]}>Report a Problem</Text>
+                            <Text style={[styles.rowLabel, { color: theme.colors.text.primary }, monoFont]}>&gt; REPORT A PROBLEM</Text>
                             <Ionicons name="chevron-forward" size={20} color={theme.colors.text.muted} />
                         </TouchableOpacity>
                     </View>
 
                     <TouchableOpacity style={[styles.row, { borderBottomWidth: 0, marginTop: 20, backgroundColor: 'transparent' }]} onPress={handleSignOut}>
-                        <Text style={[styles.rowLabel, { color: theme.colors.error }]}>Log Out</Text>
+                        <Text style={[styles.rowLabel, { color: theme.colors.error, fontWeight: '700' }, monoFont]}>[ LOG OUT ]</Text>
                     </TouchableOpacity>
 
-                    <Text style={[styles.version, { color: theme.colors.text.muted }]}>Version 1.0.0</Text>
+                    <Text style={[styles.version, { color: theme.colors.text.muted }, monoFont]}>[ VERSION.1.0.0 ]</Text>
                 </ScrollView>
             </SafeAreaView>
         </View>

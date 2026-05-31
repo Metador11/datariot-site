@@ -1,17 +1,23 @@
 import OpenAI from 'openai';
 
-// Initialize OpenAI client
-// We use EXPO_PUBLIC_ prefix for Expo to inject these at build time
+// Initialize keys
 const openAIKey = process.env.EXPO_PUBLIC_OPENAI_API_KEY;
 const anthropicKey = process.env.EXPO_PUBLIC_ANTHROPIC_API_KEY;
 
 if (!openAIKey) console.warn('[Orvelis] Missing EXPO_PUBLIC_OPENAI_API_KEY — AI will use fallback/mock');
 if (!anthropicKey) console.warn('[Orvelis] Missing EXPO_PUBLIC_ANTHROPIC_API_KEY — AI will use fallback/mock');
 
-export const openai = new OpenAI({
-    apiKey: openAIKey || 'dummy-key',
-    dangerouslyAllowBrowser: true // Required for React Native / Expo
-});
+// Lazy initializer for OpenAI to avoid module load-time crashes in browsers
+let _openai: OpenAI | null = null;
+export function getOpenAI(): OpenAI {
+    if (!_openai) {
+        _openai = new OpenAI({
+            apiKey: openAIKey || 'dummy-key',
+            dangerouslyAllowBrowser: true // Required for React Native / Expo
+        });
+    }
+    return _openai;
+}
 
 export interface DailyInsight {
     score: number;
@@ -138,7 +144,7 @@ export async function generateDailyInsight(): Promise<DailyInsight> {
         if (!openAIKey || openAIKey === 'dummy-key') {
             throw new Error('No OpenAI API key configured');
         }
-        const completion = await openai.chat.completions.create({
+        const completion = await getOpenAI().chat.completions.create({
             messages: [
                 { role: "system", content: systemPrompt },
                 { role: "user", content: userPrompt }
@@ -194,7 +200,7 @@ export async function generateVideoAnalysis(): Promise<VideoAnalysis> {
         if (!openAIKey || openAIKey === 'dummy-key') {
             throw new Error('No OpenAI API key configured');
         }
-        const completion = await openai.chat.completions.create({
+        const completion = await getOpenAI().chat.completions.create({
             messages: [
                 { role: "system", content: systemPrompt },
                 { role: "user", content: userPrompt }
@@ -243,7 +249,7 @@ function generateMockResponse(message: string): string {
     }
 
     if (lower.includes('help') || lower.includes('what can') || lower.includes('помог') || lower.includes('что ты')) {
-        return "I'm **Orvelis** — your thinking partner. I can:\n\n• **Chat** — discuss ideas, strategies, or just think out loud\n• **Daily Insight** — get a personalized focus reading\n• **Analyze** — break down content to find truth vs manipulation\n\nUse the tools below or just talk to me. I'm here to sharpen your thinking.";
+        return "I am **Orvelis** — your high-fidelity cognitive partner. I operate at the intersection of logical forensic scans and analytical synthesis to elevate intellectual output:\n\n• **Strategic Dialogue** — stress-test concepts through custom conversational scenarios\n• **Synthesized Focus Insights** — deep personalized readings to prime cognitive focus states\n• **Content Forensic Scan** — precise structural analysis separating manipulation from actual signal\n\nSelect a tool below or initiate a prompt to begin.";
     }
 
     if (lower.includes('interesting') || lower.includes('fact') || lower.includes('интерес')) {
@@ -273,7 +279,7 @@ export async function chatWithAI(message: string, history: any[]): Promise<strin
         if (!openAIKey || openAIKey === 'dummy-key') {
             throw new Error('No OpenAI API key configured');
         }
-        const completion = await openai.chat.completions.create({
+        const completion = await getOpenAI().chat.completions.create({
             messages: [
                 { role: "system", content: ORVELIS_SYSTEM_PROMPT },
                 ...history,
@@ -307,7 +313,7 @@ export async function generateDebateSeed(contentHint: string): Promise<DebateSee
         if (!openAIKey || openAIKey === 'dummy-key') {
             throw new Error('No OpenAI API key configured');
         }
-        const completion = await openai.chat.completions.create({
+        const completion = await getOpenAI().chat.completions.create({
             messages: [
                 { role: "system", content: systemPrompt },
                 { role: "user", content: userPrompt }
@@ -363,7 +369,7 @@ Return a JSON object with:
         if (!openAIKey || openAIKey === 'dummy-key') {
             throw new Error('No OpenAI API key configured');
         }
-        const completion = await openai.chat.completions.create({
+        const completion = await getOpenAI().chat.completions.create({
             messages: [
                 { role: "system", content: systemPrompt },
                 { role: "user", content: userPrompt }
@@ -417,7 +423,7 @@ Your goal is to answer the user's question contextually, using academic/scientif
         if (!openAIKey || openAIKey === 'dummy-key') {
             throw new Error('No OpenAI API key configured');
         }
-        const completion = await openai.chat.completions.create({
+        const completion = await getOpenAI().chat.completions.create({
             messages: [
                 { role: "system", content: videoSystemPrompt },
                 ...history,

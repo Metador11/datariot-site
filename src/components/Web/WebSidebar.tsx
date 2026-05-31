@@ -1,17 +1,16 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, StyleSheet, Pressable, ScrollView, Image as RNImage } from 'react-native';
+import { View, Text, StyleSheet, Pressable, ScrollView, Image as RNImage, Platform } from 'react-native';
 import { Feather, Ionicons, MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-icons';
 import { useRouter, usePathname } from 'expo-router';
 import { useAuth } from '../../lib/supabase/hooks/useAuth';
 import { supabase } from '../../lib/supabase/client';
 import { LinearGradient } from 'expo-linear-gradient';
-
-import { theme as baseTheme } from '../../design-system/theme';
 import { useTheme } from '../Theme/ThemeProvider';
 
 const MenuItem = ({ icon, label, isActive, onPress, isSpecial = false }: { icon: React.ReactNode, label: string, isActive: boolean, onPress?: () => void, isSpecial?: boolean }) => {
     const [isHovered, setIsHovered] = useState(false);
-    const { theme } = useTheme();
+    const { theme, mode } = useTheme();
+    const isDark = mode === 'dark';
 
     return (
         <Pressable
@@ -19,21 +18,44 @@ const MenuItem = ({ icon, label, isActive, onPress, isSpecial = false }: { icon:
             onHoverOut={() => setIsHovered(false)}
             style={[
                 styles.menuItem,
-                isActive && { backgroundColor: theme.colors.surface.border },
-                isHovered && { backgroundColor: theme.colors.surface.borderHover },
-                isSpecial && {
-                    backgroundColor: theme.colors.primary.glow,
-                    borderColor: theme.colors.primary.DEFAULT,
+                isActive && {
+                    backgroundColor: isDark ? 'rgba(217, 228, 255, 0.05)' : 'rgba(107, 127, 204, 0.06)',
+                    borderColor: isDark ? 'rgba(217, 228, 255, 0.1)' : 'rgba(107, 127, 204, 0.12)',
                     borderWidth: 1,
-                    marginTop: 8,
+                },
+                isHovered && !isActive && {
+                    backgroundColor: isDark ? 'rgba(255, 255, 255, 0.04)' : 'rgba(0, 0, 0, 0.03)',
+                    borderColor: isDark ? 'rgba(255, 255, 255, 0.06)' : 'rgba(0, 0, 0, 0.05)',
+                    borderWidth: 1,
+                    transform: [{ translateX: 2 }],
+                },
+                isSpecial && {
+                    backgroundColor: isDark ? 'rgba(217, 228, 255, 0.06)' : 'rgba(107, 127, 204, 0.06)',
+                    borderColor: isDark ? 'rgba(217, 228, 255, 0.15)' : 'rgba(107, 127, 204, 0.2)',
+                    borderWidth: 1,
+                    marginTop: 12,
                 },
                 isSpecial && isHovered && {
-                    backgroundColor: theme.colors.primary.glow,
-                    borderColor: theme.colors.primary.light,
-                }
+                    backgroundColor: isDark ? 'rgba(217, 228, 255, 0.12)' : 'rgba(107, 127, 204, 0.12)',
+                    borderColor: theme.colors.primary.DEFAULT,
+                    shadowColor: isDark ? '#D9E4FF' : '#6B7FCC',
+                    shadowOffset: { width: 0, height: 0 },
+                    shadowOpacity: isDark ? 0.35 : 0.15,
+                    shadowRadius: 14,
+                    transform: [{ scale: 1.02 }, { translateX: 2 }],
+                },
             ]}
             onPress={onPress}
         >
+            {/* Active gradient indicator line */}
+            {isActive && !isSpecial && (
+                <LinearGradient
+                    colors={isDark ? ['#D9E4FF', '#A5C6FF'] : ['#6B7FCC', '#A5C6FF']}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 0, y: 1 }}
+                    style={styles.activeGradientLine}
+                />
+            )}
             <View style={[
                 styles.iconContainer,
                 isHovered && styles.iconHovered,
@@ -42,14 +64,13 @@ const MenuItem = ({ icon, label, isActive, onPress, isSpecial = false }: { icon:
             </View>
             <Text style={[
                 styles.label,
-                { color: theme.colors.text.secondary },
-                isActive && { color: theme.colors.text.primary, fontFamily: theme.typography.fontFamilies.bold },
+                { color: theme.colors.text.secondary, fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace' },
+                isActive && { color: theme.colors.text.primary, fontWeight: '700' },
                 isHovered && { color: theme.colors.text.primary },
-                isSpecial && { color: theme.colors.primary.DEFAULT }
+                isSpecial && { color: isDark ? theme.colors.primary.DEFAULT : '#52526A' }
             ]}>
-                {label}
+                {`> ${label.toUpperCase()}`}
             </Text>
-            {isActive && !isSpecial && <View style={[styles.activeIndicator, { backgroundColor: theme.colors.primary.DEFAULT }]} />}
         </Pressable>
     );
 };
@@ -58,8 +79,11 @@ export const WebSidebar = () => {
     const router = useRouter();
     const pathname = usePathname();
     const { user, signOut } = useAuth();
-    const { theme, mode } = useTheme();
+    const { theme, mode, toggleTheme } = useTheme();
+    const isDark = mode === 'dark';
     const [likedVideos, setLikedVideos] = useState<any[]>([]);
+    const [isProfileHovered, setIsProfileHovered] = useState(false);
+
     const handleSignOut = async () => {
         await signOut();
         router.replace('/auth/login');
@@ -112,18 +136,31 @@ export const WebSidebar = () => {
 
     return (
         <View style={[styles.container, { backgroundColor: 'transparent' }]}>
-            {/* Logo Section */}
+            {/* Logo Section with ambient glow */}
             <View style={styles.logoContainer}>
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                    <View style={{ marginRight: 10, position: 'relative', width: 32, height: 32, alignItems: 'center', justifyContent: 'center' }}>
-                        {/* Blue 'Ice' Tone Overlay */}
-                        <View style={{ position: 'absolute', width: 34, height: 34, backgroundColor: 'rgba(56, 189, 248, 0.15)', borderRadius: 17 }} />
+                    <View style={{ marginRight: 10, position: 'relative', width: 36, height: 36, alignItems: 'center', justifyContent: 'center' }}>
+                        {/* Ambient glow behind logo */}
+                        <View style={{
+                            position: 'absolute',
+                            width: 52,
+                            height: 52,
+                            backgroundColor: isDark ? 'rgba(217, 228, 255, 0.12)' : 'rgba(107, 127, 204, 0.08)',
+                            borderRadius: 26,
+                        }} />
+                        <View style={{
+                            position: 'absolute',
+                            width: 42,
+                            height: 42,
+                            backgroundColor: isDark ? 'rgba(217, 228, 255, 0.08)' : 'rgba(107, 127, 204, 0.05)',
+                            borderRadius: 21,
+                        }} />
                         <RNImage
                             source={require('../../../assets/logo.jpg')}
-                            style={{ width: 30, height: 30, borderRadius: 15 }}
+                            style={{ width: 32, height: 32, borderRadius: 16 }}
                         />
                     </View>
-                    <Text style={[styles.logo, { color: theme.colors.primary.DEFAULT, fontFamily: theme.typography.fontFamilies.brand, letterSpacing: 2, fontSize: 18 }]}>Datariot</Text>
+                    <Text style={[styles.logo, { color: theme.colors.primary.DEFAULT, fontFamily: theme.typography.fontFamilies.brand, letterSpacing: 3, fontSize: 17 }]}>DATARIOT</Text>
                 </View>
             </View>
 
@@ -135,34 +172,16 @@ export const WebSidebar = () => {
                     onPress={() => router.push('/')}
                 />
                 <MenuItem
-                    icon={<Feather name="book-open" size={20} color={isActive('/rules') ? theme.colors.primary.DEFAULT : theme.colors.text.muted} />}
-                    label="Rules"
-                    isActive={isActive('/rules')}
-                    onPress={() => router.push('/rules' as any)}
-                />
-                <MenuItem
-                    icon={<MaterialCommunityIcons name="trophy-outline" size={22} color={isActive('/leaderboard') ? theme.colors.primary.DEFAULT : theme.colors.text.muted} />}
-                    label="Leaderboard"
-                    isActive={isActive('/leaderboard')}
-                    onPress={() => router.push('/leaderboard' as any)}
-                />
-                <MenuItem
-                    icon={<MaterialCommunityIcons name="forum-outline" size={22} color={isActive('/forum') ? theme.colors.primary.DEFAULT : theme.colors.text.muted} />}
-                    label="Forum"
-                    isActive={isActive('/forum')}
-                    onPress={() => router.push('/forum' as any)}
-                />
-                <MenuItem
                     icon={<Ionicons name="compass-outline" size={22} color={isActive('/discover') ? theme.colors.primary.DEFAULT : theme.colors.text.muted} />}
                     label="Discover"
                     isActive={isActive('/discover')}
                     onPress={() => router.push('/discover')}
                 />
                 <MenuItem
-                    icon={<Feather name="heart" size={20} color={isActive('/favorites') ? theme.colors.primary.DEFAULT : theme.colors.text.muted} />}
-                    label="Favorites"
-                    isActive={isActive('/favorites')}
-                    onPress={() => router.push('/favorites' as any)}
+                    icon={<Ionicons name="add-circle-outline" size={22} color={isActive('/create') ? theme.colors.primary.DEFAULT : theme.colors.text.muted} />}
+                    label="Create"
+                    isActive={isActive('/create')}
+                    onPress={() => router.push('/create')}
                 />
                 <MenuItem
                     icon={<Feather name="settings" size={20} color={isActive('/settings') ? theme.colors.primary.DEFAULT : theme.colors.text.muted} />}
@@ -170,8 +189,6 @@ export const WebSidebar = () => {
                     isActive={isActive('/settings')}
                     onPress={() => router.push('/settings')}
                 />
-
-
 
                 <View style={styles.spacer} />
 
@@ -185,105 +202,136 @@ export const WebSidebar = () => {
             </View>
 
             {/* Liked Videos Section */}
-            {
-                likedVideos.length > 0 && (
-                    <View style={styles.mediaSection}>
-                        <Text style={[styles.sectionLabel, { color: theme.colors.text.muted, fontFamily: theme.typography.fontFamilies.bold }]}>RECENT VIDEOS</Text>
-                        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.mediaScroll}>
-                            {likedVideos.map((video, idx) => (
-                                <Pressable key={video.id} style={styles.mediaCard} onPress={() => router.push({ pathname: '/video-player', params: { type: 'video', initialVideoId: video.id } })}>
-                                    <View
-                                        style={[styles.mediaGradient, { backgroundColor: theme.colors.surface.card, borderColor: theme.colors.surface.border }]}
-                                    >
-                                        <View style={[styles.mediaIconPlaceholder, { backgroundColor: theme.colors.surface.borderHover }]}>
-                                            <Feather name="play" size={12} color={theme.colors.primary.DEFAULT} />
-                                        </View>
-                                        <Text numberOfLines={1} style={[styles.mediaTitle, { color: theme.colors.text.primary, fontFamily: theme.typography.fontFamilies.bold }]}>{video.title}</Text>
+            {likedVideos.length > 0 && (
+                <View style={styles.mediaSection}>
+                    <Text style={[styles.sectionLabel, { color: '#38BDF8', fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace' }]}>[ RECENT.VIDEOS ]</Text>
+                    <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.mediaScroll}>
+                        {likedVideos.map((video) => (
+                            <Pressable 
+                                key={video.id} 
+                                style={styles.mediaCard} 
+                                onPress={() => router.push({ pathname: '/video-player', params: { type: 'video', initialVideoId: video.id } })}
+                            >
+                                <View style={[styles.mediaGradientOuter]}>
+                                    <LinearGradient
+                                        colors={isDark ? ['rgba(217, 228, 255, 0.06)', 'rgba(217, 228, 255, 0.01)'] : ['rgba(100, 130, 200, 0.05)', 'rgba(100, 130, 200, 0.01)']}
+                                        start={{ x: 0, y: 0 }}
+                                        end={{ x: 1, y: 1 }}
+                                        style={StyleSheet.absoluteFillObject}
+                                    />
+                                    <View style={[styles.mediaIconPlaceholder, { backgroundColor: isDark ? 'rgba(217, 228, 255, 0.1)' : 'rgba(100, 130, 200, 0.08)' }]}>
+                                        <Feather name="play" size={11} color={theme.colors.primary.DEFAULT} />
                                     </View>
-                                </Pressable>
-                            ))}
-                        </ScrollView>
-                    </View>
-                )
-            }
+                                    <Text numberOfLines={1} style={[styles.mediaTitle, { color: theme.colors.text.primary, fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace' }]}>{video.title.toUpperCase()}</Text>
+                                </View>
+                            </Pressable>
+                        ))}
+                    </ScrollView>
+                </View>
+            )}
 
             {/* User Profile Section at Bottom */}
-            <View style={[styles.footer, { borderTopColor: theme.colors.surface.border }]}>
+            <View style={[styles.footer, { borderTopColor: isDark ? 'rgba(255,255,255,0.04)' : 'rgba(0,0,0,0.06)' }]}>
                 <View style={styles.socialRow}>
                     <Pressable onPress={() => window.open('https://twitter.com/datariot_xyz', '_blank')} style={styles.socialIcon}>
-                        <FontAwesome5 name="twitter" size={18} color={theme.colors.primary.DEFAULT} />
+                        <FontAwesome5 name="twitter" size={16} color={theme.colors.text.muted} />
                     </Pressable>
                     <Pressable onPress={() => window.open('https://discord.gg/KvBpEVrk2', '_blank')} style={styles.socialIcon}>
-                        <FontAwesome5 name="discord" size={18} color={theme.colors.primary.DEFAULT} />
+                        <FontAwesome5 name="discord" size={16} color={theme.colors.text.muted} />
                     </Pressable>
                     <Pressable onPress={() => window.open('https://instagram.com/datariot.xyz', '_blank')} style={styles.socialIcon}>
-                        <FontAwesome5 name="instagram" size={18} color={theme.colors.primary.DEFAULT} />
+                        <FontAwesome5 name="instagram" size={16} color={theme.colors.text.muted} />
+                    </Pressable>
+                    <View style={{ width: 1, height: 16, backgroundColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)', alignSelf: 'center', marginHorizontal: 4 }} />
+                    <Pressable onPress={toggleTheme} style={styles.socialIcon}>
+                        <Feather name={isDark ? 'sun' : 'moon'} size={16} color={isDark ? theme.colors.primary.DEFAULT : '#55576A'} />
                     </Pressable>
                 </View>
 
                 {user ? (
                     <View>
-                        <Pressable style={[styles.profileCard, { backgroundColor: theme.colors.surface.card }]} onPress={() => router.push('/profile')}>
-                            <View
-                                style={[styles.avatarContainer, { backgroundColor: theme.colors.primary.DEFAULT }]}
+                        <Pressable 
+                            onHoverIn={() => setIsProfileHovered(true)}
+                            onHoverOut={() => setIsProfileHovered(false)}
+                            style={[
+                                styles.profileCard, 
+                                { 
+                                    backgroundColor: isDark ? 'rgba(255,255,255,0.03)' : 'rgba(255, 255, 255, 0.7)',
+                                    borderColor: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(107, 127, 204, 0.12)',
+                                    borderWidth: 1,
+                                }
+                            ]} 
+                            onPress={() => router.push('/profile')}
+                        >
+                            <LinearGradient
+                                colors={['#D9E4FF', '#A5C6FF']}
+                                start={{ x: 0, y: 0 }}
+                                end={{ x: 1, y: 1 }}
+                                style={styles.avatarGradient}
                             >
-                                <Text style={[styles.avatarText, { fontFamily: theme.typography.fontFamilies.bold }]}>{user.email?.[0].toUpperCase()}</Text>
-                            </View>
+                                <Text style={[styles.avatarText, { fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace', fontWeight: '800' }]}>{user.email?.[0].toUpperCase()}</Text>
+                            </LinearGradient>
 
                             <View style={styles.profileInfo}>
-                                <Text style={[styles.profileName, { color: theme.colors.text.primary, fontFamily: theme.typography.fontFamilies.bold }]} numberOfLines={1}>
-                                    {user.user_metadata?.username || 'User'}
+                                <Text style={[styles.profileName, { color: theme.colors.text.primary, fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace' }]} numberOfLines={1}>
+                                    {(user.user_metadata?.username || 'User').toUpperCase()}
                                 </Text>
-                                <Text style={[styles.profileHandle, { color: theme.colors.text.muted, fontFamily: theme.typography.fontFamilies.regular }]} numberOfLines={1}>
-                                    @{user.user_metadata?.username || 'user'}
+                                <Text style={[styles.profileHandle, { color: theme.colors.text.muted, fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace' }]} numberOfLines={1}>
+                                    {`> @${(user.user_metadata?.username || 'user').toUpperCase()}`}
                                 </Text>
                             </View>
-                            <Feather name="chevron-right" size={20} color={theme.colors.text.muted} />
+                            <Feather name="chevron-right" size={18} color={theme.colors.text.muted} />
                         </Pressable>
                         <Pressable onPress={handleSignOut} style={styles.signOutBtn}>
-                            <Text style={[styles.signOutText, { color: theme.colors.primary.DEFAULT }]}>Log Out Account</Text>
+                            <Text style={[styles.signOutText, { color: theme.colors.text.muted, fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace' }]}>[ DISCONNECT_SESSION ]</Text>
                         </Pressable>
                     </View>
                 ) : (
-                    <Pressable
-                        style={[styles.loginButton, { backgroundColor: theme.colors.primary.DEFAULT }]}
-                        onPress={() => router.push('/auth/login')}
-                    >
-                        <Text style={[styles.loginText, { fontFamily: theme.typography.fontFamilies.bold }]}>Sign In</Text>
-                    </Pressable>
+                    <View style={styles.loginButtonWrapper}>
+                        <LinearGradient
+                            colors={['#D9E4FF', '#A5C6FF']}
+                            start={{ x: 0, y: 0 }}
+                            end={{ x: 1, y: 0 }}
+                            style={styles.loginGradient}
+                        >
+                            <Pressable
+                                style={styles.loginButton}
+                                onPress={() => router.push('/auth/login')}
+                            >
+                                <Text style={[styles.loginText, { fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace', fontWeight: '800' }]}>[ AUTH.CONNECT ]</Text>
+                            </Pressable>
+                        </LinearGradient>
+                    </View>
                 )}
-
             </View>
-
         </View >
     );
 };
 
 const styles = StyleSheet.create({
     container: {
-        position: 'fixed', // Fixed in web view
+        position: 'fixed',
         top: 0,
         left: 0,
         bottom: 0,
         width: 260,
         paddingLeft: 24,
-        paddingTop: 32,
-        paddingBottom: 24,
+        paddingTop: 36,
+        paddingBottom: 28,
         zIndex: 100,
         display: 'flex',
         flexDirection: 'column',
     },
     logoContainer: {
-        marginBottom: 40,
-        paddingLeft: 12,
+        marginBottom: 44,
+        paddingLeft: 16,
     },
     logo: {
-        fontSize: 22,
-        letterSpacing: 2,
+        fontSize: 17,
+        letterSpacing: 3,
     },
-
     menuList: {
-        gap: 8,
+        gap: 6,
         flex: 1,
     },
     menuItem: {
@@ -291,38 +339,44 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         paddingVertical: 10,
         paddingHorizontal: 16,
-        borderRadius: 99, // Pill shape
-        gap: 12,
+        borderRadius: 14,
+        gap: 14,
         position: 'relative',
         marginBottom: 2,
+        borderWidth: 1,
+        borderColor: 'transparent',
+        // @ts-ignore
+        transition: 'all 0.2s cubic-bezier(0.22, 1, 0.36, 1)',
+    },
+    activeGradientLine: {
+        position: 'absolute',
+        left: 0,
+        top: 8,
+        bottom: 8,
+        width: 3,
+        borderRadius: 2,
     },
     iconContainer: {
         width: 24,
         alignItems: 'center',
         justifyContent: 'center',
+        // @ts-ignore
+        transition: 'transform 0.2s ease',
     },
     iconHovered: {
-        transform: [{ scale: 1.1 }],
+        transform: [{ scale: 1.15 }],
     },
     label: {
         fontSize: 14,
         letterSpacing: 0.3,
     },
-    activeIndicator: {
-        position: 'absolute',
-        right: 12,
-        width: 6,
-        height: 6,
-        borderRadius: 3,
-    },
-
     spacer: {
-        height: 24,
+        height: 28,
     },
     footer: {
         marginTop: 'auto',
         borderTopWidth: 1,
-        paddingTop: 16,
+        paddingTop: 20,
     },
     profileCard: {
         flexDirection: 'row',
@@ -330,60 +384,76 @@ const styles = StyleSheet.create({
         padding: 10,
         borderRadius: 16,
         gap: 12,
+        borderWidth: 1,
         // @ts-ignore
         cursor: 'pointer',
+        // @ts-ignore
+        transition: 'all 0.2s cubic-bezier(0.22, 1, 0.36, 1)',
     },
-    avatarContainer: {
-        width: 40,
-        height: 40,
-        borderRadius: 20,
+    avatarGradient: {
+        width: 38,
+        height: 38,
+        borderRadius: 19,
         alignItems: 'center',
         justifyContent: 'center',
     },
     avatarText: {
-        color: '#FFFFFF',
-        fontSize: 16,
+        color: '#000000',
+        fontSize: 15,
     },
     profileInfo: {
         flex: 1,
     },
     profileName: {
-        fontSize: 14,
+        fontSize: 13,
     },
     profileHandle: {
-        fontSize: 12,
+        fontSize: 11,
+        marginTop: 1,
+    },
+    loginButtonWrapper: {
+        borderRadius: 14,
+        overflow: 'hidden',
+        shadowColor: '#D9E4FF',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.2,
+        shadowRadius: 12,
+    },
+    loginGradient: {
+        borderRadius: 14,
     },
     loginButton: {
         width: '100%',
-        paddingVertical: 12,
-        borderRadius: 99,
+        paddingVertical: 13,
         alignItems: 'center',
     },
     loginText: {
-        color: '#FFFFFF',
-        fontSize: 15,
+        color: '#000000',
+        fontSize: 14,
+        letterSpacing: 0.5,
     },
     socialRow: {
         flexDirection: 'row',
         justifyContent: 'center',
-        gap: 20,
+        gap: 24,
         marginBottom: 20,
     },
     socialIcon: {
-        padding: 5,
-        opacity: 0.8,
+        padding: 6,
+        opacity: 0.6,
+        // @ts-ignore
+        transition: 'opacity 0.2s ease',
     },
-    // New Styles for Recently Liked
     sectionLabel: {
         marginLeft: 16,
         fontSize: 10,
-        letterSpacing: 2,
+        letterSpacing: 2.5,
         marginBottom: 12,
         marginTop: 20,
     },
     mediaSection: {
         marginBottom: 20,
-        height: 140, // Fixed height to prevent layout shift issues
+        height: 140,
     },
     mediaScroll: {
         paddingHorizontal: 16,
@@ -392,15 +462,19 @@ const styles = StyleSheet.create({
     mediaCard: {
         width: 120,
         height: 70,
-        borderRadius: 12,
+        borderRadius: 14,
         overflow: 'hidden',
+        // @ts-ignore
+        transition: 'transform 0.2s ease',
     },
-    mediaGradient: {
+    mediaGradientOuter: {
         flex: 1,
         justifyContent: 'space-between',
-        padding: 8,
-        borderRadius: 12,
+        padding: 10,
+        borderRadius: 14,
         borderWidth: 1,
+        borderColor: 'rgba(255, 255, 255, 0.04)',
+        overflow: 'hidden',
     },
     mediaIconPlaceholder: {
         width: 20,
@@ -418,9 +492,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     signOutText: {
-        fontSize: 12,
+        fontSize: 11,
         letterSpacing: 0.5,
     },
 });
-
-

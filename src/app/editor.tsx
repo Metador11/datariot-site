@@ -76,6 +76,10 @@ export default function EditorScreen() {
         }
     };
 
+    function seekTo(millis: number) {
+        player.currentTime = millis / 1000;
+    }
+
     // Gestures
     const leftHandleGesture = Gesture.Pan()
         .onUpdate((e) => {
@@ -121,10 +125,6 @@ export default function EditorScreen() {
             }
             player.play();
         }
-    };
-
-    const seekTo = (millis: number) => {
-        player.currentTime = millis / 1000;
     };
 
 
