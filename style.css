@@ -9654,6 +9654,10 @@ html.lenis body {
         flex-direction: column !important;
         gap: 20px !important;
         align-items: center !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 40px auto 0 !important;
+        padding: 0 !important;
     }
     .interface__screen-card,
     .interface__screen-card:nth-child(1),
@@ -9663,6 +9667,13 @@ html.lenis body {
         width: 100% !important;
         transform: none !important;
         flex: none !important;
+        margin: 0 auto !important;
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3) !important;
+    }
+    .interface__screen-card img {
+        width: 100% !important;
+        height: auto !important;
+        display: block !important;
     }
 
     .arena-grid {
