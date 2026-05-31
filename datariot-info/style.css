@@ -9638,20 +9638,9 @@ html.lenis body {
 
     /* Interface triple screens */
     .interface__triple-screens {
-        flex-direction: row !important;
+        flex-direction: column !important;
         gap: 20px !important;
         align-items: center !important;
-        max-width: 100% !important;
-    }
-    .interface__screen-card {
-        flex: 1 !important;
-        max-width: none !important;
-    }
-    .interface__screen-card:nth-child(1) {
-        transform: none !important;
-    }
-    .interface__screen-card:nth-child(3) {
-        transform: none !important;
     }
 
     /* Arena grid */
@@ -9754,23 +9743,12 @@ html.lenis body {
 
     /* Interface */
     .interface__triple-screens {
-        flex-direction: row !important;
+        flex-direction: column !important;
         gap: 16px !important;
-        max-width: 100% !important;
     }
     .interface__screen-card {
-        flex: 1 !important;
-        max-width: none !important;
+        max-width: 100% !important;
         border-radius: 16px !important;
-    }
-    .interface__screen-card:nth-child(1) {
-        transform: none !important;
-    }
-    .interface__screen-card:nth-child(2) {
-        transform: none !important;
-    }
-    .interface__screen-card:nth-child(3) {
-        transform: none !important;
     }
 
     /* Arena */

@@ -639,10 +639,10 @@ function initializeScripts() {
             // Smooth reset on mouse leave
             orvelisCard.style.transition = 'transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)';
             orvelisCard.style.transform = '';
-            
+
             const header = orvelisCard.querySelector('.orvelis-header');
             const subcards = orvelisCard.querySelectorAll('.orvelis-subcard');
-            
+
             if (header) {
                 header.style.transition = 'transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)';
                 header.style.transform = '';
