@@ -9259,6 +9259,24 @@ html.lenis body {
 .section--ai {
     background: transparent;
     position: relative;
+    overflow: visible !important;
+}
+
+.section--ai::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 900px;
+    height: 900px;
+    background: radial-gradient(circle, rgba(14, 165, 233, 0.08) 0%, rgba(139, 92, 246, 0.02) 50%, rgba(0, 0, 0, 0) 70%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+[data-theme="light"] .section--ai::before {
+    background: radial-gradient(circle, rgba(14, 165, 233, 0.04) 0%, rgba(139, 92, 246, 0.01) 50%, rgba(255, 255, 255, 0) 70%) !important;
 }
 
 .ai-core-layout {
@@ -9377,13 +9395,13 @@ html.lenis body {
     box-shadow: 0 40px 80px rgba(15, 23, 42, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.9), 0 0 40px rgba(14, 165, 233, 0.06) !important;
 }
 [data-theme="light"] .orvelis-subcard {
-    background: rgba(14, 165, 233, 0.02) !important;
+    background: rgba(255, 255, 255, 0.6) !important;
     border: none !important;
-    box-shadow: 0 4px 12px rgba(14, 165, 233, 0.01) !important;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.03), inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
 }
 [data-theme="light"] .orvelis-subcard:hover {
-    background: rgba(14, 165, 233, 0.04) !important;
-    box-shadow: 0 8px 24px rgba(14, 165, 233, 0.03) !important;
+    background: rgba(255, 255, 255, 0.75) !important;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.9) !important;
 }
 [data-theme="light"] .analysis-tag--essence {
     color: #0284c7 !important;
@@ -9431,13 +9449,13 @@ html.lenis body {
     box-shadow: inset 0 0 40px rgba(14, 165, 233, 0.12), 0 45px 90px rgba(0, 0, 0, 0.7), 0 0 50px rgba(14, 165, 233, 0.15) !important;
 }
 [data-theme="dark"] .orvelis-subcard {
-    background: rgba(14, 165, 233, 0.03) !important;
+    background: rgba(10, 15, 30, 0.65) !important;
     border: none !important;
-    box-shadow: inset 0 0 15px rgba(255, 255, 255, 0.01), 0 4px 15px rgba(0, 0, 0, 0.15) !important;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
 }
 [data-theme="dark"] .orvelis-subcard:hover {
-    background: rgba(14, 165, 233, 0.06) !important;
-    box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.02), 0 8px 25px rgba(0, 0, 0, 0.25) !important;
+    background: rgba(10, 15, 30, 0.8) !important;
+    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
 }
 [data-theme="dark"] .analysis-tag--essence {
     color: #38BDF8 !important;

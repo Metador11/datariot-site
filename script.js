@@ -617,6 +617,7 @@ function initializeScripts() {
             // Share mouse position globally for Three.js scene
             window.orvelisMouseX = x;
             window.orvelisMouseY = y;
+            window.orvelisMouseActive = true;
 
             const tiltX = (y - 0.5) * 15; // 3D tilt angles
             const tiltY = (x - 0.5) * -15;
@@ -625,11 +626,19 @@ function initializeScripts() {
             orvelisCard.style.transition = 'transform 0.1s ease-out';
             orvelisCard.style.transform = `perspective(2000px) rotateX(${tiltX}deg) rotateY(${tiltY}deg)`;
 
+            // Shifting drop shadow based on mouse position
+            const shadowX = (x - 0.5) * -30;
+            const shadowY = (y - 0.5) * -30;
+            const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+            const shadowVal = isDark
+                ? `inset 0 0 30px rgba(14, 165, 233, 0.02), ${shadowX}px ${shadowY}px 60px rgba(0, 0, 0, 0.65), 0 0 40px rgba(14, 165, 233, 0.06)`
+                : `${shadowX}px ${shadowY}px 50px rgba(15, 23, 42, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.9), 0 0 40px rgba(14, 165, 233, 0.06)`;
+            orvelisCard.style.setProperty('box-shadow', shadowVal, 'important');
+
             // Glare highlight tracking
             if (glare) {
                 const px = x * 100;
                 const py = y * 100;
-                const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
                 glare.style.opacity = '1';
                 glare.style.background = isDark 
                     ? `radial-gradient(circle at ${px}% ${py}%, rgba(56, 189, 248, 0.18) 0%, rgba(139, 92, 246, 0.05) 45%, rgba(0,0,0,0) 70%)`
@@ -656,10 +665,12 @@ function initializeScripts() {
             // Reset global mouse coords
             window.orvelisMouseX = 0.5;
             window.orvelisMouseY = 0.5;
+            window.orvelisMouseActive = false;
 
             // Smooth reset on mouse leave
-            orvelisCard.style.transition = 'transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)';
+            orvelisCard.style.transition = 'transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.6s cubic-bezier(0.16, 1, 0.3, 1)';
             orvelisCard.style.transform = '';
+            orvelisCard.style.setProperty('box-shadow', '', 'important');
 
             if (glare) {
                 glare.style.transition = 'opacity 0.6s ease';
