@@ -13,12 +13,12 @@
     <!-- Twitter Card data -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:site" content="@datariot_xyz">
-    <meta name="twitter:title" content="Datariot — Content with gravity.">
+    <meta name="twitter:title" content="Datariot - Content with gravity.">
     <meta name="twitter:description" content="On camera. Unlimited time. Logic wins, not likes.">
     <meta name="twitter:image" content="https://info.datariot.xyz/assets/twitter-card-v101.png">
 
     <!-- Open Graph data -->
-    <meta property="og:title" content="Datariot — Content with gravity.">
+    <meta property="og:title" content="Datariot - Content with gravity.">
     <meta property="og:description" content="On camera. Unlimited time. Logic wins, not likes.">
     <meta property="og:image" content="https://info.datariot.xyz/assets/twitter-card-v101.png">
     <meta property="og:url" content="https://info.datariot.xyz/">
@@ -29,7 +29,7 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&family=Oxanium:wght@400;500;600;700;800&family=Syncopate:wght@400;700&family=Playfair+Display:ital,wght@0,400..700;1,400..700&family=JetBrains+Mono:wght@400;500;700;800&display=swap"
         rel="stylesheet" />
-    <link rel="stylesheet" href="style.css?v=3.2.7" />
+    <link rel="stylesheet" href="style.css?v=3.1.0" />
     <!-- Cache-Bust-Hash: 49294f77-8f99-4c6e-bc63-4e1b887698df -->
     <style>
         :root {
@@ -38,27 +38,22 @@
             --accent: #0ea5e9;
         }
 
-        [data-theme="dark"] {
-            --bg-main: #08090D;
-            --text-primary: #EEEEF0;
-        }
-
         html,
         body,
         .main,
         .section,
         #hero {
-            background-color: var(--bg-main) !important;
-            background: var(--bg-main) !important;
-            color: var(--text-primary) !important;
+            background-color: #ffffff !important;
+            background: #ffffff !important;
+            color: #050505 !important;
             margin: 0;
             padding: 0;
         }
 
         /* Let manifesto-v2 override white background */
         .manifesto-v2 {
-            background: var(--bg-main) !important;
-            color: var(--text-primary) !important;
+            background: #ffffff !important;
+            color: #0f172a !important;
         }
 
         /* HARD CLEANUP: Remove all old background elements and wireframes */
@@ -81,7 +76,7 @@
             min-height: 100vh;
             display: flex;
             align-items: center;
-            background: var(--bg-main) !important;
+            background: #ffffff !important;
             z-index: 100;
         }
 
@@ -145,12 +140,6 @@
             position: relative;
             overflow: hidden;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
-        }
-
-        [data-theme="dark"] .hero__phone-frame {
-            background: #0C0D12 !important;
-            border-color: #1f2937 !important;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
         }
 
         .phone__screen {
@@ -287,14 +276,10 @@
         }
     </style>
     <script>
-        // Load saved theme or default to light
+        // Force light theme
         (function () {
-            var savedTheme = localStorage.getItem('orvelis-theme');
-            if (savedTheme === 'dark') {
-                document.documentElement.setAttribute('data-theme', 'dark');
-            } else {
-                document.documentElement.setAttribute('data-theme', 'light');
-            }
+            document.documentElement.setAttribute('data-theme', 'light');
+            localStorage.setItem('orvelis-theme', 'light');
         })();
         function toggleTheme() {
             var html = document.documentElement;
@@ -564,7 +549,6 @@
             </div>
         </section>
 
-
         <!-- MANIFESTO SECTION -->
         <section class="section section--manifesto manifesto-v2" id="manifesto">
             <!-- Decorative floating elements -->
@@ -596,7 +580,7 @@
                                 <p class="manifesto-v2__subheadline" style="margin-bottom: 40px;">
                                     Others respond. The community votes on logic, not vibes.
                                 </p>
-                                
+
                                 <div class="manifesto-v2__card-stats-row">
                                     <div class="manifesto-v2__card-stat">
                                         <span class="manifesto-v2__card-stat-num">[ UNLIMITED ]</span>
@@ -612,7 +596,7 @@
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <div class="manifesto-v2__card-visual-wrapper">
                                 <div class="manifesto-v2__card-graphic-box manifesto-v2__card-graphic-box--full">
                                     <div class="debate-arena-graphic">
@@ -801,15 +785,15 @@
                                 <svg class="argue-hud-svg" viewBox="0 0 320 160" style="width:100%; height:100%; display:block;">
                                     <!-- Background grid -->
                                     <defs>
-                                        <pattern id="argue-grid-2" width="16" height="16" patternUnits="userSpaceOnUse">
+                                        <pattern id="argue-grid-1" width="16" height="16" patternUnits="userSpaceOnUse">
                                             <path d="M 16 0 L 0 0 0 16" fill="none" stroke="rgba(217, 228, 255, 0.05)" stroke-width="1"/>
                                         </pattern>
-                                        <linearGradient id="wave-grad-2" x1="0" y1="0" x2="0" y2="1">
+                                        <linearGradient id="wave-grad-1" x1="0" y1="0" x2="0" y2="1">
                                             <stop offset="0%" stop-color="#ef4444" />
                                             <stop offset="100%" stop-color="#ec4899" />
                                         </linearGradient>
                                     </defs>
-                                    <rect width="100%" height="100%" fill="url(#argue-grid-2)" opacity="0.6" />
+                                    <rect width="100%" height="100%" fill="url(#argue-grid-1)" opacity="0.6" />
                                     
                                     <!-- Corner brackets -->
                                     <path d="M 12,20 L 12,12 L 20,12" stroke="#ef4444" stroke-width="1.5" fill="none" opacity="0.8" />
@@ -845,19 +829,19 @@
                                     <g class="voice-waveform-group" transform="translate(62, 64)">
                                         <rect class="wave-bar-anim wba-1" x="10" y="10" width="2.5" height="15" rx="1" fill="#ef4444" opacity="0.8"/>
                                         <rect class="wave-bar-anim wba-2" x="18" y="5" width="2.5" height="25" rx="1" fill="#ef4444" opacity="0.85"/>
-                                        <rect class="wave-bar-anim wba-3" x="26" y="8" width="2.5" height="20" rx="1" fill="url(#wave-grad-2)" />
-                                        <rect class="wave-bar-anim wba-4" x="34" y="2" width="2.5" height="32" rx="1" fill="url(#wave-grad-2)" />
-                                        <rect class="wave-bar-anim wba-5" x="42" y="12" width="2.5" height="12" rx="1" fill="url(#wave-grad-2)" />
-                                        <rect class="wave-bar-anim wba-6" x="50" y="7" width="2.5" height="22" rx="1" fill="url(#wave-grad-2)" />
-                                        <rect class="wave-bar-anim wba-7" x="58" y="1" width="2.5" height="34" rx="1" fill="url(#wave-grad-2)" />
-                                        <rect class="wave-bar-anim wba-8" x="66" y="9" width="2.5" height="18" rx="1" fill="url(#wave-grad-2)" />
+                                        <rect class="wave-bar-anim wba-3" x="26" y="8" width="2.5" height="20" rx="1" fill="url(#wave-grad-1)" />
+                                        <rect class="wave-bar-anim wba-4" x="34" y="2" width="2.5" height="32" rx="1" fill="url(#wave-grad-1)" />
+                                        <rect class="wave-bar-anim wba-5" x="42" y="12" width="2.5" height="12" rx="1" fill="url(#wave-grad-1)" />
+                                        <rect class="wave-bar-anim wba-6" x="50" y="7" width="2.5" height="22" rx="1" fill="url(#wave-grad-1)" />
+                                        <rect class="wave-bar-anim wba-7" x="58" y="1" width="2.5" height="34" rx="1" fill="url(#wave-grad-1)" />
+                                        <rect class="wave-bar-anim wba-8" x="66" y="9" width="2.5" height="18" rx="1" fill="url(#wave-grad-1)" />
                                         
-                                        <rect class="wave-bar-anim wba-9" x="126" y="9" width="2.5" height="18" rx="1" fill="url(#wave-grad-2)" />
-                                        <rect class="wave-bar-anim wba-10" x="134" y="1" width="2.5" height="34" rx="1" fill="url(#wave-grad-2)" />
-                                        <rect class="wave-bar-anim wba-11" x="142" y="7" width="2.5" height="22" rx="1" fill="url(#wave-grad-2)" />
-                                        <rect class="wave-bar-anim wba-12" x="150" y="12" width="2.5" height="12" rx="1" fill="url(#wave-grad-2)" />
-                                        <rect class="wave-bar-anim wba-13" x="158" y="2" width="2.5" height="32" rx="1" fill="url(#wave-grad-2)" />
-                                        <rect class="wave-bar-anim wba-14" x="166" y="8" width="2.5" height="20" rx="1" fill="url(#wave-grad-2)" />
+                                        <rect class="wave-bar-anim wba-9" x="126" y="9" width="2.5" height="18" rx="1" fill="url(#wave-grad-1)" />
+                                        <rect class="wave-bar-anim wba-10" x="134" y="1" width="2.5" height="34" rx="1" fill="url(#wave-grad-1)" />
+                                        <rect class="wave-bar-anim wba-11" x="142" y="7" width="2.5" height="22" rx="1" fill="url(#wave-grad-1)" />
+                                        <rect class="wave-bar-anim wba-12" x="150" y="12" width="2.5" height="12" rx="1" fill="url(#wave-grad-1)" />
+                                        <rect class="wave-bar-anim wba-13" x="158" y="2" width="2.5" height="32" rx="1" fill="url(#wave-grad-1)" />
+                                        <rect class="wave-bar-anim wba-14" x="166" y="8" width="2.5" height="20" rx="1" fill="url(#wave-grad-1)" />
                                         <rect class="wave-bar-anim wba-15" x="174" y="5" width="2.5" height="25" rx="1" fill="#ef4444" opacity="0.85"/>
                                         <rect class="wave-bar-anim wba-16" x="182" y="10" width="2.5" height="15" rx="1" fill="#ef4444" opacity="0.8"/>
                                     </g>
@@ -867,7 +851,8 @@
                         <div class="fragment-content">
                             <span class="fragment-tag tag--argue">[ 01 // ARGUE ]</span>
                             <h3>Make your case</h3>
-                            <p>Record your argument on camera. Unlimited time. Say exactly what you mean without interruptions.</p>
+                            <p>Record your argument on camera. Unlimited time. Say exactly what you mean without
+                                interruptions.</p>
                         </div>
                     </div>
 
@@ -879,11 +864,11 @@
                             <div class="visual-respond-premium" style="width: 100%; height: 100%;">
                                 <svg class="respond-tree-svg" viewBox="0 0 320 160" style="width:100%; height:100%; display:block;">
                                     <defs>
-                                        <pattern id="respond-grid-2" width="16" height="16" patternUnits="userSpaceOnUse">
+                                        <pattern id="respond-grid-1" width="16" height="16" patternUnits="userSpaceOnUse">
                                             <circle cx="2" cy="2" r="0.7" fill="rgba(217, 228, 255, 0.08)" />
                                         </pattern>
                                     </defs>
-                                    <rect width="100%" height="100%" fill="url(#respond-grid-2)" />
+                                    <rect width="100%" height="100%" fill="url(#respond-grid-1)" />
                                     
                                     <!-- Branches -->
                                     <g class="branch-connections" stroke-width="1.5" fill="none">
@@ -937,12 +922,13 @@
                         </div>
                         <div class="fragment-content">
                             <span class="fragment-tag tag--respond">[ 02 // RESPOND ]</span>
-                            <h3>Get challenged</h3>
-                            <p>Others respond directly on camera. A structured face-first exchange, not a toxic comment war.</p>
+                            <h3>Dispute & branch</h3>
+                            <p>Respond directly to any point on camera. Challenge assertions, support reasoning, and
+                                shape structured debate trees rather than chaotic comment walls.</p>
                         </div>
                     </div>
 
-                    <!-- CARD 3: VOTE -->
+                    <!-- CARD 3: ORVELIS AI -->
                     <div class="feature-fragment feature-fragment--vote">
                         <div class="fragment-glow glow--vote"></div>
                         <div class="fragment-visual">
@@ -950,11 +936,11 @@
                             <div class="visual-vote-premium" style="width: 100%; height: 100%;">
                                 <svg class="vote-radar-svg" viewBox="0 0 320 160" style="width:100%; height:100%; display:block;">
                                     <defs>
-                                        <pattern id="radar-grid-2" width="16" height="16" patternUnits="userSpaceOnUse">
+                                        <pattern id="radar-grid-1" width="16" height="16" patternUnits="userSpaceOnUse">
                                             <path d="M 16 0 L 0 0 0 16" fill="none" stroke="rgba(16, 185, 129, 0.03)" stroke-width="1"/>
                                         </pattern>
                                     </defs>
-                                    <rect width="100%" height="100%" fill="url(#radar-grid-2)" />
+                                    <rect width="100%" height="100%" fill="url(#radar-grid-1)" />
                                     
                                     <!-- Concentric Scanner Rings -->
                                     <g transform="translate(160, 80)">
@@ -1009,9 +995,11 @@
                             </div>
                         </div>
                         <div class="fragment-content">
-                            <span class="fragment-tag tag--vote">[ 03 // VOTE ]</span>
-                            <h3>Community decides</h3>
-                            <p>The audience scores the exchange based on reasoning and evidence. Logic wins, not vibes.</p>
+                            <span class="fragment-tag tag--vote">[ 03 // ORVELIS AI ]</span>
+                            <h3>Orvelis AI decides</h3>
+                            <p>Our proprietary cognitive neural core conducts high-fidelity forensic scans of the
+                                argument structure. Orvelis stress-tests logical parameters, flags cognitive bias, and
+                                analyzes factual alignment to deliver an objective Logic Index score.</p>
                         </div>
                     </div>
                 </div>
@@ -1079,9 +1067,13 @@
                                     <span class="terminal-window__title">rebuttal_engine.sh</span>
                                 </div>
                                 <div class="panel-terminal">
-                                    <div class="terminal-line"><span class="term-prompt">&gt;</span> <span class="term-keyword">Analyzing</span> counter-argument...</div>
-                                    <div class="terminal-line"><span class="term-prompt">&gt;</span> Logic score: <span class="term-success">9.4/10</span></div>
-                                    <div class="terminal-line"><span class="term-prompt">&gt;</span> <span class="term-keyword">Synthesizing</span> rebuttal <span class="term-accent">[88%]</span></div>
+                                    <div class="terminal-line"><span class="term-prompt">&gt;</span> <span
+                                            class="term-keyword">Analyzing</span> counter-argument...</div>
+                                    <div class="terminal-line"><span class="term-prompt">&gt;</span> Logic score: <span
+                                            class="term-success">9.4/10</span></div>
+                                    <div class="terminal-line"><span class="term-prompt">&gt;</span> <span
+                                            class="term-keyword">Synthesizing</span> rebuttal <span
+                                            class="term-accent">[88%]</span></div>
                                     <div class="terminal-cursor"></div>
                                 </div>
                             </div>
@@ -1113,9 +1105,13 @@
                                     <span class="terminal-window__title">fallacy_detector.py</span>
                                 </div>
                                 <div class="panel-terminal">
-                                    <div class="terminal-line"><span class="term-prompt">&gt;</span> <span class="term-keyword term-keyword--warn">detecting</span> logical fallacy...</div>
-                                    <div class="terminal-line"><span class="term-prompt">&gt;</span> Confidence: <span class="term-warn">42%</span></div>
-                                    <div class="terminal-line"><span class="term-prompt">&gt;</span> Waiting for input<span class="term-blink">_</span></div>
+                                    <div class="terminal-line"><span class="term-prompt">&gt;</span> <span
+                                            class="term-keyword term-keyword--warn">detecting</span> logical fallacy...
+                                    </div>
+                                    <div class="terminal-line"><span class="term-prompt">&gt;</span> Confidence: <span
+                                            class="term-warn">42%</span></div>
+                                    <div class="terminal-line"><span class="term-prompt">&gt;</span> Waiting for
+                                        input<span class="term-blink">_</span></div>
                                     <div class="terminal-cursor terminal-cursor--against"></div>
                                 </div>
                             </div>
@@ -1130,7 +1126,8 @@
 
                     <div class="arena-topic-alt">
                         <div class="topic-meta">[ MOTION // DEBATE ]</div>
-                        <p class="topic-content">"Decentralized governance is the only viable path for global consensus."</p>
+                        <p class="topic-content">"Decentralized governance is the only viable path for global
+                            consensus."</p>
                     </div>
 
                     <div class="arena-cta">
@@ -1146,9 +1143,7 @@
             <div class="section__container">
                 <div class="ai-core-layout">
                     <div class="ai-showcase__visual">
-                        <div class="orvelis-canvas-container" id="canvas-3d-orvelis"></div>
                         <div class="orvelis-card-container">
-                            <div class="orvelis-card-glare"></div>
                             <div class="orvelis-header">
                                 <div class="orvelis-icon-wrapper">
                                     <svg class="orvelis-robot-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#38BDF8" stroke-width="1.5">
@@ -1399,8 +1394,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js"></script>
     <script defer src="3d-fx.js?v=2"></script>
 
-    <script defer src="script.js"></script>
+    <script defer src="script.js?v=3.1.0"></script>
 </body>
 
 </html>
-
