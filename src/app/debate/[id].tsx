@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { View, Text, StyleSheet, FlatList, TextInput, KeyboardAvoidingView, Platform, Pressable, ActivityIndicator, Image, Alert } from 'react-native';
 import { BlurView } from 'expo-blur';
 import Animated, { useAnimatedStyle, withSpring, useSharedValue, withSequence, withTiming } from 'react-native-reanimated';
@@ -8,6 +8,7 @@ import { supabase } from '@lib/supabase/client';
 import { useTheme } from '../../components/Theme/ThemeProvider';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { DebateCard } from '@components/Debate/DebateCard';
+import { FactCheckModal } from '@components/Debate/FactCheckModal';
 import { Post } from '@lib/supabase/hooks/usePosts';
 import { useDebateArguments, Argument } from '@lib/supabase/hooks/useDebateArguments';
 import { Ionicons } from '@expo/vector-icons';
@@ -44,6 +45,97 @@ const VoteButton = ({ isVoted, score, onPress }: { isVoted: boolean; score: numb
     );
 };
 
+interface ArgumentCardProps {
+    item: Argument;
+    currentUserId?: string;
+    onVote: (argumentId: string) => void;
+    onReply: (arg: Argument) => void;
+    onDelete: (argumentId: string) => void;
+}
+
+// Memoized row: re-renders only when its own argument changes,
+// not on every keystroke / parent state update.
+const ArgumentCard = React.memo(function ArgumentCard({ item, currentUserId, onVote, onReply, onDelete }: ArgumentCardProps) {
+    const { theme, mode } = useTheme();
+    const isDark = mode === 'dark';
+
+    const isFor = item.side === 'FOR';
+    const colorMain = isFor ? "#D9E4FF" : "#FFFFFF";
+    const bgLabel = isFor ? 'rgba(217, 228, 255, 0.15)' : 'rgba(255, 255, 255, 0.15)';
+
+    const confirmDelete = () => {
+        Alert.alert("Delete Argument", "Are you sure you want to delete your argument?", [
+            { text: "Cancel", style: "cancel" },
+            { text: "Delete", style: "destructive", onPress: () => onDelete(item.id) }
+        ]);
+    };
+
+    return (
+        <View style={[styles.argumentCard, { backgroundColor: isDark ? 'rgba(255,255,255,0.03)' : '#FFF' }]}>
+            {/* Left Line Indicator */}
+            <View style={[styles.sideIndicator, { backgroundColor: colorMain }]} />
+
+            <View style={styles.argumentContent}>
+                <View style={styles.argHeader}>
+                    <View style={styles.argAuthorRow}>
+                        {item.authorAvatar ? (
+                            <Image source={{ uri: item.authorAvatar }} style={styles.argAvatarImage} />
+                        ) : (
+                            <View style={[styles.argAvatar, { backgroundColor: isDark ? '#333' : '#E5E5E5' }]}>
+                                <Text style={{ fontSize: 12, fontWeight: 'bold', color: theme.colors.text.primary }}>{item.authorName[0].toUpperCase()}</Text>
+                            </View>
+                        )}
+                        <Text style={[styles.argAuthorName, { color: theme.colors.text.primary }]}>{item.authorName}</Text>
+                        <View style={[styles.sideBadge, { backgroundColor: bgLabel }]}>
+                            <Text style={[styles.sideBadgeText, { color: colorMain }]}>{item.side}</Text>
+                        </View>
+                    </View>
+
+                    <View style={styles.argHeaderRight}>
+                        <Text style={styles.argDate}>{item.timestamp}</Text>
+                        {currentUserId && item.authorId === currentUserId && (
+                            <Pressable
+                                onPress={confirmDelete}
+                                style={({ pressed }) => [styles.argDeleteBtn, pressed && { opacity: 0.6 }]}
+                            >
+                                <Ionicons name="trash-bin-outline" size={16} color="#EF4444" />
+                            </Pressable>
+                        )}
+                    </View>
+                </View>
+
+                <Text style={[styles.argText, { color: theme.colors.text.primary }]}>{item.content}</Text>
+
+                {item.videoUrl && (
+                    <View style={styles.argVideoContainer}>
+                        <Image
+                            source={{ uri: item.videoUrl.replace('.mp4', '.jpg') }}
+                            style={styles.argVideoThumbnail}
+                        />
+                        <View style={styles.playOverlay}>
+                            <Ionicons name="play" size={24} color="#FFF" />
+                        </View>
+                    </View>
+                )}
+
+                <View style={styles.argFooter}>
+                    <VoteButton
+                        isVoted={item.isVoted}
+                        score={item.strength}
+                        onPress={() => onVote(item.id)}
+                    />
+                    <Pressable style={styles.replyBtn} onPress={() => onReply(item)}>
+                        <Ionicons name="chatbubble-outline" size={14} color={theme.colors.text.secondary} />
+                        <Text style={[styles.replyBtnText, { color: theme.colors.text.secondary }]}>Reply</Text>
+                    </Pressable>
+                </View>
+            </View>
+        </View>
+    );
+});
+
+const keyExtractor = (item: Argument) => item.id;
+
 export default function DebateThreadScreen() {
     const { id } = useLocalSearchParams();
     const router = useRouter();
@@ -61,6 +153,17 @@ export default function DebateThreadScreen() {
     const [newArgument, setNewArgument] = useState('');
     const [selectedSide, setSelectedSide] = useState<'FOR' | 'AGAINST' | null>(null);
     const [replyingTo, setReplyingTo] = useState<Argument | null>(null);
+    const [factCheckVisible, setFactCheckVisible] = useState(false);
+
+    // Debate transcript (thesis + arguments) fed to the AI fact checker
+    const transcript = useMemo(() => {
+        if (!post) return '';
+        const lines = [post.content];
+        argumentsList.forEach(arg => {
+            lines.push(`${arg.authorName} (${arg.side}): ${arg.content}`);
+        });
+        return lines.join('\n');
+    }, [post, argumentsList]);
 
     // Like thesis
     const handleLikePost = async () => {
@@ -78,16 +181,7 @@ export default function DebateThreadScreen() {
         }
     };
 
-    useFocusEffect(
-        React.useCallback(() => {
-            if (id) {
-                fetchPost();
-                fetchArguments();
-            }
-        }, [id, fetchArguments])
-    );
-
-    const fetchPost = async () => {
+    const fetchPost = useCallback(async () => {
         setLoadingPost(true);
         try {
             const { data: p, error } = await supabase
@@ -98,23 +192,19 @@ export default function DebateThreadScreen() {
 
             if (error) throw error;
             if (p) {
-                let profile: any = {};
-                if (p.user_id) {
-                    const { data: profileData } = await supabase
-                        .from('profiles')
-                        .select('id, username, display_name, avatar_url')
-                        .eq('id', p.user_id)
-                        .single();
-                    if (profileData) profile = profileData;
-                }
+                // Profile and like status are independent — fetch them in parallel
+                const [profileResult, likesResult] = await Promise.all([
+                    p.user_id
+                        ? supabase.from('profiles').select('id, username, display_name, avatar_url').eq('id', p.user_id).single()
+                        : Promise.resolve({ data: null }),
+                    user
+                        ? supabase.from('post_likes').select('id').eq('user_id', user.id).eq('post_id', id)
+                        : Promise.resolve({ data: null }),
+                ]);
 
-
-                let likes = p.likes_count || 0;
-                let isLiked = false;
-                if (user) {
-                    const { data: l } = await supabase.from('post_likes').select('id').eq('user_id', user.id).eq('post_id', id);
-                    if (l && l.length > 0) isLiked = true;
-                }
+                const profile: any = profileResult.data || {};
+                const likes = p.likes_count || 0;
+                const isLiked = !!(likesResult.data && likesResult.data.length > 0);
 
                 setPost({
                     id: p.id,
@@ -136,7 +226,16 @@ export default function DebateThreadScreen() {
         } finally {
             setLoadingPost(false);
         }
-    };
+    }, [id, user]);
+
+    useFocusEffect(
+        React.useCallback(() => {
+            if (id) {
+                fetchPost();
+                fetchArguments();
+            }
+        }, [id, fetchPost, fetchArguments])
+    );
 
     const handlePostArgument = async () => {
         if (!selectedSide || !newArgument.trim()) return;
@@ -146,10 +245,10 @@ export default function DebateThreadScreen() {
         setReplyingTo(null);
     };
 
-    const handleReply = (arg: Argument) => {
+    const handleReply = useCallback((arg: Argument) => {
         setReplyingTo(arg);
         setSelectedSide(arg.side === 'FOR' ? 'AGAINST' : 'FOR'); // Default to opposing side
-    };
+    }, []);
 
     const handleDeletePost = async () => {
         if (!post) return;
@@ -211,79 +310,15 @@ export default function DebateThreadScreen() {
         width: `${100 - forPercentageAnim.value}%`
     }));
 
-    const renderArgument = ({ item }: { item: Argument }) => {
-        const isFor = item.side === 'FOR';
-        const colorMain = isFor ? "#D9E4FF" : "#FFFFFF";
-        const bgLabel = isFor ? 'rgba(217, 228, 255, 0.15)' : 'rgba(255, 255, 255, 0.15)';
-
-        return (
-            <View style={[styles.argumentCard, { backgroundColor: isDark ? 'rgba(255,255,255,0.03)' : '#FFF' }]}>
-                {/* Left Line Indicator */}
-                <View style={[styles.sideIndicator, { backgroundColor: colorMain }]} />
-
-                <View style={styles.argumentContent}>
-                    <View style={styles.argHeader}>
-                        <View style={styles.argAuthorRow}>
-                            {item.authorAvatar ? (
-                                <Image source={{ uri: item.authorAvatar }} style={styles.argAvatarImage} />
-                            ) : (
-                                <View style={[styles.argAvatar, { backgroundColor: isDark ? '#333' : '#E5E5E5' }]}>
-                                    <Text style={{ fontSize: 12, fontWeight: 'bold', color: theme.colors.text.primary }}>{item.authorName[0].toUpperCase()}</Text>
-                                </View>
-                            )}
-                            <Text style={[styles.argAuthorName, { color: theme.colors.text.primary }]}>{item.authorName}</Text>
-                            <View style={[styles.sideBadge, { backgroundColor: bgLabel }]}>
-                                <Text style={[styles.sideBadgeText, { color: colorMain }]}>{item.side}</Text>
-                            </View>
-                        </View>
-
-                        <View style={styles.argHeaderRight}>
-                            <Text style={styles.argDate}>{item.timestamp}</Text>
-                            {user && item.authorId === user.id && (
-                                <Pressable
-                                    onPress={() => {
-                                        Alert.alert("Delete Argument", "Are you sure you want to delete your argument?", [
-                                            { text: "Cancel", style: "cancel" },
-                                            { text: "Delete", style: "destructive", onPress: () => deleteArgument(item.id) }
-                                        ]);
-                                    }}
-                                    style={({ pressed }) => [styles.argDeleteBtn, pressed && { opacity: 0.6 }]}
-                                >
-                                    <Ionicons name="trash-bin-outline" size={16} color="#EF4444" />
-                                </Pressable>
-                            )}
-                        </View>
-                    </View>
-
-                    <Text style={[styles.argText, { color: theme.colors.text.primary }]}>{item.content}</Text>
-
-                    {item.videoUrl && (
-                        <View style={styles.argVideoContainer}>
-                            <Image
-                                source={{ uri: item.videoUrl.replace('.mp4', '.jpg') }}
-                                style={styles.argVideoThumbnail}
-                            />
-                            <View style={styles.playOverlay}>
-                                <Ionicons name="play" size={24} color="#FFF" />
-                            </View>
-                        </View>
-                    )}
-
-                    <View style={styles.argFooter}>
-                        <VoteButton
-                            isVoted={item.isVoted}
-                            score={item.strength}
-                            onPress={() => toggleVoteArgument(item.id)}
-                        />
-                        <Pressable style={styles.replyBtn} onPress={() => handleReply(item)}>
-                            <Ionicons name="chatbubble-outline" size={14} color={theme.colors.text.secondary} />
-                            <Text style={[styles.replyBtnText, { color: theme.colors.text.secondary }]}>Reply</Text>
-                        </Pressable>
-                    </View>
-                </View>
-            </View>
-        );
-    };
+    const renderArgument = useCallback(({ item }: { item: Argument }) => (
+        <ArgumentCard
+            item={item}
+            currentUserId={user?.id}
+            onVote={toggleVoteArgument}
+            onReply={handleReply}
+            onDelete={deleteArgument}
+        />
+    ), [user?.id, toggleVoteArgument, handleReply, deleteArgument]);
 
     return (
         <KeyboardAvoidingView
@@ -310,10 +345,14 @@ export default function DebateThreadScreen() {
 
             <FlatList
                 data={argumentsList}
-                keyExtractor={item => item.id}
+                keyExtractor={keyExtractor}
                 renderItem={renderArgument}
                 contentContainerStyle={[styles.listContent, { paddingBottom: 140 }]}
-                ListHeaderComponent={() => (
+                initialNumToRender={8}
+                maxToRenderPerBatch={8}
+                windowSize={7}
+                removeClippedSubviews={Platform.OS !== 'web'}
+                ListHeaderComponent={
                     <View style={styles.listHeader}>
                         {loadingPost ? (
                             <ActivityIndicator color="#D9E4FF" />
@@ -325,6 +364,15 @@ export default function DebateThreadScreen() {
                                     onDelete={post.userId === user?.id ? confirmDeletePost : undefined}
                                 />
                                 {deleting && <ActivityIndicator color="#EF4444" style={{ marginTop: 8 }} />}
+
+                                {/* AI Fact Check */}
+                                <Pressable
+                                    style={({ pressed }) => [styles.factCheckBtn, pressed && { opacity: 0.85 }]}
+                                    onPress={() => setFactCheckVisible(true)}
+                                >
+                                    <Ionicons name="shield-checkmark" size={18} color="#000" />
+                                    <Text style={styles.factCheckBtnText}>Проверить факты</Text>
+                                </Pressable>
 
                                 {/* Stats Bar */}
                                 {argumentsList.length > 0 && (
@@ -362,10 +410,10 @@ export default function DebateThreadScreen() {
                             <Text style={styles.sortText}>BY STRENGTH</Text>
                         </View>
                     </View>
-                )}
-                ListEmptyComponent={() => (
-                    !loading && <Text style={[styles.emptyText, { color: theme.colors.text.secondary }]}>No arguments yet. Be the first to logic test this.</Text>
-                )}
+                }
+                ListEmptyComponent={
+                    !loading ? <Text style={[styles.emptyText, { color: theme.colors.text.secondary }]}>No arguments yet. Be the first to logic test this.</Text> : null
+                }
             />
 
             {/* Input Bar */}
@@ -467,6 +515,12 @@ export default function DebateThreadScreen() {
                     )}
                 </BlurView>
             </View>
+
+            <FactCheckModal
+                visible={factCheckVisible}
+                transcript={transcript}
+                onClose={() => setFactCheckVisible(false)}
+            />
         </KeyboardAvoidingView>
     );
 }
@@ -536,6 +590,22 @@ const styles = StyleSheet.create({
     },
     listContent: {},
     listHeader: { paddingVertical: 16 },
+    factCheckBtn: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: 8,
+        marginHorizontal: 16,
+        marginTop: 12,
+        paddingVertical: 12,
+        borderRadius: 14,
+        backgroundColor: '#D9E4FF',
+    },
+    factCheckBtnText: {
+        fontSize: 14,
+        fontWeight: '800',
+        color: '#000',
+    },
     errorText: { textAlign: 'center', marginVertical: 20 },
 
     sectionTitleRow: {

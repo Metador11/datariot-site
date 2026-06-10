@@ -12,7 +12,7 @@ interface DebateCardProps {
     isOwnPost?: boolean;
 }
 
-export function DebateCard({ item, onPress, onDelete, isOwnPost }: DebateCardProps) {
+export const DebateCard = React.memo(function DebateCard({ item, onPress, onDelete, isOwnPost }: DebateCardProps) {
     const { theme, mode } = useTheme();
     const isDark = mode === 'dark';
     const deleteScale = useSharedValue(1);
@@ -169,7 +169,7 @@ export function DebateCard({ item, onPress, onDelete, isOwnPost }: DebateCardPro
             </View>
         </Pressable>
     );
-}
+});
 
 const styles = StyleSheet.create({
     card: {

@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import { supabase } from '../client';
 import { useAuth } from './useAuth';
 
@@ -21,6 +21,13 @@ export function useDebateArguments(postId: string | null) {
     const [loading, setLoading] = useState(false);
     const [posting, setPosting] = useState(false);
 
+    // Mirror of argumentsList so mutation callbacks stay referentially stable
+    // (memoized list rows don't re-render when the list changes elsewhere)
+    const argumentsRef = useRef<Argument[]>(argumentsList);
+    useEffect(() => {
+        argumentsRef.current = argumentsList;
+    }, [argumentsList]);
+
     const fetchArguments = useCallback(async () => {
         if (!supabase || !postId) return;
         setLoading(true);
@@ -34,38 +41,35 @@ export function useDebateArguments(postId: string | null) {
             if (error) throw error;
             if (!data) return;
 
-            // Fetch profiles in parallel
+            // Fetch profiles and the user's votes in parallel
             const userIds = [...new Set(data.map((c: any) => c.user_id).filter(Boolean))];
+
+            const [profilesResult, likesResult] = await Promise.all([
+                userIds.length > 0
+                    ? supabase.from('profiles').select('id, username, display_name, avatar_url').in('id', userIds)
+                    : Promise.resolve({ data: null, error: null }),
+                user
+                    ? supabase.from('comment_likes').select('comment_id').eq('user_id', user.id)
+                    : Promise.resolve({ data: null, error: null }),
+            ]);
+
             let profilesMap: Record<string, any> = {};
-
-            if (userIds.length > 0) {
-                const { data: profileData, error: profileError } = await supabase
-                    .from('profiles')
-                    .select('id, username, display_name, avatar_url')
-                    .in('id', userIds);
-
-                if (!profileError && profileData) {
-                    profilesMap = profileData.reduce((acc: any, p: any) => {
-                        acc[p.id] = p;
-                        return acc;
-                    }, {});
-                }
+            if (!profilesResult.error && profilesResult.data) {
+                profilesMap = profilesResult.data.reduce((acc: any, p: any) => {
+                    acc[p.id] = p;
+                    return acc;
+                }, {});
             }
 
-            // Check voted arguments
-            let votedIds = new Set<string>();
-            if (user) {
-                const { data: likes } = await supabase
-                    .from('comment_likes')
-                    .select('comment_id')
-                    .eq('user_id', user.id);
-                if (likes) likes.forEach((l: any) => votedIds.add(l.comment_id));
+            const votedIds = new Set<string>();
+            if (likesResult.data) {
+                likesResult.data.forEach((l: any) => votedIds.add(l.comment_id));
             }
 
+            const now = new Date();
             const formatArgument = (c: any): Argument => {
                 const profile = profilesMap[c.user_id] || {};
-                const now = new Date();
-                const created = new Date(c.created_at || new Date());
+                const created = new Date(c.created_at || now);
                 const diffMs = now.getTime() - created.getTime();
                 const diffMin = Math.floor(diffMs / 60000);
                 const timestamp = diffMin < 1 ? 'just now'
@@ -108,11 +112,9 @@ export function useDebateArguments(postId: string | null) {
         }
     }, [postId, user]);
 
-    useEffect(() => {
-        if (postId) {
-            fetchArguments();
-        }
-    }, [fetchArguments, postId]);
+    // Note: no auto-fetch effect here. The debate screen fetches via
+    // useFocusEffect (which fires on mount too) — an effect here would
+    // duplicate every network round-trip.
 
     const postArgument = useCallback(async (content: string, side: 'FOR' | 'AGAINST') => {
         if (!supabase || !user || !postId || !content.trim()) return;
@@ -131,17 +133,18 @@ export function useDebateArguments(postId: string | null) {
         } finally {
             setPosting(false);
         }
-    }, [supabase, user, postId, fetchArguments]);
+    }, [user, postId, fetchArguments]);
 
     const toggleVoteArgument = useCallback(async (argumentId: string) => {
         if (!supabase || !user) return;
-        const idx = argumentsList.findIndex(c => c.id === argumentId);
+        const current = argumentsRef.current;
+        const idx = current.findIndex(c => c.id === argumentId);
         if (idx === -1) return;
-        const c = argumentsList[idx];
+        const c = current[idx];
         const wasVoted = c.isVoted;
 
         // Optimistic
-        const updated = [...argumentsList];
+        const updated = [...current];
         updated[idx] = { ...c, isVoted: !wasVoted, strength: wasVoted ? c.strength - 1 : c.strength + 1 };
 
         // Re-sort by strength
@@ -157,14 +160,14 @@ export function useDebateArguments(postId: string | null) {
         } catch {
             fetchArguments(); // revert on fail
         }
-    }, [supabase, user, argumentsList, fetchArguments]);
+    }, [user, fetchArguments]);
 
     const deleteArgument = useCallback(async (argumentId: string) => {
         if (!supabase || !user) return;
 
         // Optimistic update
-        const previousArguments = [...argumentsList];
-        setArguments(argumentsList.filter(a => a.id !== argumentId));
+        const previousArguments = argumentsRef.current;
+        setArguments(previousArguments.filter(a => a.id !== argumentId));
 
         try {
             const { error } = await supabase.from('comments').delete().eq('id', argumentId).eq('user_id', user.id);
@@ -173,7 +176,7 @@ export function useDebateArguments(postId: string | null) {
             console.error('Error deleting argument:', err);
             setArguments(previousArguments); // revert on fail
         }
-    }, [supabase, user, argumentsList]);
+    }, [user]);
 
     return { argumentsList, loading, posting, fetchArguments, postArgument, toggleVoteArgument, deleteArgument };
 }
