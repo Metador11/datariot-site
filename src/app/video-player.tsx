@@ -35,8 +35,6 @@ export default function VideoPlayerScreen() {
     const cleanSort = getStringParam(params.sort) as 'recent' | 'popular' | undefined;
     const initialVideoId = getStringParam(params.initialVideoId);
 
-    console.log("VideoPlayerScreen clean params:", { cleanType, cleanSearchQuery, cleanHashtag, cleanUserId, cleanSort, initialVideoId });
-
     const {
         videos,
         loading,
@@ -50,8 +48,6 @@ export default function VideoPlayerScreen() {
         searchQuery: cleanSearchQuery,
         sort: cleanSort
     });
-
-    console.log(`VideoPlayerScreen loaded ${videos.length} videos. loading: ${loading}`);
 
     // Handle back navigation
     const handleBack = () => {

@@ -82,16 +82,15 @@ export function CoubClassicFeed({
     }, [allSynergy, ensureMinCount]);
 
     const scrollVideos = useMemo(() => {
-        let base;
-        // Define which videos go to the main vertical scroll 
-        // This ensures no single video dominates all UI sections too much
+        // Define which videos go to the main vertical scroll
+        // This ensures no single video dominates all UI sections too much.
+        // Unlike the carousels, the main feed is NOT padded with duplicates —
+        // repeated cards broke keys and showed the same video twice.
         if (allSynergy.length <= 3) {
-            base = videos;
-        } else {
-            base = videos.filter(v => !v.isHighSynergy || videos.indexOf(v) > 8);
+            return videos;
         }
-        return ensureMinCount(base, 5);
-    }, [videos, allSynergy, ensureMinCount]);
+        return videos.filter(v => !v.isHighSynergy || videos.indexOf(v) > 8);
+    }, [videos, allSynergy]);
 
     const onViewableItemsChanged = useCallback(
         ({ viewableItems }: { viewableItems: ViewToken[] }) => {
@@ -109,7 +108,8 @@ export function CoubClassicFeed({
         itemVisiblePercentThreshold: 60,
     }), []);
 
-    const renderHeader = () => (
+    // Element (not inline function) so FlatList doesn't remount the header each render
+    const listHeader = useMemo(() => (
         <View style={{ marginBottom: 24, marginTop: paddingTop + 10 }}>
             {featuredVideos.length > 0 && (
                 <FeaturedHero
@@ -132,23 +132,19 @@ export function CoubClassicFeed({
                 subtitle="High engagement across the platform"
             />
         </View>
-    );
+    ), [featuredVideos, synergyVideos, onSelect, paddingTop]);
 
-    const renderItem = ({ item, index }: { item: Video; index: number }) => {
-        const isActive = index === activeVideoIndex && isScreenFocused;
-
-        return (
-            <CoubClassicItem
-                item={item}
-                isActive={isActive}
-                onLike={() => onLike(item.id)}
-                onComment={() => onComment(item.id)}
-                onSave={() => onSave(item.id)}
-                onMore={() => onMore(item.id)}
-                onSelect={() => onSelect(item.id)}
-            />
-        );
-    };
+    const renderItem = useCallback(({ item, index }: { item: Video; index: number }) => (
+        <CoubClassicItem
+            item={item}
+            isActive={index === activeVideoIndex && isScreenFocused}
+            onLike={() => onLike(item.id)}
+            onComment={() => onComment(item.id)}
+            onSave={() => onSave(item.id)}
+            onMore={() => onMore(item.id)}
+            onSelect={() => onSelect(item.id)}
+        />
+    ), [activeVideoIndex, isScreenFocused, onLike, onComment, onSave, onMore, onSelect]);
 
     return (
         <View style={[styles.container, { backgroundColor: theme.colors.background.primary }]}>
@@ -156,9 +152,9 @@ export function CoubClassicFeed({
                 ref={flatListRef}
                 data={scrollVideos}
                 renderItem={renderItem}
-                keyExtractor={(item, index) => `${item.id}-${index}`}
+                keyExtractor={(item) => item.id}
                 showsVerticalScrollIndicator={false}
-                ListHeaderComponent={renderHeader}
+                ListHeaderComponent={listHeader}
                 onViewableItemsChanged={onViewableItemsChanged}
                 viewabilityConfig={viewabilityConfig}
                 onEndReached={onEndReached}
@@ -178,7 +174,7 @@ export function CoubClassicFeed({
                     paddingBottom: paddingBottom + 80,
                     alignSelf: 'center',
                     width: '100%',
-                    maxWidth: 720,
+                    maxWidth: 960,
                     paddingHorizontal: 0,
                 }}
             />

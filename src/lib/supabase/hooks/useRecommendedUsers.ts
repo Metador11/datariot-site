@@ -2,6 +2,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '../client';
 import { useAuth } from './useAuth';
+import { followUser, unfollowUser } from '../follow';
 
 export interface RecommendedUser {
     id: string;
@@ -41,16 +42,22 @@ export function useRecommendedUsers() {
                 potentialUsers = profiles.filter((p: any) => p.id !== user.id);
             }
 
-            // 2. Check following status
+            // 2. Check following status (schema uses followers/followed_id; old code used follows/following_id)
             let followingIds = new Set<string>();
             if (user) {
-                const { data: follows } = await supabase
-                    .from('follows')
-                    .select('following_id')
+                const { data: followRows, error: followErr } = await supabase
+                    .from('followers')
+                    .select('followed_id')
                     .eq('follower_id', user.id);
 
-                if (follows) {
-                    follows.forEach((f: any) => followingIds.add(f.following_id));
+                if (!followErr && followRows) {
+                    followRows.forEach((f: any) => followingIds.add(f.followed_id));
+                } else {
+                    const { data: legacyRows } = await supabase
+                        .from('follows')
+                        .select('following_id')
+                        .eq('follower_id', user.id);
+                    if (legacyRows) legacyRows.forEach((f: any) => followingIds.add(f.following_id));
                 }
             }
 
@@ -94,30 +101,19 @@ export function useRecommendedUsers() {
         const targetUser = users[userIndex];
         const wasFollowing = targetUser.isFollowing;
 
-        // Optimistic update
-        const updatedUsers = [...users];
-        updatedUsers[userIndex] = {
-            ...targetUser,
-            isFollowing: !wasFollowing
-        };
-        setUsers(updatedUsers);
+        // Optimistic update (functional, so it can't clobber parallel updates)
+        const applyFollow = (following: boolean) => setUsers(prev => prev.map(u =>
+            u.id === userIdToFollow ? { ...u, isFollowing: following } : u
+        ));
+        applyFollow(!wasFollowing);
 
-        try {
-            if (wasFollowing) {
-                await supabase
-                    .from('follows')
-                    .delete()
-                    .eq('follower_id', user.id)
-                    .eq('following_id', userIdToFollow);
-            } else {
-                await supabase
-                    .from('follows')
-                    .insert({ follower_id: user.id, following_id: userIdToFollow });
-            }
-        } catch (error) {
+        const { error } = wasFollowing
+            ? await unfollowUser(user.id, userIdToFollow)
+            : await followUser(user.id, userIdToFollow);
+
+        if (error) {
             console.error('Error toggling follow:', error);
-            // Revert
-            setUsers(users);
+            applyFollow(wasFollowing); // revert
         }
     };
 

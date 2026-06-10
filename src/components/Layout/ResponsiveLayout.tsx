@@ -217,7 +217,7 @@ const styles = StyleSheet.create({
     },
     centerColumn: {
         flex: 1,
-        maxWidth: 780,
+        maxWidth: 1020,
         position: 'relative',
         // @ts-ignore — web-only
         overflowY: 'auto',

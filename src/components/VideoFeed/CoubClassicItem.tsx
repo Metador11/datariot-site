@@ -33,6 +33,7 @@ const formatNumber = (num: number): string => {
 
 interface VideoPlayerLayerProps {
     videoUrl: string;
+    thumbnailUrl?: string;
     isActive: boolean;
     isFocused: boolean;
     isPaused: boolean;
@@ -40,36 +41,52 @@ interface VideoPlayerLayerProps {
     onTimeUpdate: (currentTime: number, duration: number) => void;
 }
 
-const VideoPlayerLayer = ({ videoUrl, isActive, isFocused, isPaused, isMuted, onTimeUpdate }: VideoPlayerLayerProps) => {
-    const videoRef = useRef<Video>(null);
+const VideoPlayerLayer = ({ videoUrl, thumbnailUrl, isActive, isFocused, isPaused, isMuted, onTimeUpdate }: VideoPlayerLayerProps) => {
+    const uri = encodeVideoUrl(videoUrl) || videoUrl;
+    const shouldMountPlayer = isActive && isFocused;
 
     return (
         <View style={StyleSheet.absoluteFillObject}>
-            <Video
-                ref={videoRef}
-                source={{ uri: 'https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/360/Big_Buck_Bunny_360_10s_1MB.mp4' }}
-                style={StyleSheet.absoluteFillObject}
-                resizeMode={ResizeMode.COVER}
-                shouldPlay={isActive && isFocused && !isPaused}
-                isLooping
-                isMuted={isMuted}
-                onPlaybackStatusUpdate={(status: any) => {
-                    if (status.isLoaded && status.durationMillis) {
-                        onTimeUpdate(status.positionMillis, status.durationMillis);
-                    }
-                }}
-            />
+            {/* Ambient backdrop: blurred thumbnail (cheap) instead of a second video decoder */}
+            {thumbnailUrl ? (
+                <Image
+                    source={{ uri: thumbnailUrl }}
+                    style={StyleSheet.absoluteFillObject}
+                    resizeMode="cover"
+                    blurRadius={24}
+                />
+            ) : (
+                <View style={[StyleSheet.absoluteFillObject, { backgroundColor: '#06070A' }]} />
+            )}
             <BlurView intensity={30} tint="dark" style={StyleSheet.absoluteFillObject} />
 
-            {/* Foreground Sharp Layer (shows full content) */}
-            <Video
-                source={{ uri: 'https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/360/Big_Buck_Bunny_360_10s_1MB.mp4' }}
-                style={StyleSheet.absoluteFillObject}
-                resizeMode={ResizeMode.CONTAIN}
-                shouldPlay={isActive && isFocused && !isPaused}
-                isLooping
-                isMuted={isMuted}
-            />
+            {/* The video player only mounts for the active, focused card —
+                off-screen cards show their poster and decode nothing */}
+            {shouldMountPlayer ? (
+                <Video
+                    source={{ uri }}
+                    style={StyleSheet.absoluteFillObject}
+                    resizeMode={ResizeMode.CONTAIN}
+                    shouldPlay={!isPaused}
+                    isLooping
+                    isMuted={isMuted}
+                    usePoster={!!thumbnailUrl}
+                    posterSource={thumbnailUrl ? { uri: thumbnailUrl } : undefined}
+                    onPlaybackStatusUpdate={(status: any) => {
+                        if (status.isLoaded && status.durationMillis) {
+                            onTimeUpdate(status.positionMillis, status.durationMillis);
+                        }
+                    }}
+                />
+            ) : (
+                thumbnailUrl ? (
+                    <Image
+                        source={{ uri: thumbnailUrl }}
+                        style={StyleSheet.absoluteFillObject}
+                        resizeMode="contain"
+                    />
+                ) : null
+            )}
         </View>
     );
 };
@@ -96,7 +113,11 @@ export const CoubClassicItem = memo(({
 
     const cardMargin = isWeb ? (isMobileWeb ? 0 : 0) : 16; // Maintain 0 for web to fill column
     const cardWidth = isWeb ? '100%' as any : windowWidth - (cardMargin * 2);
-    const videoHeight = isWeb ? (isMobileWeb ? (windowWidth * 9 / 16) : 380) : (windowWidth - 32) * (9 / 16);
+    // Desktop web: 16:9 against the wider column (capped) instead of a fixed 380px strip
+    const desktopVideoWidth = Math.min(windowWidth - 320, 940);
+    const videoHeight = isWeb
+        ? (isMobileWeb ? (windowWidth * 9 / 16) : Math.round(desktopVideoWidth * 9 / 16))
+        : (windowWidth - 32) * (9 / 16);
 
     const router = useRouter();
     const isFocused = useIsFocused();
@@ -143,7 +164,7 @@ export const CoubClassicItem = memo(({
             isWeb && !isMobileWeb && {
                 // @ts-ignore — web only: center card
                 alignSelf: 'center',
-                maxWidth: 700,
+                maxWidth: 940,
             }
         ]}>
             {/* Main Video Container with premium glow shadow */}
@@ -182,6 +203,7 @@ export const CoubClassicItem = memo(({
                 {item.videoUrl ? (
                     <VideoPlayerLayer
                         videoUrl={item.videoUrl}
+                        thumbnailUrl={item.thumbnailUrl}
                         isActive={isActive}
                         isFocused={isFocused}
                         isPaused={isPaused}

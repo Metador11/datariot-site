@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons, Feather } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { ChatItem } from '../../components/UI/ChatItem';
+import { ChallengeInbox } from '../../components/Debate/ChallengeInbox';
 import { useRouter } from 'expo-router';
 import { useChats } from '../../lib/supabase/hooks/useChats';
 import { supabase } from '../../lib/supabase/client';
@@ -189,6 +190,9 @@ export default function InboxScreen() {
 
             {!isSearching && (
                 <>
+                    {/* Pending Debate Challenges */}
+                    <ChallengeInbox />
+
                     {/* AI Section */}
                     <Text style={[styles.sectionTitle, { color: theme.colors.text.secondary }]}>ASSISTANT</Text>
                     <ChatItem
