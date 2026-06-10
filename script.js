@@ -331,15 +331,31 @@ function initializeScripts() {
             e.preventDefault();
             const emailInput = document.getElementById('betaEmail');
             const submitBtn = betaForm.querySelector('button[type="submit"]');
-            if (emailInput && emailInput.value) {
+            if (!emailInput || !emailInput.value) return;
+
+            if (submitBtn) {
                 submitBtn.disabled = true;
                 submitBtn.style.opacity = '0.5';
-                console.log('Beta registration for:', emailInput.value);
-                setTimeout(() => {
-                    document.getElementById('betaCard').style.display = 'none';
-                    document.getElementById('betaSuccess').style.display = 'flex';
-                }, 1000);
             }
+
+            // Persist the signup; tolerate a missing table so the UX never breaks
+            if (supabase) {
+                try {
+                    const { error } = await supabase
+                        .from('beta_signups')
+                        .insert({ email: emailInput.value.trim() });
+                    if (error) console.warn('Beta signup not persisted:', error.message);
+                } catch (err) {
+                    console.warn('Beta signup not persisted:', err);
+                }
+            }
+
+            setTimeout(() => {
+                const betaCard = document.getElementById('betaCard');
+                const betaSuccess = document.getElementById('betaSuccess');
+                if (betaCard) betaCard.style.display = 'none';
+                if (betaSuccess) betaSuccess.style.display = 'flex';
+            }, 600);
         });
     }
 
@@ -689,6 +705,85 @@ function initializeScripts() {
                 sub.style.transform = '';
             });
         });
+    }
+
+    // === Arena: Live Vote Simulation ===
+    const voteForBtn = document.querySelector('.vote-btn--for');
+    const voteAgainstBtn = document.querySelector('.vote-btn--against');
+    if (voteForBtn && voteAgainstBtn) {
+        let forPct = 72;
+        const forFill = document.querySelector('.arena-panel--for .stat-bar__fill');
+        const againstFill = document.querySelector('.arena-panel--against .stat-bar__fill');
+        const forVal = document.querySelector('.arena-panel--for .stat-val');
+        const againstVal = document.querySelector('.arena-panel--against .stat-val');
+
+        const castVote = (side, btn) => {
+            forPct = Math.max(5, Math.min(95, forPct + (side === 'for' ? 3 : -3)));
+            if (forFill) forFill.style.width = forPct + '%';
+            if (againstFill) againstFill.style.width = (100 - forPct) + '%';
+            if (forVal) forVal.textContent = forPct + '%';
+            if (againstVal) againstVal.textContent = (100 - forPct) + '%';
+
+            if (!btn.dataset.label) btn.dataset.label = btn.textContent;
+            btn.textContent = '[ VOTE REGISTERED ✓ ]';
+            btn.classList.add('vote-btn--cast');
+            setTimeout(() => {
+                btn.textContent = btn.dataset.label;
+                btn.classList.remove('vote-btn--cast');
+            }, 1200);
+        };
+
+        voteForBtn.addEventListener('click', () => castVote('for', voteForBtn));
+        voteAgainstBtn.addEventListener('click', () => castVote('against', voteAgainstBtn));
+    }
+
+    // === Arena: AI Fact Check Demo ===
+    const factOutput = document.getElementById('factcheckOutput');
+    const claimChips = document.querySelectorAll('.claim-chip');
+    if (factOutput && claimChips.length > 0) {
+        let factRunId = 0;
+
+        const VERDICT_STYLE = {
+            VERIFIED: 'term-success',
+            FALSE: 'term-danger',
+            MISLEADING: 'term-warn'
+        };
+
+        const writeLine = (html) => {
+            const line = document.createElement('div');
+            line.className = 'terminal-line';
+            line.innerHTML = html;
+            factOutput.appendChild(line);
+        };
+
+        const runFactCheckDemo = async (chip) => {
+            const runId = ++factRunId;
+            const verdict = chip.dataset.verdict || 'UNVERIFIABLE';
+            const confidence = chip.dataset.confidence || '70';
+            const source = chip.dataset.source || 'open data';
+
+            claimChips.forEach(c => c.classList.toggle('claim-chip--active', c === chip));
+            factOutput.innerHTML = '';
+
+            const steps = [
+                '<span class="term-prompt">&gt;</span> claim received :: <span class="term-accent">hashing input</span>',
+                '<span class="term-prompt">&gt;</span> <span class="term-keyword">cross-referencing</span> 3 independent sources [▰▰▰▰▱]',
+                `<span class="term-prompt">&gt;</span> primary match :: ${source}`
+            ];
+
+            for (const step of steps) {
+                if (runId !== factRunId) return; // a newer run took over
+                writeLine(step);
+                await new Promise(r => setTimeout(r, 550));
+            }
+
+            if (runId !== factRunId) return;
+            const cls = VERDICT_STYLE[verdict] || 'term-warn';
+            writeLine(`<span class="term-prompt">&gt;</span> VERDICT :: <span class="${cls}">${verdict}</span> <span class="term-accent">[${confidence}% confidence]</span>`);
+            writeLine('<span class="term-prompt">&gt;</span> full report available in-app<span class="term-blink">_</span>');
+        };
+
+        claimChips.forEach(chip => chip.addEventListener('click', () => runFactCheckDemo(chip)));
     }
 }
 

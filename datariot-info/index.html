@@ -1145,6 +1145,34 @@
                             consensus."</p>
                     </div>
 
+                    <div class="factcheck-demo">
+                        <div class="factcheck-demo__head">
+                            <div class="topic-meta">[ ORVELIS // AI FACT CHECK ]</div>
+                            <p class="factcheck-demo__hint">Tap a claim from the floor — the truth engine cross-references it live.</p>
+                        </div>
+                        <div class="factcheck-demo__claims">
+                            <button class="claim-chip" type="button" data-verdict="VERIFIED" data-confidence="94"
+                                data-source="World Bank Open Data">"Over 60% of humanity is online today."</button>
+                            <button class="claim-chip" type="button" data-verdict="FALSE" data-confidence="91"
+                                data-source="Reuters Fact Check">"Decentralized networks cannot be censored."</button>
+                            <button class="claim-chip" type="button" data-verdict="MISLEADING" data-confidence="78"
+                                data-source="Nature — peer-reviewed">"AI already out-reasons human experts."</button>
+                        </div>
+                        <div class="terminal-window">
+                            <div class="terminal-window__header">
+                                <div class="terminal-window__dots">
+                                    <span class="dot dot--red"></span>
+                                    <span class="dot dot--yellow"></span>
+                                    <span class="dot dot--green"></span>
+                                </div>
+                                <span class="terminal-window__title">fact_check.ai</span>
+                            </div>
+                            <div class="panel-terminal factcheck-output" id="factcheckOutput">
+                                <div class="terminal-line"><span class="term-prompt">&gt;</span> awaiting claim selection<span class="term-blink">_</span></div>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="arena-cta">
                         <button class="vote-btn vote-btn--for">[ CAST VOTE // AFFIRMATIVE ]</button>
                         <button class="vote-btn vote-btn--against">[ CAST VOTE // NEGATIVE ]</button>
