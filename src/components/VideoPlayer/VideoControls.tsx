@@ -9,6 +9,8 @@ import { useRouter } from 'expo-router';
 
 interface VideoControlsProps {
     isPlaying: boolean;
+    // On-screen width of the video frame; controls hug it on desktop web
+    contentWidth?: number;
     title: string;
     author: string;
     authorId: string;
@@ -117,6 +119,7 @@ const VideoScrubber = ({ currentTime = 0, duration = 0, onSeek }: { currentTime:
 };
 
 export function VideoControls({
+    contentWidth,
     title,
     author,
     authorId,
@@ -176,8 +179,13 @@ export function VideoControls({
             <View style={[
                 styles.contentContainer,
                 { paddingBottom: Platform.OS === 'web' ? 60 : insets.bottom + 24 },
-                // Desktop web: keep controls in a centered column under the video
-                Platform.OS === 'web' && { maxWidth: 960, width: '100%', alignSelf: 'center' },
+                // Desktop web: controls hug the on-screen video width
+                // (clamped so buttons never cram or sprawl)
+                Platform.OS === 'web' && {
+                    maxWidth: contentWidth ? Math.min(Math.max(contentWidth, 480), 960) : 960,
+                    width: '100%',
+                    alignSelf: 'center',
+                },
             ]}>
                 {/* Information Section */}
                 {(

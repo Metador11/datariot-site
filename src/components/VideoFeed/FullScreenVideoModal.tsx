@@ -52,11 +52,11 @@ interface InternalFullScreenVideoProps {
     isActive: boolean;
     isPaused: boolean;
     onTimeUpdate: (currentTime: number, duration: number) => void;
+    onNaturalSize?: (aspect: number) => void;
+    videoRef?: React.RefObject<Video | null>;
 }
 
-const InternalFullScreenVideo = ({ videoUrl, isActive, isPaused, onTimeUpdate }: InternalFullScreenVideoProps) => {
-    const videoRef = useRef<Video>(null);
-
+const InternalFullScreenVideo = ({ videoUrl, isActive, isPaused, onTimeUpdate, onNaturalSize, videoRef }: InternalFullScreenVideoProps) => {
     return (
         <Video
             ref={videoRef}
@@ -70,6 +70,12 @@ const InternalFullScreenVideo = ({ videoUrl, isActive, isPaused, onTimeUpdate }:
             shouldPlay={isActive && !isPaused}
             isLooping
             isMuted={true}
+            onReadyForDisplay={(e: any) => {
+                // Native delivers naturalSize; web delivers the DOM event
+                const w = e?.naturalSize?.width ?? e?.target?.videoWidth;
+                const h = e?.naturalSize?.height ?? e?.target?.videoHeight;
+                if (w > 0 && h > 0) onNaturalSize?.(w / h);
+            }}
             onPlaybackStatusUpdate={(status: any) => {
                 if (status.isLoaded && status.durationMillis) {
                     onTimeUpdate(status.positionMillis, status.durationMillis);
@@ -103,13 +109,20 @@ function FullScreenVideoItem({
     const [isPaused, setIsPaused] = useState(false);
     const [currentTime, setCurrentTime] = useState(0);
     const [duration, setDuration] = useState(0);
+    // Displayed aspect of the playing video (defaults to 9:16 portrait)
+    const [aspect, setAspect] = useState<number | null>(null);
+    const videoRef = useRef<Video>(null);
+
+    // Width the CONTAIN-fitted video actually occupies on screen — the
+    // bottom controls are constrained to it so they hug the video
+    const displayWidth = Math.min(width, Math.round(height * (aspect ?? 9 / 16)));
 
     const togglePlayback = () => {
         setIsPaused(!isPaused);
     };
 
     const handleSeek = (value: number) => {
-        console.log('Seek not yet implemented with hook isolation');
+        videoRef.current?.setPositionAsync(value).catch(() => { });
     };
 
     // Double tap to like gesture
@@ -141,6 +154,8 @@ function FullScreenVideoItem({
                             videoUrl={item.videoUrl || item.url}
                             isActive={isActive}
                             isPaused={isPaused}
+                            videoRef={videoRef}
+                            onNaturalSize={setAspect}
                             onTimeUpdate={(ct, dur) => {
                                 setCurrentTime(ct);
                                 setDuration(dur);
@@ -161,6 +176,7 @@ function FullScreenVideoItem({
 
                 <VideoControls
                     isPlaying={isActive && !isPaused}
+                    contentWidth={displayWidth}
                     title={item.title || ''}
                     author={item.author || item.authorName || ''}
                     authorId={item.authorId || ''}
