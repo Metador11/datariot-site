@@ -175,10 +175,12 @@ export function VideoControls({
 
             <View style={[
                 styles.contentContainer,
-                { paddingBottom: Platform.OS === 'web' ? 60 : insets.bottom + 24 }
+                { paddingBottom: Platform.OS === 'web' ? 60 : insets.bottom + 24 },
+                // Desktop web: keep controls in a centered column under the video
+                Platform.OS === 'web' && { maxWidth: 960, width: '100%', alignSelf: 'center' },
             ]}>
-                {/* Information Section - Hidden on Web */}
-                {Platform.OS !== 'web' && (
+                {/* Information Section */}
+                {(
                     <View style={styles.infoSection}>
                         <View style={styles.authorRow}>
                             <Pressable onPress={handleNavigateProfile} style={[styles.avatarContainer, isLive && styles.avatarContainerLive]}>

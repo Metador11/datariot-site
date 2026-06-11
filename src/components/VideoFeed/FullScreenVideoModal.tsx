@@ -8,7 +8,6 @@ import {
     TouchableOpacity,
     Pressable,
     FlatList,
-    Dimensions,
     ViewToken,
     StatusBar,
     useWindowDimensions,
@@ -35,8 +34,6 @@ import Animated, {
     FadeIn
 } from 'react-native-reanimated';
 import { useTheme } from '../Theme/ThemeProvider';
-
-const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 interface FullScreenVideoModalProps {
     visible: boolean;
@@ -81,6 +78,7 @@ const InternalFullScreenVideo = ({ videoUrl, isActive, isPaused, onTimeUpdate }:
 function FullScreenVideoItem({
     item,
     isActive,
+    width,
     height,
     onLike,
     onComment,
@@ -90,6 +88,7 @@ function FullScreenVideoItem({
 }: {
     item: any;
     isActive: boolean;
+    width: number;
     height: number;
     onLike: () => void;
     onComment: () => void;
@@ -117,7 +116,21 @@ function FullScreenVideoItem({
 
     return (
         <GestureDetector gesture={doubleTap}>
-            <View style={{ width: SCREEN_WIDTH, height, backgroundColor: '#000' }}>
+            <View style={{ width, height, backgroundColor: '#000' }}>
+                {/* Ambient cinema backdrop: blurred cover fills the letterbox
+                    instead of dead black space */}
+                {item.thumbnailUrl ? (
+                    <>
+                        <Image
+                            source={{ uri: item.thumbnailUrl }}
+                            style={StyleSheet.absoluteFill}
+                            resizeMode="cover"
+                            blurRadius={48}
+                        />
+                        <View style={[StyleSheet.absoluteFill, { backgroundColor: 'rgba(0, 0, 0, 0.55)' }]} />
+                    </>
+                ) : null}
+
                 <Pressable style={StyleSheet.absoluteFill} onPress={togglePlayback}>
                     {(item.videoUrl || item.url) ? (
                         <InternalFullScreenVideo
@@ -184,7 +197,7 @@ export function FullScreenVideoModal({
     const insets = useSafeAreaInsets();
     const { theme } = useTheme();
     const router = useRouter();
-    const { height: screenHeight } = useWindowDimensions();
+    const { height: screenHeight, width: screenWidth } = useWindowDimensions();
     const [activeIndex, setActiveIndex] = useState(0);
 
     // AI Pulsing Animation
@@ -310,6 +323,7 @@ export function FullScreenVideoModal({
                         <FullScreenVideoItem
                             item={item}
                             isActive={index === activeIndex && isFocused}
+                            width={screenWidth}
                             height={screenHeight}
                             onLike={() => onLike(item.id)}
                             onComment={() => handleOpenComments(item.id)}
