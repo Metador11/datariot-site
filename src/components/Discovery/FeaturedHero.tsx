@@ -109,16 +109,25 @@ export const FeaturedHero = ({ featuredVideos, onVideoPress }: FeaturedHeroProps
                                     {item.title ? item.title.toUpperCase() : ''}
                                 </Text>
 
-                                <View style={[styles.statsRow, isWeb && { gap: 6 }]}>
-                                    <View style={styles.statItem}>
-                                        <Text style={[styles.statLabel, isWeb && { fontSize: 8 }]}>SPECTATORS</Text>
-                                        <Text style={[styles.statText, isWeb && { fontSize: 10 }]}>{formatNumber(item.views)}</Text>
+                                {(item.views > 0 || item.likes > 0) ? (
+                                    <View style={[styles.statsRow, isWeb && { gap: 6 }]}>
+                                        <View style={styles.statItem}>
+                                            <Text style={[styles.statLabel, isWeb && { fontSize: 8 }]}>SPECTATORS</Text>
+                                            <Text style={[styles.statText, isWeb && { fontSize: 10 }]}>{formatNumber(item.views)}</Text>
+                                        </View>
+                                        <View style={styles.statItem}>
+                                            <Text style={[styles.statLabel, isWeb && { fontSize: 8 }]}>VOTES</Text>
+                                            <Text style={[styles.statText, isWeb && { fontSize: 10 }]}>{formatNumber(item.likes)}</Text>
+                                        </View>
                                     </View>
-                                    <View style={styles.statItem}>
-                                        <Text style={[styles.statLabel, isWeb && { fontSize: 8 }]}>VOTES</Text>
-                                        <Text style={[styles.statText, isWeb && { fontSize: 10 }]}>{formatNumber(item.likes)}</Text>
+                                ) : (
+                                    <View style={styles.awaitingRow}>
+                                        <View style={styles.awaitingDot} />
+                                        <Text style={[styles.awaitingText, isWeb && { fontSize: 9 }]}>
+                                            ARENA OPEN — BE FIRST TO JOIN
+                                        </Text>
                                     </View>
-                                </View>
+                                )}
                             </View>
 
                             {item.title.toLowerCase().includes('vs') && (
@@ -335,6 +344,29 @@ const styles = StyleSheet.create({
         fontSize: 12,
         color: '#FFF',
         fontWeight: '700',
+        fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
+    },
+    awaitingRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 6,
+        marginTop: 4,
+    },
+    awaitingDot: {
+        width: 6,
+        height: 6,
+        borderRadius: 3,
+        backgroundColor: '#34D399',
+        shadowColor: '#34D399',
+        shadowOffset: { width: 0, height: 0 },
+        shadowOpacity: 0.9,
+        shadowRadius: 6,
+    },
+    awaitingText: {
+        fontSize: 10,
+        color: 'rgba(52, 211, 153, 0.9)',
+        fontWeight: '800',
+        letterSpacing: 0.8,
         fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
     },
     trendingBadge: {

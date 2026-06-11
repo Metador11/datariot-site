@@ -5,6 +5,7 @@ import { Platform } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { ThemeProvider } from '../components/Theme/ThemeProvider';
+import { GlobalWebStyles } from '../components/Web/GlobalWebStyles';
 import * as SplashScreen from 'expo-splash-screen';
 import {
     useFonts,
@@ -103,6 +104,7 @@ export default function RootLayout() {
 
     return (
         <ThemeProvider>
+            <GlobalWebStyles />
             <GestureHandlerRootView style={{ flex: 1 }}>
                 <SafeAreaProvider>
                     <Stack>

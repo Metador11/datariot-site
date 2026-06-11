@@ -9,7 +9,8 @@ import { Video } from '../../lib/supabase/hooks/useVideos';
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const isWeb = Platform.OS === 'web';
 const CARD_WIDTH = isWeb ? 300 : SCREEN_WIDTH * 0.75;
-const CARD_HEIGHT = CARD_WIDTH * 1.4;
+// Web cards are shorter — the old 1.4 ratio left a large empty void in the middle
+const CARD_HEIGHT = CARD_WIDTH * (isWeb ? 1.15 : 1.4);
 
 interface DiscoveryCarouselProps {
     videos: Video[];
@@ -190,7 +191,7 @@ const styles = StyleSheet.create({
     },
     rationaleBox: {
         position: 'absolute',
-        top: 50,
+        bottom: 92,
         left: 12,
         right: 12,
         padding: 8,

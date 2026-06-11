@@ -6,6 +6,7 @@ import { useTheme } from '../Theme/ThemeProvider';
 import { SectionHeader } from '../Discovery/SectionHeader';
 import { DiscoveryCarousel } from '../Discovery/DiscoveryCarousel';
 import { FeaturedHero } from '../Discovery/FeaturedHero';
+import { SystemTicker } from '../Discovery/SystemTicker';
 import { Video } from '../../lib/supabase/hooks/useVideos';
 
 interface CoubClassicFeedProps {
@@ -111,6 +112,8 @@ export function CoubClassicFeed({
     // Element (not inline function) so FlatList doesn't remount the header each render
     const listHeader = useMemo(() => (
         <View style={{ marginBottom: 24, marginTop: paddingTop + 10 }}>
+            <SystemTicker />
+
             {featuredVideos.length > 0 && (
                 <FeaturedHero
                     featuredVideos={featuredVideos}
