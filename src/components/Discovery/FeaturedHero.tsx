@@ -23,6 +23,16 @@ interface FeaturedHeroProps {
     onVideoPress: (videoId: string) => void;
 }
 
+// HUD-style targeting frame: four L-shaped corners over the card
+const CornerBrackets = ({ color = 'rgba(56, 189, 248, 0.55)' }: { color?: string }) => (
+    <View style={StyleSheet.absoluteFillObject} pointerEvents="none">
+        <View style={[styles.corner, { top: 6, left: 6, borderTopWidth: 2, borderLeftWidth: 2, borderColor: color }]} />
+        <View style={[styles.corner, { top: 6, right: 6, borderTopWidth: 2, borderRightWidth: 2, borderColor: color }]} />
+        <View style={[styles.corner, { bottom: 6, left: 6, borderBottomWidth: 2, borderLeftWidth: 2, borderColor: color }]} />
+        <View style={[styles.corner, { bottom: 6, right: 6, borderBottomWidth: 2, borderRightWidth: 2, borderColor: color }]} />
+    </View>
+);
+
 const FeaturedVideoPlayer = ({ videoUrl, isCurrent }: { videoUrl: string, isCurrent: boolean }) => {
     const videoRef = React.useRef<Video>(null);
 
@@ -57,7 +67,7 @@ export const FeaturedHero = ({ featuredVideos, onVideoPress }: FeaturedHeroProps
         const titleSize = isWeb ? 14 : 24;
         const titleLineHeight = isWeb ? 18 : 30;
         const authorSize = isWeb ? 11 : 14;
-        const badgeTopLeft = isWeb ? 10 : 20;
+        const badgeTopLeft = isWeb ? 18 : 20;
         const badgePadX = isWeb ? 8 : 10;
         const badgePadY = isWeb ? 4 : 6;
         const badgeFontSize = isWeb ? 8 : 9;
@@ -161,6 +171,15 @@ export const FeaturedHero = ({ featuredVideos, onVideoPress }: FeaturedHeroProps
                             <Text style={[styles.badgeText, isWeb && { fontSize: badgeFontSize }]}>[ LIVE_DEBATE ]</Text>
                         </View>
                     </View>
+
+                    {/* CRT scanlines + HUD frame (web only) */}
+                    {isWeb && (
+                        <>
+                            {/* @ts-ignore — raw div for the CSS scanline texture */}
+                            <div className="dr-scanlines" style={{ position: 'absolute', inset: 0, zIndex: 15 }} />
+                            <CornerBrackets color={hovered ? 'rgba(56, 189, 248, 0.95)' : 'rgba(56, 189, 248, 0.4)'} />
+                        </>
+                    )}
 
                     {/* Hover state: play CTA over the card (web only) */}
                     {isWeb && (
@@ -278,6 +297,14 @@ const styles = StyleSheet.create({
         fontWeight: '900',
         letterSpacing: 1.5,
         fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
+    },
+    corner: {
+        position: 'absolute',
+        width: 14,
+        height: 14,
+        zIndex: 16,
+        // @ts-ignore — web only
+        transition: 'border-color 0.25s ease',
     },
     videoContainer: {
         flex: 1,

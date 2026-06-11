@@ -34,6 +34,28 @@ const CSS = `
 .dr-fade-up {
   animation: dr-fade-up 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
+@keyframes dr-aurora-drift {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(50px, 35px) scale(1.18); }
+}
+.dr-aurora {
+  animation: dr-aurora-drift 16s ease-in-out infinite;
+  will-change: transform;
+}
+.dr-aurora-slow {
+  animation: dr-aurora-drift 26s ease-in-out infinite reverse;
+  will-change: transform;
+}
+.dr-scanlines {
+  background-image: repeating-linear-gradient(
+    0deg,
+    rgba(255, 255, 255, 0.028) 0px,
+    rgba(255, 255, 255, 0.028) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+  pointer-events: none;
+}
 `;
 
 export function GlobalWebStyles() {

@@ -229,6 +229,12 @@ export const CoubClassicItem = memo(({
                 {/* Dark Gradient Overlay for better text visibility */}
                 <View style={styles.overlayGradient} pointerEvents="none" />
 
+                {/* CRT scanline texture (web only, very subtle) */}
+                {isWeb && (
+                    // @ts-ignore — raw div for the CSS scanline texture
+                    <div className="dr-scanlines" style={{ position: 'absolute', inset: 0, zIndex: 5 }} />
+                )}
+
                 {/* Unmute Icon */}
                 {isMuted && (
                     <View style={styles.mutedOverlay}>

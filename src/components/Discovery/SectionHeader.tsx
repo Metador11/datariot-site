@@ -26,7 +26,11 @@ export const SectionHeader: React.FC<SectionHeaderProps> = ({
             <View style={styles.textContainer}>
                 <View style={styles.titleRow}>
                     <View style={styles.accentBar} />
-                    <Text style={[styles.title, { color: theme.colors.text.primary, fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace' }]}>{`[ ${title.toUpperCase()} ]`}</Text>
+                    <Text style={[styles.title, { color: theme.colors.text.primary, fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace' }]}>
+                        <Text style={styles.bracket}>{'[ '}</Text>
+                        {title.toUpperCase()}
+                        <Text style={styles.bracket}>{' ]'}</Text>
+                    </Text>
                 </View>
                 {subtitle && (
                     <Text style={[styles.subtitle, styles.subtitleIndent, { color: theme.colors.text.secondary, fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace' }]}>{subtitle.toUpperCase()}</Text>
@@ -79,9 +83,13 @@ const styles = StyleSheet.create({
         shadowRadius: 6,
     },
     title: {
-        fontSize: 18,
+        fontSize: 20,
         fontWeight: '900',
         letterSpacing: 0.5,
+    },
+    bracket: {
+        color: '#38BDF8',
+        fontWeight: '900',
     },
     subtitleIndent: {
         marginLeft: 13,

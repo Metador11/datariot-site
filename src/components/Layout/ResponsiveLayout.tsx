@@ -21,6 +21,36 @@ export const ResponsiveLayout = ({ children }: ResponsiveLayoutProps) => {
         return <View style={{ flex: 1 }}>{children}</View>;
     }
 
+    // Slowly drifting color blobs behind everything (web, dark mode).
+    // Animated via CSS (.dr-aurora) injected by GlobalWebStyles.
+    const livingBackdrop = isDark ? (
+        // @ts-ignore — raw div, fixed position + CSS animation
+        <div style={{ position: 'fixed', inset: 0, overflow: 'hidden', pointerEvents: 'none', zIndex: 0 }}>
+            {/* @ts-ignore */}
+            <div className="dr-aurora" style={{
+                position: 'absolute',
+                top: '-12%',
+                left: '18%',
+                width: 560,
+                height: 560,
+                borderRadius: '50%',
+                background: 'radial-gradient(circle, rgba(56,189,248,0.07) 0%, transparent 70%)',
+                filter: 'blur(60px)',
+            }} />
+            {/* @ts-ignore */}
+            <div className="dr-aurora-slow" style={{
+                position: 'absolute',
+                bottom: '-18%',
+                right: '12%',
+                width: 640,
+                height: 640,
+                borderRadius: '50%',
+                background: 'radial-gradient(circle, rgba(165,198,255,0.06) 0%, transparent 70%)',
+                filter: 'blur(70px)',
+            }} />
+        </div>
+    ) : null;
+
     // Multi-layer ambient aurora glow
     const ambientAurora = isDark ? (
         <>
@@ -72,6 +102,7 @@ export const ResponsiveLayout = ({ children }: ResponsiveLayoutProps) => {
     if (!showSidebar) {
         return (
             <View style={[styles.container, { backgroundColor: theme.colors.background.primary }]}>
+                {livingBackdrop}
                 {ambientAurora}
                 <View style={[styles.content, { maxWidth: '100%', paddingHorizontal: 24 }]}>
                     <View style={styles.fullWidthColumn}>
@@ -84,6 +115,7 @@ export const ResponsiveLayout = ({ children }: ResponsiveLayoutProps) => {
 
     return (
         <View style={[styles.container, { backgroundColor: theme.colors.background.primary }]}>
+            {livingBackdrop}
             {ambientAurora}
 
             <View style={styles.content}>
