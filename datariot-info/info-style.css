@@ -9386,13 +9386,14 @@ html.lenis body {
     background-image: linear-gradient(to bottom, #08090D 0%, rgba(8, 9, 13, 0) 30%, rgba(8, 9, 13, 0) 70%, #08090D 100%), url('assets/sphere-concept.jpg');
     background-size: cover;
     background-position: center;
-    opacity: 0.25;
+    opacity: 0.8;
     pointer-events: none;
     z-index: -1;
 }
 
 [data-theme="light"] .section--ai::after {
-    opacity: 0 !important;
+    opacity: 0.8 !important;
+    background-image: linear-gradient(to bottom, #ffffff 0%, rgba(255, 255, 255, 0) 30%, rgba(255, 255, 255, 0) 70%, #ffffff 100%), url('assets/sphere-concept.jpg') !important;
 }
 
 [data-theme="light"] .section--ai::before {

@@ -7,6 +7,17 @@ window.addEventListener('load', () => {
         return;
     }
 
+    // Global Theme Observer to avoid reading from DOM inside rAF loops (prevents layout thrashing)
+    let currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+    const themeObserver = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+            if (mutation.attributeName === 'data-theme') {
+                currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+            }
+        });
+    });
+    themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+
     /* =========================================================
        SCENE VISIBILITY GATE
        Seven WebGL scenes live on this page; rendering them all
@@ -891,7 +902,6 @@ window.addEventListener('load', () => {
             mainGroup.rotation.x = -mouseY * 0.45;
 
             // Theme reactive colors
-            const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
             if (currentTheme !== lastTheme) {
                 lastTheme = currentTheme;
                 const isDark = currentTheme === 'dark';
@@ -1031,25 +1041,31 @@ window.addEventListener('load', () => {
             [6.52, 3.38], [52.52, 13.41], [19.08, 72.88], [-33.87, 151], [25.2, 55.2]
         ];
 
+        let W = container.clientWidth;
+        let H = container.clientHeight;
         function resize() {
-            canvas.width = container.clientWidth * window.devicePixelRatio;
-            canvas.height = container.clientHeight * window.devicePixelRatio;
+            W = container.clientWidth;
+            H = container.clientHeight;
+            canvas.width = W * window.devicePixelRatio;
+            canvas.height = H * window.devicePixelRatio;
             ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
         }
         resize();
         window.addEventListener('resize', resize);
 
         function draw(now) {
-            const W = container.clientWidth;
-            const H = container.clientHeight;
-            if (W === 0 || H === 0 || !isSceneVisible(container)) {
+            if (!isSceneVisible(container)) {
+                requestAnimationFrame(draw);
+                return;
+            }
+            if (W === 0 || H === 0) {
                 requestAnimationFrame(draw);
                 return;
             }
 
             ctx.clearRect(0, 0, W, H);
 
-            const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+            const isDark = currentTheme === 'dark';
             const accentBase = isDark ? '14, 165, 233' : '2, 132, 199';
             const rotation = now * 0.0003; // Slightly faster rotation
             const isMobile = window.innerWidth < 768;
