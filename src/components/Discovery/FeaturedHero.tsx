@@ -66,15 +66,18 @@ export const FeaturedHero = ({ featuredVideos, onVideoPress }: FeaturedHeroProps
         return (
             <Pressable
                 onPress={() => onVideoPress(item.id)}
-                style={[
+                style={({ hovered }: any) => [
                     styles.heroContainer,
                     {
                         width: cardWidth,
                         height: cardWidth,
                         marginRight: isWeb ? 16 : 0,
-                    }
+                    },
+                    isWeb && styles.heroCardWeb,
+                    isWeb && hovered && styles.heroCardHovered,
                 ]}
             >
+                {({ hovered }: any) => (
                 <View style={styles.videoContainer}>
                     <Image
                         source={{ uri: item.thumbnailUrl || item.avatarUrl }} // Fallback to avatar if no thumbnail
@@ -149,7 +152,18 @@ export const FeaturedHero = ({ featuredVideos, onVideoPress }: FeaturedHeroProps
                             <Text style={[styles.badgeText, isWeb && { fontSize: badgeFontSize }]}>[ LIVE_DEBATE ]</Text>
                         </View>
                     </View>
+
+                    {/* Hover state: play CTA over the card (web only) */}
+                    {isWeb && (
+                        <View style={[styles.hoverOverlay, { opacity: hovered ? 1 : 0 }]} pointerEvents="none">
+                            <View style={styles.hoverPlayCircle}>
+                                <Ionicons name="play" size={22} color="#FFF" style={{ marginLeft: 3 }} />
+                            </View>
+                            <Text style={styles.hoverEnterText}>[ ENTER.DEBATE ]</Text>
+                        </View>
+                    )}
                 </View>
+                )}
             </Pressable>
         );
     };
@@ -212,6 +226,49 @@ const styles = StyleSheet.create({
     },
     heroContainer: {
         height: 400, // Slightly shorter
+    },
+    heroCardWeb: {
+        borderRadius: 20,
+        overflow: 'hidden',
+        borderWidth: 1,
+        borderColor: 'rgba(56, 189, 248, 0.14)',
+        // @ts-ignore — web only
+        transition: 'all 0.25s cubic-bezier(0.22, 1, 0.36, 1)',
+    },
+    heroCardHovered: {
+        borderColor: 'rgba(56, 189, 248, 0.6)',
+        transform: [{ translateY: -4 }],
+        // @ts-ignore — web only
+        boxShadow: '0 16px 40px rgba(0,0,0,0.5), 0 0 32px rgba(56,189,248,0.18)',
+    },
+    hoverOverlay: {
+        ...StyleSheet.absoluteFillObject,
+        backgroundColor: 'rgba(2, 6, 12, 0.4)',
+        justifyContent: 'center',
+        alignItems: 'center',
+        gap: 12,
+        zIndex: 30,
+        // @ts-ignore — web only
+        transition: 'opacity 0.2s ease',
+    },
+    hoverPlayCircle: {
+        width: 52,
+        height: 52,
+        borderRadius: 26,
+        backgroundColor: 'rgba(56, 189, 248, 0.18)',
+        borderWidth: 1,
+        borderColor: 'rgba(56, 189, 248, 0.7)',
+        justifyContent: 'center',
+        alignItems: 'center',
+        // @ts-ignore — web only
+        backdropFilter: 'blur(6px)',
+    },
+    hoverEnterText: {
+        color: '#7DD3FC',
+        fontSize: 10,
+        fontWeight: '900',
+        letterSpacing: 1.5,
+        fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
     },
     videoContainer: {
         flex: 1,

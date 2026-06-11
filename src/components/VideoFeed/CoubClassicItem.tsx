@@ -168,7 +168,7 @@ export const CoubClassicItem = memo(({
             }
         ]}>
             {/* Main Video Container with premium glow shadow */}
-            <Pressable style={[
+            <Pressable style={({ hovered }: any) => [
                 styles.videoContainer,
                 { width: cardWidth, height: videoHeight },
                 isDark ? {
@@ -189,6 +189,16 @@ export const CoubClassicItem = memo(({
                 isWeb && !isMobileWeb && !isDark && {
                     // @ts-ignore — web only: side bloom glow light mode
                     boxShadow: '-32px 0 60px rgba(107,127,204,0.08), 32px 0 60px rgba(107,127,204,0.08), 0 8px 32px rgba(107,127,204,0.12)',
+                },
+                isWeb && !isMobileWeb && hovered && isDark && {
+                    borderColor: 'rgba(56, 189, 248, 0.45)',
+                    // @ts-ignore — web only: hover bloom intensifies
+                    boxShadow: '-40px 0 80px rgba(165,198,255,0.16), 40px 0 80px rgba(217,228,255,0.16), 0 12px 48px rgba(0,0,0,0.55), 0 0 28px rgba(56,189,248,0.14)',
+                },
+                isWeb && !isMobileWeb && hovered && !isDark && {
+                    borderColor: 'rgba(76, 110, 245, 0.4)',
+                    // @ts-ignore — web only: hover bloom light mode
+                    boxShadow: '-32px 0 60px rgba(107,127,204,0.14), 32px 0 60px rgba(107,127,204,0.14), 0 8px 36px rgba(107,127,204,0.18)',
                 },
             ]} onPress={togglePlayback}>
 
@@ -416,11 +426,15 @@ const styles = StyleSheet.create({
         borderRadius: 28,
         overflow: 'hidden',
         position: 'relative',
+        borderWidth: 1,
+        borderColor: 'rgba(255, 255, 255, 0.06)',
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 12 },
         shadowOpacity: 0.5,
         shadowRadius: 24,
         elevation: 12,
+        // @ts-ignore — web only
+        transition: 'border-color 0.25s ease, box-shadow 0.25s ease',
     },
 
     overlayGradient: {

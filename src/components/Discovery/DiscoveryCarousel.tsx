@@ -16,6 +16,12 @@ interface DiscoveryCarouselProps {
     onSelect: (id: string) => void;
 }
 
+const formatNumber = (num: number): string => {
+    if (num >= 1000000) return `${(num / 1000000).toFixed(1)}M`;
+    if (num >= 1000) return `${(num / 1000).toFixed(1)}K`;
+    return num.toString();
+};
+
 export const DiscoveryCarousel: React.FC<DiscoveryCarouselProps> = ({
     videos,
     onSelect
@@ -24,35 +30,62 @@ export const DiscoveryCarousel: React.FC<DiscoveryCarouselProps> = ({
     const isDark = mode === 'dark';
 
     const renderCard = ({ item }: { item: Video }) => (
-        <Pressable onPress={() => onSelect(item.id)} style={styles.card}>
-            <Image source={{ uri: item.thumbnailUrl || 'https://picsum.photos/seed/' + item.id + '/400/600' }} style={styles.thumbnail} />
+        <Pressable
+            onPress={() => onSelect(item.id)}
+            style={({ hovered }: any) => [
+                styles.card,
+                isWeb && hovered && styles.cardHovered,
+            ]}
+        >
+            {({ hovered }: any) => (
+                <>
+                    <Image source={{ uri: item.thumbnailUrl || 'https://picsum.photos/seed/' + item.id + '/400/600' }} style={styles.thumbnail} />
 
-            <LinearGradient
-                colors={['transparent', 'rgba(0,0,0,0.8)']}
-                style={styles.gradient}
-            />
+                    {/* Top scrim keeps badges readable on bright thumbnails */}
+                    <LinearGradient
+                        colors={['rgba(0,0,0,0.55)', 'transparent']}
+                        style={styles.topGradient}
+                    />
+                    <LinearGradient
+                        colors={['transparent', 'rgba(0,0,0,0.85)']}
+                        style={styles.gradient}
+                    />
 
-            {/* Synergy Badge */}
-            <View style={styles.synergyBadge}>
-                <Text style={styles.synergyText}>[ {item.dnaMatch || 90}% MATCH ]</Text>
-            </View>
+                    {/* Synergy Badge */}
+                    <View style={styles.synergyBadge}>
+                        <Text style={styles.synergyText}>[ {item.dnaMatch || 90}% MATCH ]</Text>
+                    </View>
 
-            {/* AI Rationale Tooltip */}
-            <View style={styles.rationaleBox}>
-                <BlurView intensity={20} tint="dark" style={StyleSheet.absoluteFill} />
-                <Text style={styles.rationaleText} numberOfLines={2}>
-                    {item.dnaRationale || "Matches your interest in High-Tech Content"}
-                </Text>
-            </View>
+                    {/* AI Rationale Tooltip */}
+                    <View style={styles.rationaleBox}>
+                        <BlurView intensity={20} tint="dark" style={StyleSheet.absoluteFill} />
+                        <Text style={styles.rationaleText} numberOfLines={2}>
+                            {item.dnaRationale || "Matches your interest in High-Tech Content"}
+                        </Text>
+                    </View>
 
-            <View style={styles.info}>
-                <Text style={styles.author}>
-                    {item.author ? `> @${item.author.toUpperCase()}` : ''}
-                </Text>
-                <Text style={styles.title} numberOfLines={1}>
-                    {item.title ? item.title.toUpperCase() : ''}
-                </Text>
-            </View>
+                    {/* Hover state: play CTA (web only) */}
+                    {isWeb && (
+                        <View style={[styles.hoverOverlay, { opacity: hovered ? 1 : 0 }]} pointerEvents="none">
+                            <View style={styles.hoverPlayCircle}>
+                                <Ionicons name="play" size={20} color="#FFF" style={{ marginLeft: 2 }} />
+                            </View>
+                        </View>
+                    )}
+
+                    <View style={styles.info}>
+                        <Text style={styles.author}>
+                            {item.author ? `> @${item.author.toUpperCase()}` : ''}
+                        </Text>
+                        <Text style={styles.title} numberOfLines={1}>
+                            {item.title ? item.title.toUpperCase() : ''}
+                        </Text>
+                        <Text style={styles.statsLine}>
+                            {`${formatNumber(item.views || 0)} VIEWS  ·  ${formatNumber(item.likes || 0)} LIKES`}
+                        </Text>
+                    </View>
+                </>
+            )}
         </Pressable>
     );
 
@@ -86,10 +119,27 @@ const styles = StyleSheet.create({
         borderRadius: 24,
         overflow: 'hidden',
         backgroundColor: '#111',
+        borderWidth: 1,
+        borderColor: 'rgba(255, 255, 255, 0.06)',
+        // @ts-ignore — web only
+        transition: 'all 0.25s cubic-bezier(0.22, 1, 0.36, 1)',
+    },
+    cardHovered: {
+        borderColor: 'rgba(56, 189, 248, 0.55)',
+        transform: [{ translateY: -4 }],
+        // @ts-ignore — web only
+        boxShadow: '0 16px 36px rgba(0,0,0,0.5), 0 0 28px rgba(56,189,248,0.16)',
     },
     thumbnail: {
         width: '100%',
         height: '100%',
+    },
+    topGradient: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        height: '32%',
     },
     gradient: {
         position: 'absolute',
@@ -97,6 +147,27 @@ const styles = StyleSheet.create({
         left: 0,
         right: 0,
         height: '50%',
+    },
+    hoverOverlay: {
+        ...StyleSheet.absoluteFillObject,
+        backgroundColor: 'rgba(2, 6, 12, 0.35)',
+        justifyContent: 'center',
+        alignItems: 'center',
+        zIndex: 25,
+        // @ts-ignore — web only
+        transition: 'opacity 0.2s ease',
+    },
+    hoverPlayCircle: {
+        width: 48,
+        height: 48,
+        borderRadius: 24,
+        backgroundColor: 'rgba(56, 189, 248, 0.18)',
+        borderWidth: 1,
+        borderColor: 'rgba(56, 189, 248, 0.7)',
+        justifyContent: 'center',
+        alignItems: 'center',
+        // @ts-ignore — web only
+        backdropFilter: 'blur(6px)',
     },
     synergyBadge: {
         position: 'absolute',
@@ -156,5 +227,13 @@ const styles = StyleSheet.create({
         fontWeight: '800',
         textTransform: 'uppercase',
         letterSpacing: 0.2,
+    },
+    statsLine: {
+        color: 'rgba(255, 255, 255, 0.5)',
+        fontSize: 10,
+        fontWeight: '600',
+        letterSpacing: 0.8,
+        marginTop: 6,
+        fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
     },
 });
