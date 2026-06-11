@@ -26,6 +26,11 @@ const uniqueId = () => `msg_${Date.now()}_${++_msgIdCounter}`;
 
 // Example prompts for first-time users
 const EXAMPLE_PROMPTS = [
+    {
+        iconType: 'material', iconName: 'sword-cross', color: '#F59E0B',
+        text: 'Debate sparring', tool: 'chat' as ToolType, desc: 'Train vs AI',
+        message: "Let's do debate sparring. Pick a provocative thesis, take one side and argue it in 2-3 sharp sentences. I'll argue the opposite side. After each of my replies, counter my argument and rate its logic from 1 to 10 with one line of feedback. Keep the rally going.",
+    },
     { iconType: 'material', iconName: 'lightning-bolt', color: '#A5C6FF', text: 'Daily insight', tool: 'insight' as ToolType, desc: 'Focus reading' },
     { iconType: 'material', iconName: 'microscope', color: '#10B981', text: 'Analyze content', tool: 'analyze' as ToolType, desc: 'Truth scan' },
     { iconType: 'material', iconName: 'brain', color: '#8B5CF6', text: 'What can you do?', tool: 'chat' as ToolType, desc: 'Capabilities' },
@@ -262,14 +267,15 @@ export default function AIScreen() {
         setSelectedTool(prompt.tool);
 
         if (prompt.tool === 'chat') {
-            // Immediately send as a message
-            const userMsg: Message = { id: uniqueId(), role: 'user', content: prompt.text, type: 'text' };
+            // Immediately send as a message (chips may carry a fuller prompt)
+            const messageText = (prompt as any).message || prompt.text;
+            const userMsg: Message = { id: uniqueId(), role: 'user', content: messageText, type: 'text' };
             setMessages(prev => [...prev, userMsg]);
             setLoading(true);
             scrollToBottom();
 
             const history = messages.map(m => ({ role: m.role, content: m.content }));
-            chatWithAI(prompt.text, history).then(response => {
+            chatWithAI(messageText, history).then(response => {
                 setMessages(prev => [...prev, {
                     id: uniqueId(),
                     role: 'assistant',

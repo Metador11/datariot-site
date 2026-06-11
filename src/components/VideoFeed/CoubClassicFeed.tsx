@@ -7,6 +7,7 @@ import { SectionHeader } from '../Discovery/SectionHeader';
 import { DiscoveryCarousel } from '../Discovery/DiscoveryCarousel';
 import { FeaturedHero } from '../Discovery/FeaturedHero';
 import { SystemTicker } from '../Discovery/SystemTicker';
+import { DebateOfTheDay } from '../Discovery/DebateOfTheDay';
 import { Video } from '../../lib/supabase/hooks/useVideos';
 
 interface CoubClassicFeedProps {
@@ -113,6 +114,7 @@ export function CoubClassicFeed({
     const listHeader = useMemo(() => (
         <View style={{ marginBottom: 24, marginTop: paddingTop + 10 }}>
             <SystemTicker />
+            <DebateOfTheDay />
 
             {featuredVideos.length > 0 && (
                 <FeaturedHero

@@ -5,6 +5,7 @@ import { useRouter } from 'expo-router';
 import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
 import { theme as baseTheme } from '../../design-system/theme';
 import { useTheme } from '../Theme/ThemeProvider';
+import { StreakQuestsPanel } from './StreakQuestsPanel';
 
 export const WebRightPanel = () => {
     const router = useRouter();
@@ -55,6 +56,9 @@ export const WebRightPanel = () => {
                     returnKeyType="search"
                 />
             </View>
+
+            {/* Streak, quests, league */}
+            <StreakQuestsPanel />
 
             {/* Trending Now */}
             <View style={styles.sectionContainer}>

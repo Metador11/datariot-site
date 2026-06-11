@@ -9,6 +9,8 @@ import { useTheme } from '../../components/Theme/ThemeProvider';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { DebateCard } from '@components/Debate/DebateCard';
 import { FactCheckModal } from '@components/Debate/FactCheckModal';
+import { TugOfWar } from '@components/Debate/TugOfWar';
+import { recordDailyActivity } from '@lib/supabase/hooks/useStreak';
 import { Post } from '@lib/supabase/hooks/usePosts';
 import { useDebateArguments, Argument } from '@lib/supabase/hooks/useDebateArguments';
 import { Ionicons } from '@expo/vector-icons';
@@ -240,6 +242,7 @@ export default function DebateThreadScreen() {
     const handlePostArgument = async () => {
         if (!selectedSide || !newArgument.trim()) return;
         await postArgument(newArgument, selectedSide);
+        recordDailyActivity('argument');
         setNewArgument('');
         setSelectedSide(null);
         setReplyingTo(null);
@@ -373,6 +376,9 @@ export default function DebateThreadScreen() {
                                     <Ionicons name="shield-checkmark" size={18} color="#000" />
                                     <Text style={styles.factCheckBtnText}>Проверить факты</Text>
                                 </Pressable>
+
+                                {/* Live spectator voting + verdict */}
+                                <TugOfWar postId={post.id} topic={post.content} />
 
                                 {/* Stats Bar */}
                                 {argumentsList.length > 0 && (

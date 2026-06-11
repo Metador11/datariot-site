@@ -1,4 +1,5 @@
 import { useState, useCallback, useEffect } from 'react';
+import { Platform } from 'react-native';
 import { supabase } from '../client';
 import { useAuth } from './useAuth';
 
@@ -97,6 +98,38 @@ export function useDebateChallenges() {
 
     useEffect(() => {
         if (user) fetchChallenges();
+    }, [user, fetchChallenges]);
+
+    // Realtime: refresh on new incoming challenges and surface a browser
+    // notification so opponents respond while the challenger is still around.
+    useEffect(() => {
+        if (!supabase || !user) return;
+
+        if (Platform.OS === 'web' && typeof Notification !== 'undefined' && Notification.permission === 'default') {
+            Notification.requestPermission().catch(() => { });
+        }
+
+        const channel = supabase
+            .channel(`debate-challenges-${user.id}`)
+            .on(
+                'postgres_changes',
+                { event: 'INSERT', schema: 'public', table: 'debate_challenges', filter: `opponent_id=eq.${user.id}` },
+                (payload: any) => {
+                    fetchChallenges();
+                    if (Platform.OS === 'web' && typeof Notification !== 'undefined' && Notification.permission === 'granted') {
+                        try {
+                            new Notification('⚡ Debate challenge!', {
+                                body: payload?.new?.topic
+                                    ? `You've been challenged: “${payload.new.topic}”`
+                                    : 'Someone challenged you to a debate.',
+                            });
+                        } catch { /* notification UI must never break the app */ }
+                    }
+                }
+            )
+            .subscribe();
+
+        return () => { supabase.removeChannel(channel); };
     }, [user, fetchChallenges]);
 
     const sendChallenge = useCallback(async (
