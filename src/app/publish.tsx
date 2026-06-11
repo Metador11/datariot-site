@@ -374,7 +374,7 @@ export default function PublishScreen() {
                             {
                                 color: theme.colors.text.primary,
                                 fontFamily: theme.typography.fontFamilies.regular,
-                                // Web outline reset
+
                                 outlineStyle: 'none',
                                 outlineWidth: 0,
                             } as any
