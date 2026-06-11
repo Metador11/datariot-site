@@ -8110,6 +8110,19 @@ html.lenis body {
     color: #EEEEF0 !important;
 }
 
+.manifesto-v2::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: linear-gradient(to bottom, #08090D 0%, rgba(8, 9, 13, 0) 15%, rgba(8, 9, 13, 0) 85%, #08090D 100%), url('assets/terminal-concept.jpg');
+    background-size: cover;
+    background-position: center;
+    opacity: 0.05;
+    filter: invert(1);
+    pointer-events: none;
+    z-index: 0;
+}
+
 [data-theme="light"] .manifesto-v2 {
     background: #08090D !important;
     color: #EEEEF0 !important;
@@ -8406,6 +8419,19 @@ html.lenis body {
     display: flex;
     flex-direction: column;
     gap: 28px;
+}
+
+.manifesto-v2__cards-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 28px;
+    margin-top: 28px;
+}
+
+@media (max-width: 768px) {
+    .manifesto-v2__cards-grid {
+        grid-template-columns: 1fr;
+    }
 }
 
 .manifesto-v2__card {
@@ -9349,6 +9375,18 @@ html.lenis body {
     background: radial-gradient(circle, rgba(14, 165, 233, 0.08) 0%, rgba(139, 92, 246, 0.02) 50%, rgba(0, 0, 0, 0) 70%);
     pointer-events: none;
     z-index: 0;
+}
+
+.section--ai::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: linear-gradient(to bottom, #020408 0%, rgba(2, 4, 8, 0) 15%, rgba(2, 4, 8, 0) 85%, #020408 100%), url('assets/sphere-concept.jpg');
+    background-size: cover;
+    background-position: center;
+    opacity: 0.25;
+    pointer-events: none;
+    z-index: -1;
 }
 
 [data-theme="light"] .section--ai::before {
