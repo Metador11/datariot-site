@@ -62,6 +62,10 @@ const InternalFullScreenVideo = ({ videoUrl, isActive, isPaused, onTimeUpdate }:
             ref={videoRef}
             source={{ uri: encodeVideoUrl(videoUrl) || '' }}
             style={StyleSheet.absoluteFill}
+            // Web: the inner <video> is a replaced element — absolute insets
+            // alone leave it at intrinsic size pinned to the left, so it must
+            // be stretched explicitly
+            videoStyle={{ width: '100%', height: '100%' }}
             resizeMode={ResizeMode.CONTAIN}
             shouldPlay={isActive && !isPaused}
             isLooping

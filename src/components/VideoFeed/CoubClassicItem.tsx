@@ -66,6 +66,8 @@ const VideoPlayerLayer = ({ videoUrl, thumbnailUrl, isActive, isFocused, isPause
                 <Video
                     source={{ uri }}
                     style={StyleSheet.absoluteFillObject}
+                    // Web: stretch the inner <video> — see FullScreenVideoModal
+                    videoStyle={{ width: '100%', height: '100%' }}
                     resizeMode={ResizeMode.CONTAIN}
                     shouldPlay={!isPaused}
                     isLooping

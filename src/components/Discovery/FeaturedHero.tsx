@@ -41,6 +41,8 @@ const FeaturedVideoPlayer = ({ videoUrl, isCurrent }: { videoUrl: string, isCurr
             ref={videoRef}
             source={{ uri: encodeVideoUrl(videoUrl) || '' }}
             style={[styles.video, StyleSheet.absoluteFill, { opacity: isCurrent ? 1 : 0 }]}
+            // Web: stretch the inner <video> — see FullScreenVideoModal
+            videoStyle={{ width: '100%', height: '100%' }}
             resizeMode={ResizeMode.COVER}
             shouldPlay={isCurrent}
             isLooping
