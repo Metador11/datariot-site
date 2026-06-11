@@ -8115,7 +8115,7 @@ html.lenis body {
     content: '';
     position: absolute;
     inset: 0;
-    background-image: linear-gradient(to bottom, #08090D 0%, rgba(8, 9, 13, 0) 15%, rgba(8, 9, 13, 0) 85%, #08090D 100%), url('assets/terminal-concept.jpg');
+    background-image: linear-gradient(to bottom, #08090D 0%, rgba(8, 9, 13, 0) 30%, rgba(8, 9, 13, 0) 70%, #08090D 100%), url('assets/terminal-concept.jpg');
     background-size: cover;
     background-position: center;
     opacity: 0.05;
@@ -9383,12 +9383,16 @@ html.lenis body {
     content: '';
     position: absolute;
     inset: 0;
-    background-image: linear-gradient(to bottom, #020408 0%, rgba(2, 4, 8, 0) 15%, rgba(2, 4, 8, 0) 85%, #020408 100%), url('assets/sphere-concept.jpg');
+    background-image: linear-gradient(to bottom, #08090D 0%, rgba(8, 9, 13, 0) 30%, rgba(8, 9, 13, 0) 70%, #08090D 100%), url('assets/sphere-concept.jpg');
     background-size: cover;
     background-position: center;
     opacity: 0.25;
     pointer-events: none;
     z-index: -1;
+}
+
+[data-theme="light"] .section--ai::after {
+    opacity: 0 !important;
 }
 
 [data-theme="light"] .section--ai::before {
