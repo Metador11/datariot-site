@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Pressable, Image as RNImage } from 'react-native';
+import { View, Text, StyleSheet, Pressable } from 'react-native';
 import { theme as baseTheme } from '../../design-system/theme';
 import { useTheme } from '../Theme/ThemeProvider';
 import { Feather } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
+import { BrandLogo } from './BrandLogo';
 
 export const WebTopNav = () => {
     const router = useRouter();
@@ -16,15 +17,8 @@ export const WebTopNav = () => {
             <View style={styles.content}>
                 {/* Left: Logo */}
                 <View style={styles.left}>
-                    <Pressable onPress={() => router.push('/')} style={{ flexDirection: 'row', alignItems: 'center' }}>
-                        <View style={[styles.logoIconPlaceholder, { borderColor: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.06)', backgroundColor: 'transparent', position: 'relative' }]}>
-                            <View style={{ position: 'absolute', width: 48, height: 48, backgroundColor: 'rgba(217, 228, 255, 0.1)', borderRadius: 24, left: -4, top: -4 }} />
-                            <RNImage
-                                source={require('../../../assets/logo.jpg')}
-                                style={styles.logoImage}
-                            />
-                        </View>
-                        <Text style={[styles.logo, { color: theme.colors.primary.DEFAULT, fontFamily: theme.typography.fontFamilies.brand, letterSpacing: 2 }]}>DATARIOT</Text>
+                    <Pressable onPress={() => router.push('/')}>
+                        <BrandLogo size={34} wordmarkSize={17} />
                     </Pressable>
                 </View>
 
@@ -130,23 +124,6 @@ const styles = StyleSheet.create({
     },
     left: {
         flex: 1,
-    },
-    logoIconPlaceholder: {
-        width: 34,
-        height: 34,
-        borderRadius: 10,
-        marginRight: 12,
-        overflow: 'hidden',
-        borderWidth: 1,
-    },
-    logoImage: {
-        width: '100%',
-        height: '100%',
-        objectFit: 'cover',
-    },
-    logo: {
-        fontSize: 17,
-        letterSpacing: 3,
     },
     center: {
         flexDirection: 'row',

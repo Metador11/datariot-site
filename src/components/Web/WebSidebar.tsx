@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, StyleSheet, Pressable, ScrollView, Image as RNImage, Platform } from 'react-native';
+import { View, Text, StyleSheet, Pressable, ScrollView, Platform } from 'react-native';
 import { Feather, Ionicons, MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-icons';
 import { useRouter, usePathname } from 'expo-router';
 import { useAuth } from '../../lib/supabase/hooks/useAuth';
 import { supabase } from '../../lib/supabase/client';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useTheme } from '../Theme/ThemeProvider';
+import { BrandLogo } from './BrandLogo';
 
 const MenuItem = ({ icon, label, isActive, onPress, isSpecial = false }: { icon: React.ReactNode, label: string, isActive: boolean, onPress?: () => void, isSpecial?: boolean }) => {
     const [isHovered, setIsHovered] = useState(false);
@@ -136,32 +137,9 @@ export const WebSidebar = () => {
 
     return (
         <View style={[styles.container, { backgroundColor: 'transparent' }]}>
-            {/* Logo Section with ambient glow */}
+            {/* Logo Section */}
             <View style={styles.logoContainer}>
-                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                    <View style={{ marginRight: 10, position: 'relative', width: 36, height: 36, alignItems: 'center', justifyContent: 'center' }}>
-                        {/* Ambient glow behind logo */}
-                        <View style={{
-                            position: 'absolute',
-                            width: 52,
-                            height: 52,
-                            backgroundColor: isDark ? 'rgba(217, 228, 255, 0.12)' : 'rgba(107, 127, 204, 0.08)',
-                            borderRadius: 26,
-                        }} />
-                        <View style={{
-                            position: 'absolute',
-                            width: 42,
-                            height: 42,
-                            backgroundColor: isDark ? 'rgba(217, 228, 255, 0.08)' : 'rgba(107, 127, 204, 0.05)',
-                            borderRadius: 21,
-                        }} />
-                        <RNImage
-                            source={require('../../../assets/logo.jpg')}
-                            style={{ width: 32, height: 32, borderRadius: 16 }}
-                        />
-                    </View>
-                    <Text style={[styles.logo, { color: theme.colors.primary.DEFAULT, fontFamily: theme.typography.fontFamilies.brand, letterSpacing: 3, fontSize: 17 }]}>DATARIOT</Text>
-                </View>
+                <BrandLogo size={36} wordmarkSize={17} />
             </View>
 
             <View style={styles.menuList}>
@@ -325,10 +303,6 @@ const styles = StyleSheet.create({
     logoContainer: {
         marginBottom: 44,
         paddingLeft: 16,
-    },
-    logo: {
-        fontSize: 17,
-        letterSpacing: 3,
     },
     menuList: {
         gap: 6,

@@ -374,10 +374,10 @@ export default function PublishScreen() {
                             {
                                 color: theme.colors.text.primary,
                                 fontFamily: theme.typography.fontFamilies.regular,
-                                // @ts-ignore - Web outline reset
+                                // Web outline reset
                                 outlineStyle: 'none',
                                 outlineWidth: 0,
-                            }
+                            } as any
                         ]}
                         placeholder={isVideoSelection ? "Write a caption..." : "State your thesis..."}
                         placeholderTextColor={theme.colors.text.muted}
