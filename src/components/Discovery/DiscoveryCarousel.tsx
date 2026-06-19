@@ -34,19 +34,21 @@ export const DiscoveryCarousel: React.FC<DiscoveryCarouselProps> = ({
 
             {/* Synergy Badge */}
             <View style={styles.synergyBadge}>
-                <Text style={styles.synergyText}>[ {item.dnaMatch || 90}% MATCH ]</Text>
+                <MaterialCommunityIcons name="molecule" size={11} color="#38BDF8" />
+                <Text style={styles.synergyText}>{item.dnaMatch || 90}% MATCH</Text>
             </View>
 
             {/* AI Rationale Tooltip */}
             <View style={styles.rationaleBox}>
                 <BlurView intensity={20} tint="dark" style={StyleSheet.absoluteFill} />
+                <View style={styles.rationaleAccent} />
                 <Text style={styles.rationaleText} numberOfLines={2}>
                     {item.dnaRationale || "Matches your interest in High-Tech Content"}
                 </Text>
             </View>
 
             <View style={styles.info}>
-                <Text style={styles.author}>
+                <Text style={styles.author} numberOfLines={1}>
                     {item.author ? `> @${item.author.toUpperCase()}` : ''}
                 </Text>
                 <Text style={styles.title} numberOfLines={1}>
@@ -102,35 +104,53 @@ const styles = StyleSheet.create({
         position: 'absolute',
         top: 12,
         left: 12,
-        backgroundColor: 'rgba(8, 9, 13, 0.65)',
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 5,
+        backgroundColor: 'rgba(8, 9, 13, 0.72)',
         borderWidth: 1,
-        borderColor: '#38BDF8',
-        paddingHorizontal: 10,
-        paddingVertical: 6,
-        borderRadius: 4,
+        borderColor: 'rgba(56, 189, 248, 0.55)',
+        paddingHorizontal: 9,
+        paddingVertical: 5,
+        borderRadius: 999,
         zIndex: 20,
+        shadowColor: '#38BDF8',
+        shadowOffset: { width: 0, height: 0 },
+        shadowOpacity: 0.45,
+        shadowRadius: 10,
     },
     synergyText: {
         color: '#38BDF8',
         fontSize: 10,
         fontWeight: '900',
         fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
-        letterSpacing: 0.5,
+        letterSpacing: 0.8,
     },
     rationaleBox: {
         position: 'absolute',
         top: 50,
         left: 12,
         right: 12,
-        padding: 8,
+        paddingVertical: 8,
+        paddingRight: 8,
+        paddingLeft: 14,
         borderRadius: 12,
         overflow: 'hidden',
-        backgroundColor: 'rgba(217, 228, 255, 0.1)',
+        backgroundColor: 'rgba(217, 228, 255, 0.08)',
         borderWidth: 1,
-        borderColor: 'rgba(217, 228, 255, 0.2)',
+        borderColor: 'rgba(217, 228, 255, 0.18)',
+    },
+    rationaleAccent: {
+        position: 'absolute',
+        top: 8,
+        bottom: 8,
+        left: 6,
+        width: 2,
+        borderRadius: 1,
+        backgroundColor: '#38BDF8',
     },
     rationaleText: {
-        color: 'rgba(255, 255, 255, 0.75)',
+        color: 'rgba(255, 255, 255, 0.82)',
         fontSize: 10,
         fontWeight: '500',
         lineHeight: 14,
@@ -149,6 +169,9 @@ const styles = StyleSheet.create({
         marginBottom: 4,
         fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
         letterSpacing: 0.5,
+        textShadowColor: 'rgba(56, 189, 248, 0.55)',
+        textShadowOffset: { width: 0, height: 0 },
+        textShadowRadius: 8,
     },
     title: {
         color: '#FFF',
@@ -156,5 +179,8 @@ const styles = StyleSheet.create({
         fontWeight: '800',
         textTransform: 'uppercase',
         letterSpacing: 0.2,
+        textShadowColor: 'rgba(0, 0, 0, 0.7)',
+        textShadowOffset: { width: 0, height: 1 },
+        textShadowRadius: 5,
     },
 });
