@@ -105,12 +105,7 @@ export default function DiscoverScreen() {
                 ...item,
                 createdAt: item.createdAt || new Date().toISOString()
             }}
-            onPress={() => {
-                router.push({
-                    pathname: '/(tabs)',
-                    params: { postId: item.id }
-                });
-            }}
+            onPress={() => router.push(`/debate/${item.id}`)}
         />
     );
 
