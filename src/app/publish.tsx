@@ -12,6 +12,8 @@ import { supabase } from '../lib/supabase/client';
 import { generateDebateSeed, generateVideoAnalysis, DebateSeed } from '../lib/ai/client';
 import { useTheme } from '../components/Theme/ThemeProvider';
 
+const isWebPub = Platform.OS === 'web';
+
 const showAlert = (title: string, message: string) => {
     if (Platform.OS === 'web') {
         alert(`${title}\n\n${message}`);
@@ -319,6 +321,12 @@ export default function PublishScreen() {
 
             {/* Header */}
             <View style={[styles.header, { borderBottomColor: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.05)' }]}>
+                <Text
+                    style={[styles.headerCenterTitle, { color: theme.colors.text.primary, fontFamily: theme.typography.fontFamilies.brand }]}
+                    pointerEvents="none"
+                >
+                    {isVideoSelection ? '[ NEW POST ]' : '[ PROPOSE THESIS ]'}
+                </Text>
                 <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
                     <Text style={[styles.cancelText, { color: theme.colors.text.secondary, fontFamily: theme.typography.fontFamilies.medium }]}>Cancel</Text>
                 </TouchableOpacity>
@@ -351,7 +359,8 @@ export default function PublishScreen() {
                 behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
                 style={{ flex: 1 }}
             >
-                <ScrollView style={styles.content} contentContainerStyle={{ paddingBottom: 100 }}>
+                <ScrollView style={styles.content} contentContainerStyle={[{ paddingBottom: 100 }, isWebPub && { alignItems: 'center' }]}>
+                  <View style={styles.column}>
                     {/* User Info (Optional) */}
                     <View style={styles.userInfo}>
                         <View style={[
@@ -374,12 +383,13 @@ export default function PublishScreen() {
                             {
                                 color: theme.colors.text.primary,
                                 fontFamily: theme.typography.fontFamilies.regular,
-
+                                backgroundColor: isDark ? 'rgba(255,255,255,0.04)' : 'rgba(0,0,0,0.025)',
+                                borderColor: isDark ? 'rgba(217,228,255,0.10)' : 'rgba(76,110,245,0.14)',
                                 outlineStyle: 'none',
                                 outlineWidth: 0,
                             } as any
                         ]}
-                        placeholder={isVideoSelection ? "Write a caption..." : "State your thesis..."}
+                        placeholder={isVideoSelection ? "Write a caption..." : "State your thesis. Make it sharp and debatable…"}
                         placeholderTextColor={theme.colors.text.muted}
                         multiline
                         value={caption}
@@ -550,7 +560,7 @@ export default function PublishScreen() {
                             </ScrollView>
                         </View>
                     )}
-
+                  </View>
                 </ScrollView>
 
                 {/* TOOLBAR */}
@@ -654,12 +664,30 @@ const styles = StyleSheet.create({
     username: {
         fontSize: 16,
     },
+    column: {
+        width: '100%',
+        maxWidth: 640,
+        alignSelf: 'center',
+    },
+    headerCenterTitle: {
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        textAlign: 'center',
+        fontSize: 14,
+        fontWeight: '800',
+        letterSpacing: 1.5,
+    },
     textInput: {
         fontSize: 18,
-        minHeight: 120,
+        minHeight: 150,
         textAlignVertical: 'top',
-        paddingHorizontal: 20,
-        paddingTop: 16,
+        marginHorizontal: 20,
+        marginTop: 16,
+        padding: 18,
+        borderRadius: 18,
+        borderWidth: 1,
+        lineHeight: 26,
     },
 
     // Media Previews

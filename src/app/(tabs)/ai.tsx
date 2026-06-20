@@ -7,6 +7,9 @@ import Animated, { FadeIn, FadeInDown, FadeInUp, useSharedValue, useAnimatedStyl
 import { BlurView } from 'expo-blur';
 import { useTheme } from '../../components/Theme/ThemeProvider';
 import { generateVideoAnalysis, chatWithAI, generateDailyInsight, VideoAnalysis, DailyInsight } from '../../lib/ai/client';
+import { useRouter } from 'expo-router';
+import { usePosts } from '@lib/supabase/hooks/usePosts';
+import { DebateCard } from '@components/Debate/DebateCard';
 
 const { width } = Dimensions.get('window');
 
@@ -250,6 +253,11 @@ export default function AIScreen() {
     // Onboarding State
     const [showSuggestions, setShowSuggestions] = useState(true);
 
+    // Arena tab: people's debates vs Orvelis AI
+    const [arenaTab, setArenaTab] = useState<'debates' | 'ai'>('debates');
+    const router = useRouter();
+    const { posts: debatePosts, refresh: refreshDebates } = usePosts();
+
     const { theme, mode } = useTheme();
     const isDark = mode === 'dark';
 
@@ -488,11 +496,11 @@ export default function AIScreen() {
                             backgroundColor: isDark ? 'rgba(56, 189, 248, 0.1)' : 'rgba(14, 165, 233, 0.08)',
                             borderColor: isDark ? 'rgba(56, 189, 248, 0.25)' : 'rgba(14, 165, 233, 0.2)'
                         }]}>
-                            <MaterialCommunityIcons name="robot-excited" size={22} color={theme.colors.primary.DEFAULT} />
+                            <MaterialCommunityIcons name={arenaTab === 'ai' ? 'robot-excited' : 'sword-cross'} size={22} color={theme.colors.primary.DEFAULT} />
                         </View>
                         <View>
-                            <Text style={[styles.headerTitle, { color: theme.colors.text.primary }]}>Orvelis</Text>
-                            <Text style={[styles.headerSubtitle, { color: theme.colors.text.muted }]}>AI Core • Online</Text>
+                            <Text style={[styles.headerTitle, { color: theme.colors.text.primary }]}>{arenaTab === 'ai' ? 'Orvelis' : 'Arena'}</Text>
+                            <Text style={[styles.headerSubtitle, { color: theme.colors.text.muted }]}>{arenaTab === 'ai' ? 'AI Core • Online' : 'Live debates • Beta'}</Text>
                         </View>
                     </View>
                     <View style={styles.headerStatusWrapper}>
@@ -511,6 +519,58 @@ export default function AIScreen() {
                     </View>
                 </View>
 
+                {/* Arena tab switcher: people's debates vs Orvelis AI */}
+                <View style={[styles.arenaTabs, {
+                    borderColor: isDark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.06)',
+                    backgroundColor: isDark ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.02)',
+                }]}>
+                    {([['debates', 'Debates', 'people'], ['ai', 'Orvelis AI', 'sparkles']] as const).map(([key, label, icon]) => {
+                        const active = arenaTab === key;
+                        return (
+                            <Pressable
+                                key={key}
+                                onPress={() => setArenaTab(key as 'debates' | 'ai')}
+                                style={[
+                                    styles.arenaTab,
+                                    active && {
+                                        backgroundColor: isDark ? 'rgba(217,228,255,0.10)' : 'rgba(76,110,245,0.10)',
+                                        borderColor: isDark ? 'rgba(217,228,255,0.28)' : 'rgba(76,110,245,0.26)',
+                                    },
+                                ]}
+                            >
+                                <Ionicons name={icon as any} size={15} color={active ? theme.colors.primary.DEFAULT : theme.colors.text.muted} />
+                                <Text style={[styles.arenaTabText, { color: active ? theme.colors.primary.DEFAULT : theme.colors.text.muted }]}>{label}</Text>
+                            </Pressable>
+                        );
+                    })}
+                </View>
+
+                {arenaTab === 'debates' && (
+                    <FlatList
+                        data={debatePosts}
+                        keyExtractor={(item) => item.id}
+                        renderItem={({ item }) => (
+                            <DebateCard
+                                item={{ ...item, createdAt: item.createdAt || new Date().toISOString() }}
+                                onPress={() => router.push({ pathname: '/(tabs)', params: { postId: item.id } })}
+                            />
+                        )}
+                        contentContainerStyle={styles.arenaDebatesList}
+                        showsVerticalScrollIndicator={false}
+                        onRefresh={refreshDebates}
+                        refreshing={false}
+                        ListEmptyComponent={
+                            <View style={styles.arenaEmpty}>
+                                <Ionicons name="chatbubbles-outline" size={40} color={theme.colors.text.muted} />
+                                <Text style={[styles.arenaEmptyText, { color: theme.colors.text.muted }]}>
+                                    No active debates yet. Be the first to propose a thesis.
+                                </Text>
+                            </View>
+                        }
+                    />
+                )}
+
+                {arenaTab === 'ai' && (<>
                 <FlatList
                     ref={flatListRef}
                     data={messages}
@@ -616,12 +676,54 @@ export default function AIScreen() {
                         </TouchableOpacity>
                     </View>
                 </KeyboardAvoidingView>
+                </>)}
             </SafeAreaView>
         </View>
     );
 }
 
 const styles = StyleSheet.create({
+    arenaTabs: {
+        flexDirection: 'row',
+        gap: 6,
+        marginHorizontal: 16,
+        marginTop: 4,
+        marginBottom: 8,
+        padding: 4,
+        borderRadius: 16,
+        borderWidth: 1,
+    },
+    arenaTab: {
+        flex: 1,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: 7,
+        paddingVertical: 10,
+        borderRadius: 12,
+        borderWidth: 1,
+        borderColor: 'transparent',
+    },
+    arenaTabText: {
+        fontSize: 13,
+        fontWeight: '800',
+        letterSpacing: 0.4,
+    },
+    arenaDebatesList: {
+        paddingTop: 8,
+        paddingBottom: 100,
+    },
+    arenaEmpty: {
+        padding: 48,
+        alignItems: 'center',
+        gap: 12,
+    },
+    arenaEmptyText: {
+        fontSize: 14,
+        textAlign: 'center',
+        lineHeight: 20,
+        maxWidth: 320,
+    },
     container: {
         flex: 1,
     },
