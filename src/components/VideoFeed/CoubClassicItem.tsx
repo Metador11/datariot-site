@@ -205,11 +205,45 @@ export const CoubClassicItem = memo(({
             ]} onPress={togglePlayback}>
 
                 {/* Cyberpunk Category Badge */}
-                <View style={styles.cyberBadge}>
-                    <Text style={styles.cyberBadgeText}>
-                        {`[ SYSTEM.${(item.category || 'TRENDING').toUpperCase()} ]`}
-                    </Text>
-                </View>
+                {isWeb ? (
+                    // @ts-ignore — raw div for CSS pseudo-element animations
+                    <div className="dr-badge-premium" style={{
+                        position: 'absolute',
+                        top: 14,
+                        left: 14,
+                        paddingLeft: 12,
+                        paddingRight: 12,
+                        paddingTop: 7,
+                        paddingBottom: 7,
+                        zIndex: 20,
+                        display: 'flex',
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        gap: 6,
+                    }}>
+                        <div style={{
+                            width: 5,
+                            height: 5,
+                            borderRadius: '50%',
+                            backgroundColor: '#38BDF8',
+                            boxShadow: '0 0 6px rgba(56, 189, 248, 0.8)',
+                        }} />
+                        <span style={{
+                            fontSize: 11,
+                            fontWeight: 700,
+                            color: '#7DD3FC',
+                            letterSpacing: 1,
+                            fontFamily: "'JetBrains Mono', monospace",
+                            textShadow: '0 0 8px rgba(56, 189, 248, 0.4)',
+                        }}>{`SYS.${(item.category || 'TRENDING').toUpperCase()}`}</span>
+                    </div>
+                ) : (
+                    <View style={styles.cyberBadge}>
+                        <Text style={styles.cyberBadgeText}>
+                            {`[ SYSTEM.${(item.category || 'TRENDING').toUpperCase()} ]`}
+                        </Text>
+                    </View>
+                )}
 
                 {/* Background Blurred Layer (fills everything) */}
                 {item.videoUrl ? (
@@ -495,17 +529,24 @@ const styles = StyleSheet.create({
         position: 'absolute',
         top: 14,
         left: 14,
-        backgroundColor: 'rgba(8, 9, 13, 0.6)',
+        backgroundColor: 'rgba(8, 9, 13, 0.75)',
         borderWidth: 1,
-        borderColor: '#38BDF8',
-        paddingHorizontal: 10,
-        paddingVertical: 6,
-        borderRadius: 4,
+        borderColor: 'rgba(56, 189, 248, 0.5)',
+        paddingHorizontal: 12,
+        paddingVertical: 7,
+        borderRadius: 6,
         zIndex: 20,
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 6,
+        shadowColor: '#38BDF8',
+        shadowOffset: { width: 0, height: 0 },
+        shadowOpacity: 0.3,
+        shadowRadius: 8,
     },
     cyberBadgeText: {
         fontSize: 11,
-        color: '#38BDF8',
+        color: '#7DD3FC',
         fontWeight: '700',
         letterSpacing: 1,
         fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',

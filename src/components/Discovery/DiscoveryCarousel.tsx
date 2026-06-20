@@ -53,9 +53,43 @@ export const DiscoveryCarousel: React.FC<DiscoveryCarouselProps> = ({
                     />
 
                     {/* Synergy Badge */}
-                    <View style={styles.synergyBadge}>
-                        <Text style={styles.synergyText}>[ {item.dnaMatch || 90}% MATCH ]</Text>
-                    </View>
+                    {Platform.OS === 'web' ? (
+                        // @ts-ignore — raw div for CSS pseudo-element animations
+                        <div className="dr-badge-match" style={{
+                            position: 'absolute',
+                            top: 12,
+                            left: 12,
+                            paddingLeft: 10,
+                            paddingRight: 12,
+                            paddingTop: 7,
+                            paddingBottom: 7,
+                            zIndex: 20,
+                            display: 'flex',
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            gap: 6,
+                        }}>
+                            <div style={{
+                                width: 5,
+                                height: 5,
+                                borderRadius: '50%',
+                                backgroundColor: '#34D399',
+                                boxShadow: '0 0 6px rgba(52, 211, 153, 0.8)',
+                            }} />
+                            <span style={{
+                                fontSize: 10,
+                                fontWeight: 900,
+                                color: '#6EE7B7',
+                                letterSpacing: 1,
+                                fontFamily: "'JetBrains Mono', monospace",
+                                textShadow: '0 0 8px rgba(52, 211, 153, 0.35)',
+                            }}>{item.dnaMatch || 90}% MATCH</span>
+                        </div>
+                    ) : (
+                        <View style={styles.synergyBadge}>
+                            <Text style={styles.synergyText}>[ {item.dnaMatch || 90}% MATCH ]</Text>
+                        </View>
+                    )}
 
                     {/* AI Rationale Tooltip */}
                     <View style={styles.rationaleBox}>
@@ -174,20 +208,27 @@ const styles = StyleSheet.create({
         position: 'absolute',
         top: 12,
         left: 12,
-        backgroundColor: 'rgba(8, 9, 13, 0.65)',
+        backgroundColor: 'rgba(8, 9, 13, 0.75)',
         borderWidth: 1,
-        borderColor: '#38BDF8',
-        paddingHorizontal: 10,
-        paddingVertical: 6,
-        borderRadius: 4,
+        borderColor: 'rgba(52, 211, 153, 0.5)',
+        paddingHorizontal: 12,
+        paddingVertical: 7,
+        borderRadius: 6,
         zIndex: 20,
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 6,
+        shadowColor: '#34D399',
+        shadowOffset: { width: 0, height: 0 },
+        shadowOpacity: 0.3,
+        shadowRadius: 8,
     },
     synergyText: {
-        color: '#38BDF8',
+        color: '#6EE7B7',
         fontSize: 10,
         fontWeight: '900',
         fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
-        letterSpacing: 0.5,
+        letterSpacing: 1,
     },
     rationaleBox: {
         position: 'absolute',

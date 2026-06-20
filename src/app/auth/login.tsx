@@ -1,5 +1,5 @@
 import React, { useRef, useCallback } from 'react';
-import { View, Text, StyleSheet, Pressable, Animated, Image as RNImage } from 'react-native';
+import { View, Text, StyleSheet, Pressable, Animated, Image as RNImage, Platform } from 'react-native';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from '@components/UI/SafeAreaView';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -43,16 +43,28 @@ export default function WelcomeScreen() {
             <SafeAreaView style={styles.safeArea}>
                 <View style={styles.contentContainer}>
                     {/* App Name */}
-                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                        <View style={{ marginRight: 12, position: 'relative', width: 34, height: 34, alignItems: 'center', justifyContent: 'center' }}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 12 }}>
+                        <View style={{ marginRight: 16, position: 'relative', width: 52, height: 52, alignItems: 'center', justifyContent: 'center' }}>
                             {/* Blue 'Ice' Tone Overlay */}
-                            <View style={{ position: 'absolute', width: 38, height: 38, backgroundColor: 'rgba(56, 189, 248, 0.15)', borderRadius: 19 }} />
+                            <View style={{ position: 'absolute', width: 60, height: 60, backgroundColor: isDark ? 'rgba(217, 228, 255, 0.15)' : 'rgba(76, 110, 245, 0.08)', borderRadius: 30 }} />
                             <RNImage
                                 source={require('../../../assets/logo.jpg')}
-                                style={{ width: 32, height: 32, borderRadius: 16 }}
+                                style={{ width: 48, height: 48, borderRadius: 24 }}
                             />
                         </View>
-                        <Text style={[styles.appName, { color: theme.colors.primary.DEFAULT, fontFamily: theme.typography.fontFamilies.brand, letterSpacing: 2, fontSize: 28 }]}>Datariot</Text>
+                        <Text style={[
+                            styles.appName,
+                            {
+                                color: theme.colors.primary.DEFAULT,
+                                fontFamily: theme.typography.fontFamilies.brand,
+                                letterSpacing: 3,
+                                fontSize: 44,
+                                textTransform: 'uppercase',
+                                textShadowColor: isDark ? 'rgba(217, 228, 255, 0.4)' : 'rgba(76, 110, 245, 0.25)',
+                                textShadowOffset: { width: 0, height: 0 },
+                                textShadowRadius: 10,
+                            }
+                        ]}>DATARIOT</Text>
                     </View>
 
                     {/* Tagline */}

@@ -161,17 +161,45 @@ export const FeaturedHero = ({ featuredVideos, onVideoPress }: FeaturedHeroProps
                         </View>
 
                         {/* Popular Badge */}
-                        <View style={[
-                            styles.trendingBadge,
-                            isWeb && {
+                        {isWeb ? (
+                            // @ts-ignore — raw div for CSS pseudo-element animations
+                            <div className="dr-badge-premium" style={{
+                                position: 'absolute',
                                 top: badgeTopLeft,
                                 left: badgeTopLeft,
-                                paddingHorizontal: badgePadX,
-                                paddingVertical: badgePadY,
-                            }
-                        ]}>
-                            <Text style={[styles.badgeText, isWeb && { fontSize: badgeFontSize }]}>[ LIVE_DEBATE ]</Text>
-                        </View>
+                                paddingLeft: badgePadX + 2,
+                                paddingRight: badgePadX + 2,
+                                paddingTop: badgePadY + 1,
+                                paddingBottom: badgePadY + 1,
+                                zIndex: 20,
+                                display: 'flex',
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                                gap: 5,
+                            }}>
+                                <div style={{
+                                    width: 5,
+                                    height: 5,
+                                    borderRadius: '50%',
+                                    backgroundColor: '#38BDF8',
+                                    boxShadow: '0 0 6px rgba(56, 189, 248, 0.8)',
+                                }} />
+                                <span style={{
+                                    fontSize: badgeFontSize,
+                                    fontWeight: 900,
+                                    color: '#7DD3FC',
+                                    letterSpacing: 1.2,
+                                    fontFamily: "'JetBrains Mono', monospace",
+                                    textShadow: '0 0 8px rgba(56, 189, 248, 0.4)',
+                                }}>LIVE_DEBATE</span>
+                            </div>
+                        ) : (
+                            <View style={[
+                                styles.trendingBadge,
+                            ]}>
+                                <Text style={[styles.badgeText]}>[ LIVE_DEBATE ]</Text>
+                            </View>
+                        )}
                     </View>
 
                     {/* CRT scanlines + HUD frame (web only) */}
@@ -402,19 +430,26 @@ const styles = StyleSheet.create({
         position: 'absolute',
         top: 20,
         left: 20,
-        backgroundColor: 'rgba(8, 9, 13, 0.65)',
+        backgroundColor: 'rgba(8, 9, 13, 0.75)',
         borderWidth: 1,
-        borderColor: '#38BDF8',
-        paddingHorizontal: 10,
-        paddingVertical: 6,
-        borderRadius: 4,
+        borderColor: 'rgba(56, 189, 248, 0.5)',
+        paddingHorizontal: 12,
+        paddingVertical: 7,
+        borderRadius: 6,
         zIndex: 20,
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 6,
+        shadowColor: '#38BDF8',
+        shadowOffset: { width: 0, height: 0 },
+        shadowOpacity: 0.3,
+        shadowRadius: 8,
     },
     badgeText: {
         fontSize: 9,
         fontWeight: '900',
-        color: '#38BDF8',
-        letterSpacing: 1,
+        color: '#7DD3FC',
+        letterSpacing: 1.2,
         fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
     },
     pagination: {

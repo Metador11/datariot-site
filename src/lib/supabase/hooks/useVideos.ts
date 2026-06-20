@@ -251,24 +251,9 @@ export function useVideos({ type, userId, searchQuery, hashtag, category, sort =
                     return formatted;
                 })
                 .filter((v: Video) => {
-                    // 1. Must have a valid URL
+                    // Must have a valid URL
                     if (!v.videoUrl || v.videoUrl.length === 0) return false;
-
-                    // 2. Must have a valid author/user ID to be considered "user-uploaded"
-                    if (!v.authorId || v.authorId === '00000000-0000-0000-0000-000000000000') return false;
-
-                    // 3. Check if it's a known test sample
-                    const isTestSample = placeholderPatterns.some(pattern =>
-                        v.videoUrl.toLowerCase().includes(pattern.toLowerCase())
-                    );
-                    if (isTestSample) return false;
-
-                    // 4. Prefer videos from the official Supabase storage bucket
-                    const isSupabaseVideo = v.videoUrl.includes('/storage/v1/object/public/videos/');
-
-                    // Allow only Supabase videos OR videos that don't match any obvious placeholders 
-                    // and have a real author.
-                    return isSupabaseVideo || !v.videoUrl.includes('placeholder');
+                    return true;
                 });
 
             if (isRefresh) {
