@@ -54,10 +54,13 @@ const FeaturedVideoPlayer = ({ videoUrl, isCurrent }: { videoUrl: string, isCurr
 export const FeaturedHero = ({ featuredVideos, onVideoPress }: FeaturedHeroProps) => {
     const { width: screenWidth } = useWindowDimensions();
     const isWeb = Platform.OS === 'web' && screenWidth > 768;
-    const containerWidth = isWeb ? Math.min(900, screenWidth - 620) : screenWidth;
+    const containerWidth = isWeb ? Math.min(1000, screenWidth - 600) : screenWidth;
     const visibleWidth = isWeb ? containerWidth - 32 : containerWidth;
-    const cardWidth = isWeb ? (visibleWidth - 32) / 3 : containerWidth;
-    const scrollInterval = isWeb ? cardWidth + 16 : cardWidth;
+    // Show exactly 4 cards in view (gap 12 between them), horizontally scrollable
+    const cardGap = 12;
+    const cardsPerView = 4;
+    const cardWidth = isWeb ? (visibleWidth - cardGap * (cardsPerView - 1)) / cardsPerView : containerWidth;
+    const scrollInterval = isWeb ? cardWidth + cardGap : cardWidth;
 
     const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -83,7 +86,7 @@ export const FeaturedHero = ({ featuredVideos, onVideoPress }: FeaturedHeroProps
                     {
                         width: cardWidth,
                         height: cardWidth,
-                        marginRight: isWeb ? 16 : 0,
+                        marginRight: isWeb ? cardGap : 0,
                     },
                     isWeb && styles.heroCardWeb,
                     isWeb && hovered && styles.heroCardHovered,
@@ -160,44 +163,66 @@ export const FeaturedHero = ({ featuredVideos, onVideoPress }: FeaturedHeroProps
 
                         </View>
 
-                        {/* Popular Badge */}
+                        {/* Live Badge */}
                         {isWeb ? (
                             // @ts-ignore — raw div for CSS pseudo-element animations
                             <div className="dr-badge-premium" style={{
                                 position: 'absolute',
                                 top: badgeTopLeft,
                                 left: badgeTopLeft,
-                                paddingLeft: badgePadX + 2,
-                                paddingRight: badgePadX + 2,
-                                paddingTop: badgePadY + 1,
-                                paddingBottom: badgePadY + 1,
+                                paddingLeft: badgePadX,
+                                paddingRight: badgePadX,
+                                paddingTop: badgePadY,
+                                paddingBottom: badgePadY,
                                 zIndex: 20,
                                 display: 'flex',
                                 flexDirection: 'row',
                                 alignItems: 'center',
-                                gap: 5,
+                                gap: 6,
                             }}>
                                 <div style={{
-                                    width: 5,
-                                    height: 5,
+                                    width: 6,
+                                    height: 6,
                                     borderRadius: '50%',
-                                    backgroundColor: '#38BDF8',
-                                    boxShadow: '0 0 6px rgba(56, 189, 248, 0.8)',
+                                    backgroundColor: '#F87171',
+                                    boxShadow: '0 0 6px #F87171',
                                 }} />
                                 <span style={{
                                     fontSize: badgeFontSize,
                                     fontWeight: 900,
-                                    color: '#7DD3FC',
-                                    letterSpacing: 1.2,
+                                    color: '#F87171',
+                                    letterSpacing: 1.5,
                                     fontFamily: "'JetBrains Mono', monospace",
-                                    textShadow: '0 0 8px rgba(56, 189, 248, 0.4)',
-                                }}>LIVE_DEBATE</span>
+                                }}>LIVE</span>
+                                <div style={{
+                                    width: 1,
+                                    height: 9,
+                                    backgroundColor: 'rgba(255, 255, 255, 0.22)',
+                                    marginLeft: 2,
+                                    marginRight: 2,
+                                }} />
+                                <span style={{
+                                    fontSize: badgeFontSize,
+                                    fontWeight: 900,
+                                    color: '#D9E4FF',
+                                    letterSpacing: 1.5,
+                                    fontFamily: "'JetBrains Mono', monospace",
+                                }}>DEBATE</span>
                             </div>
                         ) : (
                             <View style={[
                                 styles.trendingBadge,
+                                isWeb && {
+                                    top: badgeTopLeft,
+                                    left: badgeTopLeft,
+                                    paddingHorizontal: badgePadX,
+                                    paddingVertical: badgePadY,
+                                }
                             ]}>
-                                <Text style={[styles.badgeText]}>[ LIVE_DEBATE ]</Text>
+                                <View style={styles.liveDot} />
+                                <Text style={[styles.liveLabel, isWeb && { fontSize: badgeFontSize }]}>LIVE</Text>
+                                <View style={styles.badgeDivider} />
+                                <Text style={[styles.badgeText, isWeb && { fontSize: badgeFontSize }]}>DEBATE</Text>
                             </View>
                         )}
                     </View>
@@ -371,6 +396,9 @@ const styles = StyleSheet.create({
         color: '#38BDF8',
         letterSpacing: 0.5,
         fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
+        textShadowColor: 'rgba(56, 189, 248, 0.55)',
+        textShadowOffset: { width: 0, height: 0 },
+        textShadowRadius: 8,
     },
     title: {
         fontSize: 24,
@@ -379,6 +407,9 @@ const styles = StyleSheet.create({
         lineHeight: 30,
         letterSpacing: -0.5,
         textTransform: 'uppercase',
+        textShadowColor: 'rgba(0, 0, 0, 0.75)',
+        textShadowOffset: { width: 0, height: 1 },
+        textShadowRadius: 6,
     },
     statsRow: {
         flexDirection: 'row',
@@ -430,26 +461,48 @@ const styles = StyleSheet.create({
         position: 'absolute',
         top: 20,
         left: 20,
-        backgroundColor: 'rgba(8, 9, 13, 0.75)',
-        borderWidth: 1,
-        borderColor: 'rgba(56, 189, 248, 0.5)',
-        paddingHorizontal: 12,
-        paddingVertical: 7,
-        borderRadius: 6,
-        zIndex: 20,
         flexDirection: 'row',
         alignItems: 'center',
         gap: 6,
-        shadowColor: '#38BDF8',
+        backgroundColor: 'rgba(8, 9, 13, 0.72)',
+        borderWidth: 1,
+        borderColor: 'rgba(248, 113, 113, 0.45)',
+        paddingHorizontal: 10,
+        paddingVertical: 6,
+        borderRadius: 999,
+        zIndex: 20,
+        shadowColor: '#F87171',
         shadowOffset: { width: 0, height: 0 },
-        shadowOpacity: 0.3,
-        shadowRadius: 8,
+        shadowOpacity: 0.5,
+        shadowRadius: 12,
+    },
+    liveDot: {
+        width: 6,
+        height: 6,
+        borderRadius: 3,
+        backgroundColor: '#F87171',
+        shadowColor: '#F87171',
+        shadowOffset: { width: 0, height: 0 },
+        shadowOpacity: 1,
+        shadowRadius: 6,
+    },
+    liveLabel: {
+        fontSize: 9,
+        fontWeight: '900',
+        color: '#F87171',
+        letterSpacing: 1.5,
+        fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
+    },
+    badgeDivider: {
+        width: 1,
+        height: 9,
+        backgroundColor: 'rgba(255, 255, 255, 0.22)',
     },
     badgeText: {
         fontSize: 9,
         fontWeight: '900',
-        color: '#7DD3FC',
-        letterSpacing: 1.2,
+        color: '#D9E4FF',
+        letterSpacing: 1.5,
         fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
     },
     pagination: {

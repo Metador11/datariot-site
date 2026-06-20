@@ -1,7 +1,6 @@
 import React, { useRef, useState, useCallback, useMemo } from 'react';
-import { View, StyleSheet, FlatList, ViewToken } from 'react-native';
-import { CoubClassicItem } from './CoubClassicItem';
-import { FullScreenVideoModal } from './FullScreenVideoModal';
+import { View, StyleSheet, FlatList, ViewToken, Platform, useWindowDimensions } from 'react-native';
+import { TrendingGridCard } from './TrendingGridCard';
 import { useTheme } from '../Theme/ThemeProvider';
 import { SectionHeader } from '../Discovery/SectionHeader';
 import { DiscoveryCarousel } from '../Discovery/DiscoveryCarousel';
@@ -42,6 +41,14 @@ export function CoubClassicFeed({
     const [activeVideoIndex, setActiveVideoIndex] = useState(initialScrollIndex);
     const flatListRef = useRef<FlatList>(null);
     const { theme } = useTheme();
+    const { width: winWidth } = useWindowDimensions();
+
+    // 2-column trending grid sizing
+    const GRID_MAX_WIDTH = 720;
+    const GRID_PAD = 16;
+    const GRID_GAP = 12;
+    const gridContentWidth = Platform.OS === 'web' ? Math.min(GRID_MAX_WIDTH, winWidth) : winWidth;
+    const gridCardWidth = (gridContentWidth - GRID_PAD * 2 - GRID_GAP) / 2;
 
     const ensureMinCount = useCallback(<T,>(list: T[], min: number): T[] => {
         if (list.length === 0) return [];
@@ -139,17 +146,15 @@ export function CoubClassicFeed({
         </View>
     ), [featuredVideos, synergyVideos, onSelect, paddingTop]);
 
-    const renderItem = useCallback(({ item, index }: { item: Video; index: number }) => (
-        <CoubClassicItem
-            item={item}
-            isActive={index === activeVideoIndex && isScreenFocused}
-            onLike={() => onLike(item.id)}
-            onComment={() => onComment(item.id)}
-            onSave={() => onSave(item.id)}
-            onMore={() => onMore(item.id)}
-            onSelect={() => onSelect(item.id)}
-        />
-    ), [activeVideoIndex, isScreenFocused, onLike, onComment, onSave, onMore, onSelect]);
+    const renderItem = useCallback(({ item }: { item: Video }) => (
+        <View style={{ marginBottom: GRID_GAP }}>
+            <TrendingGridCard
+                item={item}
+                width={gridCardWidth}
+                onSelect={() => onSelect(item.id)}
+            />
+        </View>
+    ), [gridCardWidth, onSelect]);
 
     return (
         <View style={[styles.container, { backgroundColor: theme.colors.background.primary }]}>
@@ -157,7 +162,9 @@ export function CoubClassicFeed({
                 ref={flatListRef}
                 data={scrollVideos}
                 renderItem={renderItem}
-                keyExtractor={(item) => item.id}
+                keyExtractor={(item, index) => `${item.id}-${index}`}
+                numColumns={2}
+                columnWrapperStyle={{ gap: GRID_GAP, paddingHorizontal: GRID_PAD }}
                 showsVerticalScrollIndicator={false}
                 ListHeaderComponent={listHeader}
                 onViewableItemsChanged={onViewableItemsChanged}
@@ -165,16 +172,9 @@ export function CoubClassicFeed({
                 onEndReached={onEndReached}
                 onEndReachedThreshold={0.5}
                 removeClippedSubviews={false}
-                maxToRenderPerBatch={3}
+                maxToRenderPerBatch={6}
                 windowSize={5}
-                initialNumToRender={2}
-                initialScrollIndex={initialScrollIndex}
-                onScrollToIndexFailed={(info) => {
-                    const wait = new Promise(resolve => setTimeout(resolve, 500));
-                    wait.then(() => {
-                        flatListRef.current?.scrollToIndex({ index: info.index, animated: true });
-                    });
-                }}
+                initialNumToRender={6}
                 contentContainerStyle={{
                     paddingBottom: paddingBottom + 80,
                     alignSelf: 'center',
