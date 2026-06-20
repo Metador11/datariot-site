@@ -290,12 +290,12 @@ const InternalProfileVideoGridItem = ({ videoUrl }: { videoUrl: string }) => {
     );
 };
 
-const ProfileVideoGridItem = ({ item, onPress, isDark, featured = false }: { item: any, onPress: () => void, isDark: boolean, featured?: boolean }) => {
+const ProfileVideoGridItem = ({ item, onPress, isDark, featured = false, width }: { item: any, onPress: () => void, isDark: boolean, featured?: boolean, width: number }) => {
     const scale = useSharedValue(1);
     const animStyle = useAnimatedStyle(() => ({ transform: [{ scale: scale.value }] }));
 
-    const itemWidth = featured ? FEATURED_WIDTH : VIDEO_ITEM_WIDTH;
-    const itemHeight = featured ? itemWidth * 0.56 : itemWidth * 1.34;
+    const itemWidth = width;
+    const itemHeight = featured ? Math.min(width * 0.5, 380) : width * 1.34;
 
     // Stable random views count per item id
     const viewsCount = React.useMemo(() => {
@@ -373,42 +373,58 @@ const ProfileVideoGridItem = ({ item, onPress, isDark, featured = false }: { ite
     );
 };
 
-// Renders videos in a 3-col grid with the first item being full-width featured
+// Renders videos full-width: a hero featured card + a responsive grid that
+// fills the whole content column (column count adapts to available width).
 const EssenceGrid = ({ videos, onPress, isDark }: { videos: any[], onPress: (id: string, idx: number) => void, isDark: boolean }) => {
+    const [gridW, setGridW] = useState(0);
+
     if (!videos || videos.length === 0) return null;
 
     const [featured, ...rest] = videos;
-    // Group rest into rows of 3
+
+    // Available width drives sizing. Fall back to a sane default before measure.
+    const W = gridW || (isWeb ? 720 : SCREEN_WIDTH);
+    const columns = W >= 1000 ? 4 : W >= 480 ? 3 : 2;
+    const itemW = (W - GRID_GAP * (columns - 1)) / columns;
+
     const rows: any[][] = [];
-    for (let i = 0; i < rest.length; i += 3) {
-        rows.push(rest.slice(i, i + 3));
+    for (let i = 0; i < rest.length; i += columns) {
+        rows.push(rest.slice(i, i + columns));
     }
 
     return (
-        <View style={{ paddingTop: 12, alignItems: 'center' }}>
-            {/* Featured (first) video */}
+        <View
+            style={{ paddingTop: 12, paddingHorizontal: GRID_H_PAD }}
+            onLayout={(e) => {
+                const w = e.nativeEvent.layout.width - GRID_H_PAD * 2;
+                if (Math.abs(w - gridW) > 1) setGridW(w);
+            }}
+        >
+            {/* Featured (first) video — spans the full width */}
             <View style={{ marginBottom: GRID_GAP }}>
                 <ProfileVideoGridItem
                     item={featured}
                     onPress={() => onPress(featured.id, 0)}
                     isDark={isDark}
                     featured={true}
+                    width={W}
                 />
             </View>
-            {/* Grid rows */}
+            {/* Responsive grid rows */}
             {rows.map((row, rowIdx) => (
-                <View key={rowIdx} style={[styles.videoColumnWrapper]}>
+                <View key={rowIdx} style={styles.videoColumnWrapper}>
                     {row.map((item, colIdx) => (
                         <ProfileVideoGridItem
                             key={item.id}
                             item={item}
-                            onPress={() => onPress(item.id, rowIdx * 3 + colIdx + 1)}
+                            onPress={() => onPress(item.id, rowIdx * columns + colIdx + 1)}
                             isDark={isDark}
+                            width={itemW}
                         />
                     ))}
                     {/* Fill empty slots to keep alignment */}
-                    {row.length < 3 && Array.from({ length: 3 - row.length }).map((_, i) => (
-                        <View key={`empty-${i}`} style={{ width: VIDEO_ITEM_WIDTH, height: VIDEO_ITEM_WIDTH * 1.34 }} />
+                    {row.length < columns && Array.from({ length: columns - row.length }).map((_, i) => (
+                        <View key={`empty-${i}`} style={{ width: itemW, height: itemW * 1.34 }} />
                     ))}
                 </View>
             ))}
@@ -664,10 +680,6 @@ export default function ProfileScreen() {
             }
         });
     };
-
-    const renderVideoItem = ({ item, index }: { item: any, index: number }) => (
-        <ProfileVideoGridItem item={item} onPress={() => navigateToVideo(item.id, index)} isDark={isDark} />
-    );
 
     const navigateToVideoById = (videoId: string, idx: number) => {
         router.push({
