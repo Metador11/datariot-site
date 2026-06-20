@@ -73,14 +73,22 @@ async function fetchAnthropic(system: string, user: string, history: any[] = [])
         throw new Error('No Anthropic API key configured');
     }
 
-    const messages = history.filter(m => m.role !== 'system').map(m => ({
-        role: m.role === 'assistant' ? 'assistant' : 'user',
-        content: m.content
-    }));
-    messages.push({ role: 'user', content: user });
+    // Build the message list. The Anthropic Messages API requires the first
+    // message to be from the user and roles to alternate, so we drop any
+    // leading assistant turns (e.g. the on-screen welcome message).
+    const mapped = history
+        .filter(m => m.role === 'user' || m.role === 'assistant')
+        .map(m => ({
+            role: m.role === 'assistant' ? 'assistant' : 'user',
+            content: m.content,
+        }));
+    while (mapped.length && mapped[0].role === 'assistant') {
+        mapped.shift();
+    }
+    const messages = [...mapped, { role: 'user', content: user }];
 
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 12000);
+    const timeoutId = setTimeout(() => controller.abort(), 20000);
 
     try {
         const response = await fetch('https://api.anthropic.com/v1/messages', {
@@ -88,13 +96,15 @@ async function fetchAnthropic(system: string, user: string, history: any[] = [])
             headers: {
                 'x-api-key': anthropicKey,
                 'anthropic-version': '2023-06-01',
-                'content-type': 'application/json'
+                'content-type': 'application/json',
+                // Required for direct browser (web) calls, otherwise CORS blocks the request.
+                'anthropic-dangerous-direct-browser-access': 'true',
             },
             body: JSON.stringify({
-                model: "claude-3-5-haiku-20241022",
-                max_tokens: 1024,
+                model: 'claude-opus-4-8',
+                max_tokens: 2048,
                 system: system,
-                messages: messages
+                messages: messages,
             }),
             signal: controller.signal
         });
@@ -291,8 +301,8 @@ export async function chatWithAI(message: string, history: any[]): Promise<strin
     };
 
     try {
-        // Try OpenAI first (GPT), fallback to Claude
-        return await callAI(callGPT, callClaude, 'Chat');
+        // Orvelis runs on Claude first, with OpenAI as a fallback
+        return await callAI(callClaude, callGPT, 'Chat');
     } catch {
         console.warn("[Orvelis] Operating in offline mode.");
         return generateMockResponse(message);
