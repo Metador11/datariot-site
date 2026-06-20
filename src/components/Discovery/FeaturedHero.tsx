@@ -42,10 +42,13 @@ const FeaturedVideoPlayer = ({ videoUrl, isCurrent }: { videoUrl: string, isCurr
 export const FeaturedHero = ({ featuredVideos, onVideoPress }: FeaturedHeroProps) => {
     const { width: screenWidth } = useWindowDimensions();
     const isWeb = Platform.OS === 'web' && screenWidth > 768;
-    const containerWidth = isWeb ? Math.min(900, screenWidth - 620) : screenWidth;
+    const containerWidth = isWeb ? Math.min(1000, screenWidth - 600) : screenWidth;
     const visibleWidth = isWeb ? containerWidth - 32 : containerWidth;
-    const cardWidth = isWeb ? (visibleWidth - 32) / 3 : containerWidth;
-    const scrollInterval = isWeb ? cardWidth + 16 : cardWidth;
+    // Show exactly 4 cards in view (gap 12 between them), horizontally scrollable
+    const cardGap = 12;
+    const cardsPerView = 4;
+    const cardWidth = isWeb ? (visibleWidth - cardGap * (cardsPerView - 1)) / cardsPerView : containerWidth;
+    const scrollInterval = isWeb ? cardWidth + cardGap : cardWidth;
 
     const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -71,7 +74,7 @@ export const FeaturedHero = ({ featuredVideos, onVideoPress }: FeaturedHeroProps
                     {
                         width: cardWidth,
                         height: cardWidth,
-                        marginRight: isWeb ? 16 : 0,
+                        marginRight: isWeb ? cardGap : 0,
                     }
                 ]}
             >
