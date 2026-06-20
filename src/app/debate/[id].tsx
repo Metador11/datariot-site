@@ -11,6 +11,39 @@ import { DebateCard } from '@components/Debate/DebateCard';
 import { Post } from '@lib/supabase/hooks/usePosts';
 import { useDebateArguments, Argument } from '@lib/supabase/hooks/useDebateArguments';
 import { Ionicons } from '@expo/vector-icons';
+import { useVideoPlayer, VideoView } from 'expo-video';
+import { encodeVideoUrl } from '@lib/utils/url';
+
+// Playable video argument (tap to play/pause)
+const ArgumentVideo = ({ url }: { url: string }) => {
+    const player = useVideoPlayer(encodeVideoUrl(url) || null, (p) => {
+        p.loop = true;
+        p.muted = false;
+    });
+    const [playing, setPlaying] = useState(false);
+
+    const toggle = () => {
+        if (playing) { player.pause(); setPlaying(false); }
+        else { player.play(); setPlaying(true); }
+    };
+
+    return (
+        <Pressable style={styles.argVideoContainer} onPress={toggle}>
+            <VideoView player={player} style={StyleSheet.absoluteFill} contentFit="cover" nativeControls={false} />
+            {!playing && (
+                <View style={styles.playOverlay}>
+                    <View style={styles.playCircle}>
+                        <Ionicons name="play" size={22} color="#FFF" style={{ marginLeft: 2 }} />
+                    </View>
+                </View>
+            )}
+            <View style={styles.argMediaTag}>
+                <Ionicons name="videocam" size={11} color="#FFF" />
+                <Text style={styles.argMediaTagText}>VIDEO</Text>
+            </View>
+        </Pressable>
+    );
+};
 
 const VoteButton = ({ isVoted, score, onPress }: { isVoted: boolean; score: number; onPress: () => void }) => {
     const { theme, mode } = useTheme();
@@ -235,6 +268,10 @@ export default function DebateThreadScreen() {
                             <View style={[styles.sideBadge, { backgroundColor: bgLabel }]}>
                                 <Text style={[styles.sideBadgeText, { color: colorMain }]}>{item.side}</Text>
                             </View>
+                            <View style={[styles.typeChip, { backgroundColor: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.05)' }]}>
+                                <Ionicons name={item.videoUrl ? 'videocam' : 'document-text'} size={9} color={theme.colors.text.muted} />
+                                <Text style={[styles.typeChipText, { color: theme.colors.text.muted }]}>{item.videoUrl ? 'VIDEO' : 'TEXT'}</Text>
+                            </View>
                         </View>
 
                         <View style={styles.argHeaderRight}>
@@ -255,19 +292,11 @@ export default function DebateThreadScreen() {
                         </View>
                     </View>
 
-                    <Text style={[styles.argText, { color: theme.colors.text.primary }]}>{item.content}</Text>
-
-                    {item.videoUrl && (
-                        <View style={styles.argVideoContainer}>
-                            <Image
-                                source={{ uri: item.videoUrl.replace('.mp4', '.jpg') }}
-                                style={styles.argVideoThumbnail}
-                            />
-                            <View style={styles.playOverlay}>
-                                <Ionicons name="play" size={24} color="#FFF" />
-                            </View>
-                        </View>
+                    {!!item.content && (
+                        <Text style={[styles.argText, { color: theme.colors.text.primary }]}>{item.content}</Text>
                     )}
+
+                    {item.videoUrl && <ArgumentVideo url={item.videoUrl} />}
 
                     <View style={styles.argFooter}>
                         <VoteButton
@@ -506,11 +535,12 @@ const styles = StyleSheet.create({
     },
     argVideoContainer: {
         width: '100%',
-        height: 180,
-        borderRadius: 12,
+        height: 200,
+        borderRadius: 14,
         overflow: 'hidden',
         marginBottom: 12,
         backgroundColor: '#000',
+        position: 'relative',
     },
     argVideoThumbnail: {
         width: '100%',
@@ -520,7 +550,48 @@ const styles = StyleSheet.create({
         ...StyleSheet.absoluteFillObject,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: 'rgba(0,0,0,0.2)',
+        backgroundColor: 'rgba(0,0,0,0.25)',
+    },
+    playCircle: {
+        width: 54,
+        height: 54,
+        borderRadius: 27,
+        backgroundColor: 'rgba(0,0,0,0.5)',
+        borderWidth: 1.5,
+        borderColor: 'rgba(255,255,255,0.6)',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    argMediaTag: {
+        position: 'absolute',
+        top: 10,
+        left: 10,
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 4,
+        backgroundColor: 'rgba(0,0,0,0.55)',
+        borderRadius: 999,
+        paddingHorizontal: 8,
+        paddingVertical: 4,
+    },
+    argMediaTagText: {
+        color: '#FFF',
+        fontSize: 9,
+        fontWeight: '900',
+        letterSpacing: 1,
+    },
+    typeChip: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 3,
+        paddingHorizontal: 6,
+        paddingVertical: 2,
+        borderRadius: 6,
+    },
+    typeChipText: {
+        fontSize: 9,
+        fontWeight: '800',
+        letterSpacing: 0.5,
     },
     headerLikeBtn: {
         flexDirection: 'row',

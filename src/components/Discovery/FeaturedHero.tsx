@@ -42,10 +42,13 @@ const FeaturedVideoPlayer = ({ videoUrl, isCurrent }: { videoUrl: string, isCurr
 export const FeaturedHero = ({ featuredVideos, onVideoPress }: FeaturedHeroProps) => {
     const { width: screenWidth } = useWindowDimensions();
     const isWeb = Platform.OS === 'web' && screenWidth > 768;
-    const containerWidth = isWeb ? Math.min(900, screenWidth - 620) : screenWidth;
+    const containerWidth = isWeb ? Math.min(1000, screenWidth - 600) : screenWidth;
     const visibleWidth = isWeb ? containerWidth - 32 : containerWidth;
-    const cardWidth = isWeb ? (visibleWidth - 32) / 3 : containerWidth;
-    const scrollInterval = isWeb ? cardWidth + 16 : cardWidth;
+    // Show exactly 4 cards in view (gap 12 between them), horizontally scrollable
+    const cardGap = 12;
+    const cardsPerView = 4;
+    const cardWidth = isWeb ? (visibleWidth - cardGap * (cardsPerView - 1)) / cardsPerView : containerWidth;
+    const scrollInterval = isWeb ? cardWidth + cardGap : cardWidth;
 
     const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -71,7 +74,7 @@ export const FeaturedHero = ({ featuredVideos, onVideoPress }: FeaturedHeroProps
                     {
                         width: cardWidth,
                         height: cardWidth,
-                        marginRight: isWeb ? 16 : 0,
+                        marginRight: isWeb ? cardGap : 0,
                     }
                 ]}
             >
@@ -136,7 +139,7 @@ export const FeaturedHero = ({ featuredVideos, onVideoPress }: FeaturedHeroProps
 
                         </View>
 
-                        {/* Popular Badge */}
+                        {/* Live Badge */}
                         <View style={[
                             styles.trendingBadge,
                             isWeb && {
@@ -146,7 +149,10 @@ export const FeaturedHero = ({ featuredVideos, onVideoPress }: FeaturedHeroProps
                                 paddingVertical: badgePadY,
                             }
                         ]}>
-                            <Text style={[styles.badgeText, isWeb && { fontSize: badgeFontSize }]}>[ LIVE_DEBATE ]</Text>
+                            <View style={styles.liveDot} />
+                            <Text style={[styles.liveLabel, isWeb && { fontSize: badgeFontSize }]}>LIVE</Text>
+                            <View style={styles.badgeDivider} />
+                            <Text style={[styles.badgeText, isWeb && { fontSize: badgeFontSize }]}>DEBATE</Text>
                         </View>
                     </View>
                 </View>
@@ -248,6 +254,9 @@ const styles = StyleSheet.create({
         color: '#38BDF8',
         letterSpacing: 0.5,
         fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
+        textShadowColor: 'rgba(56, 189, 248, 0.55)',
+        textShadowOffset: { width: 0, height: 0 },
+        textShadowRadius: 8,
     },
     title: {
         fontSize: 24,
@@ -256,6 +265,9 @@ const styles = StyleSheet.create({
         lineHeight: 30,
         letterSpacing: -0.5,
         textTransform: 'uppercase',
+        textShadowColor: 'rgba(0, 0, 0, 0.75)',
+        textShadowOffset: { width: 0, height: 1 },
+        textShadowRadius: 6,
     },
     statsRow: {
         flexDirection: 'row',
@@ -284,19 +296,48 @@ const styles = StyleSheet.create({
         position: 'absolute',
         top: 20,
         left: 20,
-        backgroundColor: 'rgba(8, 9, 13, 0.65)',
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 6,
+        backgroundColor: 'rgba(8, 9, 13, 0.72)',
         borderWidth: 1,
-        borderColor: '#38BDF8',
+        borderColor: 'rgba(248, 113, 113, 0.45)',
         paddingHorizontal: 10,
         paddingVertical: 6,
-        borderRadius: 4,
+        borderRadius: 999,
         zIndex: 20,
+        shadowColor: '#F87171',
+        shadowOffset: { width: 0, height: 0 },
+        shadowOpacity: 0.5,
+        shadowRadius: 12,
+    },
+    liveDot: {
+        width: 6,
+        height: 6,
+        borderRadius: 3,
+        backgroundColor: '#F87171',
+        shadowColor: '#F87171',
+        shadowOffset: { width: 0, height: 0 },
+        shadowOpacity: 1,
+        shadowRadius: 6,
+    },
+    liveLabel: {
+        fontSize: 9,
+        fontWeight: '900',
+        color: '#F87171',
+        letterSpacing: 1.5,
+        fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
+    },
+    badgeDivider: {
+        width: 1,
+        height: 9,
+        backgroundColor: 'rgba(255, 255, 255, 0.22)',
     },
     badgeText: {
         fontSize: 9,
         fontWeight: '900',
-        color: '#38BDF8',
-        letterSpacing: 1,
+        color: '#D9E4FF',
+        letterSpacing: 1.5,
         fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
     },
     pagination: {

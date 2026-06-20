@@ -20,8 +20,8 @@ export const WebTopNav = () => {
                         <View style={[styles.logoIconPlaceholder, { borderColor: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.06)', backgroundColor: 'transparent', position: 'relative' }]}>
                             <View style={{ position: 'absolute', width: 48, height: 48, backgroundColor: 'rgba(217, 228, 255, 0.1)', borderRadius: 24, left: -4, top: -4 }} />
                             <RNImage
-                                source={require('../../../assets/logo.jpg')}
-                                style={styles.logoImage}
+                                source={require('../../../assets/logo.png')}
+                                style={[styles.logoImage, { objectFit: 'contain', tintColor: theme.colors.primary.DEFAULT }]}
                             />
                         </View>
                         <Text style={[styles.logo, { color: theme.colors.primary.DEFAULT, fontFamily: theme.typography.fontFamilies.brand, letterSpacing: 2 }]}>DATARIOT</Text>
