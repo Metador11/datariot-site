@@ -39,7 +39,12 @@ interface ProfileData {
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 const isWeb = Platform.OS === 'web';
 // Web layout constrains content to 600px width
-const VIDEO_ITEM_WIDTH = isWeb ? (Math.min(SCREEN_WIDTH, 600) - 2) / 3 : (SCREEN_WIDTH - 2) / 3;
+const CONTENT_WIDTH = isWeb ? Math.min(SCREEN_WIDTH, 600) : SCREEN_WIDTH;
+// Modern rounded grid: side padding + gaps between cards
+const GRID_H_PAD = 14;
+const GRID_GAP = 8;
+const VIDEO_ITEM_WIDTH = (CONTENT_WIDTH - GRID_H_PAD * 2 - GRID_GAP * 2) / 3;
+const FEATURED_WIDTH = CONTENT_WIDTH - GRID_H_PAD * 2;
 const HEADER_HEIGHT = 220;
 
 const StickyHeader = ({ scrollY, user, handleSignOut, router }: { scrollY: SharedValue<number>, user: any, handleSignOut: () => void, router: any }) => {
@@ -212,26 +217,32 @@ const ProfileHeader = ({ profile, user, scrollY, headerImageUrl, activeTab, setA
                     <View style={styles.tabsContainer}>
                         {(['videos', 'posts', 'saved'] as const).map((tab) => {
                             const isActive = activeTab === tab;
+                            const label = tab === 'videos' ? 'ESSENCE' : tab === 'posts' ? 'THESES' : 'VAULT';
+                            const accentColor = isActive ? theme.colors.primary.DEFAULT : theme.colors.text.muted;
                             return (
                                 <Pressable
                                     key={tab}
                                     style={[
                                         styles.tabItem,
                                         isActive && {
-                                            backgroundColor: isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.03)',
-                                            borderColor: isDark ? 'rgba(0, 240, 255, 0.2)' : 'rgba(8, 145, 178, 0.2)',
+                                            backgroundColor: isDark ? 'rgba(217, 228, 255, 0.10)' : 'rgba(76, 110, 245, 0.10)',
+                                            borderColor: isDark ? 'rgba(217, 228, 255, 0.28)' : 'rgba(76, 110, 245, 0.28)',
                                             borderWidth: 1,
-                                            borderRadius: 16,
-                                            margin: 2,
-                                        }
+                                        },
+                                        isActive && isWeb && {
+                                            // @ts-ignore — web only glow
+                                            boxShadow: isDark
+                                                ? '0 0 18px rgba(217,228,255,0.18)'
+                                                : '0 0 16px rgba(76,110,245,0.16)',
+                                        },
                                     ]}
                                     onPress={() => setActiveTab(tab)}
                                 >
                                     {tab === 'videos' ? (
                                         <MaterialCommunityIcons
                                             name={isActive ? 'play-box-multiple' : 'play-box-multiple-outline'}
-                                            size={20}
-                                            color={isActive ? theme.colors.primary.DEFAULT : theme.colors.text.secondary}
+                                            size={17}
+                                            color={accentColor}
                                         />
                                     ) : (
                                         <Ionicons
@@ -240,15 +251,18 @@ const ProfileHeader = ({ profile, user, scrollY, headerImageUrl, activeTab, setA
                                                     ? (tab === 'posts' ? 'infinite' : 'library')
                                                     : (tab === 'posts' ? 'infinite-outline' : 'library-outline')
                                             }
-                                            size={20}
-                                            color={isActive ? theme.colors.primary.DEFAULT : theme.colors.text.secondary}
+                                            size={17}
+                                            color={accentColor}
                                         />
                                     )}
-                                    {isActive && (
-                                        <Text style={[styles.activeTabText, { color: theme.colors.primary.DEFAULT, fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace' }]}>
-                                            [ {tab === 'videos' ? 'ESSENCE' : tab === 'posts' ? 'THESES' : 'VAULT'} ]
-                                        </Text>
-                                    )}
+                                    <Text
+                                        style={[
+                                            styles.tabLabel,
+                                            { color: accentColor, fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace' },
+                                        ]}
+                                    >
+                                        {label}
+                                    </Text>
                                 </Pressable>
                             );
                         })}
@@ -280,10 +294,8 @@ const ProfileVideoGridItem = ({ item, onPress, isDark, featured = false }: { ite
     const scale = useSharedValue(1);
     const animStyle = useAnimatedStyle(() => ({ transform: [{ scale: scale.value }] }));
 
-    const itemWidth = featured
-        ? (isWeb ? Math.min(SCREEN_WIDTH, 600) - 2 : SCREEN_WIDTH - 2)
-        : VIDEO_ITEM_WIDTH;
-    const itemHeight = featured ? itemWidth * 0.56 : itemWidth * 1.3;
+    const itemWidth = featured ? FEATURED_WIDTH : VIDEO_ITEM_WIDTH;
+    const itemHeight = featured ? itemWidth * 0.56 : itemWidth * 1.34;
 
     // Stable random views count per item id
     const viewsCount = React.useMemo(() => {
@@ -309,9 +321,25 @@ const ProfileVideoGridItem = ({ item, onPress, isDark, featured = false }: { ite
             onPressIn={() => { scale.value = withTiming(0.96, { duration: 100 }); }}
             onPressOut={() => { scale.value = withSpring(1, { damping: 12 }); }}
             onPress={onPress}
-            style={{ width: itemWidth, height: itemHeight, marginBottom: 1 }}
+            style={{ width: itemWidth, height: itemHeight }}
         >
-            <Animated.View style={[{ flex: 1, overflow: 'hidden', borderRadius: featured ? 0 : 0, backgroundColor: isDark ? '#000000' : '#EEEEEE' }, animStyle]}>
+            <Animated.View style={[
+                {
+                    flex: 1,
+                    overflow: 'hidden',
+                    borderRadius: featured ? 22 : 14,
+                    backgroundColor: isDark ? '#0C0D12' : '#EEEEEE',
+                    borderWidth: 1,
+                    borderColor: isDark ? 'rgba(217,228,255,0.08)' : 'rgba(0,0,0,0.05)',
+                },
+                isWeb && {
+                    // @ts-ignore — web only soft shadow
+                    boxShadow: featured
+                        ? '0 14px 36px rgba(0,0,0,0.45)'
+                        : '0 6px 18px rgba(0,0,0,0.35)',
+                },
+                animStyle,
+            ]}>
                 {item.videoUrl ? (
                     <InternalProfileVideoGridItem videoUrl={item.videoUrl} />
                 ) : (
@@ -357,14 +385,16 @@ const EssenceGrid = ({ videos, onPress, isDark }: { videos: any[], onPress: (id:
     }
 
     return (
-        <View style={{ paddingTop: 12 }}>
+        <View style={{ paddingTop: 12, alignItems: 'center' }}>
             {/* Featured (first) video */}
-            <ProfileVideoGridItem
-                item={featured}
-                onPress={() => onPress(featured.id, 0)}
-                isDark={isDark}
-                featured={true}
-            />
+            <View style={{ marginBottom: GRID_GAP }}>
+                <ProfileVideoGridItem
+                    item={featured}
+                    onPress={() => onPress(featured.id, 0)}
+                    isDark={isDark}
+                    featured={true}
+                />
+            </View>
             {/* Grid rows */}
             {rows.map((row, rowIdx) => (
                 <View key={rowIdx} style={[styles.videoColumnWrapper]}>
@@ -378,7 +408,7 @@ const EssenceGrid = ({ videos, onPress, isDark }: { videos: any[], onPress: (id:
                     ))}
                     {/* Fill empty slots to keep alignment */}
                     {row.length < 3 && Array.from({ length: 3 - row.length }).map((_, i) => (
-                        <View key={`empty-${i}`} style={{ width: VIDEO_ITEM_WIDTH, height: VIDEO_ITEM_WIDTH * 1.3 }} />
+                        <View key={`empty-${i}`} style={{ width: VIDEO_ITEM_WIDTH, height: VIDEO_ITEM_WIDTH * 1.34 }} />
                     ))}
                 </View>
             ))}
@@ -1241,8 +1271,15 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
-        gap: 6,
+        gap: 7,
+        borderRadius: 14,
+        marginHorizontal: 2,
         zIndex: 2,
+    },
+    tabLabel: {
+        fontSize: 11,
+        fontWeight: '800',
+        letterSpacing: 0.8,
     },
 
     tabIndicator: {
@@ -1262,7 +1299,9 @@ const styles = StyleSheet.create({
     // Grid
     videoColumnWrapper: {
         flexDirection: 'row',
-        gap: 1,
+        gap: GRID_GAP,
+        marginBottom: GRID_GAP,
+        alignSelf: 'center',
     },
     videoGridItem: {
         width: VIDEO_ITEM_WIDTH,

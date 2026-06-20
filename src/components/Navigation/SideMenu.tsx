@@ -154,8 +154,9 @@ export function SideMenu({ isOpen, onClose }: SideMenuProps) {
                         {/* Blue 'Ice' Tone Overlay */}
                         <View style={{ position: 'absolute', width: 28, height: 28, backgroundColor: 'rgba(56, 189, 248, 0.15)', borderRadius: 14 }} />
                         <RNImage
-                            source={require('../../../assets/logo.jpg')}
-                            style={{ width: 22, height: 22, borderRadius: 11 }}
+                            source={require('../../../assets/logo.png')}
+                            style={{ width: 24, height: 24, tintColor: theme.colors.primary.DEFAULT }}
+                            resizeMode="contain"
                         />
                     </View>
                     <Text style={[styles.logoText, { color: theme.colors.primary.DEFAULT, fontFamily: theme.typography.fontFamilies.brand, letterSpacing: 1 }]}>DATARIOT</Text>

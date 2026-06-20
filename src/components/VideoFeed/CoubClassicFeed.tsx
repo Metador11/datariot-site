@@ -43,12 +43,13 @@ export function CoubClassicFeed({
     const { theme } = useTheme();
     const { width: winWidth } = useWindowDimensions();
 
-    // 2-column trending grid sizing
-    const GRID_MAX_WIDTH = 720;
+    // Trending grid sizing — 3 columns on wide web, 2 on narrow / mobile
+    const GRID_MAX_WIDTH = 820;
     const GRID_PAD = 16;
     const GRID_GAP = 12;
     const gridContentWidth = Platform.OS === 'web' ? Math.min(GRID_MAX_WIDTH, winWidth) : winWidth;
-    const gridCardWidth = (gridContentWidth - GRID_PAD * 2 - GRID_GAP) / 2;
+    const gridNumColumns = gridContentWidth >= 560 ? 3 : 2;
+    const gridCardWidth = (gridContentWidth - GRID_PAD * 2 - GRID_GAP * (gridNumColumns - 1)) / gridNumColumns;
 
     const ensureMinCount = useCallback(<T,>(list: T[], min: number): T[] => {
         if (list.length === 0) return [];
@@ -91,15 +92,14 @@ export function CoubClassicFeed({
     }, [allSynergy, ensureMinCount]);
 
     const scrollVideos = useMemo(() => {
-        // Define which videos go to the main vertical scroll
-        // This ensures no single video dominates all UI sections too much.
-        // Unlike the carousels, the main feed is NOT padded with duplicates —
-        // repeated cards broke keys and showed the same video twice.
+        let base;
         if (allSynergy.length <= 3) {
-            return videos;
+            base = videos;
+        } else {
+            base = videos.filter(v => !v.isHighSynergy || videos.indexOf(v) > 8);
         }
-        return videos.filter(v => !v.isHighSynergy || videos.indexOf(v) > 8);
-    }, [videos, allSynergy]);
+        return ensureMinCount(base, 6);
+    }, [videos, allSynergy, ensureMinCount]);
 
     const onViewableItemsChanged = useCallback(
         ({ viewableItems }: { viewableItems: ViewToken[] }) => {
@@ -163,7 +163,8 @@ export function CoubClassicFeed({
                 data={scrollVideos}
                 renderItem={renderItem}
                 keyExtractor={(item, index) => `${item.id}-${index}`}
-                numColumns={2}
+                key={`grid-${gridNumColumns}`}
+                numColumns={gridNumColumns}
                 columnWrapperStyle={{ gap: GRID_GAP, paddingHorizontal: GRID_PAD }}
                 showsVerticalScrollIndicator={false}
                 ListHeaderComponent={listHeader}
@@ -179,7 +180,7 @@ export function CoubClassicFeed({
                     paddingBottom: paddingBottom + 80,
                     alignSelf: 'center',
                     width: '100%',
-                    maxWidth: 960,
+                    maxWidth: GRID_MAX_WIDTH,
                     paddingHorizontal: 0,
                 }}
             />
