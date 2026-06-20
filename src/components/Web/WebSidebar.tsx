@@ -156,8 +156,9 @@ export const WebSidebar = () => {
                             borderRadius: 21,
                         }} />
                         <RNImage
-                            source={require('../../../assets/logo.jpg')}
-                            style={{ width: 32, height: 32, borderRadius: 16 }}
+                            source={require('../../../assets/logo.png')}
+                            style={{ width: 34, height: 34, tintColor: theme.colors.primary.DEFAULT }}
+                            resizeMode="contain"
                         />
                     </View>
                     <Text style={[styles.logo, { color: theme.colors.primary.DEFAULT, fontFamily: theme.typography.fontFamilies.brand, letterSpacing: 3, fontSize: 17 }]}>DATARIOT</Text>
