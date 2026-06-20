@@ -191,13 +191,20 @@ export const WebSidebar = () => {
                     onPress={() => router.push('/settings')}
                 />
 
+                <MenuItem
+                    icon={<MaterialCommunityIcons name="robot-excited" size={22} color={isActive('/ai') ? theme.colors.primary.DEFAULT : theme.colors.text.muted} />}
+                    label="Orvelis AI"
+                    isActive={isActive('/ai')}
+                    onPress={() => router.push('/ai')}
+                />
+
                 <View style={styles.spacer} />
 
                 <MenuItem
                     icon={<MaterialCommunityIcons name="sword-cross" size={22} color={theme.colors.primary.DEFAULT} />}
                     label="Arena (Beta)"
-                    isActive={isActive('/ai')}
-                    onPress={() => router.push('/ai')}
+                    isActive={isActive('/arena')}
+                    onPress={() => router.push('/arena')}
                     isSpecial={true}
                 />
             </View>

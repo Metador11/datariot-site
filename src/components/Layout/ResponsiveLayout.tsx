@@ -26,6 +26,7 @@ export const ResponsiveLayout = ({ children }: ResponsiveLayoutProps) => {
         '/index',
         '/discover',
         '/ai',
+        '/arena',
         '/inbox',
         '/profile',
         '/settings',

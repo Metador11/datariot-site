@@ -154,6 +154,12 @@ const TabLayout = () => {
                         href: null, // This is the correct way in Expo Router to completely remove the tab
                     }}
                 />
+                <Tabs.Screen
+                    name="arena"
+                    options={{
+                        href: null, // Accessed via the sidebar, not a bottom tab
+                    }}
+                />
             </Tabs>
         </ResponsiveLayout>
     );
