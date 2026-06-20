@@ -208,23 +208,25 @@ export const WebSidebar = () => {
                     <Text style={[styles.sectionLabel, { color: '#38BDF8', fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace' }]}>[ RECENT.VIDEOS ]</Text>
                     <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.mediaScroll}>
                         {likedVideos.map((video) => (
-                            <Pressable 
-                                key={video.id} 
-                                style={styles.mediaCard} 
+                            <Pressable
+                                key={video.id}
+                                style={[styles.mediaCard, { borderColor: isDark ? 'rgba(217,228,255,0.12)' : 'rgba(100,130,200,0.18)' }]}
                                 onPress={() => router.push({ pathname: '/video-player', params: { type: 'video', initialVideoId: video.id } })}
                             >
-                                <View style={[styles.mediaGradientOuter]}>
-                                    <LinearGradient
-                                        colors={isDark ? ['rgba(217, 228, 255, 0.06)', 'rgba(217, 228, 255, 0.01)'] : ['rgba(100, 130, 200, 0.05)', 'rgba(100, 130, 200, 0.01)']}
-                                        start={{ x: 0, y: 0 }}
-                                        end={{ x: 1, y: 1 }}
-                                        style={StyleSheet.absoluteFillObject}
-                                    />
-                                    <View style={[styles.mediaIconPlaceholder, { backgroundColor: isDark ? 'rgba(217, 228, 255, 0.1)' : 'rgba(100, 130, 200, 0.08)' }]}>
-                                        <Feather name="play" size={11} color={theme.colors.primary.DEFAULT} />
-                                    </View>
-                                    <Text numberOfLines={1} style={[styles.mediaTitle, { color: theme.colors.text.primary, fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace' }]}>{video.title.toUpperCase()}</Text>
+                                <RNImage
+                                    source={{ uri: `https://picsum.photos/seed/${video.id}/260/150` }}
+                                    style={StyleSheet.absoluteFillObject}
+                                    resizeMode="cover"
+                                />
+                                <LinearGradient
+                                    colors={['rgba(8,9,13,0.05)', 'rgba(8,9,13,0.55)', 'rgba(8,9,13,0.92)']}
+                                    locations={[0, 0.5, 1]}
+                                    style={StyleSheet.absoluteFillObject}
+                                />
+                                <View style={[styles.mediaPlayBtn, { backgroundColor: theme.colors.primary.DEFAULT }]}>
+                                    <Feather name="play" size={11} color={isDark ? '#08090D' : '#FFFFFF'} style={{ marginLeft: 1 }} />
                                 </View>
+                                <Text numberOfLines={1} style={[styles.mediaTitle, { color: '#FFFFFF', fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace' }]}>{video.title.toUpperCase()}</Text>
                             </Pressable>
                         ))}
                     </ScrollView>
@@ -454,39 +456,43 @@ const styles = StyleSheet.create({
     },
     mediaSection: {
         marginBottom: 20,
-        height: 140,
+        height: 150,
     },
     mediaScroll: {
         paddingHorizontal: 16,
         gap: 12,
     },
     mediaCard: {
-        width: 120,
-        height: 70,
+        width: 132,
+        height: 80,
         borderRadius: 14,
         overflow: 'hidden',
+        borderWidth: 1,
+        justifyContent: 'flex-end',
+        padding: 9,
+        backgroundColor: '#0C0D12',
         // @ts-ignore
         transition: 'transform 0.2s ease',
     },
-    mediaGradientOuter: {
-        flex: 1,
-        justifyContent: 'space-between',
-        padding: 10,
-        borderRadius: 14,
-        borderWidth: 1,
-        borderColor: 'rgba(255, 255, 255, 0.04)',
-        overflow: 'hidden',
-    },
-    mediaIconPlaceholder: {
-        width: 20,
-        height: 20,
-        borderRadius: 10,
+    mediaPlayBtn: {
+        position: 'absolute',
+        top: 8,
+        left: 8,
+        width: 22,
+        height: 22,
+        borderRadius: 11,
         justifyContent: 'center',
         alignItems: 'center',
+        // @ts-ignore — web only glow
+        boxShadow: '0 2px 8px rgba(0,0,0,0.4)',
     },
     mediaTitle: {
         fontSize: 9,
+        fontWeight: '700',
         letterSpacing: 0.5,
+        textShadowColor: 'rgba(0,0,0,0.6)',
+        textShadowOffset: { width: 0, height: 1 },
+        textShadowRadius: 3,
     },
     signOutBtn: {
         marginTop: 12,
