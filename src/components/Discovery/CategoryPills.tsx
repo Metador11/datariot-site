@@ -51,11 +51,11 @@ const PillButton = ({ category, isActive, isDark, theme, onPress }: { category: 
                 {
                     borderColor: isActive
                         ? 'transparent'
-                        : isDark ? 'rgba(56, 189, 248, 0.12)' : 'rgba(0,0,0,0.06)',
+                        : isDark ? 'rgba(217, 228, 255, 0.12)' : 'rgba(0,0,0,0.06)',
                     borderWidth: 1,
                     backgroundColor: isActive 
                         ? 'transparent' 
-                        : (isDark ? 'rgba(56, 189, 248, 0.04)' : 'rgba(255, 255, 255, 0.65)'),
+                        : (isDark ? 'rgba(217, 228, 255, 0.04)' : 'rgba(255, 255, 255, 0.65)'),
                 },
                 isActive && isDark && {
                     shadowColor: '#D9E4FF',
@@ -70,8 +70,8 @@ const PillButton = ({ category, isActive, isDark, theme, onPress }: { category: 
                     shadowRadius: 8,
                 },
                 isHovered && !isActive && {
-                    backgroundColor: isDark ? 'rgba(56, 189, 248, 0.08)' : 'rgba(255, 255, 255, 0.95)',
-                    borderColor: isDark ? 'rgba(56, 189, 248, 0.35)' : 'rgba(107, 127, 204, 0.25)',
+                    backgroundColor: isDark ? 'rgba(217, 228, 255, 0.08)' : 'rgba(255, 255, 255, 0.95)',
+                    borderColor: isDark ? 'rgba(217, 228, 255, 0.35)' : 'rgba(107, 127, 204, 0.25)',
                     transform: [{ scale: 1.03 }],
                 }
             ]}
@@ -92,7 +92,7 @@ const PillButton = ({ category, isActive, isDark, theme, onPress }: { category: 
                     {
                         color: isActive
                             ? (isDark ? '#000000' : '#FFFFFF')
-                            : (isDark ? '#7DD3FC' : '#4C6EF5'),
+                            : (isDark ? '#D9E4FF' : '#4C6EF5'),
                         fontWeight: isActive ? '800' : '700',
                         fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
                     }

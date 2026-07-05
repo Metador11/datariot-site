@@ -24,7 +24,7 @@ interface FeaturedHeroProps {
 }
 
 // HUD-style targeting frame: four L-shaped corners over the card
-const CornerBrackets = ({ color = 'rgba(56, 189, 248, 0.55)' }: { color?: string }) => (
+const CornerBrackets = ({ color = 'rgba(217, 228, 255, 0.55)' }: { color?: string }) => (
     <View style={StyleSheet.absoluteFillObject} pointerEvents="none">
         <View style={[styles.corner, { top: 6, left: 6, borderTopWidth: 2, borderLeftWidth: 2, borderColor: color }]} />
         <View style={[styles.corner, { top: 6, right: 6, borderTopWidth: 2, borderRightWidth: 2, borderColor: color }]} />
@@ -232,7 +232,7 @@ export const FeaturedHero = ({ featuredVideos, onVideoPress }: FeaturedHeroProps
                         <>
                             {/* @ts-ignore — raw div for the CSS scanline texture */}
                             <div className="dr-scanlines" style={{ position: 'absolute', inset: 0, zIndex: 15 }} />
-                            <CornerBrackets color={hovered ? 'rgba(56, 189, 248, 0.95)' : 'rgba(56, 189, 248, 0.4)'} />
+                            <CornerBrackets color={hovered ? 'rgba(217, 228, 255, 0.95)' : 'rgba(217, 228, 255, 0.4)'} />
                         </>
                     )}
 
@@ -314,15 +314,15 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         overflow: 'hidden',
         borderWidth: 1,
-        borderColor: 'rgba(56, 189, 248, 0.14)',
+        borderColor: 'rgba(217, 228, 255, 0.14)',
         // @ts-ignore — web only
         transition: 'all 0.25s cubic-bezier(0.22, 1, 0.36, 1)',
     },
     heroCardHovered: {
-        borderColor: 'rgba(56, 189, 248, 0.6)',
+        borderColor: 'rgba(217, 228, 255, 0.6)',
         transform: [{ translateY: -4 }],
         // @ts-ignore — web only
-        boxShadow: '0 16px 40px rgba(0,0,0,0.5), 0 0 32px rgba(56,189,248,0.18)',
+        boxShadow: '0 16px 40px rgba(0,0,0,0.5), 0 0 32px rgba(217,228,255,0.18)',
     },
     hoverOverlay: {
         ...StyleSheet.absoluteFillObject,
@@ -338,16 +338,16 @@ const styles = StyleSheet.create({
         width: 52,
         height: 52,
         borderRadius: 26,
-        backgroundColor: 'rgba(56, 189, 248, 0.18)',
+        backgroundColor: 'rgba(217, 228, 255, 0.18)',
         borderWidth: 1,
-        borderColor: 'rgba(56, 189, 248, 0.7)',
+        borderColor: 'rgba(217, 228, 255, 0.7)',
         justifyContent: 'center',
         alignItems: 'center',
         // @ts-ignore — web only
         backdropFilter: 'blur(6px)',
     },
     hoverEnterText: {
-        color: '#7DD3FC',
+        color: '#D9E4FF',
         fontSize: 10,
         fontWeight: '900',
         letterSpacing: 1.5,
@@ -393,10 +393,10 @@ const styles = StyleSheet.create({
     authorName: {
         fontSize: 14,
         fontWeight: '700',
-        color: '#38BDF8',
+        color: '#D9E4FF',
         letterSpacing: 0.5,
         fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
-        textShadowColor: 'rgba(56, 189, 248, 0.55)',
+        textShadowColor: 'rgba(217, 228, 255, 0.55)',
         textShadowOffset: { width: 0, height: 0 },
         textShadowRadius: 8,
     },

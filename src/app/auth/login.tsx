@@ -42,29 +42,19 @@ export default function WelcomeScreen() {
         <View style={[styles.container, { backgroundColor: theme.colors.background.primary }]}>
             <SafeAreaView style={styles.safeArea}>
                 <View style={styles.contentContainer}>
-                    {/* App Name */}
-                    <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 12 }}>
-                        <View style={{ marginRight: 16, position: 'relative', width: 52, height: 52, alignItems: 'center', justifyContent: 'center' }}>
-                            {/* Blue 'Ice' Tone Overlay */}
-                            <View style={{ position: 'absolute', width: 60, height: 60, backgroundColor: isDark ? 'rgba(217, 228, 255, 0.15)' : 'rgba(76, 110, 245, 0.08)', borderRadius: 30 }} />
-                            <RNImage
-                                source={require('../../../assets/logo.jpg')}
-                                style={{ width: 48, height: 48, borderRadius: 24 }}
-                            />
-                        </View>
-                        <Text style={[
-                            styles.appName,
-                            {
-                                color: theme.colors.primary.DEFAULT,
-                                fontFamily: theme.typography.fontFamilies.brand,
-                                letterSpacing: 3,
-                                fontSize: 44,
-                                textTransform: 'uppercase',
-                                textShadowColor: isDark ? 'rgba(217, 228, 255, 0.4)' : 'rgba(76, 110, 245, 0.25)',
-                                textShadowOffset: { width: 0, height: 0 },
-                                textShadowRadius: 10,
-                            }
-                        ]}>DATARIOT</Text>
+                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                        <RNImage
+                            source={require('../../../assets/logo.jpg')}
+                            style={{
+                                width: 32,
+                                height: 32,
+                                borderRadius: 16,
+                                marginRight: 12,
+                                borderWidth: 1,
+                                borderColor: 'rgba(255, 255, 255, 0.08)',
+                            }}
+                        />
+                        <Text style={[styles.appName, { color: theme.colors.text.primary, fontFamily: theme.typography.fontFamilies.brand, letterSpacing: 3, fontSize: 20 }]}>DATARIOT</Text>
                     </View>
 
                     {/* Tagline */}

@@ -87,7 +87,7 @@ export const DiscoveryCarousel: React.FC<DiscoveryCarouselProps> = ({
                         </div>
                     ) : (
                         <View style={styles.synergyBadge}>
-                            <MaterialCommunityIcons name="molecule" size={11} color="#38BDF8" />
+                            <MaterialCommunityIcons name="molecule" size={11} color="#D9E4FF" />
                             <Text style={styles.synergyText}>{item.dnaMatch || 90}% MATCH</Text>
                         </View>
                     )}
@@ -162,10 +162,10 @@ const styles = StyleSheet.create({
         transition: 'all 0.25s cubic-bezier(0.22, 1, 0.36, 1)',
     },
     cardHovered: {
-        borderColor: 'rgba(56, 189, 248, 0.55)',
+        borderColor: 'rgba(217, 228, 255, 0.55)',
         transform: [{ translateY: -4 }],
         // @ts-ignore — web only
-        boxShadow: '0 16px 36px rgba(0,0,0,0.5), 0 0 28px rgba(56,189,248,0.16)',
+        boxShadow: '0 16px 36px rgba(0,0,0,0.5), 0 0 28px rgba(217,228,255,0.16)',
     },
     thumbnail: {
         width: '100%',
@@ -198,9 +198,9 @@ const styles = StyleSheet.create({
         width: 48,
         height: 48,
         borderRadius: 24,
-        backgroundColor: 'rgba(56, 189, 248, 0.18)',
+        backgroundColor: 'rgba(217, 228, 255, 0.18)',
         borderWidth: 1,
-        borderColor: 'rgba(56, 189, 248, 0.7)',
+        borderColor: 'rgba(217, 228, 255, 0.7)',
         justifyContent: 'center',
         alignItems: 'center',
         // @ts-ignore — web only
@@ -215,18 +215,18 @@ const styles = StyleSheet.create({
         gap: 5,
         backgroundColor: 'rgba(8, 9, 13, 0.72)',
         borderWidth: 1,
-        borderColor: 'rgba(56, 189, 248, 0.55)',
+        borderColor: '#D9E4FF',
         paddingHorizontal: 9,
         paddingVertical: 5,
         borderRadius: 999,
         zIndex: 20,
-        shadowColor: '#38BDF8',
+        shadowColor: '#D9E4FF',
         shadowOffset: { width: 0, height: 0 },
         shadowOpacity: 0.45,
         shadowRadius: 10,
     },
     synergyText: {
-        color: '#6EE7B7',
+        color: '#D9E4FF',
         fontSize: 10,
         fontWeight: '900',
         fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
@@ -253,7 +253,7 @@ const styles = StyleSheet.create({
         left: 6,
         width: 2,
         borderRadius: 1,
-        backgroundColor: '#38BDF8',
+        backgroundColor: '#D9E4FF',
     },
     rationaleText: {
         color: 'rgba(255, 255, 255, 0.82)',
@@ -269,13 +269,13 @@ const styles = StyleSheet.create({
         right: 16,
     },
     author: {
-        color: '#38BDF8',
+        color: '#D9E4FF',
         fontSize: 11,
         fontWeight: '700',
         marginBottom: 4,
         fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
         letterSpacing: 0.5,
-        textShadowColor: 'rgba(56, 189, 248, 0.55)',
+        textShadowColor: 'rgba(217, 228, 255, 0.55)',
         textShadowOffset: { width: 0, height: 0 },
         textShadowRadius: 8,
     },

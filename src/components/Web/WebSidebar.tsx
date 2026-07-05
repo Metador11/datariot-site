@@ -139,29 +139,18 @@ export const WebSidebar = () => {
             {/* Logo Section */}
             <View style={styles.logoContainer}>
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                    <View style={{ marginRight: 10, position: 'relative', width: 36, height: 36, alignItems: 'center', justifyContent: 'center' }}>
-                        {/* Ambient glow behind logo */}
-                        <View style={{
-                            position: 'absolute',
-                            width: 52,
-                            height: 52,
-                            backgroundColor: isDark ? 'rgba(217, 228, 255, 0.12)' : 'rgba(107, 127, 204, 0.08)',
-                            borderRadius: 26,
-                        }} />
-                        <View style={{
-                            position: 'absolute',
-                            width: 42,
-                            height: 42,
-                            backgroundColor: isDark ? 'rgba(217, 228, 255, 0.08)' : 'rgba(107, 127, 204, 0.05)',
-                            borderRadius: 21,
-                        }} />
-                        <RNImage
-                            source={require('../../../assets/logo.png')}
-                            style={{ width: 34, height: 34, tintColor: theme.colors.primary.DEFAULT }}
-                            resizeMode="contain"
-                        />
-                    </View>
-                    <Text style={[styles.logo, { color: theme.colors.primary.DEFAULT, fontFamily: theme.typography.fontFamilies.brand, letterSpacing: 3, fontSize: 17 }]}>DATARIOT</Text>
+                    <RNImage
+                        source={require('../../../assets/logo.jpg')}
+                        style={{
+                            width: 28,
+                            height: 28,
+                            borderRadius: 14,
+                            marginRight: 10,
+                            borderWidth: 1,
+                            borderColor: isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.08)',
+                        }}
+                    />
+                    <Text style={[styles.logo, { color: theme.colors.text.primary, fontFamily: theme.typography.fontFamilies.brand, letterSpacing: 4, fontSize: 12 }]}>DATARIOT</Text>
                 </View>
             </View>
 
@@ -212,7 +201,7 @@ export const WebSidebar = () => {
             {/* Liked Videos Section */}
             {likedVideos.length > 0 && (
                 <View style={styles.mediaSection}>
-                    <Text style={[styles.sectionLabel, { color: '#38BDF8', fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace' }]}>[ RECENT.VIDEOS ]</Text>
+                    <Text style={[styles.sectionLabel, { color: '#D9E4FF', fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace' }]}>[ RECENT.VIDEOS ]</Text>
                     <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.mediaScroll}>
                         {likedVideos.map((video) => (
                             <Pressable
@@ -337,8 +326,8 @@ const styles = StyleSheet.create({
         paddingLeft: 16,
     },
     logo: {
-        fontSize: 17,
-        letterSpacing: 3,
+        fontSize: 12,
+        letterSpacing: 4,
     },
     menuList: {
         gap: 6,
