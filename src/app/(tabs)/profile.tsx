@@ -42,7 +42,7 @@ const isWeb = Platform.OS === 'web';
 const VIDEO_ITEM_WIDTH = isWeb ? (Math.min(SCREEN_WIDTH, 600) - 2) / 3 : (SCREEN_WIDTH - 2) / 3;
 const HEADER_HEIGHT = 220;
 
-const StickyHeader = ({ scrollY, user, handleSignOut, router }: { scrollY: SharedValue<number>, user: any, handleSignOut: () => void, router: any }) => {
+const StickyHeader = ({ scrollY, user, profile, handleSignOut, router }: { scrollY: SharedValue<number>, user: any, profile: ProfileData | null, handleSignOut: () => void, router: any }) => {
     const { theme, mode } = useTheme();
     const isDark = mode === 'dark';
 
@@ -62,7 +62,7 @@ const StickyHeader = ({ scrollY, user, handleSignOut, router }: { scrollY: Share
             <SafeAreaView style={styles.stickyHeaderSafeArea}>
                 <View style={styles.stickyHeaderContent}>
                     <Animated.Text style={[styles.stickyUsername, headerStyle, { color: theme.colors.text.primary }]}>
-                        @{user?.email?.split('@')[0]}
+                        @{profile?.username || user?.email?.split('@')[0]}
                     </Animated.Text>
                     <View style={styles.stickyHeaderActions}>
                         <Pressable style={styles.iconButton} onPress={() => router.push('/settings')}>
@@ -110,10 +110,29 @@ const ProfileHeader = ({ profile, user, scrollY, headerImageUrl, activeTab, setA
         <View>
             <View style={styles.headerContainer}>
                 <Animated.View style={[StyleSheet.absoluteFill, bannerStyle, { backgroundColor: isDark ? '#000000' : '#FFFFFF' }]}>
-                    <ImageBackground
-                        source={{ uri: headerImageUrl }}
-                        style={StyleSheet.absoluteFill}
-                    />
+                    {headerImageUrl ? (
+                        <ImageBackground
+                            source={{ uri: headerImageUrl }}
+                            style={StyleSheet.absoluteFill}
+                        />
+                    ) : (
+                        <View style={StyleSheet.absoluteFill}>
+                            <LinearGradient
+                                colors={isDark ? ['#0E1017', '#13151D', '#08090D'] : ['#EDF2FF', '#F8F8FA', '#FFFFFF']}
+                                start={{ x: 0, y: 0 }}
+                                end={{ x: 1, y: 1 }}
+                                style={StyleSheet.absoluteFill}
+                            />
+                            <LinearGradient
+                                colors={isDark
+                                    ? ['rgba(217, 228, 255, 0.14)', 'rgba(217, 228, 255, 0.03)', 'transparent']
+                                    : ['rgba(107, 127, 204, 0.10)', 'rgba(107, 127, 204, 0.02)', 'transparent']}
+                                start={{ x: 0.5, y: 0 }}
+                                end={{ x: 0.5, y: 1 }}
+                                style={StyleSheet.absoluteFill}
+                            />
+                        </View>
+                    )}
                     <View style={[StyleSheet.absoluteFill, { backgroundColor: isDark ? 'rgba(0,0,0,0.2)' : 'rgba(255,255,255,0.1)' }]} />
                     {/* Pull-down brightness flash overlay */}
                     <Animated.View style={[StyleSheet.absoluteFill, bannerOverlayStyle, { backgroundColor: 'rgba(255,255,255,0.18)' }]} />
@@ -144,59 +163,57 @@ const ProfileHeader = ({ profile, user, scrollY, headerImageUrl, activeTab, setA
                             <Text style={[styles.displayName, { color: theme.colors.text.primary }]}>
                                 {profile?.display_name || user.email?.split('@')[0] || 'User'}
                             </Text>
-                            <Pressable
-                                style={styles.iconicEditBtn}
-                                onPress={() => router.push('/edit-profile')}
-                            >
-                                <Ionicons name="create-outline" size={18} color={isDark ? theme.colors.primary.DEFAULT : theme.colors.text.primary} />
-                            </Pressable>
                         </View>
                         <Text style={[styles.username, { color: theme.colors.text.secondary, fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace' }]}>
-                            &gt; @{profile?.username || user.email?.split('@')[0]}
+                            @{profile?.username || user.email?.split('@')[0]}
                         </Text>
 
                         {/* Stats Row */}
                         <View style={[
-                            styles.compactStatsContainer,
+                            styles.statsCard,
                             {
                                 backgroundColor: isDark ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.015)',
                                 borderColor: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.05)',
-                                borderWidth: 1,
                             }
                         ]}>
-                            <View style={styles.compactStatsRow}>
-                                <View style={styles.compactStatItem}>
-                                    <Text style={[styles.compactStatValue, { color: theme.colors.text.primary, fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace' }]}>{profile?.followers_count || 0}</Text>
-                                    <Text style={[styles.compactStatLabel, { color: theme.colors.text.secondary, fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace' }]}>FOLLOWERS</Text>
-                                </View>
-                                <View style={[styles.compactStatDivider, { backgroundColor: isDark ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.1)' }]} />
-                                <View style={styles.compactStatItem}>
-                                    <Text style={[styles.compactStatValue, { color: theme.colors.text.primary, fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace' }]}>{profile?.following_count || 0}</Text>
-                                    <Text style={[styles.compactStatLabel, { color: theme.colors.text.secondary, fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace' }]}>FOLLOWING</Text>
-                                </View>
-                                <View style={[styles.compactStatDivider, { backgroundColor: isDark ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.1)' }]} />
-                                <View style={styles.compactStatItem}>
-                                    <Text style={[styles.compactStatValue, { color: theme.colors.text.primary, fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace' }]}>{profile?.arguments_count || 0}</Text>
-                                    <Text style={[styles.compactStatLabel, { color: theme.colors.text.secondary, fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace' }]}>ARGUMENTS</Text>
-                                </View>
-                            </View>
+                            {[
+                                { value: profile?.followers_count || 0, label: 'Followers' },
+                                { value: profile?.following_count || 0, label: 'Following' },
+                                { value: profile?.arguments_count || 0, label: 'Arguments' },
+                            ].map((stat, idx) => (
+                                <React.Fragment key={stat.label}>
+                                    {idx > 0 && <View style={[styles.statDivider, { backgroundColor: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)' }]} />}
+                                    <View style={styles.statColumn}>
+                                        <Text style={[styles.statValue, { color: theme.colors.text.primary }]}>{stat.value}</Text>
+                                        <Text style={[styles.statLabel, { color: theme.colors.text.secondary }]}>{stat.label}</Text>
+                                    </View>
+                                </React.Fragment>
+                            ))}
                         </View>
 
-                        {/* Creator DNA Button */}
-                        <Pressable
-                            onPress={onShowAchievements}
-                            style={[styles.achievementsBtn, {
-                                backgroundColor: isDark ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.02)',
-                                borderColor: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.05)',
-                                borderWidth: 1,
-                            }]}
-                        >
-                            <View style={styles.achievementsBtnLeft}>
-                                <Ionicons name="finger-print" size={18} color={theme.colors.primary.DEFAULT} style={{ marginRight: 8 }} />
-                                <Text style={[styles.achievementsBtnText, { color: theme.colors.text.primary, fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace' }]}>[ CREATOR DNA ]</Text>
-                            </View>
-                            <Ionicons name="chevron-forward" size={16} color={theme.colors.text.secondary} />
-                        </Pressable>
+                        {/* Action Buttons */}
+                        <View style={styles.actionButtonsRow}>
+                            <Pressable
+                                onPress={() => router.push('/edit-profile')}
+                                style={[styles.profileActionBtn, {
+                                    backgroundColor: isDark ? 'rgba(217, 228, 255, 0.08)' : 'rgba(107, 127, 204, 0.08)',
+                                    borderColor: isDark ? 'rgba(217, 228, 255, 0.18)' : 'rgba(107, 127, 204, 0.2)',
+                                }]}
+                            >
+                                <Ionicons name="create-outline" size={16} color={theme.colors.primary.DEFAULT} />
+                                <Text style={[styles.profileActionBtnText, { color: theme.colors.text.primary }]}>Edit Profile</Text>
+                            </Pressable>
+                            <Pressable
+                                onPress={onShowAchievements}
+                                style={[styles.profileActionBtn, {
+                                    backgroundColor: isDark ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.02)',
+                                    borderColor: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)',
+                                }]}
+                            >
+                                <Ionicons name="finger-print" size={16} color={theme.colors.primary.DEFAULT} />
+                                <Text style={[styles.profileActionBtnText, { color: theme.colors.text.primary }]}>Creator DNA</Text>
+                            </Pressable>
+                        </View>
                     </View>
                 </View>
 
@@ -212,14 +229,15 @@ const ProfileHeader = ({ profile, user, scrollY, headerImageUrl, activeTab, setA
                     <View style={styles.tabsContainer}>
                         {(['videos', 'posts', 'saved'] as const).map((tab) => {
                             const isActive = activeTab === tab;
+                            const label = tab === 'videos' ? 'Videos' : tab === 'posts' ? 'Posts' : 'Saved';
                             return (
                                 <Pressable
                                     key={tab}
                                     style={[
                                         styles.tabItem,
                                         isActive && {
-                                            backgroundColor: isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.03)',
-                                            borderColor: isDark ? 'rgba(0, 240, 255, 0.2)' : 'rgba(8, 145, 178, 0.2)',
+                                            backgroundColor: isDark ? 'rgba(217, 228, 255, 0.06)' : 'rgba(107, 127, 204, 0.06)',
+                                            borderColor: isDark ? 'rgba(217, 228, 255, 0.22)' : 'rgba(107, 127, 204, 0.22)',
                                             borderWidth: 1,
                                             borderRadius: 16,
                                             margin: 2,
@@ -230,25 +248,27 @@ const ProfileHeader = ({ profile, user, scrollY, headerImageUrl, activeTab, setA
                                     {tab === 'videos' ? (
                                         <MaterialCommunityIcons
                                             name={isActive ? 'play-box-multiple' : 'play-box-multiple-outline'}
-                                            size={20}
+                                            size={18}
                                             color={isActive ? theme.colors.primary.DEFAULT : theme.colors.text.secondary}
                                         />
                                     ) : (
                                         <Ionicons
                                             name={
                                                 isActive
-                                                    ? (tab === 'posts' ? 'infinite' : 'library')
-                                                    : (tab === 'posts' ? 'infinite-outline' : 'library-outline')
+                                                    ? (tab === 'posts' ? 'document-text' : 'bookmark')
+                                                    : (tab === 'posts' ? 'document-text-outline' : 'bookmark-outline')
                                             }
-                                            size={20}
+                                            size={18}
                                             color={isActive ? theme.colors.primary.DEFAULT : theme.colors.text.secondary}
                                         />
                                     )}
-                                    {isActive && (
-                                        <Text style={[styles.activeTabText, { color: theme.colors.primary.DEFAULT, fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace' }]}>
-                                            [ {tab === 'videos' ? 'ESSENCE' : tab === 'posts' ? 'THESES' : 'VAULT'} ]
-                                        </Text>
-                                    )}
+                                    <Text style={[
+                                        styles.tabText,
+                                        { color: isActive ? theme.colors.primary.DEFAULT : theme.colors.text.secondary },
+                                        isActive && { fontWeight: '800' },
+                                    ]}>
+                                        {label}
+                                    </Text>
                                 </Pressable>
                             );
                         })}
@@ -446,20 +466,8 @@ export default function ProfileScreen() {
         />
     );
 
-    const getProfileCoverImage = React.useCallback((userId: string) => {
-        let sum = 0;
-        for (let i = 0; i < userId.length; i++) {
-            sum += userId.charCodeAt(i);
-        }
-        const seed = sum % 1000;
-        // Use a much faster and reliable placeholder service for the banner
-        return `https://picsum.photos/seed/${seed}/800/600`;
-    }, []);
-
-    const headerImageUrl = React.useMemo(() => {
-        if (profile?.banner_url) return profile.banner_url;
-        return getProfileCoverImage(user?.id || 'default');
-    }, [user?.id, profile?.banner_url, getProfileCoverImage]);
+    // Use the user's banner if set; otherwise the header renders a brand gradient
+    const headerImageUrl = profile?.banner_url || null;
 
 
     useFocusEffect(
@@ -605,13 +613,13 @@ export default function ProfileScreen() {
                             style={styles.authSignInWrapper}
                         >
                             <LinearGradient
-                                colors={['#D9E4FF', '#D9E4FF']}
+                                colors={['#D9E4FF', '#A5C6FF']}
                                 start={{ x: 0, y: 0 }}
                                 end={{ x: 1, y: 0 }}
                                 style={styles.authSignInGradient}
                             >
                                 <Text style={styles.authSignInText}>Sign In</Text>
-                                <Ionicons name="arrow-forward" size={20} color="#FFFFFF" />
+                                <Ionicons name="arrow-forward" size={20} color="#000000" />
                             </LinearGradient>
                         </Pressable>
                     </View>
@@ -717,7 +725,7 @@ export default function ProfileScreen() {
             <StatusBar barStyle={isDark ? "light-content" : "dark-content"} />
 
             {/* Sticky Header Overlay */}
-            <StickyHeader scrollY={scrollY} user={user} handleSignOut={handleSignOut} router={router} />
+            <StickyHeader scrollY={scrollY} user={user} profile={profile} handleSignOut={handleSignOut} router={router} />
 
             <Animated.FlatList
                 key={activeTab}
@@ -912,34 +920,35 @@ const styles = StyleSheet.create({
         width: 14,
         height: 14,
         borderRadius: 7,
-        backgroundColor: '#D9E4FF',
+        backgroundColor: '#34D399',
         borderWidth: 2,
     },
     avatarText: {
         fontSize: 32,
         fontWeight: 'bold',
     },
-    achievementsBtn: {
+    actionButtonsRow: {
         flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        paddingHorizontal: 16,
-        paddingVertical: 12,
-        borderRadius: 16,
+        gap: 10,
         marginTop: 12,
         marginBottom: 8,
         width: '90%',
         alignSelf: 'center',
     },
-    achievementsBtnLeft: {
+    profileActionBtn: {
+        flex: 1,
         flexDirection: 'row',
         alignItems: 'center',
-        gap: 10,
+        justifyContent: 'center',
+        gap: 7,
+        paddingVertical: 11,
+        borderRadius: 14,
+        borderWidth: 1,
     },
-    achievementsBtnText: {
-        fontSize: 14,
+    profileActionBtnText: {
+        fontSize: 13,
         fontWeight: '700',
-        letterSpacing: -0.2,
+        letterSpacing: 0.2,
     },
     modalOverlay: {
         flex: 1,
@@ -1130,19 +1139,9 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         maxWidth: '70%',
     },
-    iconicEditBtn: {
-        position: 'absolute',
-        right: 16,
-        width: 32,
-        height: 32,
-        borderRadius: 16,
-        backgroundColor: 'rgba(255,255,255,0.05)',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
     username: {
         fontSize: 14,
-        marginBottom: 10,
+        marginBottom: 12,
         opacity: 0.7,
     },
 
@@ -1185,38 +1184,35 @@ const styles = StyleSheet.create({
     },
 
 
-    // Compact Stats
-    compactStatsContainer: {
-        marginTop: 4,
-        paddingHorizontal: 12,
-        paddingVertical: 6,
-        borderRadius: 20,
+    // Stats
+    statsCard: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        width: '90%',
         alignSelf: 'center',
+        paddingVertical: 12,
+        borderRadius: 18,
+        borderWidth: 1,
     },
-    compactStatsRow: {
-        flexDirection: 'row',
+    statColumn: {
+        flex: 1,
         alignItems: 'center',
     },
-    compactStatItem: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginRight: 0,
-    },
-    compactStatValue: {
-        fontSize: 15,
+    statValue: {
+        fontSize: 18,
         fontWeight: '800',
-        marginRight: 4,
+        letterSpacing: -0.3,
     },
-    compactStatLabel: {
-        fontSize: 10,
+    statLabel: {
+        fontSize: 11,
         fontWeight: '500',
-        letterSpacing: 0.2,
-        opacity: 0.6,
+        letterSpacing: 0.3,
+        marginTop: 2,
+        opacity: 0.7,
     },
-    compactStatDivider: {
+    statDivider: {
         width: 1,
-        height: 12,
-        marginRight: 12,
+        height: 24,
     },
 
     // Tabs
@@ -1245,18 +1241,10 @@ const styles = StyleSheet.create({
         zIndex: 2,
     },
 
-    tabIndicator: {
-        position: 'absolute',
-        height: 40, // Height of the sliding pill
-        backgroundColor: '#D9E4FF',
-        borderRadius: 20,
-        zIndex: 1,
-    },
-    activeTabText: {
-        color: '#fff',
-        fontSize: 12,
-        fontWeight: '800',
-        letterSpacing: 0.5,
+    tabText: {
+        fontSize: 13,
+        fontWeight: '600',
+        letterSpacing: 0.2,
     },
 
     // Grid
@@ -1347,7 +1335,7 @@ const styles = StyleSheet.create({
         borderRadius: 8,
     },
     createFirstButtonText: {
-        color: 'white',
+        color: '#000000',
         fontWeight: 'bold',
     },
     authPrompt: {
@@ -1392,7 +1380,7 @@ const styles = StyleSheet.create({
     authSignInText: {
         fontSize: 18,
         fontWeight: '800',
-        color: '#FFFFFF',
+        color: '#000000',
         letterSpacing: 1,
         textTransform: 'uppercase',
     },
