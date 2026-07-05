@@ -791,7 +791,7 @@ export default function ProfileScreen() {
 
                         {/* DNA Core Stats */}
                         <View style={{ marginBottom: 24, marginTop: 16 }}>
-                            <Text style={[styles.xpLevelLabel, { color: theme.colors.text.secondary, marginBottom: 4 }]}>MEMBER SINCE</Text>
+                            <Text style={[styles.dnaLabel, { color: theme.colors.text.secondary, marginBottom: 4 }]}>MEMBER SINCE</Text>
                             <Text style={{ color: theme.colors.text.primary, fontSize: 20, fontWeight: '700' }}>
                                 {profile?.created_at ? new Date(profile.created_at).toLocaleDateString('en-US', { month: 'long', year: 'numeric' }) : 'Loading...'}
                             </Text>
@@ -800,13 +800,13 @@ export default function ProfileScreen() {
                         <View style={{ flexDirection: 'row', gap: 48, marginBottom: 32 }}>
                             {/* Total Impact (Replaces Location) */}
                             <View>
-                                <Text style={[styles.xpLevelLabel, { color: theme.colors.text.secondary, marginBottom: 4 }]}>TOTAL IMPACT</Text>
+                                <Text style={[styles.dnaLabel, { color: theme.colors.text.secondary, marginBottom: 4 }]}>TOTAL IMPACT</Text>
                                 <Text style={{ color: theme.colors.text.primary, fontSize: 16, fontWeight: '600' }}>{profile?.total_impact_score || 0}</Text>
                             </View>
 
                             {/* Favorite Category */}
                             <View>
-                                <Text style={[styles.xpLevelLabel, { color: theme.colors.text.secondary, marginBottom: 4 }]}>TOP INTEREST</Text>
+                                <Text style={[styles.dnaLabel, { color: theme.colors.text.secondary, marginBottom: 4 }]}>TOP INTEREST</Text>
                                 <Text style={{ color: theme.colors.text.primary, fontSize: 16, fontWeight: '600' }}>{profile?.top_category || 'General'}</Text>
                             </View>
                         </View>
@@ -814,15 +814,15 @@ export default function ProfileScreen() {
                         {/* Engagement score */}
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingTop: 16, borderTopWidth: StyleSheet.hairlineWidth, borderColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)' }}>
                             <View>
-                                <Text style={[styles.xpLevelLabel, { color: theme.colors.text.secondary, marginBottom: 4 }]}>GLOBAL RANK</Text>
+                                <Text style={[styles.dnaLabel, { color: theme.colors.text.secondary, marginBottom: 4 }]}>GLOBAL RANK</Text>
                                 <Text style={{ color: theme.colors.text.primary, fontSize: 18, fontWeight: '700' }}>{profile?.global_rank || 'N/A'}</Text>
                             </View>
                             <View>
-                                <Text style={[styles.xpLevelLabel, { color: theme.colors.text.secondary, marginBottom: 4 }]}>ACTIVITY</Text>
+                                <Text style={[styles.dnaLabel, { color: theme.colors.text.secondary, marginBottom: 4 }]}>ACTIVITY</Text>
                                 <Text style={{ color: theme.colors.text.primary, fontSize: 18, fontWeight: '700' }}>{profile?.activity_level || 'Low'}</Text>
                             </View>
                             <View>
-                                <Text style={[styles.xpLevelLabel, { color: theme.colors.text.secondary, marginBottom: 4 }]}>APPROVAL RATE</Text>
+                                <Text style={[styles.dnaLabel, { color: theme.colors.text.secondary, marginBottom: 4 }]}>APPROVAL RATE</Text>
                                 <Text style={{ color: theme.colors.text.primary, fontSize: 18, fontWeight: '700' }}>{profile?.win_rate || 'N/A'}</Text>
                             </View>
                         </View>
@@ -991,69 +991,12 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(255, 255, 255, 0.05)',
         borderRadius: 20,
     },
-    // XP Card
-    xpCard: {
-        borderRadius: 20,
-        padding: 18,
-        marginBottom: 14,
-    },
-    xpCardTop: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'flex-start',
-        marginBottom: 14,
-    },
-    xpLevelLabel: {
+    // Creator DNA modal labels
+    dnaLabel: {
         fontSize: 10,
         fontWeight: '700',
         color: 'rgba(255,255,255,0.6)',
         letterSpacing: 1.5,
-    },
-    xpLevelNum: {
-        fontSize: 40,
-        fontWeight: '900',
-        color: '#FFFFFF',
-        lineHeight: 44,
-        letterSpacing: -1,
-    },
-    xpTitleBox: {
-        alignItems: 'flex-end',
-    },
-    xpTitle: {
-        fontSize: 16,
-        fontWeight: '800',
-        color: '#FFFFFF',
-        letterSpacing: -0.3,
-    },
-    xpTitleSub: {
-        fontSize: 11,
-        color: 'rgba(255,255,255,0.55)',
-        marginTop: 2,
-    },
-    xpBarBg: {
-        height: 6,
-        backgroundColor: 'rgba(255,255,255,0.2)',
-        borderRadius: 3,
-        overflow: 'hidden',
-    },
-    xpBarFill: {
-        height: '100%',
-        backgroundColor: '#FFFFFF',
-        borderRadius: 3,
-    },
-    xpBarLabels: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        marginTop: 6,
-    },
-    xpCurrent: {
-        fontSize: 11,
-        color: 'rgba(255,255,255,0.7)',
-        fontWeight: '600',
-    },
-    xpMax: {
-        fontSize: 11,
-        color: 'rgba(255,255,255,0.5)',
     },
     // Achievement Cards
     achRow: {

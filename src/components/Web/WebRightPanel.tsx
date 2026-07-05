@@ -98,11 +98,11 @@ export const WebRightPanel = () => {
                 </View>
             </View>
 
-            {/* Weekly Challenge — Premium Card */}
+            {/* Debate of the Week — Premium Card */}
             <View style={styles.sectionContainer}>
                 <View style={styles.sectionHeader}>
                     <Text style={[styles.sectionTitle, { color: theme.colors.text.primary, fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace' }]}>
-                        [ CHALLENGE.MISSION ]
+                        [ DEBATE.ARENA ]
                     </Text>
                     <View style={styles.liveIndicatorContainer}>
                         <View style={styles.liveDotWrapper}>
@@ -137,11 +137,11 @@ export const WebRightPanel = () => {
                         <View style={styles.challengeContent}>
                             <View style={styles.challengeHeaderRow}>
                                 <View style={styles.topBadge}>
-                                    <Text style={[styles.topBadgeText, { fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace' }]}>[ WEEKLY.ARENA ]</Text>
+                                    <Text style={[styles.topBadgeText, { fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace' }]}>[ DEBATE.OF.THE.WEEK ]</Text>
                                 </View>
                                 <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
-                                    <MaterialCommunityIcons name="lightning-bolt" size={13} color="#D9E4FF" />
-                                    <Text style={[styles.prizePool, { fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace' }]}>5,000 XP</Text>
+                                    <MaterialCommunityIcons name="account-voice" size={13} color="#D9E4FF" />
+                                    <Text style={[styles.prizePool, { fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace' }]}>2,481 VOICES</Text>
                                 </View>
                             </View>
 
@@ -151,26 +151,38 @@ export const WebRightPanel = () => {
                                         colors={['rgba(217, 228, 255, 0.15)', 'rgba(217, 228, 255, 0.01)']}
                                         style={StyleSheet.absoluteFillObject}
                                     />
-                                    <MaterialCommunityIcons name="trophy" size={18} color="#D9E4FF" />
+                                    <MaterialCommunityIcons name="sword-cross" size={18} color="#D9E4FF" />
                                 </View>
                                 <View style={{ flex: 1 }}>
-                                    <Text style={[styles.challengeTitle, { fontFamily: theme.typography.fontFamilies.bold, textTransform: 'uppercase' }]} numberOfLines={1}>
-                                        SLOW MOTION
+                                    <Text style={[styles.challengeTitle, { fontFamily: theme.typography.fontFamilies.bold, textTransform: 'uppercase' }]} numberOfLines={2}>
+                                        SOCIAL MEDIA KILLED CRITICAL THINKING
                                     </Text>
                                     <Text style={[styles.challengeSub, { fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace' }]} numberOfLines={1}>
-                                        1,248 ENROLLED
+                                        ENDS IN 3 DAYS
                                     </Text>
                                 </View>
                             </View>
 
+                            {/* Live FOR / AGAINST split */}
+                            <View style={styles.debateSplitLabels}>
+                                <Text style={[styles.debateSplitLabelFor, { fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace' }]}>FOR · 64%</Text>
+                                <Text style={[styles.debateSplitLabelAgainst, { fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace' }]}>36% · AGAINST</Text>
+                            </View>
+                            <View style={styles.debateSplitBar}>
+                                <View style={[styles.debateSplitFill, { width: '64%' }]} />
+                            </View>
+
                             <Text style={[styles.challengeDesc, { fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace' }]}>
-                                Capture movement deconstructed. Render a high-fidelity slow-motion sequence and claim showcase status on the feed.
+                                Pick a side and drop your strongest argument. The sharpest take gets featured on the main feed.
                             </Text>
 
-                            <Pressable style={({ pressed, hovered }: any) => [
-                                styles.challengeBtn,
-                                (pressed || hovered) && styles.challengeBtnHovered
-                            ]}>
+                            <Pressable
+                                onPress={() => router.push('/ai')}
+                                style={({ pressed, hovered }: any) => [
+                                    styles.challengeBtn,
+                                    (pressed || hovered) && styles.challengeBtnHovered
+                                ]}
+                            >
                                 <LinearGradient
                                     colors={['#D9E4FF', '#A5C6FF']}
                                     start={{ x: 0, y: 0 }}
@@ -178,7 +190,7 @@ export const WebRightPanel = () => {
                                     style={StyleSheet.absoluteFillObject}
                                 />
                                 <Text style={[styles.challengeBtnText, { fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace', fontWeight: '800' }]}>
-                                    [ ENTER.ARENA ]
+                                    [ TAKE.A.SIDE ]
                                 </Text>
                             </Pressable>
                         </View>
@@ -528,6 +540,35 @@ const styles: any = StyleSheet.create({
         lineHeight: 19,
         color: 'rgba(255, 255, 255, 0.7)',
         marginBottom: 20,
+    },
+    debateSplitLabels: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginBottom: 6,
+    },
+    debateSplitLabelFor: {
+        fontSize: 10,
+        fontWeight: '800',
+        letterSpacing: 0.8,
+        color: '#D9E4FF',
+    },
+    debateSplitLabelAgainst: {
+        fontSize: 10,
+        fontWeight: '800',
+        letterSpacing: 0.8,
+        color: 'rgba(255, 255, 255, 0.45)',
+    },
+    debateSplitBar: {
+        height: 6,
+        borderRadius: 3,
+        backgroundColor: 'rgba(255, 255, 255, 0.12)',
+        overflow: 'hidden',
+        marginBottom: 16,
+    },
+    debateSplitFill: {
+        height: '100%',
+        borderRadius: 3,
+        backgroundColor: '#D9E4FF',
     },
     challengeBtn: {
         width: '100%',
