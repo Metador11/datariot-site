@@ -245,7 +245,7 @@ const styles = StyleSheet.create({
     authorName: {
         fontSize: 14,
         fontWeight: '700',
-        color: '#38BDF8',
+        color: '#D9E4FF',
         letterSpacing: 0.5,
         fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
     },
@@ -286,7 +286,7 @@ const styles = StyleSheet.create({
         left: 20,
         backgroundColor: 'rgba(8, 9, 13, 0.65)',
         borderWidth: 1,
-        borderColor: '#38BDF8',
+        borderColor: '#D9E4FF',
         paddingHorizontal: 10,
         paddingVertical: 6,
         borderRadius: 4,
@@ -295,7 +295,7 @@ const styles = StyleSheet.create({
     badgeText: {
         fontSize: 9,
         fontWeight: '900',
-        color: '#38BDF8',
+        color: '#D9E4FF',
         letterSpacing: 1,
         fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
     },

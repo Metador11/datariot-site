@@ -370,7 +370,7 @@ const styles = StyleSheet.create({
         fontSize: 15,
     },
     hashtag: {
-        color: '#0EA5E9',
+        color: '#D9E4FF',
         fontFamily: theme.typography.fontFamilies.bold,
     },
 
@@ -393,8 +393,8 @@ const styles = StyleSheet.create({
         color: 'white',
     },
     actionIconActive: {
-        color: '#0EA5E9',
-        textShadowColor: 'rgba(14, 165, 233, 0.8)',
+        color: '#D9E4FF',
+        textShadowColor: 'rgba(107, 127, 204, 0.8)',
         textShadowOffset: { width: 0, height: 0 },
         textShadowRadius: 10,
     },

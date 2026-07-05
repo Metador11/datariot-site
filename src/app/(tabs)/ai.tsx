@@ -26,10 +26,10 @@ const uniqueId = () => `msg_${Date.now()}_${++_msgIdCounter}`;
 
 // Example prompts for first-time users
 const EXAMPLE_PROMPTS = [
-    { iconType: 'material', iconName: 'lightning-bolt', color: '#A5C6FF', text: 'Daily insight', tool: 'insight' as ToolType, desc: 'Focus reading' },
-    { iconType: 'material', iconName: 'microscope', color: '#10B981', text: 'Analyze content', tool: 'analyze' as ToolType, desc: 'Truth scan' },
-    { iconType: 'material', iconName: 'brain', color: '#8B5CF6', text: 'What can you do?', tool: 'chat' as ToolType, desc: 'Capabilities' },
-    { iconType: 'feather', iconName: 'lightbulb', color: '#EC4899', text: 'Tell me something interesting', tool: 'chat' as ToolType, desc: 'Random insight' },
+    { iconType: 'material', iconName: 'lightning-bolt', color: '#D9E4FF', text: 'Daily insight', tool: 'insight' as ToolType, desc: 'Focus reading' },
+    { iconType: 'material', iconName: 'microscope', color: '#A5C6FF', text: 'Analyze content', tool: 'analyze' as ToolType, desc: 'Truth scan' },
+    { iconType: 'material', iconName: 'brain', color: '#BDEBFF', text: 'What can you do?', tool: 'chat' as ToolType, desc: 'Capabilities' },
+    { iconType: 'feather', iconName: 'lightbulb', color: '#7AA2FF', text: 'Tell me something interesting', tool: 'chat' as ToolType, desc: 'Random insight' },
 ];
 
 // Animated typing dots component
@@ -201,7 +201,7 @@ const AIIntroCard = ({ theme, isDark }: { theme: any, isDark: boolean }) => {
             </View>
 
             <Text style={[styles.introDesc, { color: theme.colors.text.secondary, fontFamily: theme.typography.fontFamilies.regular }]}>
-                Engineered at the intersection of media forensics and high-fidelity intelligence synthesis. Orvelis is designed to stress-test concepts through strategic dialogue, analyze narrative parameters, and generate deep cognitive focus insight readings in real-time.
+                Orvelis answers your questions directly and without fluff. Ask anything, run a content analysis, or get your daily focus insight.
             </Text>
 
             <View style={[styles.introDivider, { backgroundColor: isDark ? 'rgba(255, 255, 255, 0.06)' : 'rgba(0, 0, 0, 0.06)' }]} />
@@ -234,7 +234,7 @@ export default function AIScreen() {
         {
             id: 'init',
             role: 'assistant',
-            content: "Welcome to the synapse. Select an analysis module below or introduce a query to initiate dialogue.",
+            content: "Hi, I'm Orvelis. Ask me anything — I'll answer briefly and to the point.",
             type: 'text'
         }
     ]);
@@ -372,11 +372,11 @@ export default function AIScreen() {
             return (
                 <Animated.View entering={FadeInUp.springify()} style={[styles.messageBubble, styles.aiBubble, styles.cardBubble, {
                     backgroundColor: isDark ? 'rgba(255, 255, 255, 0.01)' : 'rgba(0,0,0,0.005)',
-                    borderColor: isDark ? 'rgba(56, 189, 248, 0.05)' : 'rgba(14, 165, 233, 0.05)'
+                    borderColor: isDark ? 'rgba(217, 228, 255, 0.05)' : 'rgba(107, 127, 204, 0.05)'
                 }]}>
                     {/* Subtle gradient overlay */}
                     <LinearGradient
-                        colors={isDark ? ['rgba(56, 189, 248, 0.02)', 'transparent'] : ['rgba(14, 165, 233, 0.01)', 'transparent']}
+                        colors={isDark ? ['rgba(217, 228, 255, 0.02)', 'transparent'] : ['rgba(107, 127, 204, 0.01)', 'transparent']}
                         style={[StyleSheet.absoluteFill, { borderRadius: 20 }]}
                     />
                     <View style={styles.cardHeader}>
@@ -403,15 +403,15 @@ export default function AIScreen() {
             return (
                 <Animated.View entering={FadeInUp.springify()} style={[styles.messageBubble, styles.aiBubble, styles.cardBubble, {
                     backgroundColor: isDark ? 'rgba(255, 255, 255, 0.01)' : 'rgba(0,0,0,0.005)',
-                    borderColor: isDark ? 'rgba(56, 189, 248, 0.05)' : 'rgba(14, 165, 233, 0.05)'
+                    borderColor: isDark ? 'rgba(217, 228, 255, 0.05)' : 'rgba(107, 127, 204, 0.05)'
                 }]}>
                     <LinearGradient
-                        colors={isDark ? ['rgba(139, 92, 246, 0.02)', 'transparent'] : ['rgba(139, 92, 246, 0.01)', 'transparent']}
+                        colors={isDark ? ['rgba(217, 228, 255, 0.02)', 'transparent'] : ['rgba(217, 228, 255, 0.01)', 'transparent']}
                         style={[StyleSheet.absoluteFill, { borderRadius: 20 }]}
                     />
                     <View style={styles.cardHeader}>
-                        <View style={[styles.cardHeaderIcon, { backgroundColor: isDark ? 'rgba(139, 92, 246, 0.05)' : 'rgba(139, 92, 246, 0.02)' }]}>
-                            <Feather name="eye" size={14} color="#8B5CF6" />
+                        <View style={[styles.cardHeaderIcon, { backgroundColor: isDark ? 'rgba(217, 228, 255, 0.05)' : 'rgba(217, 228, 255, 0.02)' }]}>
+                            <Feather name="eye" size={14} color="#A5C6FF" />
                         </View>
                         <Text style={[styles.cardTitle, { color: theme.colors.text.primary }]}>TRUTH ANALYSIS</Text>
                     </View>
@@ -429,8 +429,8 @@ export default function AIScreen() {
                         <Text style={[styles.cardText, { color: theme.colors.text.secondary }]}>{analysis.manipulation}</Text>
                     </View>
                     <View style={styles.analysisSection}>
-                        <View style={[styles.analysisLabelBadge, { backgroundColor: isDark ? 'rgba(56, 189, 248, 0.05)' : 'rgba(56, 189, 248, 0.02)' }]}>
-                            <Text style={[styles.analysisLabel, { color: '#38BDF8' }]}>REAL VALUE</Text>
+                        <View style={[styles.analysisLabelBadge, { backgroundColor: isDark ? 'rgba(217, 228, 255, 0.05)' : 'rgba(217, 228, 255, 0.02)' }]}>
+                            <Text style={[styles.analysisLabel, { color: '#D9E4FF' }]}>REAL VALUE</Text>
                         </View>
                         <Text style={[styles.cardText, { color: theme.colors.text.secondary }]}>{analysis.realValue}</Text>
                     </View>
@@ -479,8 +479,8 @@ export default function AIScreen() {
                     <PulseGlow />
                     <View style={styles.headerContent}>
                         <View style={[styles.headerIconContainer, {
-                            backgroundColor: isDark ? 'rgba(56, 189, 248, 0.1)' : 'rgba(14, 165, 233, 0.08)',
-                            borderColor: isDark ? 'rgba(56, 189, 248, 0.25)' : 'rgba(14, 165, 233, 0.2)'
+                            backgroundColor: isDark ? 'rgba(217, 228, 255, 0.1)' : 'rgba(107, 127, 204, 0.08)',
+                            borderColor: isDark ? 'rgba(217, 228, 255, 0.25)' : 'rgba(107, 127, 204, 0.2)'
                         }]}>
                             <MaterialCommunityIcons name="robot-excited" size={22} color={theme.colors.primary.DEFAULT} />
                         </View>
@@ -552,8 +552,8 @@ export default function AIScreen() {
                                 style={[
                                     styles.toolButton,
                                     selectedTool === tool.key && [styles.toolButtonActive, {
-                                        backgroundColor: isDark ? 'rgba(56, 189, 248, 0.15)' : 'rgba(14, 165, 233, 0.1)',
-                                        borderColor: isDark ? 'rgba(56, 189, 248, 0.3)' : 'rgba(14, 165, 233, 0.2)'
+                                        backgroundColor: isDark ? 'rgba(217, 228, 255, 0.15)' : 'rgba(107, 127, 204, 0.1)',
+                                        borderColor: isDark ? 'rgba(217, 228, 255, 0.3)' : 'rgba(107, 127, 204, 0.2)'
                                     }]
                                 ]}
                                 onPress={() => handleToolSelect(tool.key)}
@@ -815,7 +815,7 @@ const styles = StyleSheet.create({
         width: 7,
         height: 7,
         borderRadius: 3.5,
-        backgroundColor: 'rgba(56, 189, 248, 0.8)',
+        backgroundColor: 'rgba(217, 228, 255, 0.8)',
         marginHorizontal: 2,
     },
     // ===== TOOL SELECTOR =====
@@ -887,7 +887,7 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: 'rgba(56, 189, 248, 0.15)',
+        backgroundColor: 'rgba(217, 228, 255, 0.15)',
     },
     cardTitle: {
         fontSize: 11,

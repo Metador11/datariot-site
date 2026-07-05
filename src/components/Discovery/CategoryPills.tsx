@@ -92,7 +92,7 @@ const PillButton = ({ category, isActive, isDark, theme, onPress }: { category: 
                     {
                         color: isActive
                             ? (isDark ? '#000000' : '#FFFFFF')
-                            : (isDark ? '#38BDF8' : '#4C6EF5'),
+                            : (isDark ? '#D9E4FF' : '#4C6EF5'),
                         fontWeight: isActive ? '800' : '700',
                         fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
                     }

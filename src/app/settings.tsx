@@ -54,7 +54,7 @@ export default function SettingsScreen() {
                         style={styles.promoteWrapper}
                     >
                         <LinearGradient
-                            colors={['#D9E4FF', '#D9E4FF', '#EC4899']}
+                            colors={['#D9E4FF', '#D9E4FF', '#A5C6FF']}
                             start={{ x: 0, y: 0 }}
                             end={{ x: 1, y: 0 }}
                             style={styles.promoteGradient}

@@ -150,15 +150,18 @@ export function SideMenu({ isOpen, onClose }: SideMenuProps) {
                     <Feather name="x" size={32} color="white" />
                 </Pressable>
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                    <View style={{ position: 'relative', width: 26, height: 26, alignItems: 'center', justifyContent: 'center', marginRight: 10 }}>
-                        {/* Blue 'Ice' Tone Overlay */}
-                        <View style={{ position: 'absolute', width: 28, height: 28, backgroundColor: 'rgba(56, 189, 248, 0.15)', borderRadius: 14 }} />
-                        <RNImage
-                            source={require('../../../assets/logo.jpg')}
-                            style={{ width: 22, height: 22, borderRadius: 11 }}
-                        />
-                    </View>
-                    <Text style={[styles.logoText, { color: theme.colors.primary.DEFAULT, fontFamily: theme.typography.fontFamilies.brand, letterSpacing: 1 }]}>DATARIOT</Text>
+                    <RNImage
+                        source={require('../../../assets/logo.jpg')}
+                        style={{
+                            width: 24,
+                            height: 24,
+                            borderRadius: 12,
+                            marginRight: 10,
+                            borderWidth: 1,
+                            borderColor: 'rgba(255, 255, 255, 0.08)',
+                        }}
+                    />
+                    <Text style={[styles.logoText, { color: theme.colors.text.primary, fontFamily: theme.typography.fontFamilies.brand, letterSpacing: 4 }]}>DATARIOT</Text>
                 </View>
             </View>
 
@@ -277,7 +280,7 @@ const styles = StyleSheet.create({
     },
     logoText: {
         color: 'white',
-        fontSize: 14,
+        fontSize: 12,
         fontWeight: '900',
         letterSpacing: 4,
     },

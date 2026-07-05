@@ -156,10 +156,10 @@ const styles = StyleSheet.create({
         width: 8,
         height: 8,
         borderRadius: 4,
-        backgroundColor: '#00FF88',
+        backgroundColor: '#34D399',
     },
     liveText: {
-        color: '#00FF88',
+        color: '#34D399',
         fontSize: 10,
         fontWeight: '900',
         letterSpacing: 1.5,

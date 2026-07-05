@@ -26,8 +26,8 @@ export const TrendingBullets: React.FC<TrendingBulletsProps> = ({ onItemPress })
     return (
         <View style={styles.container}>
             <View style={styles.header}>
-                <Ionicons name="flash-outline" size={16} color="#38BDF8" />
-                <Text style={[styles.headerText, { color: '#38BDF8', fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace' }]}>[ TRENDING.NOW ]</Text>
+                <Ionicons name="flash-outline" size={16} color="#D9E4FF" />
+                <Text style={[styles.headerText, { color: '#D9E4FF', fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace' }]}>[ TRENDING.NOW ]</Text>
             </View>
 
             <View style={styles.list}>

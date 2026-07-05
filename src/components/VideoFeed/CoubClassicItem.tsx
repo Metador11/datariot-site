@@ -453,7 +453,7 @@ const styles = StyleSheet.create({
         left: 14,
         backgroundColor: 'rgba(8, 9, 13, 0.6)',
         borderWidth: 1,
-        borderColor: '#38BDF8',
+        borderColor: '#D9E4FF',
         paddingHorizontal: 10,
         paddingVertical: 6,
         borderRadius: 4,
@@ -461,7 +461,7 @@ const styles = StyleSheet.create({
     },
     cyberBadgeText: {
         fontSize: 11,
-        color: '#38BDF8',
+        color: '#D9E4FF',
         fontWeight: '700',
         letterSpacing: 1,
         fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
@@ -471,7 +471,7 @@ const styles = StyleSheet.create({
     },
     authorHandleText: {
         fontSize: 13,
-        color: '#38BDF8',
+        color: '#D9E4FF',
         fontWeight: '700',
         letterSpacing: 0.5,
         fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
@@ -488,7 +488,7 @@ const styles = StyleSheet.create({
     },
     hashtag: {
         fontSize: 12,
-        color: '#38BDF8',
+        color: '#D9E4FF',
         fontWeight: '700',
         fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
         marginBottom: 8,
