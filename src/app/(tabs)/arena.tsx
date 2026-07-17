@@ -65,7 +65,7 @@ export default function ArenaScreen() {
                 style={[styles.hero, { borderColor: isDark ? 'rgba(217,228,255,0.12)' : 'rgba(76,110,245,0.15)' }]}
             >
                 <View style={[styles.heroBadge, { borderColor: isDark ? 'rgba(217,228,255,0.30)' : 'rgba(76,110,245,0.28)' }]}>
-                    <MaterialCommunityIcons name="sword-cross" size={12} color={primary} />
+                    <MaterialCommunityIcons name="radar" size={12} color={primary} />\
                     <Text style={[styles.heroBadgeText, { color: primary, fontFamily: MONO }]}>ARENA · BETA</Text>
                 </View>
 

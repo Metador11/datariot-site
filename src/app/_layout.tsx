@@ -3,10 +3,10 @@ import { Stack } from 'expo-router';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Platform } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { StatusBar } from 'expo-status-bar';
 import { ThemeProvider } from '../components/Theme/ThemeProvider';
 import { GlobalWebStyles } from '../components/Web/GlobalWebStyles';
 import * as SplashScreen from 'expo-splash-screen';
+import VercelAnalytics from '../components/Web/VercelAnalytics';
 import {
     useFonts,
     Oxanium_400Regular,
@@ -49,9 +49,6 @@ import {
 } from '@expo-google-fonts/space-grotesk';
 
 import { Feather, Ionicons, MaterialCommunityIcons, Entypo, SimpleLineIcons, AntDesign, FontAwesome5, MaterialIcons } from '@expo/vector-icons';
-
-import { Analytics } from '@vercel/analytics/react';
-import { SpeedInsights } from '@vercel/speed-insights/react';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -114,12 +111,7 @@ export default function RootLayout() {
                     </Stack>
                 </SafeAreaProvider>
             </GestureHandlerRootView>
-            {Platform.OS === 'web' && (
-                <>
-                    <Analytics />
-                    <SpeedInsights />
-                </>
-            )}
+            <VercelAnalytics />
         </ThemeProvider>
     );
 }

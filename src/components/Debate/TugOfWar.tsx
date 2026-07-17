@@ -79,7 +79,7 @@ export function TugOfWar({ postId, topic, challengerId, opponentId }: TugOfWarPr
         setBetMsg(null);
         const res = await placeBet(side, 50);
         setBetting(null);
-        setBetMsg(res.ok ? `Bet placed: 50 XP on ${side}` : (res.message || 'Bet failed'));
+        setBetMsg(res.ok ? `Bet placed: 50 credits on ${side}` : (res.message || 'Bet failed'));
     };
 
     const handleShare = async () => {
@@ -174,10 +174,10 @@ export function TugOfWar({ postId, topic, challengerId, opponentId }: TugOfWarPr
                         </Pressable>
                     </View>
 
-                    {/* XP bet */}
+                    {/* Betting panel */}
                     {user && (
                         <View style={styles.betRow}>
-                            <Text style={[styles.betLabel, { color: theme.colors.text.muted }]}>STAKE 50 XP:</Text>
+                            <Text style={[styles.betLabel, { color: theme.colors.text.muted }]}>STAKE 50 CREDITS:</Text>
                             <Pressable style={styles.betBtn} onPress={() => handleBet('FOR')} disabled={!!betting}>
                                 {betting === 'FOR' ? <ActivityIndicator size="small" color="#7DD3FC" /> : <Text style={[styles.betBtnText, { color: '#7DD3FC' }]}>ON FOR</Text>}
                             </Pressable>

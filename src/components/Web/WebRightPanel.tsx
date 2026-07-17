@@ -144,8 +144,8 @@ export const WebRightPanel = () => {
                                     <Text style={[styles.topBadgeText, !isDark && { color: '#52526A' }, { fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace' }]}>[ WEEKLY.ARENA ]</Text>
                                 </View>
                                 <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
-                                    <MaterialCommunityIcons name="lightning-bolt" size={13} color={isDark ? '#D9E4FF' : '#4C6EF5'} />
-                                    <Text style={[styles.prizePool, !isDark && { color: '#4C6EF5' }, { fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace' }]}>5,000 XP</Text>
+                                    <MaterialCommunityIcons name="sparkles" size={13} color={isDark ? '#D9E4FF' : '#4C6EF5'} />
+                                    <Text style={[styles.prizePool, !isDark && { color: '#4C6EF5' }, { fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace' }]}>5,000 ACHIEVEMENTS</Text>
                                 </View>
                             </View>
 

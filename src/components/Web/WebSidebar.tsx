@@ -190,7 +190,7 @@ export const WebSidebar = () => {
                 <View style={styles.spacer} />
 
                 <MenuItem
-                    icon={<MaterialCommunityIcons name="sword-cross" size={22} color={theme.colors.primary.DEFAULT} />}
+                    icon={<MaterialCommunityIcons name="radar" size={22} color={theme.colors.primary.DEFAULT} />}
                     label="Arena (Beta)"
                     isActive={isActive('/arena')}
                     onPress={() => router.push('/arena')}
@@ -235,7 +235,7 @@ export const WebSidebar = () => {
                     <Pressable onPress={() => window.open('https://twitter.com/datariot_xyz', '_blank')} style={styles.socialIcon}>
                         <FontAwesome5 name="twitter" size={16} color={theme.colors.text.muted} />
                     </Pressable>
-                    <Pressable onPress={() => window.open('https://discord.gg/KvBpEVrk2', '_blank')} style={styles.socialIcon}>
+                    <Pressable onPress={() => window.open('https://discord.gg/FcJrJ5ZSH', '_blank')} style={styles.socialIcon}>
                         <FontAwesome5 name="discord" size={16} color={theme.colors.text.muted} />
                     </Pressable>
                     <Pressable onPress={() => window.open('https://instagram.com/datariot.xyz', '_blank')} style={styles.socialIcon}>

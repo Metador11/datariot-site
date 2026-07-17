@@ -1,6 +1,6 @@
 import React, { useRef, useState, memo } from 'react';
 import { View, Text, StyleSheet, Pressable, Dimensions, Animated, Image, Platform, useWindowDimensions } from 'react-native';
-import { Video, ResizeMode, Audio } from 'expo-av';
+import { Video, ResizeMode } from 'expo-av';
 import { Ionicons } from '@expo/vector-icons';
 import { BlurView } from 'expo-blur';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -289,16 +289,15 @@ export const CoubClassicItem = memo(({
 
                 {/* Premium Gradient Progress Bar */}
                 <View style={styles.progressBarContainer} pointerEvents="none">
-                    <LinearGradient
-                        colors={['#D9E4FF', '#A5C6FF']}
-                        start={{ x: 0, y: 0 }}
-                        end={{ x: 1, y: 0 }}
-                        style={[styles.progressBarFill, { width: `${progress * 100}%` }]}
-                    />
-                    {/* Glow dot at progress tip */}
-                    {progress > 0 && (
-                        <View style={[styles.progressGlowDot, { left: `${progress * 100}%` }]} />
-                    )}
+                    <View style={[styles.progressBarFill, { flex: progress }]}>
+                        <LinearGradient
+                            colors={['#D9E4FF', '#A5C6FF']}
+                            start={{ x: 0, y: 0 }}
+                            end={{ x: 1, y: 0 }}
+                            style={StyleSheet.absoluteFillObject}
+                        />
+                    </View>
+                    <View style={{ flex: 1 - progress }} />
                 </View>
 
 

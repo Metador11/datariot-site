@@ -51,8 +51,8 @@ const tabs: TabItem[] = [
     {
         name: 'Arena (Beta)',
         icon: (focused, color) => (
-            <Ionicons
-                name={focused ? 'shield' : 'shield-outline'}
+            <MaterialCommunityIcons
+                name={focused ? 'radar' : 'radar'}
                 size={22}
                 color={color}
             />

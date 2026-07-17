@@ -8,7 +8,7 @@ import { leagueForRating, nextLeague } from '@lib/arena/elo';
 
 const MONO = Platform.OS === 'ios' ? 'Courier' : 'monospace';
 
-// Right-panel widget: daily streak, quest checklist, league & XP.
+// Right-panel widget: daily streak, quest checklist, league & achievements.
 // Hidden when signed out or when the backend tables don't exist yet.
 export function StreakQuestsPanel() {
     const { user } = useAuth();
@@ -78,7 +78,7 @@ export function StreakQuestsPanel() {
 
                 <View style={[styles.xpRow, { borderTopColor: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.06)' }]}>
                     <MaterialCommunityIcons name="lightning-bolt" size={13} color="#D9E4FF" />
-                    <Text style={[styles.xpText, { color: theme.colors.text.secondary }]}>{xp ?? 500} XP AVAILABLE</Text>
+                    <Text style={[styles.xpText, { color: theme.colors.text.secondary }]}>{xp ?? 0} ACHIEVEMENTS AVAILABLE</Text>\
                 </View>
             </View>
         </View>

@@ -33,7 +33,7 @@ const MENU_ITEMS = [
 
 const SOCIAL_LINKS = [
     { id: 'twitter', icon: 'twitter', url: 'https://twitter.com/datariot_xyz', color: '#FFFFFF' },
-    { id: 'discord', icon: 'discord', url: 'https://discord.gg/KvBpEVrk2', color: '#FFFFFF' },
+    { id: 'discord', icon: 'discord', url: 'https://discord.gg/FcJrJ5ZSH', color: '#FFFFFF' },
     { id: 'instagram', icon: 'instagram', url: 'https://instagram.com/datariot.xyz', color: '#FFFFFF' },
 ];
 

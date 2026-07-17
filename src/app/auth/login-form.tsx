@@ -132,7 +132,7 @@ export default function LoginFormScreen() {
                     {/* Don't have an account? Sign up */}
                     <View style={styles.footer}>
                         <Text style={[styles.footerText, { color: theme.colors.text.secondary }]}>
-                            Don't have an account?{' '}
+                            Don&apos;t have an account?{' '}
                             <Text
                                 style={[styles.footerLink, { color: theme.colors.primary.DEFAULT || '#4C6EF5' }]}
                                 onPress={() => router.replace('/auth/signup-form')}
