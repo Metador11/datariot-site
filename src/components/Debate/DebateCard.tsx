@@ -1,9 +1,12 @@
 import React from 'react';
-import { View, Text, StyleSheet, Pressable, Image } from 'react-native';
+import { View, Text, StyleSheet, Pressable, Image, Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 import Animated, { useAnimatedStyle, useSharedValue, withSequence, withTiming, withSpring } from 'react-native-reanimated';
 import { useTheme } from '../Theme/ThemeProvider';
 import { Post } from '@lib/supabase/hooks/usePosts';
+
+const isWeb = Platform.OS === 'web';
 
 interface DebateCardProps {
     item: Post;
@@ -12,7 +15,7 @@ interface DebateCardProps {
     isOwnPost?: boolean;
 }
 
-export function DebateCard({ item, onPress, onDelete, isOwnPost }: DebateCardProps) {
+export const DebateCard = React.memo(function DebateCard({ item, onPress, onDelete, isOwnPost }: DebateCardProps) {
     const { theme, mode } = useTheme();
     const isDark = mode === 'dark';
     const deleteScale = useSharedValue(1);
@@ -39,25 +42,42 @@ export function DebateCard({ item, onPress, onDelete, isOwnPost }: DebateCardPro
             style={({ pressed }) => [
                 styles.card,
                 {
-                    backgroundColor: isDark ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.02)',
-                    borderColor: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.05)',
+                    backgroundColor: isDark ? 'rgba(255,255,255,0.025)' : '#FFFFFF',
+                    borderColor: isDark ? 'rgba(217,228,255,0.10)' : 'rgba(0,0,0,0.06)',
                 },
-                pressed && { opacity: 0.8 }
+                isWeb && {
+                    // @ts-ignore — web hover-ready soft glow
+                    boxShadow: isDark
+                        ? '0 10px 30px rgba(0,0,0,0.45), 0 0 0 1px rgba(217,228,255,0.03)'
+                        : '0 10px 28px rgba(76,110,245,0.10), 0 1px 2px rgba(0,0,0,0.04)',
+                },
+                pressed && { opacity: 0.92, transform: [{ scale: 0.995 }] }
             ]}
         >
+            {/* Accent edge */}
+            <LinearGradient
+                colors={isDark ? ['#A5C6FF', '#D9E4FF'] : ['#4C6EF5', '#7AA2FF']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 0, y: 1 }}
+                style={styles.accentEdge}
+            />
+
             <View style={styles.header}>
                 <View style={styles.authorRow}>
-                    <View style={[styles.avatar, { borderColor: isDark ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.1)' }]}>
+                    <View style={[styles.avatar, {
+                        borderColor: isDark ? 'rgba(217,228,255,0.25)' : 'rgba(76,110,245,0.25)',
+                        backgroundColor: isDark ? 'rgba(217,228,255,0.06)' : 'rgba(76,110,245,0.06)',
+                    }]}>
                         {item.authorAvatar ? (
                             <Image source={{ uri: item.authorAvatar }} style={styles.avatarImage} />
                         ) : (
-                            <Text style={[styles.avatarText, { color: theme.colors.text.primary }]}>
+                            <Text style={[styles.avatarText, { color: theme.colors.primary.DEFAULT }]}>
                                 {item.authorName ? item.authorName[0].toUpperCase() : '?'}
                             </Text>
                         )}
                     </View>
                     <View style={styles.authorInfo}>
-                        <Text style={[styles.authorName, { color: theme.colors.text.primary }]}>{item.authorName}</Text>
+                        <Text style={[styles.authorName, { color: theme.colors.text.primary }]} numberOfLines={1}>{item.authorName}</Text>
                         <Text style={[styles.date, { color: theme.colors.text.muted }]}>
                             {new Date(item.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
                         </Text>
@@ -65,9 +85,12 @@ export function DebateCard({ item, onPress, onDelete, isOwnPost }: DebateCardPro
                 </View>
 
                 {item.isAiAssisted && (
-                    <View style={[styles.aiBadge, { backgroundColor: theme.colors.primary.DEFAULT }]}>
-                        <Ionicons name="sparkles" size={12} color="#FFF" />
-                        <Text style={[styles.aiBadgeText, { color: '#FFF' }]}>LOGIC ORACLE</Text>
+                    <View style={[styles.aiBadge, {
+                        backgroundColor: isDark ? 'rgba(217,228,255,0.12)' : 'rgba(76,110,245,0.10)',
+                        borderColor: isDark ? 'rgba(217,228,255,0.30)' : 'rgba(76,110,245,0.28)',
+                    }]}>
+                        <Ionicons name="sparkles" size={11} color={theme.colors.primary.DEFAULT} />
+                        <Text style={[styles.aiBadgeText, { color: theme.colors.primary.DEFAULT }]}>LOGIC ORACLE</Text>
                     </View>
                 )}
 
@@ -76,7 +99,7 @@ export function DebateCard({ item, onPress, onDelete, isOwnPost }: DebateCardPro
                         onPress={handleDeletePress}
                         style={({ pressed }) => ([
                             styles.deleteButton,
-                            { backgroundColor: isDark ? 'rgba(239,68,68,0.1)' : 'rgba(239,68,68,0.1)' },
+                            { backgroundColor: 'rgba(239,68,68,0.10)' },
                             pressed && { opacity: 0.7 }
                         ])}
                     >
@@ -90,7 +113,11 @@ export function DebateCard({ item, onPress, onDelete, isOwnPost }: DebateCardPro
             <View style={styles.body}>
                 <View style={styles.bodyContentRow}>
                     <View style={styles.textContent}>
-                        <View style={[styles.thesisBadge, { backgroundColor: isDark ? 'rgba(0, 102, 255, 0.15)' : 'rgba(0, 102, 255, 0.1)' }]}>
+                        <View style={[styles.thesisBadge, {
+                            backgroundColor: isDark ? 'rgba(217,228,255,0.10)' : 'rgba(76,110,245,0.08)',
+                            borderColor: isDark ? 'rgba(217,228,255,0.22)' : 'rgba(76,110,245,0.20)',
+                        }]}>
+                            <Ionicons name="git-compare" size={11} color={theme.colors.primary.DEFAULT} />
                             <Text style={[styles.thesisBadgeText, { color: theme.colors.primary.DEFAULT }]}>THESIS</Text>
                         </View>
                         <Text style={[styles.content, { color: theme.colors.text.primary }]} numberOfLines={3}>
@@ -99,14 +126,14 @@ export function DebateCard({ item, onPress, onDelete, isOwnPost }: DebateCardPro
                     </View>
 
                     {(item.videoUrl || item.imageUrl) && (
-                        <View style={styles.mediaPreview}>
+                        <View style={[styles.mediaPreview, { borderColor: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)' }]}>
                             <Image
                                 source={{ uri: item.imageUrl || 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=200&q=80' }}
                                 style={styles.thumbnail}
                             />
                             {item.videoUrl && (
                                 <View style={styles.videoIconOverlay}>
-                                    <Ionicons name="play" size={16} color="#FFFFFF" />
+                                    <Ionicons name="play" size={14} color="#FFFFFF" />
                                 </View>
                             )}
                         </View>
@@ -117,47 +144,31 @@ export function DebateCard({ item, onPress, onDelete, isOwnPost }: DebateCardPro
                 {item.logicStats && (
                     <View style={styles.logicBalanceContainer}>
                         <View style={styles.logicLabels}>
-                            <Text style={styles.logicLabelText}>FOR</Text>
-                            <Text style={[styles.logicLabelText, { textAlign: 'right' }]}>AGAINST</Text>
+                            <Text style={[styles.logicLabelFor]}>● FOR</Text>
+                            <Text style={[styles.logicLabelAgainst]}>AGAINST ●</Text>
                         </View>
-                        <View style={styles.balanceTrack}>
-                            <View
-                                style={[
-                                    styles.balanceFill,
-                                    {
-                                        width: `${item.logicStats.forPercentage}%`,
-                                        backgroundColor: '#00C853'
-                                    }
-                                ]}
-                            />
-                            <View
-                                style={[
-                                    styles.balanceFill,
-                                    {
-                                        width: `${100 - item.logicStats.forPercentage}%`,
-                                        backgroundColor: '#D50000'
-                                    }
-                                ]}
-                            />
+                        <View style={[styles.balanceTrack, { backgroundColor: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)' }]}>
+                            <View style={[styles.balanceFill, { width: `${item.logicStats.forPercentage}%`, backgroundColor: '#34D399' }]} />
+                            <View style={[styles.balanceFill, { width: `${100 - item.logicStats.forPercentage}%`, backgroundColor: '#F87171' }]} />
                         </View>
                         <View style={styles.logicScores}>
-                            <Text style={[styles.logicScoreText, { color: theme.colors.primary.DEFAULT }]}>{item.logicStats.forScore}</Text>
-                            <Text style={[styles.logicScoreText, { textAlign: 'right', color: theme.colors.primary.DEFAULT }]}>{item.logicStats.againstScore}</Text>
+                            <Text style={[styles.logicScoreText, { color: '#34D399' }]}>{item.logicStats.forScore}</Text>
+                            <Text style={[styles.logicScoreText, { color: '#F87171' }]}>{item.logicStats.againstScore}</Text>
                         </View>
                     </View>
                 )}
             </View>
 
-            <View style={styles.footer}>
+            <View style={[styles.footer, { borderTopColor: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.05)' }]}>
                 <View style={styles.statGroup}>
-                    <Ionicons name="bulb-outline" size={18} color={theme.colors.primary.DEFAULT} />
+                    <Ionicons name="bulb-outline" size={17} color={theme.colors.primary.DEFAULT} />
                     <Text style={[styles.statText, { color: theme.colors.text.secondary }]}>
                         <Text style={{ fontWeight: 'bold', color: theme.colors.text.primary }}>{threadWeight}</Text> Reputation
                     </Text>
                 </View>
 
                 <View style={styles.statGroup}>
-                    <Ionicons name="chatbubbles-outline" size={18} color={theme.colors.text.secondary} />
+                    <Ionicons name="chatbubbles-outline" size={17} color={theme.colors.text.secondary} />
                     <Text style={[styles.statText, { color: theme.colors.text.secondary }]}>
                         <Text style={{ fontWeight: 'bold', color: theme.colors.text.primary }}>{argumentsCount}</Text> Arguments
                     </Text>
@@ -165,31 +176,44 @@ export function DebateCard({ item, onPress, onDelete, isOwnPost }: DebateCardPro
 
                 <View style={styles.flexSpacer} />
 
-                <Ionicons name="chevron-forward" size={20} color={theme.colors.text.muted} />
+                <View style={[styles.enterChip, { backgroundColor: isDark ? 'rgba(217,228,255,0.08)' : 'rgba(76,110,245,0.08)' }]}>
+                    <Ionicons name="arrow-forward" size={16} color={theme.colors.primary.DEFAULT} />
+                </View>
             </View>
         </Pressable>
     );
-}
+});
 
 const styles = StyleSheet.create({
     card: {
         marginBottom: 16,
-        borderRadius: 24,
+        borderRadius: 22,
         marginHorizontal: 16,
-        padding: 4,
+        paddingLeft: 4,
         borderWidth: 1,
-        // Shadow for depth
+        overflow: 'hidden',
+        position: 'relative',
         shadowColor: "#000",
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.15,
-        shadowRadius: 8,
+        shadowOffset: { width: 0, height: 6 },
+        shadowOpacity: 0.12,
+        shadowRadius: 12,
         elevation: 5,
+    },
+    accentEdge: {
+        position: 'absolute',
+        left: 0,
+        top: 14,
+        bottom: 14,
+        width: 3,
+        borderTopRightRadius: 3,
+        borderBottomRightRadius: 3,
     },
     header: {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        padding: 12,
+        paddingHorizontal: 14,
+        paddingTop: 14,
         paddingBottom: 8,
     },
     authorRow: {
@@ -237,16 +261,20 @@ const styles = StyleSheet.create({
         paddingBottom: 16,
     },
     thesisBadge: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 5,
         alignSelf: 'flex-start',
-        paddingHorizontal: 8,
-        paddingVertical: 4,
-        borderRadius: 8,
-        marginBottom: 8,
+        paddingHorizontal: 9,
+        paddingVertical: 5,
+        borderRadius: 999,
+        borderWidth: 1,
+        marginBottom: 10,
     },
     thesisBadgeText: {
         fontSize: 10,
         fontWeight: '900',
-        letterSpacing: 1,
+        letterSpacing: 1.2,
     },
     content: {
         fontSize: 16,
@@ -259,8 +287,14 @@ const styles = StyleSheet.create({
         paddingHorizontal: 16,
         paddingVertical: 12,
         borderTopWidth: 1,
-        borderTopColor: 'rgba(128,128,128,0.1)',
         gap: 16,
+    },
+    enterChip: {
+        width: 30,
+        height: 30,
+        borderRadius: 15,
+        alignItems: 'center',
+        justifyContent: 'center',
     },
     statGroup: {
         flexDirection: 'row',
@@ -283,12 +317,13 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     mediaPreview: {
-        width: 80,
-        height: 100,
-        borderRadius: 12,
+        width: 92,
+        height: 112,
+        borderRadius: 14,
         overflow: 'hidden',
         backgroundColor: 'rgba(0,0,0,0.1)',
         position: 'relative',
+        borderWidth: 1,
     },
     thumbnail: {
         width: '100%',
@@ -296,11 +331,18 @@ const styles = StyleSheet.create({
     },
     videoIconOverlay: {
         position: 'absolute',
-        top: 4,
-        right: 4,
-        backgroundColor: 'rgba(0,0,0,0.5)',
-        borderRadius: 10,
-        padding: 4,
+        top: '50%',
+        left: '50%',
+        width: 30,
+        height: 30,
+        marginLeft: -15,
+        marginTop: -15,
+        backgroundColor: 'rgba(0,0,0,0.55)',
+        borderRadius: 15,
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderWidth: 1,
+        borderColor: 'rgba(255,255,255,0.4)',
     },
     logicBalanceContainer: {
         marginVertical: 4,
@@ -310,17 +352,24 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         marginBottom: 4,
     },
-    logicLabelText: {
-        fontSize: 10,
+    logicLabelFor: {
+        fontSize: 9,
         fontWeight: '900',
-        color: 'rgba(255,255,255,0.4)',
+        letterSpacing: 0.8,
+        color: '#34D399',
+    },
+    logicLabelAgainst: {
+        fontSize: 9,
+        fontWeight: '900',
+        letterSpacing: 0.8,
+        textAlign: 'right',
+        color: '#F87171',
     },
     balanceTrack: {
         height: 6,
-        borderRadius: 3,
+        borderRadius: 999,
         flexDirection: 'row',
         overflow: 'hidden',
-        backgroundColor: 'rgba(255,255,255,0.05)',
     },
     balanceFill: {
         height: '100%',

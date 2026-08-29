@@ -29,7 +29,7 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&family=Oxanium:wght@400;500;600;700;800&family=Syncopate:wght@400;700&family=Playfair+Display:ital,wght@0,400..700;1,400..700&family=JetBrains+Mono:wght@400;500;700;800&display=swap"
         rel="stylesheet" />
-    <link rel="stylesheet" href="style.css?v=3.2.7" />
+    <link rel="stylesheet" href="info-style.css?v=3.2.7" />
     <!-- Cache-Bust-Hash: 49294f77-8f99-4c6e-bc63-4e1b887698df -->
     <style>
         :root {
@@ -1133,6 +1133,34 @@
                         <p class="topic-content">"Decentralized governance is the only viable path for global consensus."</p>
                     </div>
 
+                    <div class="factcheck-demo">
+                        <div class="factcheck-demo__head">
+                            <div class="topic-meta">[ ORVELIS // AI FACT CHECK ]</div>
+                            <p class="factcheck-demo__hint">Tap a claim from the floor — the truth engine cross-references it live.</p>
+                        </div>
+                        <div class="factcheck-demo__claims">
+                            <button class="claim-chip" type="button" data-verdict="VERIFIED" data-confidence="94"
+                                data-source="World Bank Open Data">"Over 60% of humanity is online today."</button>
+                            <button class="claim-chip" type="button" data-verdict="FALSE" data-confidence="91"
+                                data-source="Reuters Fact Check">"Decentralized networks cannot be censored."</button>
+                            <button class="claim-chip" type="button" data-verdict="MISLEADING" data-confidence="78"
+                                data-source="Nature — peer-reviewed">"AI already out-reasons human experts."</button>
+                        </div>
+                        <div class="terminal-window">
+                            <div class="terminal-window__header">
+                                <div class="terminal-window__dots">
+                                    <span class="dot dot--red"></span>
+                                    <span class="dot dot--yellow"></span>
+                                    <span class="dot dot--green"></span>
+                                </div>
+                                <span class="terminal-window__title">fact_check.ai</span>
+                            </div>
+                            <div class="panel-terminal factcheck-output" id="factcheckOutput">
+                                <div class="terminal-line"><span class="term-prompt">&gt;</span> awaiting claim selection<span class="term-blink">_</span></div>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="arena-cta">
                         <button class="vote-btn vote-btn--for">[ CAST VOTE // AFFIRMATIVE ]</button>
                         <button class="vote-btn vote-btn--against">[ CAST VOTE // NEGATIVE ]</button>
@@ -1370,7 +1398,7 @@
                         <div class="footer__col">
                             <h5>Social</h5>
                             <a href="https://x.com/datariot.xyz" target="_blank" rel="noopener">Twitter</a>
-                            <a href="https://discord.gg/KvBpEVrk2" target="_blank" rel="noopener">Discord</a>
+                            <a href="https://discord.gg/FcJrJ5ZSH" target="_blank" rel="noopener">Discord</a>
                         </div>
                     </div>
                 </div>
@@ -1397,9 +1425,9 @@
     <script defer src="https://unpkg.com/split-type"></script>
     <!-- 3D Scripts Restored -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js"></script>
-    <script defer src="3d-fx.js?v=2"></script>
+    <script defer src="info-3d-fx.js?v=2"></script>
 
-    <script defer src="script.js"></script>
+    <script defer src="info-script.js"></script>
 </body>
 
 </html>

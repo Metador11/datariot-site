@@ -114,7 +114,7 @@ export const MosaicItem = memo(({ video, isActive, isScreenFocused, onPress }: M
                         </View>
 
                         <View style={styles.statsContainer}>
-                            <Ionicons name="heart-outline" size={10} color="#38BDF8" />
+                            <Ionicons name="heart-outline" size={10} color="#D9E4FF" />
                             <Text style={styles.statsText}>{formatNumber(video.likes)}</Text>
                         </View>
                     </View>
@@ -157,14 +157,14 @@ const styles = StyleSheet.create({
     categoryBadge: {
         backgroundColor: 'rgba(8, 9, 13, 0.65)',
         borderWidth: 1,
-        borderColor: '#38BDF8',
+        borderColor: '#D9E4FF',
         paddingHorizontal: 8,
         paddingVertical: 4,
         borderRadius: 4,
         zIndex: 20,
     },
     categoryText: {
-        color: '#38BDF8',
+        color: '#D9E4FF',
         fontSize: 9,
         fontWeight: '900',
         letterSpacing: 0.5,
@@ -208,7 +208,7 @@ const styles = StyleSheet.create({
         borderColor: 'rgba(255,255,255,0.3)',
     },
     authorName: {
-        color: '#38BDF8',
+        color: '#D9E4FF',
         fontSize: 10,
         fontWeight: '700',
         flex: 1,

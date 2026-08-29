@@ -24,9 +24,16 @@ export const SectionHeader: React.FC<SectionHeaderProps> = ({
     return (
         <View style={[styles.container, containerStyle]}>
             <View style={styles.textContainer}>
-                <Text style={[styles.title, { color: theme.colors.text.primary, fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace' }]}>{`[ ${title.toUpperCase()} ]`}</Text>
+                <View style={styles.titleRow}>
+                    <View style={styles.accentBar} />
+                    <Text style={[styles.title, { color: theme.colors.text.primary, fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace' }]}>
+                        <Text style={styles.bracket}>{'[ '}</Text>
+                        {title.toUpperCase()}
+                        <Text style={styles.bracket}>{' ]'}</Text>
+                    </Text>
+                </View>
                 {subtitle && (
-                    <Text style={[styles.subtitle, { color: theme.colors.text.secondary, fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace' }]}>{subtitle.toUpperCase()}</Text>
+                    <Text style={[styles.subtitle, styles.subtitleIndent, { color: theme.colors.text.secondary, fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace' }]}>{subtitle.toUpperCase()}</Text>
                 )}
             </View>
 
@@ -60,10 +67,32 @@ const styles = StyleSheet.create({
     textContainer: {
         flex: 1,
     },
+    titleRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 10,
+    },
+    accentBar: {
+        width: 3,
+        height: 16,
+        borderRadius: 2,
+        backgroundColor: '#38BDF8',
+        shadowColor: '#38BDF8',
+        shadowOffset: { width: 0, height: 0 },
+        shadowOpacity: 0.8,
+        shadowRadius: 6,
+    },
     title: {
-        fontSize: 18,
+        fontSize: 20,
         fontWeight: '900',
         letterSpacing: 0.5,
+    },
+    bracket: {
+        color: '#38BDF8',
+        fontWeight: '900',
+    },
+    subtitleIndent: {
+        marginLeft: 13,
     },
     farRightImage: {
         width: 28,

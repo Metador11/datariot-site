@@ -136,31 +136,21 @@ export const WebSidebar = () => {
 
     return (
         <View style={[styles.container, { backgroundColor: 'transparent' }]}>
-            {/* Logo Section with ambient glow */}
+            {/* Logo Section */}
             <View style={styles.logoContainer}>
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                    <View style={{ marginRight: 10, position: 'relative', width: 36, height: 36, alignItems: 'center', justifyContent: 'center' }}>
-                        {/* Ambient glow behind logo */}
-                        <View style={{
-                            position: 'absolute',
-                            width: 52,
-                            height: 52,
-                            backgroundColor: isDark ? 'rgba(217, 228, 255, 0.12)' : 'rgba(107, 127, 204, 0.08)',
-                            borderRadius: 26,
-                        }} />
-                        <View style={{
-                            position: 'absolute',
-                            width: 42,
-                            height: 42,
-                            backgroundColor: isDark ? 'rgba(217, 228, 255, 0.08)' : 'rgba(107, 127, 204, 0.05)',
-                            borderRadius: 21,
-                        }} />
-                        <RNImage
-                            source={require('../../../assets/logo.jpg')}
-                            style={{ width: 32, height: 32, borderRadius: 16 }}
-                        />
-                    </View>
-                    <Text style={[styles.logo, { color: theme.colors.primary.DEFAULT, fontFamily: theme.typography.fontFamilies.brand, letterSpacing: 3, fontSize: 17 }]}>DATARIOT</Text>
+                    <RNImage
+                        source={require('../../../assets/logo.jpg')}
+                        style={{
+                            width: 28,
+                            height: 28,
+                            borderRadius: 14,
+                            marginRight: 10,
+                            borderWidth: 1,
+                            borderColor: isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.08)',
+                        }}
+                    />
+                    <Text style={[styles.logo, { color: theme.colors.text.primary, fontFamily: theme.typography.fontFamilies.brand, letterSpacing: 4, fontSize: 12 }]}>DATARIOT</Text>
                 </View>
             </View>
 
@@ -190,13 +180,20 @@ export const WebSidebar = () => {
                     onPress={() => router.push('/settings')}
                 />
 
+                <MenuItem
+                    icon={<MaterialCommunityIcons name="robot-excited" size={22} color={isActive('/ai') ? theme.colors.primary.DEFAULT : theme.colors.text.muted} />}
+                    label="Orvelis AI"
+                    isActive={isActive('/ai')}
+                    onPress={() => router.push('/ai')}
+                />
+
                 <View style={styles.spacer} />
 
                 <MenuItem
-                    icon={<MaterialCommunityIcons name="sword-cross" size={22} color={theme.colors.primary.DEFAULT} />}
+                    icon={<MaterialCommunityIcons name="radar" size={22} color={theme.colors.primary.DEFAULT} />}
                     label="Arena (Beta)"
-                    isActive={isActive('/ai')}
-                    onPress={() => router.push('/ai')}
+                    isActive={isActive('/arena')}
+                    onPress={() => router.push('/arena')}
                     isSpecial={true}
                 />
             </View>
@@ -204,26 +201,28 @@ export const WebSidebar = () => {
             {/* Liked Videos Section */}
             {likedVideos.length > 0 && (
                 <View style={styles.mediaSection}>
-                    <Text style={[styles.sectionLabel, { color: '#38BDF8', fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace' }]}>[ RECENT.VIDEOS ]</Text>
+                    <Text style={[styles.sectionLabel, { color: '#D9E4FF', fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace' }]}>[ RECENT.VIDEOS ]</Text>
                     <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.mediaScroll}>
                         {likedVideos.map((video) => (
-                            <Pressable 
-                                key={video.id} 
-                                style={styles.mediaCard} 
+                            <Pressable
+                                key={video.id}
+                                style={[styles.mediaCard, { borderColor: isDark ? 'rgba(217,228,255,0.12)' : 'rgba(100,130,200,0.18)' }]}
                                 onPress={() => router.push({ pathname: '/video-player', params: { type: 'video', initialVideoId: video.id } })}
                             >
-                                <View style={[styles.mediaGradientOuter]}>
-                                    <LinearGradient
-                                        colors={isDark ? ['rgba(217, 228, 255, 0.06)', 'rgba(217, 228, 255, 0.01)'] : ['rgba(100, 130, 200, 0.05)', 'rgba(100, 130, 200, 0.01)']}
-                                        start={{ x: 0, y: 0 }}
-                                        end={{ x: 1, y: 1 }}
-                                        style={StyleSheet.absoluteFillObject}
-                                    />
-                                    <View style={[styles.mediaIconPlaceholder, { backgroundColor: isDark ? 'rgba(217, 228, 255, 0.1)' : 'rgba(100, 130, 200, 0.08)' }]}>
-                                        <Feather name="play" size={11} color={theme.colors.primary.DEFAULT} />
-                                    </View>
-                                    <Text numberOfLines={1} style={[styles.mediaTitle, { color: theme.colors.text.primary, fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace' }]}>{video.title.toUpperCase()}</Text>
+                                <RNImage
+                                    source={{ uri: `https://picsum.photos/seed/${video.id}/260/150` }}
+                                    style={StyleSheet.absoluteFillObject}
+                                    resizeMode="cover"
+                                />
+                                <LinearGradient
+                                    colors={['rgba(8,9,13,0.05)', 'rgba(8,9,13,0.55)', 'rgba(8,9,13,0.92)']}
+                                    locations={[0, 0.5, 1]}
+                                    style={StyleSheet.absoluteFillObject}
+                                />
+                                <View style={[styles.mediaPlayBtn, { backgroundColor: theme.colors.primary.DEFAULT }]}>
+                                    <Feather name="play" size={11} color={isDark ? '#08090D' : '#FFFFFF'} style={{ marginLeft: 1 }} />
                                 </View>
+                                <Text numberOfLines={1} style={[styles.mediaTitle, { color: '#FFFFFF', fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace' }]}>{video.title.toUpperCase()}</Text>
                             </Pressable>
                         ))}
                     </ScrollView>
@@ -236,7 +235,7 @@ export const WebSidebar = () => {
                     <Pressable onPress={() => window.open('https://twitter.com/datariot_xyz', '_blank')} style={styles.socialIcon}>
                         <FontAwesome5 name="twitter" size={16} color={theme.colors.text.muted} />
                     </Pressable>
-                    <Pressable onPress={() => window.open('https://discord.gg/KvBpEVrk2', '_blank')} style={styles.socialIcon}>
+                    <Pressable onPress={() => window.open('https://discord.gg/FcJrJ5ZSH', '_blank')} style={styles.socialIcon}>
                         <FontAwesome5 name="discord" size={16} color={theme.colors.text.muted} />
                     </Pressable>
                     <Pressable onPress={() => window.open('https://instagram.com/datariot.xyz', '_blank')} style={styles.socialIcon}>
@@ -327,8 +326,8 @@ const styles = StyleSheet.create({
         paddingLeft: 16,
     },
     logo: {
-        fontSize: 17,
-        letterSpacing: 3,
+        fontSize: 12,
+        letterSpacing: 4,
     },
     menuList: {
         gap: 6,
@@ -453,39 +452,43 @@ const styles = StyleSheet.create({
     },
     mediaSection: {
         marginBottom: 20,
-        height: 140,
+        height: 150,
     },
     mediaScroll: {
         paddingHorizontal: 16,
         gap: 12,
     },
     mediaCard: {
-        width: 120,
-        height: 70,
+        width: 132,
+        height: 80,
         borderRadius: 14,
         overflow: 'hidden',
+        borderWidth: 1,
+        justifyContent: 'flex-end',
+        padding: 9,
+        backgroundColor: '#0C0D12',
         // @ts-ignore
         transition: 'transform 0.2s ease',
     },
-    mediaGradientOuter: {
-        flex: 1,
-        justifyContent: 'space-between',
-        padding: 10,
-        borderRadius: 14,
-        borderWidth: 1,
-        borderColor: 'rgba(255, 255, 255, 0.04)',
-        overflow: 'hidden',
-    },
-    mediaIconPlaceholder: {
-        width: 20,
-        height: 20,
-        borderRadius: 10,
+    mediaPlayBtn: {
+        position: 'absolute',
+        top: 8,
+        left: 8,
+        width: 22,
+        height: 22,
+        borderRadius: 11,
         justifyContent: 'center',
         alignItems: 'center',
+        // @ts-ignore — web only glow
+        boxShadow: '0 2px 8px rgba(0,0,0,0.4)',
     },
     mediaTitle: {
         fontSize: 9,
+        fontWeight: '700',
         letterSpacing: 0.5,
+        textShadowColor: 'rgba(0,0,0,0.6)',
+        textShadowOffset: { width: 0, height: 1 },
+        textShadowRadius: 3,
     },
     signOutBtn: {
         marginTop: 12,

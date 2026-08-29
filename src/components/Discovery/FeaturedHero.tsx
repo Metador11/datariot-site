@@ -23,6 +23,16 @@ interface FeaturedHeroProps {
     onVideoPress: (videoId: string) => void;
 }
 
+// HUD-style targeting frame: four L-shaped corners over the card
+const CornerBrackets = ({ color = 'rgba(217, 228, 255, 0.55)' }: { color?: string }) => (
+    <View style={StyleSheet.absoluteFillObject} pointerEvents="none">
+        <View style={[styles.corner, { top: 6, left: 6, borderTopWidth: 2, borderLeftWidth: 2, borderColor: color }]} />
+        <View style={[styles.corner, { top: 6, right: 6, borderTopWidth: 2, borderRightWidth: 2, borderColor: color }]} />
+        <View style={[styles.corner, { bottom: 6, left: 6, borderBottomWidth: 2, borderLeftWidth: 2, borderColor: color }]} />
+        <View style={[styles.corner, { bottom: 6, right: 6, borderBottomWidth: 2, borderRightWidth: 2, borderColor: color }]} />
+    </View>
+);
+
 const FeaturedVideoPlayer = ({ videoUrl, isCurrent }: { videoUrl: string, isCurrent: boolean }) => {
     const videoRef = React.useRef<Video>(null);
 
@@ -31,6 +41,8 @@ const FeaturedVideoPlayer = ({ videoUrl, isCurrent }: { videoUrl: string, isCurr
             ref={videoRef}
             source={{ uri: encodeVideoUrl(videoUrl) || '' }}
             style={[styles.video, StyleSheet.absoluteFill, { opacity: isCurrent ? 1 : 0 }]}
+            // Web: stretch the inner <video> — see FullScreenVideoModal
+            videoStyle={{ width: '100%', height: '100%' }}
             resizeMode={ResizeMode.COVER}
             shouldPlay={isCurrent}
             isLooping
@@ -42,10 +54,13 @@ const FeaturedVideoPlayer = ({ videoUrl, isCurrent }: { videoUrl: string, isCurr
 export const FeaturedHero = ({ featuredVideos, onVideoPress }: FeaturedHeroProps) => {
     const { width: screenWidth } = useWindowDimensions();
     const isWeb = Platform.OS === 'web' && screenWidth > 768;
-    const containerWidth = isWeb ? Math.min(900, screenWidth - 620) : screenWidth;
+    const containerWidth = isWeb ? Math.min(1000, screenWidth - 600) : screenWidth;
     const visibleWidth = isWeb ? containerWidth - 32 : containerWidth;
-    const cardWidth = isWeb ? (visibleWidth - 32) / 3 : containerWidth;
-    const scrollInterval = isWeb ? cardWidth + 16 : cardWidth;
+    // Show exactly 4 cards in view (gap 12 between them), horizontally scrollable
+    const cardGap = 12;
+    const cardsPerView = 4;
+    const cardWidth = isWeb ? (visibleWidth - cardGap * (cardsPerView - 1)) / cardsPerView : containerWidth;
+    const scrollInterval = isWeb ? cardWidth + cardGap : cardWidth;
 
     const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -57,7 +72,7 @@ export const FeaturedHero = ({ featuredVideos, onVideoPress }: FeaturedHeroProps
         const titleSize = isWeb ? 14 : 24;
         const titleLineHeight = isWeb ? 18 : 30;
         const authorSize = isWeb ? 11 : 14;
-        const badgeTopLeft = isWeb ? 10 : 20;
+        const badgeTopLeft = isWeb ? 18 : 20;
         const badgePadX = isWeb ? 8 : 10;
         const badgePadY = isWeb ? 4 : 6;
         const badgeFontSize = isWeb ? 8 : 9;
@@ -66,15 +81,18 @@ export const FeaturedHero = ({ featuredVideos, onVideoPress }: FeaturedHeroProps
         return (
             <Pressable
                 onPress={() => onVideoPress(item.id)}
-                style={[
+                style={({ hovered }: any) => [
                     styles.heroContainer,
                     {
                         width: cardWidth,
                         height: cardWidth,
-                        marginRight: isWeb ? 16 : 0,
-                    }
+                        marginRight: isWeb ? cardGap : 0,
+                    },
+                    isWeb && styles.heroCardWeb,
+                    isWeb && hovered && styles.heroCardHovered,
                 ]}
             >
+                {({ hovered }: any) => (
                 <View style={styles.videoContainer}>
                     <Image
                         source={{ uri: item.thumbnailUrl || item.avatarUrl }} // Fallback to avatar if no thumbnail
@@ -106,16 +124,25 @@ export const FeaturedHero = ({ featuredVideos, onVideoPress }: FeaturedHeroProps
                                     {item.title ? item.title.toUpperCase() : ''}
                                 </Text>
 
-                                <View style={[styles.statsRow, isWeb && { gap: 6 }]}>
-                                    <View style={styles.statItem}>
-                                        <Text style={[styles.statLabel, isWeb && { fontSize: 8 }]}>SPECTATORS</Text>
-                                        <Text style={[styles.statText, isWeb && { fontSize: 10 }]}>{formatNumber(item.views)}</Text>
+                                {(item.views > 0 || item.likes > 0) ? (
+                                    <View style={[styles.statsRow, isWeb && { gap: 6 }]}>
+                                        <View style={styles.statItem}>
+                                            <Text style={[styles.statLabel, isWeb && { fontSize: 8 }]}>SPECTATORS</Text>
+                                            <Text style={[styles.statText, isWeb && { fontSize: 10 }]}>{formatNumber(item.views)}</Text>
+                                        </View>
+                                        <View style={styles.statItem}>
+                                            <Text style={[styles.statLabel, isWeb && { fontSize: 8 }]}>VOTES</Text>
+                                            <Text style={[styles.statText, isWeb && { fontSize: 10 }]}>{formatNumber(item.likes)}</Text>
+                                        </View>
                                     </View>
-                                    <View style={styles.statItem}>
-                                        <Text style={[styles.statLabel, isWeb && { fontSize: 8 }]}>VOTES</Text>
-                                        <Text style={[styles.statText, isWeb && { fontSize: 10 }]}>{formatNumber(item.likes)}</Text>
+                                ) : (
+                                    <View style={styles.awaitingRow}>
+                                        <View style={styles.awaitingDot} />
+                                        <Text style={[styles.awaitingText, isWeb && { fontSize: 9 }]}>
+                                            ARENA OPEN — BE FIRST TO JOIN
+                                        </Text>
                                     </View>
-                                </View>
+                                )}
                             </View>
 
                             {item.title.toLowerCase().includes('vs') && (
@@ -136,20 +163,90 @@ export const FeaturedHero = ({ featuredVideos, onVideoPress }: FeaturedHeroProps
 
                         </View>
 
-                        {/* Popular Badge */}
-                        <View style={[
-                            styles.trendingBadge,
-                            isWeb && {
+                        {/* Live Badge */}
+                        {isWeb ? (
+                            // @ts-ignore — raw div for CSS pseudo-element animations
+                            <div className="dr-badge-premium" style={{
+                                position: 'absolute',
                                 top: badgeTopLeft,
                                 left: badgeTopLeft,
-                                paddingHorizontal: badgePadX,
-                                paddingVertical: badgePadY,
-                            }
-                        ]}>
-                            <Text style={[styles.badgeText, isWeb && { fontSize: badgeFontSize }]}>[ LIVE_DEBATE ]</Text>
-                        </View>
+                                paddingLeft: badgePadX,
+                                paddingRight: badgePadX,
+                                paddingTop: badgePadY,
+                                paddingBottom: badgePadY,
+                                zIndex: 20,
+                                display: 'flex',
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                                gap: 6,
+                            }}>
+                                <div style={{
+                                    width: 6,
+                                    height: 6,
+                                    borderRadius: '50%',
+                                    backgroundColor: '#F87171',
+                                    boxShadow: '0 0 6px #F87171',
+                                }} />
+                                <span style={{
+                                    fontSize: badgeFontSize,
+                                    fontWeight: 900,
+                                    color: '#F87171',
+                                    letterSpacing: 1.5,
+                                    fontFamily: "'JetBrains Mono', monospace",
+                                }}>LIVE</span>
+                                <div style={{
+                                    width: 1,
+                                    height: 9,
+                                    backgroundColor: 'rgba(255, 255, 255, 0.22)',
+                                    marginLeft: 2,
+                                    marginRight: 2,
+                                }} />
+                                <span style={{
+                                    fontSize: badgeFontSize,
+                                    fontWeight: 900,
+                                    color: '#D9E4FF',
+                                    letterSpacing: 1.5,
+                                    fontFamily: "'JetBrains Mono', monospace",
+                                }}>DEBATE</span>
+                            </div>
+                        ) : (
+                            <View style={[
+                                styles.trendingBadge,
+                                isWeb && {
+                                    top: badgeTopLeft,
+                                    left: badgeTopLeft,
+                                    paddingHorizontal: badgePadX,
+                                    paddingVertical: badgePadY,
+                                }
+                            ]}>
+                                <View style={styles.liveDot} />
+                                <Text style={[styles.liveLabel, isWeb && { fontSize: badgeFontSize }]}>LIVE</Text>
+                                <View style={styles.badgeDivider} />
+                                <Text style={[styles.badgeText, isWeb && { fontSize: badgeFontSize }]}>DEBATE</Text>
+                            </View>
+                        )}
                     </View>
+
+                    {/* CRT scanlines + HUD frame (web only) */}
+                    {isWeb && (
+                        <>
+                            {/* @ts-ignore — raw div for the CSS scanline texture */}
+                            <div className="dr-scanlines" style={{ position: 'absolute', inset: 0, zIndex: 15 }} />
+                            <CornerBrackets color={hovered ? 'rgba(217, 228, 255, 0.95)' : 'rgba(217, 228, 255, 0.4)'} />
+                        </>
+                    )}
+
+                    {/* Hover state: play CTA over the card (web only) */}
+                    {isWeb && (
+                        <View style={[styles.hoverOverlay, { opacity: hovered ? 1 : 0 }]} pointerEvents="none">
+                            <View style={styles.hoverPlayCircle}>
+                                <Ionicons name="play" size={22} color="#FFF" style={{ marginLeft: 3 }} />
+                            </View>
+                            <Text style={styles.hoverEnterText}>[ ENTER.DEBATE ]</Text>
+                        </View>
+                    )}
                 </View>
+                )}
             </Pressable>
         );
     };
@@ -213,6 +310,57 @@ const styles = StyleSheet.create({
     heroContainer: {
         height: 400, // Slightly shorter
     },
+    heroCardWeb: {
+        borderRadius: 20,
+        overflow: 'hidden',
+        borderWidth: 1,
+        borderColor: 'rgba(217, 228, 255, 0.14)',
+        // @ts-ignore — web only
+        transition: 'all 0.25s cubic-bezier(0.22, 1, 0.36, 1)',
+    },
+    heroCardHovered: {
+        borderColor: 'rgba(217, 228, 255, 0.6)',
+        transform: [{ translateY: -4 }],
+        // @ts-ignore — web only
+        boxShadow: '0 16px 40px rgba(0,0,0,0.5), 0 0 32px rgba(217,228,255,0.18)',
+    },
+    hoverOverlay: {
+        ...StyleSheet.absoluteFillObject,
+        backgroundColor: 'rgba(2, 6, 12, 0.4)',
+        justifyContent: 'center',
+        alignItems: 'center',
+        gap: 12,
+        zIndex: 30,
+        // @ts-ignore — web only
+        transition: 'opacity 0.2s ease',
+    },
+    hoverPlayCircle: {
+        width: 52,
+        height: 52,
+        borderRadius: 26,
+        backgroundColor: 'rgba(217, 228, 255, 0.18)',
+        borderWidth: 1,
+        borderColor: 'rgba(217, 228, 255, 0.7)',
+        justifyContent: 'center',
+        alignItems: 'center',
+        // @ts-ignore — web only
+        backdropFilter: 'blur(6px)',
+    },
+    hoverEnterText: {
+        color: '#D9E4FF',
+        fontSize: 10,
+        fontWeight: '900',
+        letterSpacing: 1.5,
+        fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
+    },
+    corner: {
+        position: 'absolute',
+        width: 14,
+        height: 14,
+        zIndex: 16,
+        // @ts-ignore — web only
+        transition: 'border-color 0.25s ease',
+    },
     videoContainer: {
         flex: 1,
         backgroundColor: '#000',
@@ -245,9 +393,12 @@ const styles = StyleSheet.create({
     authorName: {
         fontSize: 14,
         fontWeight: '700',
-        color: '#38BDF8',
+        color: '#D9E4FF',
         letterSpacing: 0.5,
         fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
+        textShadowColor: 'rgba(217, 228, 255, 0.55)',
+        textShadowOffset: { width: 0, height: 0 },
+        textShadowRadius: 8,
     },
     title: {
         fontSize: 24,
@@ -256,6 +407,9 @@ const styles = StyleSheet.create({
         lineHeight: 30,
         letterSpacing: -0.5,
         textTransform: 'uppercase',
+        textShadowColor: 'rgba(0, 0, 0, 0.75)',
+        textShadowOffset: { width: 0, height: 1 },
+        textShadowRadius: 6,
     },
     statsRow: {
         flexDirection: 'row',
@@ -280,23 +434,75 @@ const styles = StyleSheet.create({
         fontWeight: '700',
         fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
     },
+    awaitingRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 6,
+        marginTop: 4,
+    },
+    awaitingDot: {
+        width: 6,
+        height: 6,
+        borderRadius: 3,
+        backgroundColor: '#34D399',
+        shadowColor: '#34D399',
+        shadowOffset: { width: 0, height: 0 },
+        shadowOpacity: 0.9,
+        shadowRadius: 6,
+    },
+    awaitingText: {
+        fontSize: 10,
+        color: 'rgba(52, 211, 153, 0.9)',
+        fontWeight: '800',
+        letterSpacing: 0.8,
+        fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
+    },
     trendingBadge: {
         position: 'absolute',
         top: 20,
         left: 20,
-        backgroundColor: 'rgba(8, 9, 13, 0.65)',
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 6,
+        backgroundColor: 'rgba(8, 9, 13, 0.72)',
         borderWidth: 1,
-        borderColor: '#38BDF8',
+        borderColor: 'rgba(248, 113, 113, 0.45)',
         paddingHorizontal: 10,
         paddingVertical: 6,
-        borderRadius: 4,
+        borderRadius: 999,
         zIndex: 20,
+        shadowColor: '#F87171',
+        shadowOffset: { width: 0, height: 0 },
+        shadowOpacity: 0.5,
+        shadowRadius: 12,
+    },
+    liveDot: {
+        width: 6,
+        height: 6,
+        borderRadius: 3,
+        backgroundColor: '#F87171',
+        shadowColor: '#F87171',
+        shadowOffset: { width: 0, height: 0 },
+        shadowOpacity: 1,
+        shadowRadius: 6,
+    },
+    liveLabel: {
+        fontSize: 9,
+        fontWeight: '900',
+        color: '#F87171',
+        letterSpacing: 1.5,
+        fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
+    },
+    badgeDivider: {
+        width: 1,
+        height: 9,
+        backgroundColor: 'rgba(255, 255, 255, 0.22)',
     },
     badgeText: {
         fontSize: 9,
         fontWeight: '900',
-        color: '#38BDF8',
-        letterSpacing: 1,
+        color: '#D9E4FF',
+        letterSpacing: 1.5,
         fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
     },
     pagination: {

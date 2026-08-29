@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '../client';
 import { useAuth } from './useAuth';
 import { encodeVideoUrl } from '../../utils/url';
+import { followUser, unfollowUser } from '../follow';
 
 export interface Video {
     id: string;
@@ -83,9 +84,10 @@ export function useVideos({ type, userId, searchQuery, hashtag, category, sort =
             isFollowing: false,
             thumbnailUrl: video.thumbnail_url || video.thumbnail || `https://picsum.photos/seed/${video.id}/800/1200`,
             category: video.category || null,
-            dnaRationale: Math.random() > 0.5 ? "Matches your interest in Engineering & Dev" : "Popular in your local DNA community",
-            isHighSynergy: (video.id.charCodeAt(0) % 10 < 7) || Math.random() > 0.3, // ~70-80% chance for synergy to ensure sections aren't empty
-            dnaMatch: 85 + Math.floor(Math.random() * 14),
+            // Deterministic per-video values so sections don't reshuffle between fetches
+            dnaRationale: video.id.charCodeAt(1) % 2 === 0 ? "Matches your interest in Engineering & Dev" : "Popular in your local DNA community",
+            isHighSynergy: video.id.charCodeAt(0) % 10 < 8, // ~80% so sections aren't empty
+            dnaMatch: 85 + (video.id.charCodeAt(2) % 14),
         };
     }, []);
 
@@ -249,30 +251,10 @@ export function useVideos({ type, userId, searchQuery, hashtag, category, sort =
                     return formatted;
                 })
                 .filter((v: Video) => {
-                    // 1. Must have a valid URL
+                    // Must have a valid URL
                     if (!v.videoUrl || v.videoUrl.length === 0) return false;
-
-                    // 2. Must have a valid author/user ID to be considered "user-uploaded"
-                    if (!v.authorId || v.authorId === '00000000-0000-0000-0000-000000000000') return false;
-
-                    // 3. Check if it's a known test sample
-                    const isTestSample = placeholderPatterns.some(pattern =>
-                        v.videoUrl.toLowerCase().includes(pattern.toLowerCase())
-                    );
-                    if (isTestSample) return false;
-
-                    // 4. Prefer videos from the official Supabase storage bucket
-                    const isSupabaseVideo = v.videoUrl.includes('/storage/v1/object/public/videos/');
-
-                    // Allow only Supabase videos OR videos that don't match any obvious placeholders 
-                    // and have a real author.
-                    return isSupabaseVideo || !v.videoUrl.includes('placeholder');
+                    return true;
                 });
-
-            // console.log('Formatted and filtered videos:', formattedVideos.length);
-            if (formattedVideos.length > 0) {
-                console.log('[useVideos] Fetched URLs:', formattedVideos.map((v: Video) => v.videoUrl));
-            }
 
             if (isRefresh) {
                 setVideos(formattedVideos);
@@ -312,20 +294,18 @@ export function useVideos({ type, userId, searchQuery, hashtag, category, sort =
     const toggleLike = async (videoId: string) => {
         if (!user) return;
 
-        const videoIndex = videos.findIndex(v => v.id === videoId);
-        if (videoIndex === -1) return;
-
-        const video = videos[videoIndex];
+        const video = videos.find(v => v.id === videoId);
+        if (!video) return;
         const wasLiked = video.isLiked;
 
+        const applyLike = (liked: boolean) => setVideos(prev => prev.map(v =>
+            v.id === videoId
+                ? { ...v, isLiked: liked, likes: liked ? v.likes + (v.isLiked ? 0 : 1) : Math.max(0, v.likes - (v.isLiked ? 1 : 0)) }
+                : v
+        ));
+
         // Optimistic update
-        const updatedVideos = [...videos];
-        updatedVideos[videoIndex] = {
-            ...video,
-            isLiked: !wasLiked,
-            likes: wasLiked ? Math.max(0, video.likes - 1) : video.likes + 1
-        };
-        setVideos(updatedVideos);
+        applyLike(!wasLiked);
 
         try {
             if (!supabase) return;
@@ -342,8 +322,7 @@ export function useVideos({ type, userId, searchQuery, hashtag, category, sort =
             }
         } catch (error) {
             console.error('Error toggling like:', error);
-            // Revert on error
-            setVideos(videos);
+            applyLike(wasLiked); // revert just this video, keep unrelated updates
         }
     };
 
@@ -353,26 +332,18 @@ export function useVideos({ type, userId, searchQuery, hashtag, category, sort =
         const isFollowing = videos.some(v => v.authorId === userIdToFollow && v.isFollowing);
 
         // Optimistic update for all videos by this author
-        setVideos(prev => prev.map(v =>
-            v.authorId === userIdToFollow ? { ...v, isFollowing: !isFollowing } : v
+        const applyFollow = (following: boolean) => setVideos(prev => prev.map(v =>
+            v.authorId === userIdToFollow ? { ...v, isFollowing: following } : v
         ));
+        applyFollow(!isFollowing);
 
-        try {
-            if (!supabase) return;
-            if (isFollowing) {
-                await supabase
-                    .from('follows')
-                    .delete()
-                    .eq('follower_id', user.id)
-                    .eq('following_id', userIdToFollow);
-            } else {
-                await supabase
-                    .from('follows')
-                    .insert({ follower_id: user.id, following_id: userIdToFollow });
-            }
-        } catch (error) {
+        const { error } = isFollowing
+            ? await unfollowUser(user.id, userIdToFollow)
+            : await followUser(user.id, userIdToFollow);
+
+        if (error) {
             console.error('Error toggling follow:', error);
-            // Revert (harder to revert nested state, maybe just re-fetch or use a more robust state manager)
+            applyFollow(isFollowing); // revert
         }
     };
 

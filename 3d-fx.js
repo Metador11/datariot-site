@@ -8,11 +8,37 @@ window.addEventListener('load', () => {
     }
 
     /* =========================================================
+       SCENE VISIBILITY GATE
+       Seven WebGL scenes live on this page; rendering them all
+       every frame burns GPU and risks context loss. Loops keep
+       ticking rAF (cheap) but skip scene math + render() while
+       their container is off-screen.
+       ========================================================= */
+    const visibleScenes = new Set();
+    const sceneObserver = ('IntersectionObserver' in window)
+        ? new IntersectionObserver((entries) => {
+            entries.forEach(en => {
+                if (en.isIntersecting) visibleScenes.add(en.target);
+                else visibleScenes.delete(en.target);
+            });
+        }, { rootMargin: '150px' })
+        : null;
+
+    function watchSceneVisibility(container) {
+        if (sceneObserver) sceneObserver.observe(container);
+    }
+
+    function isSceneVisible(container) {
+        return !sceneObserver || visibleScenes.has(container);
+    }
+
+    /* =========================================================
        ANIMATION 1: THE AI CORE (Middle - Manifesto Section)
        ========================================================= */
     function initMiddleAnimation() {
         const container = document.getElementById('canvas-3d-middle');
         if (!container) return;
+        watchSceneVisibility(container);
 
         // Scene Setup
         const scene = new THREE.Scene();
@@ -106,6 +132,7 @@ window.addEventListener('load', () => {
         const clock = new THREE.Clock();
         function animate() {
             requestAnimationFrame(animate);
+            if (!isSceneVisible(container)) return;
 
             // Rotate core
             sphereCore.rotation.y += 0.005;
@@ -143,6 +170,7 @@ window.addEventListener('load', () => {
     function initEndAnimation() {
         const container = document.getElementById('canvas-3d-end');
         if (!container) return;
+        watchSceneVisibility(container);
 
         // Scene Setup
         const scene = new THREE.Scene();
@@ -228,6 +256,7 @@ window.addEventListener('load', () => {
         // Animation Loop
         function animate() {
             requestAnimationFrame(animate);
+            if (!isSceneVisible(container)) return;
 
             // Default slow rotation
             torusKnot.rotation.z += 0.001;
@@ -260,6 +289,7 @@ window.addEventListener('load', () => {
     function initVideoScreensAnimation() {
         const container = document.getElementById('canvas-3d-hero');
         if (!container) return;
+        watchSceneVisibility(container);
 
         const scene = new THREE.Scene();
         const isLight = document.documentElement.getAttribute('data-theme') === 'light';
@@ -362,6 +392,7 @@ window.addEventListener('load', () => {
 
         function animate() {
             requestAnimationFrame(animate);
+            if (!isSceneVisible(container)) return;
 
             // Move screens up, mimicking vertical scroll feed
             screens.forEach(screen => {
@@ -400,6 +431,7 @@ window.addEventListener('load', () => {
     function initFeaturesAnimation() {
         const container = document.getElementById('canvas-3d-features');
         if (!container) return;
+        watchSceneVisibility(container);
 
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
@@ -516,6 +548,7 @@ window.addEventListener('load', () => {
 
         function animate() {
             requestAnimationFrame(animate);
+            if (!isSceneVisible(container)) return;
 
             // Subtle base rotation
             group.rotation.y += 0.002;
@@ -594,6 +627,7 @@ window.addEventListener('load', () => {
     function initOrvelisAnimation() {
         const container = document.getElementById('canvas-3d-orvelis');
         if (!container) return;
+        watchSceneVisibility(container);
 
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(50, container.clientWidth / container.clientHeight, 0.1, 1000);
@@ -768,6 +802,7 @@ window.addEventListener('load', () => {
 
         function animate() {
             requestAnimationFrame(animate);
+            if (!isSceneVisible(container)) return;
 
             const elapsed = clock.getElapsedTime();
 
@@ -890,6 +925,7 @@ window.addEventListener('load', () => {
     function initGlobeAnimation() {
         const container = document.getElementById('canvas-3d-globe');
         if (!container) return;
+        watchSceneVisibility(container);
 
         console.log('Globe: Initializing...');
 
@@ -954,6 +990,7 @@ window.addEventListener('load', () => {
 
             function animate() {
                 requestAnimationFrame(animate);
+                if (!isSceneVisible(container)) return;
                 globe.rotation.y += 0.003;
                 cityGroup.children.forEach(c => {
                     c.userData.pulse += 0.05;
@@ -1005,7 +1042,7 @@ window.addEventListener('load', () => {
         function draw(now) {
             const W = container.clientWidth;
             const H = container.clientHeight;
-            if (W === 0 || H === 0) {
+            if (W === 0 || H === 0 || !isSceneVisible(container)) {
                 requestAnimationFrame(draw);
                 return;
             }
@@ -1252,6 +1289,7 @@ window.addEventListener('load', () => {
     function initManifestoConnectionAnimation() {
         const container = document.getElementById('canvas-3d-manifesto');
         if (!container) return;
+        watchSceneVisibility(container);
 
         // Scene Setup
         const scene = new THREE.Scene();
@@ -1488,6 +1526,7 @@ window.addEventListener('load', () => {
 
         function animate() {
             requestAnimationFrame(animate);
+            if (!isSceneVisible(container)) return;
 
             const elapsed = clock.getElapsedTime();
 

@@ -6,6 +6,8 @@ import { useAuth } from '@lib/supabase/hooks/useAuth';
 import { useVideos } from '@lib/supabase/hooks/useVideos';
 import { usePosts, Post } from '@lib/supabase/hooks/usePosts';
 import { supabase } from '@lib/supabase/client';
+import { followUser, unfollowUser, isFollowingUser } from '@lib/supabase/follow';
+import { ChallengeModal } from '@components/Debate/ChallengeModal';
 import { theme } from '@design-system/theme';
 import { Ionicons } from '@expo/vector-icons';
 import { useVideoPlayer, VideoView } from 'expo-video';
@@ -62,7 +64,7 @@ const StickyHeader = ({ scrollY, user }: { scrollY: SharedValue<number>, user: a
     );
 };
 
-const ProfileHeader = ({ profile, user, scrollY, headerImageUrl, activeTab, setActiveTab, isFollowing, onFollow, onMessage }: any) => {
+const ProfileHeader = ({ profile, user, scrollY, headerImageUrl, activeTab, setActiveTab, isFollowing, onFollow, onMessage, onChallenge }: any) => {
 
     const bannerStyle = useAnimatedStyle(() => {
         const scale = interpolate(scrollY.value, [-100, 0], [1.2, 1], Extrapolation.CLAMP);
@@ -159,6 +161,15 @@ const ProfileHeader = ({ profile, user, scrollY, headerImageUrl, activeTab, setA
                                 <Text style={styles.messageButtonText}>Message</Text>
                             </View>
                         </Pressable>
+
+                        <Pressable
+                            style={styles.actionButtonWrapper}
+                            onPress={onChallenge}
+                        >
+                            <View style={[styles.modernButton, styles.challengeButton]}>
+                                <Ionicons name="flash" size={18} color="#D9E4FF" />
+                            </View>
+                        </Pressable>
                     </View>
 
                     <View style={styles.bioSection}>
@@ -233,6 +244,7 @@ export default function UserProfileScreen() {
     const [profile, setProfile] = useState<ProfileData | null>(null);
     const [activeTab, setActiveTab] = useState<'posts' | 'videos'>('videos');
     const [isFollowing, setIsFollowing] = useState(false);
+    const [challengeVisible, setChallengeVisible] = useState(false);
 
     const scrollY = useSharedValue(0);
     const scrollHandler = useAnimatedScrollHandler((event) => {
@@ -339,19 +351,7 @@ export default function UserProfileScreen() {
 
     const checkIfFollowing = React.useCallback(async () => {
         if (!supabase || !currentUser || !id) return;
-
-        const { data } = await supabase
-            .from('follows')
-            .select('*')
-            .eq('follower_id', currentUser.id)
-            .eq('following_id', id)
-            .single();
-
-        if (data) {
-            setIsFollowing(true);
-        } else {
-            setIsFollowing(false);
-        }
+        setIsFollowing(await isFollowingUser(currentUser.id, id as string));
     }, [currentUser, id]);
 
     useEffect(() => {
@@ -373,22 +373,23 @@ export default function UserProfileScreen() {
         // Optimistic update
         setIsFollowing(!isFollowing);
 
-        try {
-            if (isFollowing) {
-                await supabase
-                    .from('follows')
-                    .delete()
-                    .eq('follower_id', currentUser.id)
-                    .eq('following_id', id);
-            } else {
-                await supabase
-                    .from('follows')
-                    .insert({ follower_id: currentUser.id, following_id: id });
-            }
-        } catch {
-            console.error("Follow error");
+        const { error } = isFollowing
+            ? await unfollowUser(currentUser.id, id as string)
+            : await followUser(currentUser.id, id as string);
+
+        if (error) {
+            console.error("Follow error:", error);
             setIsFollowing(isFollowing); // Revert
         }
+    };
+
+    const handleChallenge = () => {
+        if (!currentUser) {
+            Alert.alert("Sign in", "Please sign in to challenge users to a debate.");
+            return;
+        }
+        if (currentUser.id === id) return;
+        setChallengeVisible(true);
     };
 
     const handleMessage = () => {
@@ -475,7 +476,7 @@ export default function UserProfileScreen() {
                 keyExtractor={(item) => item.id}
                 numColumns={activeTab === 'videos' ? 3 : 1}
                 contentContainerStyle={styles.flatListContent}
-                ListHeaderComponent={() => (
+                ListHeaderComponent={
                     <ProfileHeader
                         profile={profile}
                         user={currentUser} // Pass undefined or logic to fallback
@@ -486,8 +487,9 @@ export default function UserProfileScreen() {
                         isFollowing={isFollowing}
                         onFollow={handleFollow}
                         onMessage={handleMessage}
+                        onChallenge={handleChallenge}
                     />
-                )}
+                }
                 ListFooterComponent={renderContent}
                 showsVerticalScrollIndicator={false}
                 columnWrapperStyle={activeTab === 'videos' ? styles.videoColumnWrapper : undefined}
@@ -498,6 +500,13 @@ export default function UserProfileScreen() {
                 onScroll={scrollHandler}
                 scrollEventThrottle={16}
                 style={{ backgroundColor: 'transparent' }}
+            />
+
+            <ChallengeModal
+                visible={challengeVisible}
+                opponentId={id as string}
+                opponentName={profile?.display_name || profile?.username || 'User'}
+                onClose={() => setChallengeVisible(false)}
             />
         </View>
     );
@@ -656,6 +665,12 @@ const styles = StyleSheet.create({
         color: 'white',
         fontWeight: '600',
         fontSize: 14,
+    },
+    challengeButton: {
+        backgroundColor: 'rgba(217, 228, 255, 0.12)',
+        borderWidth: 1,
+        borderColor: 'rgba(217, 228, 255, 0.3)',
+        paddingHorizontal: 16,
     },
 
     // Bio

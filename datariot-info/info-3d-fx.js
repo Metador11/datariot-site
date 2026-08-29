@@ -7,12 +7,49 @@ window.addEventListener('load', () => {
         return;
     }
 
+    // Global Theme Observer to avoid reading from DOM inside rAF loops (prevents layout thrashing)
+    let currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+    const themeObserver = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+            if (mutation.attributeName === 'data-theme') {
+                currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+            }
+        });
+    });
+    themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+
+    /* =========================================================
+       SCENE VISIBILITY GATE
+       Seven WebGL scenes live on this page; rendering them all
+       every frame burns GPU and risks context loss. Loops keep
+       ticking rAF (cheap) but skip scene math + render() while
+       their container is off-screen.
+       ========================================================= */
+    const visibleScenes = new Set();
+    const sceneObserver = ('IntersectionObserver' in window)
+        ? new IntersectionObserver((entries) => {
+            entries.forEach(en => {
+                if (en.isIntersecting) visibleScenes.add(en.target);
+                else visibleScenes.delete(en.target);
+            });
+        }, { rootMargin: '150px' })
+        : null;
+
+    function watchSceneVisibility(container) {
+        if (sceneObserver) sceneObserver.observe(container);
+    }
+
+    function isSceneVisible(container) {
+        return !sceneObserver || visibleScenes.has(container);
+    }
+
     /* =========================================================
        ANIMATION 1: THE AI CORE (Middle - Manifesto Section)
        ========================================================= */
     function initMiddleAnimation() {
         const container = document.getElementById('canvas-3d-middle');
         if (!container) return;
+        watchSceneVisibility(container);
 
         // Scene Setup
         const scene = new THREE.Scene();
@@ -106,6 +143,7 @@ window.addEventListener('load', () => {
         const clock = new THREE.Clock();
         function animate() {
             requestAnimationFrame(animate);
+            if (!isSceneVisible(container)) return;
 
             // Rotate core
             sphereCore.rotation.y += 0.005;
@@ -143,6 +181,7 @@ window.addEventListener('load', () => {
     function initEndAnimation() {
         const container = document.getElementById('canvas-3d-end');
         if (!container) return;
+        watchSceneVisibility(container);
 
         // Scene Setup
         const scene = new THREE.Scene();
@@ -228,6 +267,7 @@ window.addEventListener('load', () => {
         // Animation Loop
         function animate() {
             requestAnimationFrame(animate);
+            if (!isSceneVisible(container)) return;
 
             // Default slow rotation
             torusKnot.rotation.z += 0.001;
@@ -260,6 +300,7 @@ window.addEventListener('load', () => {
     function initVideoScreensAnimation() {
         const container = document.getElementById('canvas-3d-hero');
         if (!container) return;
+        watchSceneVisibility(container);
 
         const scene = new THREE.Scene();
         const isLight = document.documentElement.getAttribute('data-theme') === 'light';
@@ -362,6 +403,7 @@ window.addEventListener('load', () => {
 
         function animate() {
             requestAnimationFrame(animate);
+            if (!isSceneVisible(container)) return;
 
             // Move screens up, mimicking vertical scroll feed
             screens.forEach(screen => {
@@ -400,6 +442,7 @@ window.addEventListener('load', () => {
     function initFeaturesAnimation() {
         const container = document.getElementById('canvas-3d-features');
         if (!container) return;
+        watchSceneVisibility(container);
 
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
@@ -516,6 +559,7 @@ window.addEventListener('load', () => {
 
         function animate() {
             requestAnimationFrame(animate);
+            if (!isSceneVisible(container)) return;
 
             // Subtle base rotation
             group.rotation.y += 0.002;
@@ -594,6 +638,7 @@ window.addEventListener('load', () => {
     function initOrvelisAnimation() {
         const container = document.getElementById('canvas-3d-orvelis');
         if (!container) return;
+        watchSceneVisibility(container);
 
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(50, container.clientWidth / container.clientHeight, 0.1, 1000);
@@ -768,6 +813,7 @@ window.addEventListener('load', () => {
 
         function animate() {
             requestAnimationFrame(animate);
+            if (!isSceneVisible(container)) return;
 
             const elapsed = clock.getElapsedTime();
 
@@ -856,7 +902,6 @@ window.addEventListener('load', () => {
             mainGroup.rotation.x = -mouseY * 0.45;
 
             // Theme reactive colors
-            const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
             if (currentTheme !== lastTheme) {
                 lastTheme = currentTheme;
                 const isDark = currentTheme === 'dark';
@@ -890,6 +935,7 @@ window.addEventListener('load', () => {
     function initGlobeAnimation() {
         const container = document.getElementById('canvas-3d-globe');
         if (!container) return;
+        watchSceneVisibility(container);
 
         console.log('Globe: Initializing...');
 
@@ -954,6 +1000,7 @@ window.addEventListener('load', () => {
 
             function animate() {
                 requestAnimationFrame(animate);
+                if (!isSceneVisible(container)) return;
                 globe.rotation.y += 0.003;
                 cityGroup.children.forEach(c => {
                     c.userData.pulse += 0.05;
@@ -994,17 +1041,23 @@ window.addEventListener('load', () => {
             [6.52, 3.38], [52.52, 13.41], [19.08, 72.88], [-33.87, 151], [25.2, 55.2]
         ];
 
+        let W = container.clientWidth;
+        let H = container.clientHeight;
         function resize() {
-            canvas.width = container.clientWidth * window.devicePixelRatio;
-            canvas.height = container.clientHeight * window.devicePixelRatio;
+            W = container.clientWidth;
+            H = container.clientHeight;
+            canvas.width = W * window.devicePixelRatio;
+            canvas.height = H * window.devicePixelRatio;
             ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
         }
         resize();
         window.addEventListener('resize', resize);
 
         function draw(now) {
-            const W = container.clientWidth;
-            const H = container.clientHeight;
+            if (!isSceneVisible(container)) {
+                requestAnimationFrame(draw);
+                return;
+            }
             if (W === 0 || H === 0) {
                 requestAnimationFrame(draw);
                 return;
@@ -1012,7 +1065,7 @@ window.addEventListener('load', () => {
 
             ctx.clearRect(0, 0, W, H);
 
-            const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+            const isDark = currentTheme === 'dark';
             const accentBase = isDark ? '14, 165, 233' : '2, 132, 199';
             const rotation = now * 0.0003; // Slightly faster rotation
             const isMobile = window.innerWidth < 768;
@@ -1252,6 +1305,7 @@ window.addEventListener('load', () => {
     function initManifestoConnectionAnimation() {
         const container = document.getElementById('canvas-3d-manifesto');
         if (!container) return;
+        watchSceneVisibility(container);
 
         // Scene Setup
         const scene = new THREE.Scene();
@@ -1488,6 +1542,7 @@ window.addEventListener('load', () => {
 
         function animate() {
             requestAnimationFrame(animate);
+            if (!isSceneVisible(container)) return;
 
             const elapsed = clock.getElapsedTime();
 

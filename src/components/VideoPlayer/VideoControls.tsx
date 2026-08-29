@@ -9,6 +9,8 @@ import { useRouter } from 'expo-router';
 
 interface VideoControlsProps {
     isPlaying: boolean;
+    // On-screen width of the video frame; controls hug it on desktop web
+    contentWidth?: number;
     title: string;
     author: string;
     authorId: string;
@@ -117,6 +119,7 @@ const VideoScrubber = ({ currentTime = 0, duration = 0, onSeek }: { currentTime:
 };
 
 export function VideoControls({
+    contentWidth,
     title,
     author,
     authorId,
@@ -175,10 +178,17 @@ export function VideoControls({
 
             <View style={[
                 styles.contentContainer,
-                { paddingBottom: Platform.OS === 'web' ? 60 : insets.bottom + 24 }
+                { paddingBottom: Platform.OS === 'web' ? 60 : insets.bottom + 24 },
+                // Desktop web: controls hug the on-screen video width
+                // (clamped so buttons never cram or sprawl)
+                Platform.OS === 'web' && {
+                    maxWidth: contentWidth ? Math.min(Math.max(contentWidth, 480), 960) : 960,
+                    width: '100%',
+                    alignSelf: 'center',
+                },
             ]}>
-                {/* Information Section - Hidden on Web */}
-                {Platform.OS !== 'web' && (
+                {/* Information Section */}
+                {(
                     <View style={styles.infoSection}>
                         <View style={styles.authorRow}>
                             <Pressable onPress={handleNavigateProfile} style={[styles.avatarContainer, isLive && styles.avatarContainerLive]}>
@@ -370,7 +380,7 @@ const styles = StyleSheet.create({
         fontSize: 15,
     },
     hashtag: {
-        color: '#0EA5E9',
+        color: '#D9E4FF',
         fontFamily: theme.typography.fontFamilies.bold,
     },
 
@@ -393,8 +403,8 @@ const styles = StyleSheet.create({
         color: 'white',
     },
     actionIconActive: {
-        color: '#0EA5E9',
-        textShadowColor: 'rgba(14, 165, 233, 0.8)',
+        color: '#D9E4FF',
+        textShadowColor: 'rgba(107, 127, 204, 0.8)',
         textShadowOffset: { width: 0, height: 0 },
         textShadowRadius: 10,
     },

@@ -8,7 +8,6 @@ import {
     TouchableOpacity,
     Pressable,
     FlatList,
-    Dimensions,
     ViewToken,
     StatusBar,
     useWindowDimensions,
@@ -36,8 +35,6 @@ import Animated, {
 } from 'react-native-reanimated';
 import { useTheme } from '../Theme/ThemeProvider';
 
-const { width: SCREEN_WIDTH } = Dimensions.get('window');
-
 interface FullScreenVideoModalProps {
     visible: boolean;
     videos: any[];
@@ -55,20 +52,30 @@ interface InternalFullScreenVideoProps {
     isActive: boolean;
     isPaused: boolean;
     onTimeUpdate: (currentTime: number, duration: number) => void;
+    onNaturalSize?: (aspect: number) => void;
+    videoRef?: React.RefObject<Video | null>;
 }
 
-const InternalFullScreenVideo = ({ videoUrl, isActive, isPaused, onTimeUpdate }: InternalFullScreenVideoProps) => {
-    const videoRef = useRef<Video>(null);
-
+const InternalFullScreenVideo = ({ videoUrl, isActive, isPaused, onTimeUpdate, onNaturalSize, videoRef }: InternalFullScreenVideoProps) => {
     return (
         <Video
             ref={videoRef}
             source={{ uri: encodeVideoUrl(videoUrl) || '' }}
             style={StyleSheet.absoluteFill}
+            // Web: the inner <video> is a replaced element — absolute insets
+            // alone leave it at intrinsic size pinned to the left, so it must
+            // be stretched explicitly
+            videoStyle={{ width: '100%', height: '100%' }}
             resizeMode={ResizeMode.CONTAIN}
             shouldPlay={isActive && !isPaused}
             isLooping
             isMuted={true}
+            onReadyForDisplay={(e: any) => {
+                // Native delivers naturalSize; web delivers the DOM event
+                const w = e?.naturalSize?.width ?? e?.target?.videoWidth;
+                const h = e?.naturalSize?.height ?? e?.target?.videoHeight;
+                if (w > 0 && h > 0) onNaturalSize?.(w / h);
+            }}
             onPlaybackStatusUpdate={(status: any) => {
                 if (status.isLoaded && status.durationMillis) {
                     onTimeUpdate(status.positionMillis, status.durationMillis);
@@ -81,6 +88,7 @@ const InternalFullScreenVideo = ({ videoUrl, isActive, isPaused, onTimeUpdate }:
 function FullScreenVideoItem({
     item,
     isActive,
+    width,
     height,
     onLike,
     onComment,
@@ -90,6 +98,7 @@ function FullScreenVideoItem({
 }: {
     item: any;
     isActive: boolean;
+    width: number;
     height: number;
     onLike: () => void;
     onComment: () => void;
@@ -100,13 +109,20 @@ function FullScreenVideoItem({
     const [isPaused, setIsPaused] = useState(false);
     const [currentTime, setCurrentTime] = useState(0);
     const [duration, setDuration] = useState(0);
+    // Displayed aspect of the playing video (defaults to 9:16 portrait)
+    const [aspect, setAspect] = useState<number | null>(null);
+    const videoRef = useRef<Video>(null);
+
+    // Width the CONTAIN-fitted video actually occupies on screen — the
+    // bottom controls are constrained to it so they hug the video
+    const displayWidth = Math.min(width, Math.round(height * (aspect ?? 9 / 16)));
 
     const togglePlayback = () => {
         setIsPaused(!isPaused);
     };
 
     const handleSeek = (value: number) => {
-        console.log('Seek not yet implemented with hook isolation');
+        videoRef.current?.setPositionAsync(value).catch(() => { });
     };
 
     // Double tap to like gesture
@@ -117,13 +133,29 @@ function FullScreenVideoItem({
 
     return (
         <GestureDetector gesture={doubleTap}>
-            <View style={{ width: SCREEN_WIDTH, height, backgroundColor: '#000' }}>
+            <View style={{ width, height, backgroundColor: '#000' }}>
+                {/* Ambient cinema backdrop: blurred cover fills the letterbox
+                    instead of dead black space */}
+                {item.thumbnailUrl ? (
+                    <>
+                        <Image
+                            source={{ uri: item.thumbnailUrl }}
+                            style={StyleSheet.absoluteFill}
+                            resizeMode="cover"
+                            blurRadius={48}
+                        />
+                        <View style={[StyleSheet.absoluteFill, { backgroundColor: 'rgba(0, 0, 0, 0.55)' }]} />
+                    </>
+                ) : null}
+
                 <Pressable style={StyleSheet.absoluteFill} onPress={togglePlayback}>
                     {(item.videoUrl || item.url) ? (
                         <InternalFullScreenVideo
                             videoUrl={item.videoUrl || item.url}
                             isActive={isActive}
                             isPaused={isPaused}
+                            videoRef={videoRef}
+                            onNaturalSize={setAspect}
                             onTimeUpdate={(ct, dur) => {
                                 setCurrentTime(ct);
                                 setDuration(dur);
@@ -144,6 +176,7 @@ function FullScreenVideoItem({
 
                 <VideoControls
                     isPlaying={isActive && !isPaused}
+                    contentWidth={displayWidth}
                     title={item.title || ''}
                     author={item.author || item.authorName || ''}
                     authorId={item.authorId || ''}
@@ -184,7 +217,7 @@ export function FullScreenVideoModal({
     const insets = useSafeAreaInsets();
     const { theme } = useTheme();
     const router = useRouter();
-    const { height: screenHeight } = useWindowDimensions();
+    const { height: screenHeight, width: screenWidth } = useWindowDimensions();
     const [activeIndex, setActiveIndex] = useState(0);
 
     // AI Pulsing Animation
@@ -310,6 +343,7 @@ export function FullScreenVideoModal({
                         <FullScreenVideoItem
                             item={item}
                             isActive={index === activeIndex && isFocused}
+                            width={screenWidth}
                             height={screenHeight}
                             onLike={() => onLike(item.id)}
                             onComment={() => handleOpenComments(item.id)}

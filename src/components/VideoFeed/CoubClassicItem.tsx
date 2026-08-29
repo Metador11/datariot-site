@@ -1,6 +1,6 @@
 import React, { useRef, useState, memo } from 'react';
 import { View, Text, StyleSheet, Pressable, Dimensions, Animated, Image, Platform, useWindowDimensions } from 'react-native';
-import { Video, ResizeMode, Audio } from 'expo-av';
+import { Video, ResizeMode } from 'expo-av';
 import { Ionicons } from '@expo/vector-icons';
 import { BlurView } from 'expo-blur';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -33,6 +33,7 @@ const formatNumber = (num: number): string => {
 
 interface VideoPlayerLayerProps {
     videoUrl: string;
+    thumbnailUrl?: string;
     isActive: boolean;
     isFocused: boolean;
     isPaused: boolean;
@@ -40,36 +41,54 @@ interface VideoPlayerLayerProps {
     onTimeUpdate: (currentTime: number, duration: number) => void;
 }
 
-const VideoPlayerLayer = ({ videoUrl, isActive, isFocused, isPaused, isMuted, onTimeUpdate }: VideoPlayerLayerProps) => {
-    const videoRef = useRef<Video>(null);
+const VideoPlayerLayer = ({ videoUrl, thumbnailUrl, isActive, isFocused, isPaused, isMuted, onTimeUpdate }: VideoPlayerLayerProps) => {
+    const uri = encodeVideoUrl(videoUrl) || videoUrl;
+    const shouldMountPlayer = isActive && isFocused;
 
     return (
         <View style={StyleSheet.absoluteFillObject}>
-            <Video
-                ref={videoRef}
-                source={{ uri: 'https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/360/Big_Buck_Bunny_360_10s_1MB.mp4' }}
-                style={StyleSheet.absoluteFillObject}
-                resizeMode={ResizeMode.COVER}
-                shouldPlay={isActive && isFocused && !isPaused}
-                isLooping
-                isMuted={isMuted}
-                onPlaybackStatusUpdate={(status: any) => {
-                    if (status.isLoaded && status.durationMillis) {
-                        onTimeUpdate(status.positionMillis, status.durationMillis);
-                    }
-                }}
-            />
+            {/* Ambient backdrop: blurred thumbnail (cheap) instead of a second video decoder */}
+            {thumbnailUrl ? (
+                <Image
+                    source={{ uri: thumbnailUrl }}
+                    style={StyleSheet.absoluteFillObject}
+                    resizeMode="cover"
+                    blurRadius={24}
+                />
+            ) : (
+                <View style={[StyleSheet.absoluteFillObject, { backgroundColor: '#06070A' }]} />
+            )}
             <BlurView intensity={30} tint="dark" style={StyleSheet.absoluteFillObject} />
 
-            {/* Foreground Sharp Layer (shows full content) */}
-            <Video
-                source={{ uri: 'https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/360/Big_Buck_Bunny_360_10s_1MB.mp4' }}
-                style={StyleSheet.absoluteFillObject}
-                resizeMode={ResizeMode.CONTAIN}
-                shouldPlay={isActive && isFocused && !isPaused}
-                isLooping
-                isMuted={isMuted}
-            />
+            {/* The video player only mounts for the active, focused card —
+                off-screen cards show their poster and decode nothing */}
+            {shouldMountPlayer ? (
+                <Video
+                    source={{ uri }}
+                    style={StyleSheet.absoluteFillObject}
+                    // Web: stretch the inner <video> — see FullScreenVideoModal
+                    videoStyle={{ width: '100%', height: '100%' }}
+                    resizeMode={ResizeMode.CONTAIN}
+                    shouldPlay={!isPaused}
+                    isLooping
+                    isMuted={isMuted}
+                    usePoster={!!thumbnailUrl}
+                    posterSource={thumbnailUrl ? { uri: thumbnailUrl } : undefined}
+                    onPlaybackStatusUpdate={(status: any) => {
+                        if (status.isLoaded && status.durationMillis) {
+                            onTimeUpdate(status.positionMillis, status.durationMillis);
+                        }
+                    }}
+                />
+            ) : (
+                thumbnailUrl ? (
+                    <Image
+                        source={{ uri: thumbnailUrl }}
+                        style={StyleSheet.absoluteFillObject}
+                        resizeMode="contain"
+                    />
+                ) : null
+            )}
         </View>
     );
 };
@@ -96,7 +115,11 @@ export const CoubClassicItem = memo(({
 
     const cardMargin = isWeb ? (isMobileWeb ? 0 : 0) : 16; // Maintain 0 for web to fill column
     const cardWidth = isWeb ? '100%' as any : windowWidth - (cardMargin * 2);
-    const videoHeight = isWeb ? (isMobileWeb ? (windowWidth * 9 / 16) : 380) : (windowWidth - 32) * (9 / 16);
+    // Desktop web: 16:9 against the wider column (capped) instead of a fixed 380px strip
+    const desktopVideoWidth = Math.min(windowWidth - 320, 940);
+    const videoHeight = isWeb
+        ? (isMobileWeb ? (windowWidth * 9 / 16) : Math.round(desktopVideoWidth * 9 / 16))
+        : (windowWidth - 32) * (9 / 16);
 
     const router = useRouter();
     const isFocused = useIsFocused();
@@ -143,11 +166,11 @@ export const CoubClassicItem = memo(({
             isWeb && !isMobileWeb && {
                 // @ts-ignore — web only: center card
                 alignSelf: 'center',
-                maxWidth: 700,
+                maxWidth: 940,
             }
         ]}>
             {/* Main Video Container with premium glow shadow */}
-            <Pressable style={[
+            <Pressable style={({ hovered }: any) => [
                 styles.videoContainer,
                 { width: cardWidth, height: videoHeight },
                 isDark ? {
@@ -169,19 +192,64 @@ export const CoubClassicItem = memo(({
                     // @ts-ignore — web only: side bloom glow light mode
                     boxShadow: '-32px 0 60px rgba(107,127,204,0.08), 32px 0 60px rgba(107,127,204,0.08), 0 8px 32px rgba(107,127,204,0.12)',
                 },
+                isWeb && !isMobileWeb && hovered && isDark && {
+                    borderColor: 'rgba(56, 189, 248, 0.45)',
+                    // @ts-ignore — web only: hover bloom intensifies
+                    boxShadow: '-40px 0 80px rgba(165,198,255,0.16), 40px 0 80px rgba(217,228,255,0.16), 0 12px 48px rgba(0,0,0,0.55), 0 0 28px rgba(56,189,248,0.14)',
+                },
+                isWeb && !isMobileWeb && hovered && !isDark && {
+                    borderColor: 'rgba(76, 110, 245, 0.4)',
+                    // @ts-ignore — web only: hover bloom light mode
+                    boxShadow: '-32px 0 60px rgba(107,127,204,0.14), 32px 0 60px rgba(107,127,204,0.14), 0 8px 36px rgba(107,127,204,0.18)',
+                },
             ]} onPress={togglePlayback}>
 
                 {/* Cyberpunk Category Badge */}
-                <View style={styles.cyberBadge}>
-                    <Text style={styles.cyberBadgeText}>
-                        {`[ SYSTEM.${(item.category || 'TRENDING').toUpperCase()} ]`}
-                    </Text>
-                </View>
+                {isWeb ? (
+                    // @ts-ignore — raw div for CSS pseudo-element animations
+                    <div className="dr-badge-premium" style={{
+                        position: 'absolute',
+                        top: 14,
+                        left: 14,
+                        paddingLeft: 12,
+                        paddingRight: 12,
+                        paddingTop: 7,
+                        paddingBottom: 7,
+                        zIndex: 20,
+                        display: 'flex',
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        gap: 6,
+                    }}>
+                        <div style={{
+                            width: 5,
+                            height: 5,
+                            borderRadius: '50%',
+                            backgroundColor: '#38BDF8',
+                            boxShadow: '0 0 6px rgba(56, 189, 248, 0.8)',
+                        }} />
+                        <span style={{
+                            fontSize: 11,
+                            fontWeight: 700,
+                            color: '#7DD3FC',
+                            letterSpacing: 1,
+                            fontFamily: "'JetBrains Mono', monospace",
+                            textShadow: '0 0 8px rgba(56, 189, 248, 0.4)',
+                        }}>{`SYS.${(item.category || 'TRENDING').toUpperCase()}`}</span>
+                    </div>
+                ) : (
+                    <View style={styles.cyberBadge}>
+                        <Text style={styles.cyberBadgeText}>
+                            {`[ SYSTEM.${(item.category || 'TRENDING').toUpperCase()} ]`}
+                        </Text>
+                    </View>
+                )}
 
                 {/* Background Blurred Layer (fills everything) */}
                 {item.videoUrl ? (
                     <VideoPlayerLayer
                         videoUrl={item.videoUrl}
+                        thumbnailUrl={item.thumbnailUrl}
                         isActive={isActive}
                         isFocused={isFocused}
                         isPaused={isPaused}
@@ -196,6 +264,12 @@ export const CoubClassicItem = memo(({
 
                 {/* Dark Gradient Overlay for better text visibility */}
                 <View style={styles.overlayGradient} pointerEvents="none" />
+
+                {/* CRT scanline texture (web only, very subtle) */}
+                {isWeb && (
+                    // @ts-ignore — raw div for the CSS scanline texture
+                    <div className="dr-scanlines" style={{ position: 'absolute', inset: 0, zIndex: 5 }} />
+                )}
 
                 {/* Unmute Icon */}
                 {isMuted && (
@@ -215,16 +289,15 @@ export const CoubClassicItem = memo(({
 
                 {/* Premium Gradient Progress Bar */}
                 <View style={styles.progressBarContainer} pointerEvents="none">
-                    <LinearGradient
-                        colors={['#D9E4FF', '#A5C6FF']}
-                        start={{ x: 0, y: 0 }}
-                        end={{ x: 1, y: 0 }}
-                        style={[styles.progressBarFill, { width: `${progress * 100}%` }]}
-                    />
-                    {/* Glow dot at progress tip */}
-                    {progress > 0 && (
-                        <View style={[styles.progressGlowDot, { left: `${progress * 100}%` }]} />
-                    )}
+                    <View style={[styles.progressBarFill, { flex: progress }]}>
+                        <LinearGradient
+                            colors={['#D9E4FF', '#A5C6FF']}
+                            start={{ x: 0, y: 0 }}
+                            end={{ x: 1, y: 0 }}
+                            style={StyleSheet.absoluteFillObject}
+                        />
+                    </View>
+                    <View style={{ flex: 1 - progress }} />
                 </View>
 
 
@@ -394,11 +467,15 @@ const styles = StyleSheet.create({
         borderRadius: 28,
         overflow: 'hidden',
         position: 'relative',
+        borderWidth: 1,
+        borderColor: 'rgba(255, 255, 255, 0.06)',
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 12 },
         shadowOpacity: 0.5,
         shadowRadius: 24,
         elevation: 12,
+        // @ts-ignore — web only
+        transition: 'border-color 0.25s ease, box-shadow 0.25s ease',
     },
 
     overlayGradient: {
@@ -451,17 +528,24 @@ const styles = StyleSheet.create({
         position: 'absolute',
         top: 14,
         left: 14,
-        backgroundColor: 'rgba(8, 9, 13, 0.6)',
+        backgroundColor: 'rgba(8, 9, 13, 0.75)',
         borderWidth: 1,
-        borderColor: '#38BDF8',
-        paddingHorizontal: 10,
-        paddingVertical: 6,
-        borderRadius: 4,
+        borderColor: '#D9E4FF',
+        paddingHorizontal: 12,
+        paddingVertical: 7,
+        borderRadius: 6,
         zIndex: 20,
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 6,
+        shadowColor: '#D9E4FF',
+        shadowOffset: { width: 0, height: 0 },
+        shadowOpacity: 0.3,
+        shadowRadius: 8,
     },
     cyberBadgeText: {
         fontSize: 11,
-        color: '#38BDF8',
+        color: '#D9E4FF',
         fontWeight: '700',
         letterSpacing: 1,
         fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
@@ -471,7 +555,7 @@ const styles = StyleSheet.create({
     },
     authorHandleText: {
         fontSize: 13,
-        color: '#38BDF8',
+        color: '#D9E4FF',
         fontWeight: '700',
         letterSpacing: 0.5,
         fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
@@ -488,7 +572,7 @@ const styles = StyleSheet.create({
     },
     hashtag: {
         fontSize: 12,
-        color: '#38BDF8',
+        color: '#D9E4FF',
         fontWeight: '700',
         fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
         marginBottom: 8,

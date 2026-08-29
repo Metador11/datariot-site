@@ -1,9 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#020408" media="(prefers-color-scheme: dark)">
     <title>Datariot — Technical Documentation</title>
     <meta name="description" content="Technical documentation for the Datariot educational platform." />
 
@@ -23,12 +25,13 @@
     <meta property="og:url" content="https://docs.datariot.xyz/">
     <meta property="og:type" content="website">
 
+    <link rel="icon" href="assets/logo.jpg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap"
         rel="stylesheet" />
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="docs-style.css" />
 </head>
 
 <body>
@@ -36,19 +39,25 @@
     <header class="header">
         <div class="header__inner">
             <div class="header__brand">
+                <button class="icon-btn menu-btn" id="mobileMenuBtn" aria-label="Toggle navigation"
+                    aria-expanded="false">☰</button>
                 <img src="assets/logo.jpg" alt="Datariot" class="header__logo">
                 <span class="header__title">DATARIOT <span>Internal Docs</span></span>
             </div>
-            <div class="header__links">
-                <a href="https://info.datariot.xyz" class="header__link">Landing Site</a>
-                <a href="https://datariot.xyz" class="header__link">Web App</a>
+            <div class="header__actions">
+                <div class="header__links">
+                    <a href="https://info.datariot.xyz" class="header__link">Landing Site</a>
+                    <a href="https://datariot.xyz" class="header__link">Web App</a>
+                </div>
+                <button class="icon-btn" id="themeToggle" aria-label="Toggle color theme">☾</button>
             </div>
         </div>
     </header>
 
     <!-- Layout -->
     <div class="layout">
-        <aside class="sidebar">
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+        <aside class="sidebar" id="sidebar">
             <div class="search">
                 <input type="text" class="search__input" id="searchInput" placeholder="Search technical docs...">
             </div>
@@ -58,6 +67,8 @@
                     <li><a href="#overview" class="sidebar__link active" data-section="overview">System Overview</a>
                     </li>
                     <li><a href="#structure" class="sidebar__link" data-section="structure">Project Structure</a></li>
+                    <li><a href="#development" class="sidebar__link" data-section="development">Local Development</a>
+                    </li>
                     <li><a href="#setup" class="sidebar__link" data-section="setup">Backend Setup</a></li>
                 </ul>
             </div>
@@ -65,6 +76,8 @@
                 <div class="sidebar__label">Reference</div>
                 <ul class="sidebar__nav">
                     <li><a href="#database" class="sidebar__link" data-section="database">Database Schema</a></li>
+                    <li><a href="#rpc" class="sidebar__link" data-section="rpc">RPC Functions</a></li>
+                    <li><a href="#ai" class="sidebar__link" data-section="ai">AI Engine (Orvelis)</a></li>
                     <li><a href="#environment" class="sidebar__link" data-section="environment">Environment Config</a>
                     </li>
                     <li><a href="#deployment" class="sidebar__link" data-section="deployment">Vercel Rewrites</a></li>
@@ -91,11 +104,11 @@
                     <tbody>
                         <tr>
                             <td><strong>Frontend</strong></td>
-                            <td>React Native + Expo (v50+)</td>
+                            <td>React Native 0.81 + Expo SDK 54</td>
                         </tr>
                         <tr>
                             <td><strong>Navigation</strong></td>
-                            <td>Expo Router (File-based)</td>
+                            <td>Expo Router v6 (file-based)</td>
                         </tr>
                         <tr>
                             <td><strong>Backend</strong></td>
@@ -103,11 +116,11 @@
                         </tr>
                         <tr>
                             <td><strong>AI Engine</strong></td>
-                            <td>OpenAI GPT-4 / Anthropic Claude</td>
+                            <td>Orvelis AI — OpenAI GPT with automatic provider fallback</td>
                         </tr>
                         <tr>
                             <td><strong>State</strong></td>
-                            <td>Zustand</td>
+                            <td>Zustand 4</td>
                         </tr>
                     </tbody>
                 </table>
@@ -116,33 +129,63 @@
             <!-- Structure -->
             <section class="doc-section" id="structure">
                 <h2 class="doc-section__title">Project Structure</h2>
-                <p>The repository follows a monorepo-lite structure managed by Vercel subdomains.</p>
+                <p>The repository follows a monorepo-lite structure: one Expo application plus static sites, routed to
+                    subdomains via Vercel host-based rewrites.</p>
                 <pre>
 /datariot
-├── datariot-docs/    # This documentation site
-├── datariot-info/    # Main landing page (marketing)
-├── datariot-xyz/     # Production web build of the Expo app
+├── datariot-docs/    # This documentation site (docs.datariot.xyz)
+├── datariot-info/    # Landing page assets (info.datariot.xyz)
+├── datariot-xyz/     # Production web build of the Expo app (datariot.xyz)
 ├── src/              # Expo application source code
-│   ├── app/          # Expo Router pages
+│   ├── app/          # Expo Router pages ((tabs), auth, chat, debate, ...)
 │   ├── components/   # UI components
-│   ├── lib/          # Utilities (Supabase, API clients)
-│   └── constants/    # Global constants & Theme
-├── vercel.json       # Routing & subdomain configuration
+│   ├── design-system/# Design tokens & primitives
+│   └── lib/          # Supabase client, AI client, hooks, utils
+├── scripts/          # Seeding & maintenance scripts
+├── docs.html         # Root shell served at docs.datariot.xyz/
+├── info.html         # Root shell served at info.datariot.xyz/
+├── xyz.html          # Root shell served at datariot.xyz/
+├── vercel.json       # Host-based rewrite configuration
 └── package.json      # Main project dependencies
                 </pre>
+            </section>
+
+            <!-- Local Development -->
+            <section class="doc-section" id="development">
+                <h2 class="doc-section__title">Local Development</h2>
+                <p>Install dependencies and start the Expo development server. Node 18+ is recommended.</p>
+                <pre>
+npm install
+npm start             # Expo dev server (Metro)
+npm run web           # Run in the browser
+npm run android       # Run on Android (device / emulator)
+npm run ios           # Run on iOS (simulator)
+npm run lint          # ESLint via expo lint
+                </pre>
+                <div class="callout">
+                    <div class="callout__title">Note</div>
+                    <p>The <code>start</code> and platform scripts set
+                        <code>NODE_OPTIONS=--max-old-space-size=2048</code> to avoid Metro running out of memory on
+                        large bundles. Use the <code>start:lan</code> / <code>start:tunnel</code> variants when
+                        testing on a physical device.</p>
+                </div>
             </section>
 
             <!-- Backend Setup -->
             <section class="doc-section" id="setup">
                 <h2 class="doc-section__title">Backend Setup (Supabase)</h2>
-                <p>Follow these steps to initialize the database and services on Supabase.</p>
+                <p>Follow these steps to initialize the database and services on Supabase. The full step-by-step guide
+                    lives in <code>SUPABASE_SETUP.md</code> at the repository root.</p>
 
                 <h3 class="doc-section__subtitle">1. Database Initialization</h3>
-                <p>Execute the schema found in <code>src/lib/supabase/schema.sql</code> using the Supabase SQL Editor to
-                    create all necessary tables, relationships, and RLS policies.</p>
+                <p>Run the SQL schema script in the Supabase <strong>SQL Editor</strong> to create all tables,
+                    relationships, and RLS policies. Verify that automated triggers such as
+                    <code>create_profile_on_signup</code> are registered — they provision a <code>profiles</code> row
+                    when a new user signs up.</p>
 
                 <h3 class="doc-section__subtitle">2. Storage Buckets</h3>
-                <p>Create a public bucket named <code>videos</code> for hosting video assets.</p>
+                <p>Create a public bucket named <code>videos</code> (allowed MIME types: <code>video/*</code>) for
+                    hosting video assets.</p>
                 <table>
                     <thead>
                         <tr>
@@ -160,6 +203,10 @@
                             <td>Authenticated User</td>
                         </tr>
                         <tr>
+                            <td><strong>UPDATE</strong></td>
+                            <td>Owner (File Creator)</td>
+                        </tr>
+                        <tr>
                             <td><strong>DELETE</strong></td>
                             <td>Owner / Admin</td>
                         </tr>
@@ -170,8 +217,8 @@
             <!-- Database Schema -->
             <section class="doc-section" id="database">
                 <h2 class="doc-section__title">Database Schema</h2>
-                <p>The core tables and their primary fields are detailed below. For the full OpenAPI specification,
-                    refer to <code>full_db_schema.json</code>.</p>
+                <p>The core tables are grouped below. For the full OpenAPI specification, refer to
+                    <code>full_db_schema.json</code> at the repository root.</p>
 
                 <table>
                     <thead>
@@ -186,53 +233,162 @@
                             <td>User profiles, avatars, and logic scores.</td>
                         </tr>
                         <tr>
-                            <td><code>videos</code></td>
-                            <td>Video metadata, URLs, and creator mapping.</td>
+                            <td><code>videos</code> / <code>views</code></td>
+                            <td>Video metadata, URLs, creator mapping, and view tracking.</td>
                         </tr>
                         <tr>
-                            <td><code>debates</code></td>
-                            <td>Structured debate threads and logic scoring.</td>
+                            <td><code>posts</code> / <code>comments</code></td>
+                            <td>Text posts and threaded comments, with <code>post_likes</code> and
+                                <code>comment_likes</code>.</td>
                         </tr>
                         <tr>
-                            <td><code>later_actions</code></td>
-                            <td>User "Watch Later" interactions.</td>
+                            <td><code>chats</code> / <code>chat_participants</code> / <code>messages</code></td>
+                            <td>Direct and group messaging.</td>
                         </tr>
                         <tr>
-                            <td><code>leaderboard</code></td>
+                            <td><code>intella_battles</code> / <code>intella_challenges</code></td>
+                            <td>Structured debate battles and challenges, with submissions, votes, reactions, and
+                                results.</td>
+                        </tr>
+                        <tr>
+                            <td><code>intella_leaderboard</code></td>
                             <td>Calculated rankings for the Creator DNA section.</td>
+                        </tr>
+                        <tr>
+                            <td><code>impact_daily</code></td>
+                            <td>Daily impact score snapshots per user.</td>
+                        </tr>
+                        <tr>
+                            <td><code>later_actions</code> / <code>save_actions</code> /
+                                <code>inspire_actions</code></td>
+                            <td>"Watch Later", save, and inspire interactions.</td>
+                        </tr>
+                        <tr>
+                            <td><code>followers</code> / <code>likes</code> / <code>notifications</code></td>
+                            <td>Social graph, reactions, and the notification feed.</td>
+                        </tr>
+                        <tr>
+                            <td><code>users</code> / <code>login_tokens</code></td>
+                            <td>Account records and one-time login codes.</td>
                         </tr>
                     </tbody>
                 </table>
             </section>
 
+            <!-- RPC Functions -->
+            <section class="doc-section" id="rpc">
+                <h2 class="doc-section__title">RPC Functions</h2>
+                <p>Server-side logic is exposed through PostgreSQL functions, callable via
+                    <code>supabase.rpc(name, params)</code>. The most important ones:</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Function</th>
+                            <th>Purpose</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>get_videos_with_profiles</code></td>
+                            <td>Feed query joining videos with creator profiles.</td>
+                        </tr>
+                        <tr>
+                            <td><code>get_user_videos</code> / <code>submit_video</code> /
+                                <code>create_video_safe</code></td>
+                            <td>Fetch and publish user videos with validation.</td>
+                        </tr>
+                        <tr>
+                            <td><code>search_videos_by_tags</code></td>
+                            <td>Tag-based video discovery.</td>
+                        </tr>
+                        <tr>
+                            <td><code>create_battle</code> / <code>finalize_battle</code> /
+                                <code>cast_vote</code></td>
+                            <td>Debate battle lifecycle and voting.</td>
+                        </tr>
+                        <tr>
+                            <td><code>calculate_user_impact_score</code> / <code>update_daily_impact</code></td>
+                            <td>Impact score computation and daily snapshots.</td>
+                        </tr>
+                        <tr>
+                            <td><code>register_user</code> / <code>verify_login_code</code> /
+                                <code>get_profile_by_email</code></td>
+                            <td>Account registration and passwordless login flow.</td>
+                        </tr>
+                        <tr>
+                            <td><code>create_profile_safe</code> / <code>is_chat_participant</code> /
+                                <code>get_user_chat_ids</code></td>
+                            <td>Profile provisioning and chat access checks.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- AI Engine -->
+            <section class="doc-section" id="ai">
+                <h2 class="doc-section__title">AI Engine (Orvelis)</h2>
+                <p>The Orvelis AI layer lives in <code>src/lib/ai/client.ts</code>. It powers daily insights and
+                    personalized recommendations.</p>
+                <ul>
+                    <li>The OpenAI client is initialized lazily (with <code>dangerouslyAllowBrowser</code>, required
+                        for React Native / Expo) to avoid module load-time crashes in browsers.</li>
+                    <li>Every AI call goes through a fallback helper: the primary provider is tried first with a
+                        15-second timeout, then the secondary provider, before degrading to deterministic mock
+                        data.</li>
+                    <li>If API keys are missing, the engine logs a warning and serves fallback/mock responses instead
+                        of crashing.</li>
+                </ul>
+                <div class="callout">
+                    <div class="callout__title">Keys</div>
+                    <p>The engine reads <code>EXPO_PUBLIC_OPENAI_API_KEY</code> and
+                        <code>EXPO_PUBLIC_ANTHROPIC_API_KEY</code> from the environment. See
+                        <a href="#environment">Environment Configuration</a>.</p>
+                </div>
+            </section>
+
             <!-- Environment Config -->
             <section class="doc-section" id="environment">
                 <h2 class="doc-section__title">Environment Configuration</h2>
-                <p>Configuration is managed via <code>.env</code>. Do not commit this file to version control.</p>
+                <p>Configuration is managed via <code>.env</code> in the repository root. Do not commit this file to
+                    version control.</p>
                 <pre>
+# Supabase
 EXPO_PUBLIC_SUPABASE_URL=https://[YOUR_ID].supabase.co
 EXPO_PUBLIC_SUPABASE_ANON_KEY=[YOUR_ANON_KEY]
-SUPABASE_SERVICE_ROLE_KEY=[SECRET_ROLE_KEY]
-OPENAI_API_KEY=[OPENAI_KEY]
-ANTHROPIC_API_KEY=[ANTHROPIC_KEY]
+SUPABASE_SERVICE_ROLE_KEY=[SECRET_ROLE_KEY]   # backend/scripts only
+
+# AI providers (Orvelis)
+EXPO_PUBLIC_OPENAI_API_KEY=[OPENAI_KEY]
+EXPO_PUBLIC_ANTHROPIC_API_KEY=[ANTHROPIC_KEY]
                 </pre>
+                <div class="callout">
+                    <div class="callout__title">Warning</div>
+                    <p>The <code>service_role</code> key bypasses all RLS policies. Never reference it from frontend
+                        code or expose it in client builds — it is for trusted scripts and backend environments
+                        only. Variables prefixed with <code>EXPO_PUBLIC_</code> are bundled into client builds.</p>
+                </div>
             </section>
 
             <!-- Vercel Rewrites -->
             <section class="doc-section" id="deployment">
                 <h2 class="doc-section__title">Vercel Rewrites</h2>
-                <p>The platform uses host-based rewrites in <code>vercel.json</code> to serve content from directories
-                    based on the requested subdomain.</p>
+                <p>The platform uses host-based rewrites in <code>vercel.json</code>. For each subdomain the root path
+                    <code>/</code> is served from a root-level HTML shell, while all other paths resolve into the
+                    matching directory.</p>
                 <ul>
-                    <li><strong>docs.datariot.xyz</strong> → <code>/datariot-docs/</code></li>
-                    <li><strong>info.datariot.xyz</strong> → <code>/datariot-info/</code></li>
-                    <li><strong>datariot.xyz</strong> → <code>/datariot-xyz/</code></li>
+                    <li><strong>docs.datariot.xyz</strong> → <code>/docs.html</code>, assets from
+                        <code>/datariot-docs/</code></li>
+                    <li><strong>info.datariot.xyz</strong> → <code>/info.html</code>, assets from
+                        <code>/datariot-info/</code></li>
+                    <li><strong>datariot.xyz</strong> → <code>/xyz.html</code>, Expo bundle and assets from
+                        <code>/datariot-xyz/</code> (<code>/_expo/*</code>, <code>/assets/*</code>); all other paths
+                        fall back to <code>/xyz.html</code> for client-side routing</li>
                 </ul>
             </section>
         </main>
     </div>
 
-    <script src="script.js"></script>
+    <script src="docs-script.js"></script>
 </body>
 
 </html>

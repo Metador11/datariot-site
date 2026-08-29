@@ -1,11 +1,12 @@
 import React, { useRef, useState, useCallback, useMemo } from 'react';
-import { View, StyleSheet, FlatList, ViewToken } from 'react-native';
-import { CoubClassicItem } from './CoubClassicItem';
-import { FullScreenVideoModal } from './FullScreenVideoModal';
+import { View, StyleSheet, FlatList, ViewToken, Platform, useWindowDimensions } from 'react-native';
+import { TrendingGridCard } from './TrendingGridCard';
 import { useTheme } from '../Theme/ThemeProvider';
 import { SectionHeader } from '../Discovery/SectionHeader';
 import { DiscoveryCarousel } from '../Discovery/DiscoveryCarousel';
 import { FeaturedHero } from '../Discovery/FeaturedHero';
+import { SystemTicker } from '../Discovery/SystemTicker';
+import { DebateOfTheDay } from '../Discovery/DebateOfTheDay';
 import { Video } from '../../lib/supabase/hooks/useVideos';
 
 interface CoubClassicFeedProps {
@@ -40,6 +41,15 @@ export function CoubClassicFeed({
     const [activeVideoIndex, setActiveVideoIndex] = useState(initialScrollIndex);
     const flatListRef = useRef<FlatList>(null);
     const { theme } = useTheme();
+    const { width: winWidth } = useWindowDimensions();
+
+    // Trending grid sizing — 3 columns on wide web, 2 on narrow / mobile
+    const GRID_MAX_WIDTH = 820;
+    const GRID_PAD = 16;
+    const GRID_GAP = 12;
+    const gridContentWidth = Platform.OS === 'web' ? Math.min(GRID_MAX_WIDTH, winWidth) : winWidth;
+    const gridNumColumns = gridContentWidth >= 560 ? 3 : 2;
+    const gridCardWidth = (gridContentWidth - GRID_PAD * 2 - GRID_GAP * (gridNumColumns - 1)) / gridNumColumns;
 
     const ensureMinCount = useCallback(<T,>(list: T[], min: number): T[] => {
         if (list.length === 0) return [];
@@ -83,14 +93,12 @@ export function CoubClassicFeed({
 
     const scrollVideos = useMemo(() => {
         let base;
-        // Define which videos go to the main vertical scroll 
-        // This ensures no single video dominates all UI sections too much
         if (allSynergy.length <= 3) {
             base = videos;
         } else {
             base = videos.filter(v => !v.isHighSynergy || videos.indexOf(v) > 8);
         }
-        return ensureMinCount(base, 5);
+        return ensureMinCount(base, 6);
     }, [videos, allSynergy, ensureMinCount]);
 
     const onViewableItemsChanged = useCallback(
@@ -109,8 +117,12 @@ export function CoubClassicFeed({
         itemVisiblePercentThreshold: 60,
     }), []);
 
-    const renderHeader = () => (
+    // Element (not inline function) so FlatList doesn't remount the header each render
+    const listHeader = useMemo(() => (
         <View style={{ marginBottom: 24, marginTop: paddingTop + 10 }}>
+            <SystemTicker />
+            <DebateOfTheDay />
+
             {featuredVideos.length > 0 && (
                 <FeaturedHero
                     featuredVideos={featuredVideos}
@@ -132,23 +144,17 @@ export function CoubClassicFeed({
                 subtitle="High engagement across the platform"
             />
         </View>
-    );
+    ), [featuredVideos, synergyVideos, onSelect, paddingTop]);
 
-    const renderItem = ({ item, index }: { item: Video; index: number }) => {
-        const isActive = index === activeVideoIndex && isScreenFocused;
-
-        return (
-            <CoubClassicItem
+    const renderItem = useCallback(({ item }: { item: Video }) => (
+        <View style={{ marginBottom: GRID_GAP }}>
+            <TrendingGridCard
                 item={item}
-                isActive={isActive}
-                onLike={() => onLike(item.id)}
-                onComment={() => onComment(item.id)}
-                onSave={() => onSave(item.id)}
-                onMore={() => onMore(item.id)}
+                width={gridCardWidth}
                 onSelect={() => onSelect(item.id)}
             />
-        );
-    };
+        </View>
+    ), [gridCardWidth, onSelect]);
 
     return (
         <View style={[styles.container, { backgroundColor: theme.colors.background.primary }]}>
@@ -157,28 +163,24 @@ export function CoubClassicFeed({
                 data={scrollVideos}
                 renderItem={renderItem}
                 keyExtractor={(item, index) => `${item.id}-${index}`}
+                key={`grid-${gridNumColumns}`}
+                numColumns={gridNumColumns}
+                columnWrapperStyle={{ gap: GRID_GAP, paddingHorizontal: GRID_PAD }}
                 showsVerticalScrollIndicator={false}
-                ListHeaderComponent={renderHeader}
+                ListHeaderComponent={listHeader}
                 onViewableItemsChanged={onViewableItemsChanged}
                 viewabilityConfig={viewabilityConfig}
                 onEndReached={onEndReached}
                 onEndReachedThreshold={0.5}
                 removeClippedSubviews={false}
-                maxToRenderPerBatch={3}
+                maxToRenderPerBatch={6}
                 windowSize={5}
-                initialNumToRender={2}
-                initialScrollIndex={initialScrollIndex}
-                onScrollToIndexFailed={(info) => {
-                    const wait = new Promise(resolve => setTimeout(resolve, 500));
-                    wait.then(() => {
-                        flatListRef.current?.scrollToIndex({ index: info.index, animated: true });
-                    });
-                }}
+                initialNumToRender={6}
                 contentContainerStyle={{
                     paddingBottom: paddingBottom + 80,
                     alignSelf: 'center',
                     width: '100%',
-                    maxWidth: 720,
+                    maxWidth: GRID_MAX_WIDTH,
                     paddingHorizontal: 0,
                 }}
             />

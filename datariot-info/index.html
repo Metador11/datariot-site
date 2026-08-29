@@ -29,7 +29,7 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&family=Oxanium:wght@400;500;600;700;800&family=Syncopate:wght@400;700&family=Playfair+Display:ital,wght@0,400..700;1,400..700&family=JetBrains+Mono:wght@400;500;700;800&display=swap"
         rel="stylesheet" />
-    <link rel="stylesheet" href="style.css?v=3.2.7" />
+    <link rel="stylesheet" href="info-style.css?v=3.2.7" />
     <!-- Cache-Bust-Hash: 49294f77-8f99-4c6e-bc63-4e1b887698df -->
     <style>
         :root {
@@ -104,14 +104,42 @@
         }
 
         .hero__brand-text {
-            font-size: clamp(48px, 8vw, 96px) !important;
+            font-size: clamp(64px, 12vw, 140px) !important;
             font-weight: 900;
-            margin: 0 0 15px 0 !important;
-            color: var(--text-primary) !important;
-            letter-spacing: -4px;
+            margin: 0 0 20px 0 !important;
+            letter-spacing: 0.08em;
             line-height: 0.95;
             text-transform: uppercase;
             display: block !important;
+            /* Vivid animated gradient */
+            background: linear-gradient(
+                135deg,
+                #38BDF8 0%,
+                #06B6D4 15%,
+                #2563EB 35%,
+                #8B5CF6 55%,
+                #38BDF8 75%,
+                #06B6D4 100%
+            ) !important;
+            background-size: 300% 300% !important;
+            -webkit-background-clip: text !important;
+            background-clip: text !important;
+            -webkit-text-fill-color: transparent !important;
+            color: transparent !important;
+            animation: datariot-gradient-flow 6s ease infinite, datariot-glow-pulse 3s ease-in-out infinite alternate !important;
+            filter: drop-shadow(0 0 40px rgba(56, 189, 248, 0.35)) drop-shadow(0 0 80px rgba(37, 99, 235, 0.2)) !important;
+            position: relative;
+        }
+
+        @keyframes datariot-gradient-flow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes datariot-glow-pulse {
+            0% { filter: drop-shadow(0 0 30px rgba(56, 189, 248, 0.3)) drop-shadow(0 0 60px rgba(37, 99, 235, 0.15)); }
+            100% { filter: drop-shadow(0 0 50px rgba(56, 189, 248, 0.5)) drop-shadow(0 0 100px rgba(139, 92, 246, 0.25)); }
         }
 
         .hero__tagline {
@@ -233,8 +261,9 @@
             }
 
             .hero__brand-text {
-                font-size: 48px !important;
+                font-size: clamp(48px, 14vw, 72px) !important;
                 margin-top: 10px !important;
+                letter-spacing: 0.05em !important;
             }
 
             .hero__tagline {
@@ -1145,6 +1174,34 @@
                             consensus."</p>
                     </div>
 
+                    <div class="factcheck-demo">
+                        <div class="factcheck-demo__head">
+                            <div class="topic-meta">[ ORVELIS // AI FACT CHECK ]</div>
+                            <p class="factcheck-demo__hint">Tap a claim from the floor — the truth engine cross-references it live.</p>
+                        </div>
+                        <div class="factcheck-demo__claims">
+                            <button class="claim-chip" type="button" data-verdict="VERIFIED" data-confidence="94"
+                                data-source="World Bank Open Data">"Over 60% of humanity is online today."</button>
+                            <button class="claim-chip" type="button" data-verdict="FALSE" data-confidence="91"
+                                data-source="Reuters Fact Check">"Decentralized networks cannot be censored."</button>
+                            <button class="claim-chip" type="button" data-verdict="MISLEADING" data-confidence="78"
+                                data-source="Nature — peer-reviewed">"AI already out-reasons human experts."</button>
+                        </div>
+                        <div class="terminal-window">
+                            <div class="terminal-window__header">
+                                <div class="terminal-window__dots">
+                                    <span class="dot dot--red"></span>
+                                    <span class="dot dot--yellow"></span>
+                                    <span class="dot dot--green"></span>
+                                </div>
+                                <span class="terminal-window__title">fact_check.ai</span>
+                            </div>
+                            <div class="panel-terminal factcheck-output" id="factcheckOutput">
+                                <div class="terminal-line"><span class="term-prompt">&gt;</span> awaiting claim selection<span class="term-blink">_</span></div>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="arena-cta">
                         <button class="vote-btn vote-btn--for">[ CAST VOTE // AFFIRMATIVE ]</button>
                         <button class="vote-btn vote-btn--against">[ CAST VOTE // NEGATIVE ]</button>
@@ -1382,7 +1439,7 @@
                         <div class="footer__col">
                             <h5>Social</h5>
                             <a href="https://x.com/datariot.xyz" target="_blank" rel="noopener">Twitter</a>
-                            <a href="https://discord.gg/KvBpEVrk2" target="_blank" rel="noopener">Discord</a>
+                            <a href="https://discord.gg/FcJrJ5ZSH" target="_blank" rel="noopener">Discord</a>
                         </div>
                     </div>
                 </div>
@@ -1409,9 +1466,9 @@
     <script defer src="https://unpkg.com/split-type"></script>
     <!-- 3D Scripts Restored -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js"></script>
-    <script defer src="3d-fx.js?v=2"></script>
+    <script defer src="info-3d-fx.js?v=2"></script>
 
-    <script defer src="script.js?v=3.1.0"></script>
+    <script defer src="info-script.js?v=3.1.0"></script>
 </body>
 
 </html>

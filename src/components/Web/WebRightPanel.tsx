@@ -5,6 +5,7 @@ import { useRouter } from 'expo-router';
 import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
 import { theme as baseTheme } from '../../design-system/theme';
 import { useTheme } from '../Theme/ThemeProvider';
+import { StreakQuestsPanel } from './StreakQuestsPanel';
 
 export const WebRightPanel = () => {
     const router = useRouter();
@@ -55,6 +56,9 @@ export const WebRightPanel = () => {
                     returnKeyType="search"
                 />
             </View>
+
+            {/* Streak, quests, league */}
+            <StreakQuestsPanel />
 
             {/* Trending Now */}
             <View style={styles.sectionContainer}>
@@ -125,45 +129,47 @@ export const WebRightPanel = () => {
                 
                 <View style={styles.challengeWrapper}>
                     <LinearGradient
-                        colors={['#0F111A', '#07080C']}
+                        colors={isDark ? ['#0F111A', '#07080C'] : ['#FFFFFF', '#EEF2FF']}
                         start={{ x: 0, y: 0 }}
                         end={{ x: 1, y: 1 }}
                         style={[styles.challengeCard, { borderColor: isDark ? 'rgba(217, 228, 255, 0.12)' : 'rgba(107, 127, 204, 0.18)' }]}
                     >
                         {/* Mesh gradient light flares for deep glossy texture */}
-                        <View style={styles.challengeGlow1} />
-                        <View style={styles.challengeGlow2} />
+                        <View style={[styles.challengeGlow1, !isDark && { backgroundColor: 'rgba(107, 127, 204, 0.12)' }]} />
+                        <View style={[styles.challengeGlow2, !isDark && { backgroundColor: 'rgba(165, 198, 255, 0.16)' }]} />
 
                         <View style={styles.challengeContent}>
                             <View style={styles.challengeHeaderRow}>
-                                <View style={styles.topBadge}>
-                                    <Text style={[styles.topBadgeText, { fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace' }]}>[ WEEKLY.ARENA ]</Text>
+                                <View style={[styles.topBadge, !isDark && { backgroundColor: 'rgba(76, 110, 245, 0.06)', borderColor: 'rgba(76, 110, 245, 0.15)' }]}>
+                                    <Text style={[styles.topBadgeText, !isDark && { color: '#52526A' }, { fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace' }]}>[ WEEKLY.ARENA ]</Text>
                                 </View>
                                 <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
-                                    <MaterialCommunityIcons name="lightning-bolt" size={13} color="#D9E4FF" />
-                                    <Text style={[styles.prizePool, { fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace' }]}>5,000 XP</Text>
+                                    <MaterialCommunityIcons name="sparkles" size={13} color={isDark ? '#D9E4FF' : '#4C6EF5'} />
+                                    <Text style={[styles.prizePool, !isDark && { color: '#4C6EF5' }, { fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace' }]}>5,000 ACHIEVEMENTS</Text>
                                 </View>
                             </View>
 
                             <View style={styles.iconRow}>
-                                <View style={styles.challengeIconWrap}>
+                                <View style={[styles.challengeIconWrap, !isDark && { borderColor: 'rgba(76, 110, 245, 0.25)' }]}>
                                     <LinearGradient
-                                        colors={['rgba(217, 228, 255, 0.15)', 'rgba(217, 228, 255, 0.01)']}
+                                        colors={isDark
+                                            ? ['rgba(217, 228, 255, 0.15)', 'rgba(217, 228, 255, 0.01)']
+                                            : ['rgba(76, 110, 245, 0.12)', 'rgba(76, 110, 245, 0.01)']}
                                         style={StyleSheet.absoluteFillObject}
                                     />
-                                    <MaterialCommunityIcons name="trophy" size={18} color="#D9E4FF" />
+                                    <MaterialCommunityIcons name="trophy" size={18} color={isDark ? '#D9E4FF' : '#4C6EF5'} />
                                 </View>
                                 <View style={{ flex: 1 }}>
-                                    <Text style={[styles.challengeTitle, { fontFamily: theme.typography.fontFamilies.bold, textTransform: 'uppercase' }]} numberOfLines={1}>
+                                    <Text style={[styles.challengeTitle, !isDark && { color: '#1A1C28' }, { fontFamily: theme.typography.fontFamilies.bold, textTransform: 'uppercase' }]} numberOfLines={1}>
                                         SLOW MOTION
                                     </Text>
-                                    <Text style={[styles.challengeSub, { fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace' }]} numberOfLines={1}>
+                                    <Text style={[styles.challengeSub, !isDark && { color: 'rgba(82, 82, 106, 0.8)' }, { fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace' }]} numberOfLines={1}>
                                         1,248 ENROLLED
                                     </Text>
                                 </View>
                             </View>
 
-                            <Text style={[styles.challengeDesc, { fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace' }]}>
+                            <Text style={[styles.challengeDesc, !isDark && { color: 'rgba(40, 42, 60, 0.75)' }, { fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace' }]}>
                                 Capture movement deconstructed. Render a high-fidelity slow-motion sequence and claim showcase status on the feed.
                             </Text>
 
@@ -476,16 +482,16 @@ const styles: any = StyleSheet.create({
         marginBottom: 16,
     },
     topBadge: {
-        backgroundColor: 'rgba(255, 255, 255, 0.06)',
+        backgroundColor: 'rgba(56, 189, 248, 0.06)',
         alignSelf: 'flex-start',
-        paddingHorizontal: 9,
-        paddingVertical: 4,
+        paddingHorizontal: 10,
+        paddingVertical: 5,
         borderRadius: 6,
         borderWidth: 1,
-        borderColor: 'rgba(255, 255, 255, 0.08)',
+        borderColor: 'rgba(56, 189, 248, 0.2)',
     },
     topBadgeText: {
-        color: 'rgba(217, 228, 255, 0.85)',
+        color: '#7DD3FC',
         fontSize: 9,
         fontWeight: '800',
         letterSpacing: 1.5,

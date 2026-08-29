@@ -36,7 +36,7 @@ export function ChatItem({
                 isAi && [styles.aiAvatarContainer, { backgroundColor: '#FFFFFF' }]
             ]}>
                 {isAi ? (
-                    <MaterialCommunityIcons name="robot-excited" size={24} color="#0EA5E9" />
+                    <MaterialCommunityIcons name="robot-excited" size={24} color="#D9E4FF" />
                 ) : (
                     <Text style={[styles.avatarText, { color: theme.colors.text.primary }]}>{name.charAt(0)}</Text>
                 )}
@@ -161,12 +161,12 @@ const styles = StyleSheet.create({
         marginRight: 16,
     },
     aiAvatarContainer: {
-        shadowColor: '#0EA5E9',
+        shadowColor: '#D9E4FF',
         shadowOffset: { width: 0, height: 0 },
         shadowOpacity: 0.6,
         shadowRadius: 12,
         borderWidth: 1,
-        borderColor: '#0EA5E9',
+        borderColor: '#D9E4FF',
     },
     avatarText: {
         fontSize: 20,
@@ -228,7 +228,7 @@ const styles = StyleSheet.create({
         minWidth: 24,
         alignItems: 'center',
         justifyContent: 'center',
-        shadowColor: '#0EA5E9',
+        shadowColor: '#D9E4FF',
         shadowOffset: { width: 0, height: 0 },
         shadowOpacity: 0.5,
         shadowRadius: 4,

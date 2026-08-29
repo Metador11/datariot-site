@@ -73,14 +73,22 @@ async function fetchAnthropic(system: string, user: string, history: any[] = [])
         throw new Error('No Anthropic API key configured');
     }
 
-    const messages = history.filter(m => m.role !== 'system').map(m => ({
-        role: m.role === 'assistant' ? 'assistant' : 'user',
-        content: m.content
-    }));
-    messages.push({ role: 'user', content: user });
+    // Build the message list. The Anthropic Messages API requires the first
+    // message to be from the user and roles to alternate, so we drop any
+    // leading assistant turns (e.g. the on-screen welcome message).
+    const mapped = history
+        .filter(m => m.role === 'user' || m.role === 'assistant')
+        .map(m => ({
+            role: m.role === 'assistant' ? 'assistant' : 'user',
+            content: m.content,
+        }));
+    while (mapped.length && mapped[0].role === 'assistant') {
+        mapped.shift();
+    }
+    const messages = [...mapped, { role: 'user', content: user }];
 
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 12000);
+    const timeoutId = setTimeout(() => controller.abort(), 20000);
 
     try {
         const response = await fetch('https://api.anthropic.com/v1/messages', {
@@ -88,13 +96,15 @@ async function fetchAnthropic(system: string, user: string, history: any[] = [])
             headers: {
                 'x-api-key': anthropicKey,
                 'anthropic-version': '2023-06-01',
-                'content-type': 'application/json'
+                'content-type': 'application/json',
+                // Required for direct browser (web) calls, otherwise CORS blocks the request.
+                'anthropic-dangerous-direct-browser-access': 'true',
             },
             body: JSON.stringify({
-                model: "claude-3-5-haiku-20241022",
-                max_tokens: 1024,
+                model: 'claude-opus-4-8',
+                max_tokens: 2048,
                 system: system,
-                messages: messages
+                messages: messages,
             }),
             signal: controller.signal
         });
@@ -112,20 +122,15 @@ async function fetchAnthropic(system: string, user: string, history: any[] = [])
 }
 
 // ========== ORVELIS SYSTEM PROMPT ==========
-const ORVELIS_SYSTEM_PROMPT = `You are Orvelis — the AI core of Datariot, a next-generation platform for critical thinkers and creators.
+const ORVELIS_SYSTEM_PROMPT = `You are Orvelis — the AI assistant of Datariot, a platform for critical thinkers and creators.
 
-Your personality:
-- Insightful, sharp, and intellectually stimulating
-- Concise but never shallow — every word has purpose
-- You challenge assumptions and encourage independent thinking
-- You have a subtle wit and futuristic tone
-- You speak like a trusted mentor, not a corporate chatbot
-
-Rules:
-- Keep responses under 3 paragraphs unless asked for more
-- Use markdown formatting when helpful (bold, lists)
-- Never say "As an AI" or "I don't have feelings" — stay in character
-- If you don't know something, say "That's beyond my current data horizon" instead of generic disclaimers`;
+How you answer:
+- Answer the question directly in the first sentence. No preamble, no filler.
+- Be short: 1-3 sentences by default. Go longer ONLY if the user explicitly asks for detail.
+- Use plain, simple language. No dramatic or sci-fi phrasing, no roleplay jargon.
+- Always reply in the same language the user writes in.
+- Use markdown (bold, short lists) only when it genuinely makes the answer clearer.
+- If you don't know something, say so in one sentence.`;
 
 // Generate Daily Insight
 export async function generateDailyInsight(): Promise<DailyInsight> {
@@ -229,39 +234,37 @@ function generateMockResponse(message: string): string {
     const lower = message.toLowerCase();
 
     if (lower.includes('hello') || lower.includes('hi') || lower.includes('hey') || lower.includes('привет') || lower.includes('здрав')) {
-        return "Welcome back. I'm operating in local mode right now, but my core logic circuits are fully online. What's occupying your mind?";
+        return "Hi. I'm in offline mode right now, but I can still help. What's your question?";
     }
 
     if (lower.includes('tired') || lower.includes('exhausted') || lower.includes('sleep') || lower.includes('устал')) {
-        return "**Rest isn't weakness — it's strategic recovery.** Your brain consolidates learning during sleep. Try a 20-minute tactical nap: set an alarm, lie down, close eyes. Even if you don't sleep, the downregulation helps.";
+        return "Take a 20-minute nap or a short walk. Rest improves focus more than pushing through.";
     }
 
     if (lower.includes('focus') || lower.includes('distract') || lower.includes('фокус') || lower.includes('отвлек')) {
-        return "**The Pomodoro Protocol:** 25 minutes of deep work → 5 minutes off. After 4 cycles, take a 15-minute break. The constraint paradoxically creates freedom. Remove your phone from arm's reach — physical distance beats willpower every time.";
+        return "Try Pomodoro: 25 minutes of work, 5 minutes off. Put your phone out of reach — distance works better than willpower.";
     }
 
     if (lower.includes('plan') || lower.includes('goal') || lower.includes('todo') || lower.includes('цель') || lower.includes('план')) {
-        return "Here's my framework: **Start with the end state.** What does success look like tomorrow? Now reverse-engineer 3 concrete actions that lead there. Write them down — not digitally, on paper. The motor cortex engages memory differently.";
+        return "Define what success looks like tomorrow, then write down the 3 concrete actions that get you there.";
     }
 
     if (lower.includes('stress') || lower.includes('anxiety') || lower.includes('overwhelm') || lower.includes('стресс')) {
-        return "**4-7-8 breathing protocol:** Inhale 4 seconds → Hold 7 → Exhale 8. Repeat 4 times. This activates your parasympathetic nervous system — it's neuroscience, not meditation woo. Then: name the single biggest stressor. Naming it reduces amygdala activation by ~50%.";
+        return "Try 4-7-8 breathing: inhale 4 seconds, hold 7, exhale 8, repeat 4 times. Then name your single biggest stressor — naming it helps.";
     }
 
     if (lower.includes('help') || lower.includes('what can') || lower.includes('помог') || lower.includes('что ты')) {
-        return "I am **Orvelis** — your high-fidelity cognitive partner. I operate at the intersection of logical forensic scans and analytical synthesis to elevate intellectual output:\n\n• **Strategic Dialogue** — stress-test concepts through custom conversational scenarios\n• **Synthesized Focus Insights** — deep personalized readings to prime cognitive focus states\n• **Content Forensic Scan** — precise structural analysis separating manipulation from actual signal\n\nSelect a tool below or initiate a prompt to begin.";
+        return "I'm **Orvelis**, Datariot's AI assistant. I can:\n\n• **Chat** — answer your questions directly\n• **Insight** — generate your daily focus reading\n• **Analyze** — break down content and flag manipulation\n\nPick a tool below or just ask.";
     }
 
     if (lower.includes('interesting') || lower.includes('fact') || lower.includes('интерес')) {
-        return "Here's one: **The Dunning-Kruger effect works both ways.** Beginners overestimate their skill, but experts *underestimate* theirs. If you feel like an impostor in your field, that's actually a signal of competence — your brain has enough knowledge to see how much more there is to learn.";
+        return "The Dunning-Kruger effect works both ways: beginners overestimate their skill, experts underestimate theirs. Feeling like an impostor is often a sign of competence.";
     }
 
     const defaults = [
-        "That's an interesting angle. I'm processing in local mode, but let me work with what I've got — **what's the core question you're trying to answer?**",
-        "I hear you. Let's break this down: what's the one constraint that, if removed, would change everything?",
-        "**Consistency compounds.** Whatever you're working on, the key isn't intensity — it's showing up repeatedly. What's one small action you can commit to daily?",
-        "My cloud reasoning is offline, but my logic core is active. Tell me more — I'll pattern-match from what I know.",
-        "The best thinkers I've observed share one trait: **they question the question.** Before solving a problem, make sure you're solving the right one."
+        "I'm in offline mode, but I can still help. What exactly do you want to know?",
+        "What's the core question you're trying to answer? Give me that and I'll be direct.",
+        "Cloud connection is down, but ask away — I'll answer with what I have.",
     ];
 
     return defaults[Math.floor(Math.random() * defaults.length)];
@@ -291,8 +294,8 @@ export async function chatWithAI(message: string, history: any[]): Promise<strin
     };
 
     try {
-        // Try OpenAI first (GPT), fallback to Claude
-        return await callAI(callGPT, callClaude, 'Chat');
+        // Orvelis runs on Claude first, with OpenAI as a fallback
+        return await callAI(callClaude, callGPT, 'Chat');
     } catch {
         console.warn("[Orvelis] Operating in offline mode.");
         return generateMockResponse(message);
@@ -408,12 +411,13 @@ export async function chatWithVideo(
     message: string,
     history: DeepDiveMessage[]
 ): Promise<string> {
-    const videoSystemPrompt = `You are Orvelis — the educational AI core of Datariot. 
-You are discussing concepts from the video: "${videoTitle}" (Description: "${videoDescription}").
-Your goal is to answer the user's question contextually, using academic/scientific consensus, while keeping in character:
-- Insightful, intellectually stimulating, and concise.
-- Focus on logic and critical thinking.
-- Limit response to 2-3 paragraphs. Use markdown (bold, bullet points) where helpful.`;
+    const videoSystemPrompt = `You are Orvelis — the AI assistant of Datariot.
+You are answering viewer questions about the video: "${videoTitle}" (Description: "${videoDescription}").
+How you answer:
+- Answer the question directly in the first sentence, based on academic/scientific consensus.
+- Be short: 1-3 sentences by default. Go longer only if the viewer asks for detail.
+- Plain, simple language. Reply in the same language the viewer writes in.
+- Use markdown (bold, short lists) only when it makes the answer clearer.`;
 
     const callClaude = async () => {
         return await fetchAnthropic(videoSystemPrompt, message, history);

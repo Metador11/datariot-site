@@ -16,15 +16,22 @@ import { useRouter } from 'expo-router';
 import { SafeAreaView } from '@components/UI/SafeAreaView';
 import { theme } from '@design-system/theme';
 import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
+import { useTheme } from '../components/Theme/ThemeProvider';
 import { useAuth } from '@lib/supabase/hooks/useAuth';
 import { supabase } from '@lib/supabase/client';
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system/legacy';
 import { decode } from 'base64-arraybuffer';
 
+const BIO_MAX = 160;
+
 export default function Page() {
     const router = useRouter();
     const { user } = useAuth();
+    const { theme: t, mode } = useTheme();
+    const isDark = mode === 'dark';
+    const [focusedField, setFocusedField] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
     const [uploadingAvatar, setUploadingAvatar] = useState(false);
     const [uploadingHeader, setUploadingHeader] = useState(false);
@@ -260,22 +267,74 @@ export default function Page() {
 
     const monoFont = { fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace' };
 
+    // Theme-aware tokens
+    const bg = t.colors.background.primary;
+    const surface = isDark ? 'rgba(255,255,255,0.04)' : 'rgba(0,0,0,0.025)';
+    const border = isDark ? 'rgba(255,255,255,0.09)' : 'rgba(0,0,0,0.08)';
+    const primary = t.colors.primary.DEFAULT;
+    const onPrimary = (t.colors.primary as any).onPrimary || '#FFFFFF';
+    const initial = displayName?.[0]?.toUpperCase() || user?.email?.[0]?.toUpperCase() || 'U';
+
+    const inputStyle = (field: string): any[] => ([
+        styles.input,
+        monoFont,
+        {
+            backgroundColor: surface,
+            color: t.colors.text.primary,
+            borderColor: focusedField === field ? primary : border,
+        },
+        focusedField === field && isWebEP
+            ? ({ boxShadow: isDark ? `0 0 0 3px ${hexA(primary, 0.18)}` : `0 0 0 3px ${hexA(primary, 0.14)}` } as any)
+            : null,
+    ]);
+
+    const renderField = (
+        field: string,
+        label: string,
+        value: string,
+        onChange: (s: string) => void,
+        opts: { placeholder: string; multiline?: boolean; autoCapitalize?: 'none' | 'sentences'; counter?: boolean } = { placeholder: '' }
+    ) => (
+        <View style={styles.inputGroup}>
+            <View style={styles.labelRow}>
+                <Text style={[styles.label, monoFont, { color: t.colors.text.secondary }]}>&gt; {label}</Text>
+                {opts.counter && (
+                    <Text style={[styles.counter, monoFont, { color: value.length > BIO_MAX ? t.colors.error : t.colors.text.muted }]}>
+                        {value.length}/{BIO_MAX}
+                    </Text>
+                )}
+            </View>
+            <TextInput
+                style={[inputStyle(field), opts.multiline && styles.textArea]}
+                value={value}
+                onChangeText={onChange}
+                placeholder={opts.placeholder}
+                placeholderTextColor={t.colors.text.muted}
+                onFocus={() => setFocusedField(field)}
+                onBlur={() => setFocusedField(null)}
+                autoCapitalize={opts.autoCapitalize}
+                multiline={opts.multiline}
+                textAlignVertical={opts.multiline ? 'top' : 'center'}
+            />
+        </View>
+    );
+
     return (
-        <SafeAreaView style={styles.container}>
-            <View style={styles.header}>
+        <SafeAreaView style={[styles.container, { backgroundColor: bg }]}>
+            <View style={[styles.header, { borderBottomColor: border }]}>
                 <Pressable onPress={() => router.back()} style={styles.cancelButton}>
-                    <Text style={[styles.cancelText, monoFont]}>[ CANCEL ]</Text>
+                    <Text style={[styles.cancelText, monoFont, { color: t.colors.text.secondary }]}>[ CANCEL ]</Text>
                 </Pressable>
-                <Text style={[styles.headerTitle, monoFont]}>[ EDIT PROFILE ]</Text>
+                <Text style={[styles.headerTitle, monoFont, { color: t.colors.text.primary }]}>[ EDIT PROFILE ]</Text>
                 <Pressable
                     onPress={updateProfile}
-                    style={[styles.saveButton, loading && styles.disabledButton]}
+                    style={[styles.saveButton, { backgroundColor: primary }, loading && styles.disabledButton]}
                     disabled={loading}
                 >
                     {(loading || uploadingAvatar || uploadingHeader) ? (
-                        <ActivityIndicator color="white" size="small" />
+                        <ActivityIndicator color={onPrimary} size="small" />
                     ) : (
-                        <Text style={[styles.saveText, monoFont]}>[ SAVE ]</Text>
+                        <Text style={[styles.saveText, monoFont, { color: onPrimary }]}>[ SAVE ]</Text>
                     )}
                 </Pressable>
             </View>
@@ -284,98 +343,77 @@ export default function Page() {
                 behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
                 style={{ flex: 1 }}
             >
-                <ScrollView contentContainerStyle={styles.content}>
-                    {/* Header Image Section */}
-                    <View style={styles.headerImageSection}>
-                        <Pressable onPress={() => pickImage('header')} style={styles.headerImageContainer} disabled={uploadingHeader}>
-                            {headerPreview ? (
-                                <View style={{ flex: 1 }}>
-                                    <Image source={{ uri: headerPreview }} style={styles.headerImage} />
-                                    {uploadingHeader && (
-                                        <View style={[StyleSheet.absoluteFill, styles.imageLoadingOverlay]}>
-                                            <ActivityIndicator color="white" />
+                <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
+                    <View style={styles.column}>
+                        {/* Banner + overlapping avatar */}
+                        <View style={styles.bannerWrap}>
+                            <Pressable onPress={() => pickImage('header')} style={[styles.banner, { borderColor: border, backgroundColor: surface }]} disabled={uploadingHeader}>
+                                {headerPreview ? (
+                                    <Image source={{ uri: headerPreview }} style={styles.bannerImg} />
+                                ) : (
+                                    <View style={[StyleSheet.absoluteFill, styles.center]}>
+                                        <Ionicons name="image-outline" size={34} color={t.colors.text.muted} />
+                                    </View>
+                                )}
+                                <LinearGradient colors={['transparent', 'rgba(0,0,0,0.35)']} style={StyleSheet.absoluteFill} pointerEvents="none" />
+                                {uploadingHeader && (
+                                    <View style={[StyleSheet.absoluteFill, styles.center, { backgroundColor: 'rgba(0,0,0,0.4)' }]}>
+                                        <ActivityIndicator color="#fff" />
+                                    </View>
+                                )}
+                                <View style={[styles.bannerCamBtn, { backgroundColor: 'rgba(0,0,0,0.55)', borderColor: 'rgba(255,255,255,0.15)' }]}>
+                                    <Ionicons name="camera" size={15} color="#fff" />
+                                    <Text style={[styles.bannerCamText, monoFont]}>COVER</Text>
+                                </View>
+                            </Pressable>
+
+                            <Pressable onPress={() => pickImage('avatar')} style={styles.avatarWrap} disabled={uploadingAvatar}>
+                                <View style={[styles.avatarRing, { borderColor: bg, backgroundColor: surface }]}>
+                                    {avatarPreview ? (
+                                        <Image source={{ uri: avatarPreview }} style={styles.avatarImg} />
+                                    ) : (
+                                        <View style={[styles.avatarImg, styles.center, { backgroundColor: primary }]}>
+                                            <Text style={[styles.avatarTxt, monoFont, { color: onPrimary }]}>{initial}</Text>
+                                        </View>
+                                    )}
+                                    {uploadingAvatar && (
+                                        <View style={[StyleSheet.absoluteFill, styles.center, { backgroundColor: 'rgba(0,0,0,0.4)', borderRadius: 999 }]}>
+                                            <ActivityIndicator color="#fff" />
                                         </View>
                                     )}
                                 </View>
-                            ) : (
-                                <View style={[styles.headerImage, styles.placeholderHeader]}>
-                                    <Ionicons name="image-outline" size={40} color="rgba(255,255,255,0.5)" />
+                                <View style={[styles.avatarCamBtn, { backgroundColor: primary, borderColor: bg }]}>
+                                    <Ionicons name="camera" size={13} color={onPrimary} />
                                 </View>
-                            )}
-                            <View style={styles.editIconOverlay}>
-                                <Ionicons name="camera" size={20} color="white" />
-                            </View>
-                        </Pressable>
-                    </View>
-
-                    {/* Avatar Section - Overlapping Header */}
-                    <View style={styles.avatarSection}>
-                        <Pressable onPress={() => pickImage('avatar')} style={styles.avatarContainer} disabled={uploadingAvatar}>
-                            <View>
-                                {avatarPreview ? (
-                                    <Image source={{ uri: avatarPreview }} style={styles.avatar} />
-                                ) : (
-                                    <View style={[styles.avatar, styles.placeholderAvatar]}>
-                                        <Text style={[styles.avatarPlaceholderText, monoFont]}>
-                                            {displayName?.[0]?.toUpperCase() || user?.email?.[0]?.toUpperCase() || 'U'}
-                                        </Text>
-                                    </View>
-                                )}
-                                {uploadingAvatar && (
-                                    <View style={[styles.avatar, styles.imageLoadingOverlay, { position: 'absolute' }]}>
-                                        <ActivityIndicator color="white" />
-                                    </View>
-                                )}
-                            </View>
-                            <View style={styles.editAvatarOverlay}>
-                                <Ionicons name="camera" size={16} color="white" />
-                            </View>
-                        </Pressable>
-                    </View>
-
-                    {/* Form Fields */}
-                    <View style={styles.form}>
-                        <View style={styles.inputGroup}>
-                            <Text style={[styles.label, monoFont]}>&gt; DISPLAY NAME</Text>
-                            <TextInput
-                                style={[styles.input, monoFont]}
-                                value={displayName}
-                                onChangeText={setDisplayName}
-                                placeholder="Enter display name"
-                                placeholderTextColor={theme.colors.text.secondary}
-                            />
+                            </Pressable>
                         </View>
 
-                        <View style={styles.inputGroup}>
-                            <Text style={[styles.label, monoFont]}>&gt; USERNAME</Text>
-                            <TextInput
-                                style={[styles.input, monoFont]}
-                                value={username}
-                                onChangeText={setUsername}
-                                placeholder="Enter username"
-                                placeholderTextColor={theme.colors.text.secondary}
-                                autoCapitalize="none"
-                            />
-                        </View>
-
-                        <View style={styles.inputGroup}>
-                            <Text style={[styles.label, monoFont]}>&gt; BIO</Text>
-                            <TextInput
-                                style={[styles.input, styles.textArea, monoFont]}
-                                value={bio}
-                                onChangeText={setBio}
-                                placeholder="Write something about yourself..."
-                                placeholderTextColor={theme.colors.text.secondary}
-                                multiline
-                                numberOfLines={4}
-                                textAlignVertical="top"
-                            />
+                        {/* Form */}
+                        <View style={styles.form}>
+                            {renderField('display', 'DISPLAY NAME', displayName, setDisplayName, { placeholder: 'Enter display name' })}
+                            {renderField('username', 'USERNAME', username, setUsername, { placeholder: 'Enter username', autoCapitalize: 'none' })}
+                            {renderField('bio', 'BIO', bio, setBio, { placeholder: 'Write something about yourself...', multiline: true, counter: true })}
                         </View>
                     </View>
                 </ScrollView>
             </KeyboardAvoidingView>
         </SafeAreaView>
     );
+}
+
+const isWebEP = Platform.OS === 'web';
+
+// Small helper: convert a hex/rgb color to rgba with given alpha (best effort)
+function hexA(color: string, alpha: number): string {
+    if (color.startsWith('#')) {
+        let h = color.slice(1);
+        if (h.length === 3) h = h.split('').map((c) => c + c).join('');
+        const r = parseInt(h.slice(0, 2), 16);
+        const g = parseInt(h.slice(2, 4), 16);
+        const b = parseInt(h.slice(4, 6), 16);
+        return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+    }
+    return color;
 }
 
 const styles = StyleSheet.create({
@@ -390,131 +428,155 @@ const styles = StyleSheet.create({
         paddingHorizontal: theme.spacing.lg,
         paddingVertical: 12,
         borderBottomWidth: 1,
-        borderBottomColor: 'rgba(255,255,255,0.1)',
     },
     headerTitle: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        color: 'white',
+        fontSize: 16,
+        fontWeight: '800',
+        letterSpacing: 1,
     },
     cancelButton: {
         padding: 8,
     },
     cancelText: {
-        color: theme.colors.text.secondary,
-        fontSize: 16,
+        fontSize: 13,
+        letterSpacing: 0.5,
     },
     saveButton: {
-        padding: 8,
-        backgroundColor: theme.colors.primary.DEFAULT,
-        borderRadius: 20,
-        paddingHorizontal: 16,
-        minWidth: 70,
+        paddingVertical: 9,
+        borderRadius: 999,
+        paddingHorizontal: 18,
+        minWidth: 84,
         alignItems: 'center',
+        justifyContent: 'center',
     },
     saveText: {
-        color: 'white',
-        fontWeight: 'bold',
-        fontSize: 14,
+        fontWeight: '800',
+        fontSize: 13,
+        letterSpacing: 0.5,
     },
-    content: {
-        paddingBottom: 40,
+    scrollContent: {
+        paddingBottom: 60,
     },
-    headerImageSection: {
-        height: 150,
+    column: {
         width: '100%',
-        marginBottom: 50, // Space for avatar overlap
+        maxWidth: 660,
+        alignSelf: 'center',
+        paddingHorizontal: 20,
     },
-    headerImageContainer: {
-        width: '100%',
-        height: '100%',
+    center: {
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+
+    // Banner + avatar
+    bannerWrap: {
+        marginTop: 24,
+        marginBottom: 60,
         position: 'relative',
-        backgroundColor: 'rgba(255,255,255,0.05)',
     },
-    headerImage: {
+    banner: {
+        width: '100%',
+        height: 180,
+        borderRadius: 22,
+        overflow: 'hidden',
+        borderWidth: 1,
+        position: 'relative',
+    },
+    bannerImg: {
         width: '100%',
         height: '100%',
         resizeMode: 'cover',
     },
-    placeholderHeader: {
-        justifyContent: 'center',
+    bannerCamBtn: {
+        position: 'absolute',
+        bottom: 12,
+        right: 12,
+        flexDirection: 'row',
         alignItems: 'center',
+        gap: 6,
+        paddingHorizontal: 11,
+        paddingVertical: 7,
+        borderRadius: 999,
+        borderWidth: 1,
     },
-    editIconOverlay: {
+    bannerCamText: {
+        color: '#fff',
+        fontSize: 10,
+        fontWeight: '800',
+        letterSpacing: 1.2,
+    },
+    avatarWrap: {
         position: 'absolute',
-        bottom: 8,
-        right: 8,
-        backgroundColor: 'rgba(0,0,0,0.6)',
-        padding: 8,
-        borderRadius: 20,
+        bottom: -44,
+        left: 18,
     },
-    avatarSection: {
-        position: 'absolute',
-        top: 100, // Overlap header
-        left: 20,
-        zIndex: 10,
-    },
-    avatarContainer: {
-        position: 'relative',
-    },
-    avatar: {
-        width: 100,
-        height: 100,
-        borderRadius: 50,
+    avatarRing: {
+        width: 98,
+        height: 98,
+        borderRadius: 49,
         borderWidth: 4,
-        borderColor: theme.colors.background.primary,
-    },
-    placeholderAvatar: {
-        backgroundColor: theme.colors.primary.DEFAULT,
+        overflow: 'hidden',
         justifyContent: 'center',
         alignItems: 'center',
     },
-    avatarPlaceholderText: {
-        fontSize: 40,
-        fontWeight: 'bold',
-        color: 'white',
+    avatarImg: {
+        width: '100%',
+        height: '100%',
+        borderRadius: 49,
     },
-    editAvatarOverlay: {
+    avatarTxt: {
+        fontSize: 36,
+        fontWeight: '800',
+    },
+    avatarCamBtn: {
         position: 'absolute',
-        bottom: 0,
-        right: 0,
-        backgroundColor: theme.colors.primary.DEFAULT,
-        padding: 6,
+        bottom: -2,
+        right: -2,
+        width: 30,
+        height: 30,
         borderRadius: 15,
-        borderWidth: 2,
-        borderColor: theme.colors.background.primary,
+        borderWidth: 3,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
+
+    // Form
     form: {
-        paddingHorizontal: theme.spacing.lg,
-        marginTop: 10,
+        marginTop: 6,
     },
     inputGroup: {
-        marginBottom: 20,
+        marginBottom: 18,
+    },
+    labelRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: 8,
     },
     label: {
-        color: theme.colors.text.secondary,
-        fontSize: 14,
-        marginBottom: 8,
-        fontWeight: '600',
+        fontSize: 12,
+        fontWeight: '700',
+        letterSpacing: 1,
+    },
+    counter: {
+        fontSize: 11,
+        fontWeight: '700',
+        letterSpacing: 0.5,
     },
     input: {
-        backgroundColor: 'rgba(255,255,255,0.05)',
-        borderRadius: 12,
-        padding: 16,
-        color: 'white',
-        fontSize: 16,
+        borderRadius: 14,
+        paddingHorizontal: 16,
+        paddingVertical: 14,
+        fontSize: 15,
         borderWidth: 1,
-        borderColor: 'rgba(255,255,255,0.1)',
+        // @ts-ignore — web smooth focus transition
+        ...(Platform.OS === 'web' ? { transition: 'box-shadow 0.15s ease, border-color 0.15s ease', outlineStyle: 'none' } : {}),
     },
     textArea: {
-        minHeight: 100,
+        minHeight: 120,
+        paddingTop: 14,
     },
     disabledButton: {
         opacity: 0.5,
-    },
-    imageLoadingOverlay: {
-        backgroundColor: 'rgba(0,0,0,0.4)',
-        justifyContent: 'center',
-        alignItems: 'center',
     },
 });

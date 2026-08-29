@@ -24,8 +24,8 @@ export const IntellectRecommendations: React.FC<IntellectRecommendationsProps> =
     return (
         <View style={styles.container}>
             <View style={styles.header}>
-                <Ionicons name="people-outline" size={18} color="#38BDF8" />
-                <Text style={[styles.headerText, { color: '#38BDF8', fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace' }]}>[ RECOMMENDED.MINDS ]</Text>
+                <Ionicons name="people-outline" size={18} color="#D9E4FF" />
+                <Text style={[styles.headerText, { color: '#D9E4FF', fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace' }]}>[ RECOMMENDED.MINDS ]</Text>
             </View>
 
             <View style={styles.list}>
